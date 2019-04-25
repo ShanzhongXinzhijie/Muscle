@@ -1,5 +1,6 @@
 #pragma once
 #include"Shibuya.h"
+#include"Camera.h"
 
 class Game
 {
@@ -7,9 +8,8 @@ public:
 	Game();
 	~Game();
 private:
-	Shibuya m_shibuya;
-	GameObj::PerspectiveCamera cam;
-	GameObj::CDirectionLight l;
-
+	Camera m_cam;
+	Shibuya m_shibuya;	
+	GameObj::CDirectionLight l;	
 };
 

@@ -4,7 +4,14 @@
 
 Shibuya::Shibuya()
 {
+	//ŠXƒ‚ƒfƒ‹
 	m_model.Init(L"Resource/modelData/city.cmo");
+	m_model.GetSkinModel().FindMaterialSetting([](MaterialSetting* mat) {
+		//mat->SetLightingEnable(false);
+	});
+
+	//‹ó
+	m_sky.Init(L"Resource/cubemap/cubemap.dds");
 }
 
 Shibuya::~Shibuya()
