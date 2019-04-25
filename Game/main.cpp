@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "Game.h"
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
 {
@@ -6,15 +7,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	InitEngineParameter initparam;
 	GetEngine().InitGame(hInstance, hPrevInstance, lpCmdLine, nCmdShow, "Game", initparam);	
 	
-	//ライト作成
-	GameObj::CDirectionLight l;
-	l.SetDirection(CVector3::Down());
-	l.SetColor(CVector3::One()*0.5f);
-
-	//カメラ作成
-	GameObj::PerspectiveCamera cam;
-	SetMainCamera(&cam);
-	cam.SetPos(CVector3::Up()*200.0f + CVector3::AxisZ()*-400.0f);
+	Game game;
 
 	//ゲームループ。
 	GetEngine().RunGameLoop();

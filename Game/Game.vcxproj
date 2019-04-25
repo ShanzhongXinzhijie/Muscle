@@ -5,6 +5,14 @@
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Preview|Win32">
+      <Configuration>Preview</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Preview|x64">
+      <Configuration>Preview</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
@@ -18,37 +26,69 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Shibuya.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Preview|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="Shibuya.h" />
+    <ClInclude Include="stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <MeshContentTask Include="Asset\modelData\SizeM\city.FBX" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{6EC7D143-E193-4785-BD3E-BF31C4E185D0}</ProjectGuid>
     <RootNamespace>Game</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>Game</ProjectName>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Preview|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Preview|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -65,20 +105,39 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Preview|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Preview|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>../../DemolisherWeapon/DemolisherWeapon/bulletPhysics/src;../../DemolisherWeapon/;../../DemolisherWeapon/DemolisherWeapon/EffekseerRuntime140/Compiled/include;$(IncludePath)</IncludePath>
-    <LibraryPath>../../DemolisherWeapon/DemolisherWeapon/lib/$(Platform)\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)/../../DemolisherWeapon/DemolisherWeapon/lib/$(Platform)\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <IncludePath>..\..\DemolisherWeapon\DemolisherWeapon\bulletPhysics\src;..\..\DemolisherWeapon;..\..;..\..\DemolisherWeapon\DemolisherWeapon\EffekseerRuntime140\Compiled\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LibraryPath>../../DemolisherWeapon/DemolisherWeapon/lib/$(Platform)\$(Configuration)\;$(LibraryPath)</LibraryPath>
-    <IncludePath>../../DemolisherWeapon/DemolisherWeapon/bulletPhysics/src;../../DemolisherWeapon/;../../DemolisherWeapon/DemolisherWeapon/EffekseerRuntime140/Compiled/include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)/../../DemolisherWeapon/DemolisherWeapon/lib/$(Platform)\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <IncludePath>..\..\DemolisherWeapon\DemolisherWeapon\bulletPhysics\src;..\..\DemolisherWeapon;..\..;..\..\DemolisherWeapon\DemolisherWeapon\EffekseerRuntime140\Compiled\include;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Preview|x64'">
+    <LibraryPath>$(ProjectDir)/../../DemolisherWeapon/DemolisherWeapon/lib/$(Platform)\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <IncludePath>..\..\DemolisherWeapon\DemolisherWeapon\bulletPhysics\src;..\..\DemolisherWeapon;..\..;..\..\DemolisherWeapon\DemolisherWeapon\EffekseerRuntime140\Compiled\include;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>.\Include;..\..\DemolisherWeapon\DemolisherWeapon\bulletPhysics\src;..\..\DemolisherWeapon;..\..;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>.\Include;..\..\DemolisherWeapon\DemolisherWeapon\bulletPhysics\src;..\..\DemolisherWeapon;..\..;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Preview|Win32'">
+    <IncludePath>.\Include;..\..\DemolisherWeapon\DemolisherWeapon\bulletPhysics\src;..\..\DemolisherWeapon;..\..;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -87,6 +146,9 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
+    <ImageContentTask>
+      <ContentOutput>Resource\spriteData\%(Filename).dds</ContentOutput>
+    </ImageContentTask>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -96,8 +158,7 @@
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <AdditionalIncludeDirectories>..\..\DemolisherWeapon/DemolisherWeapon/Photon/Photon-cpp/inc;..\..\DemolisherWeapon/DemolisherWeapon/Photon/LoadBalancing-cpp/inc;..\..\DemolisherWeapon/DemolisherWeapon/Photon/;..\..\DemolisherWeapon/DemolisherWeapon/Photon/Common-cpp/inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>.\Include;..\..\DemolisherWeapon/DemolisherWeapon/Photon/Photon-cpp/inc;..\..\DemolisherWeapon/DemolisherWeapon/Photon/LoadBalancing-cpp/inc;..\..\DemolisherWeapon/DemolisherWeapon/Photon/;..\..\DemolisherWeapon/DemolisherWeapon/Photon/Common-cpp/inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;DemolisherWeapon.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -106,10 +167,8 @@
       <ContentOutput>$(ProjectDir)\Resource\modelData\%(Filename).cmo</ContentOutput>
     </MeshContentTask>
     <ImageContentTask>
+      <ContentOutput>$(ProjectDir)\Resource\spriteData\%(Filename).dds</ContentOutput>
       <GeneratePremultipliedAlpha>true</GeneratePremultipliedAlpha>
-    </ImageContentTask>
-    <ImageContentTask>
-      <ContentOutput>$(ProjectDir)\Resource\sprite\%(Filename).dds</ContentOutput>
     </ImageContentTask>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -120,11 +179,33 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <PreprocessorDefinitions>DW_MASTER;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
+    <ImageContentTask>
+      <ContentOutput>Resource\spriteData\%(Filename).dds</ContentOutput>
+    </ImageContentTask>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Preview|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <PreprocessorDefinitions>DW_MASTER;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+    <ImageContentTask>
+      <ContentOutput>Resource\spriteData\%(Filename).dds</ContentOutput>
+    </ImageContentTask>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -136,35 +217,52 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <PreprocessorDefinitions>DW_MASTER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\DemolisherWeapon/DemolisherWeapon/Photon/Photon-cpp/inc;..\..\DemolisherWeapon/DemolisherWeapon/Photon/LoadBalancing-cpp/inc;..\..\DemolisherWeapon/DemolisherWeapon/Photon/;..\..\DemolisherWeapon/DemolisherWeapon/Photon/Common-cpp/inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <PreprocessorDefinitions>DW_MASTER;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.\Include;..\..\DemolisherWeapon/DemolisherWeapon/Photon/Photon-cpp/inc;..\..\DemolisherWeapon/DemolisherWeapon/Photon/LoadBalancing-cpp/inc;..\..\DemolisherWeapon/DemolisherWeapon/Photon/;..\..\DemolisherWeapon/DemolisherWeapon/Photon/Common-cpp/inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;dxguid.lib;DemolisherWeapon.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <ImageContentTask>
+      <ContentOutput>$(ProjectDir)\Resource\spriteData\%(Filename).dds</ContentOutput>
+      <GeneratePremultipliedAlpha>true</GeneratePremultipliedAlpha>
+    </ImageContentTask>
     <MeshContentTask>
       <ContentOutput>$(ProjectDir)\Resource\modelData\%(Filename).cmo</ContentOutput>
     </MeshContentTask>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Preview|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.\Include;..\..\DemolisherWeapon/DemolisherWeapon/Photon/Photon-cpp/inc;..\..\DemolisherWeapon/DemolisherWeapon/Photon/LoadBalancing-cpp/inc;..\..\DemolisherWeapon/DemolisherWeapon/Photon/;..\..\DemolisherWeapon/DemolisherWeapon/Photon/Common-cpp/inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <SupportJustMyCode>false</SupportJustMyCode>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;dxguid.lib;DemolisherWeapon.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
+    </Link>
     <ImageContentTask>
+      <ContentOutput>$(ProjectDir)\Resource\spriteData\%(Filename).dds</ContentOutput>
       <GeneratePremultipliedAlpha>true</GeneratePremultipliedAlpha>
     </ImageContentTask>
-    <ImageContentTask>
-      <ContentOutput>$(ProjectDir)\Resource\sprite\%(Filename).dds</ContentOutput>
-    </ImageContentTask>
+    <MeshContentTask>
+      <ContentOutput>$(ProjectDir)\Resource\modelData\%(Filename).cmo</ContentOutput>
+    </MeshContentTask>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="stdafx.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="stdafx.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="$(VCTargetsPath)\BuildCustomizations\ImageContentTask.targets" />
