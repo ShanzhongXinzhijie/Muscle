@@ -2,15 +2,9 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="CPlayer.h" />
-    <ClInclude Include="CEnemy.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="stdafx.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <MeshContentTask Include="Asset\modelData\unityChan.fbx" />
-    <MeshContentTask Include="Asset\modelData\enemy\enemy_00.FBX" />
   </ItemGroup>
 </Project>

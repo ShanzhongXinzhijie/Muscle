@@ -163,13 +163,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CEnemy.h" />
-    <ClInclude Include="CPlayer.h" />
     <ClInclude Include="stdafx.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <MeshContentTask Include="Asset\modelData\enemy\enemy_00.FBX" />
-    <MeshContentTask Include="Asset\modelData\unityChan.fbx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
