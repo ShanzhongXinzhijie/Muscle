@@ -11,7 +11,7 @@ Shibuya::Shibuya()
 	});
 
 	//‹ó
-	m_sky.Init(L"Resource/cubemap/cubemap.dds");
+	m_sky.Init(L"Resource/cubemap/cube2.dds");
 }
 
 Shibuya::~Shibuya()

@@ -27,7 +27,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CDeathHotoke.cpp" />
+    <ClCompile Include="CPlayerCamera.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Shibuya.cpp" />
@@ -36,14 +37,22 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Preview|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="TpsCamera.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Camera.h" />
+    <ClInclude Include="CDeathHotoke.h" />
+    <ClInclude Include="CPlayerCamera.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Shibuya.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="TpsCamera.h" />
   </ItemGroup>
   <ItemGroup>
+    <MeshContentTask Include="Asset\modelData\hotoke\birdwing.FBX" />
+    <MeshContentTask Include="Asset\modelData\hotoke\core.FBX" />
+    <MeshContentTask Include="Asset\modelData\hotoke\fishhead.FBX" />
+    <MeshContentTask Include="Asset\modelData\hotoke\humanleg.FBX" />
+    <MeshContentTask Include="Asset\modelData\hotoke\kaniarm.FBX" />
     <MeshContentTask Include="Asset\modelData\SizeM\city.FBX" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

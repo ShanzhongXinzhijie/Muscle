@@ -5,6 +5,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 {
 	//ƒQ[ƒ€‚Ì‰Šú‰»B
 	InitEngineParameter initparam;
+	initparam.isEnableDOF = true;
 	GetEngine().InitGame(hInstance, hPrevInstance, lpCmdLine, nCmdShow, "Game", initparam);	
 	
 	Game game;

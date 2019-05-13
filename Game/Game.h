@@ -1,14 +1,13 @@
 #pragma once
 #include"Shibuya.h"
-#include"Camera.h"
-
+#include"CDeathHotoke.h"
 class Game
 {
 public:
 	Game();
 	~Game();
 private:
-	Camera m_cam;
+	CDeathHotoke m_hotoke;
 	Shibuya m_shibuya;	
 	GameObj::CDirectionLight l;	
 };
