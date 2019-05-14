@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "CDeathHotoke.h"
 
-
 CDeathHotoke::CDeathHotoke()
 {
 }
@@ -21,6 +20,23 @@ bool CDeathHotoke::Start() {
 		model.SetScale(CVector3::One()*0.01f);
 	}
 	m_pos = CVector3::AxisY()*100.0f;
+
+	SkeletonIK::IKSetting setting;
+	//ë´ÇÃIKê›íË
+	setting.tipBone = m_model[1].FindBone(L"Bone023");
+	setting.rootBone = m_model[1].FindBone(L"Bone019");
+	m_model[1].GetSkinModel().GetSkeleton().GetSkeletonIK().CreateIK(setting);
+	setting.tipBone = m_model[1].FindBone(L"Bone023(mirrored)");
+	setting.rootBone = m_model[1].FindBone(L"Bone019(mirrored)");
+	m_model[1].GetSkinModel().GetSkeleton().GetSkeletonIK().CreateIK(setting);
+	//òrÇÃIKê›íË
+	setting.tipBone = m_model[4].FindBone(L"Bone031");
+	setting.rootBone = m_model[4].FindBone(L"Bone026");
+	m_model[4].GetSkinModel().GetSkeleton().GetSkeletonIK().CreateIK(setting);
+	setting.tipBone = m_model[4].FindBone(L"Bone031(mirrored)");
+	setting.rootBone = m_model[4].FindBone(L"Bone026(mirrored)");
+	m_model[4].GetSkinModel().GetSkeleton().GetSkeletonIK().CreateIK(setting);
+
 	return true;
 }
 
