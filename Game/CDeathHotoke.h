@@ -13,6 +13,7 @@ public:
 
 private:
 	GameObj::CSkinModelRender m_model[5];
+	AnimationClip m_animationClip;
 	CPlayerCamera m_cam;
 
 	CVector3 m_pos;

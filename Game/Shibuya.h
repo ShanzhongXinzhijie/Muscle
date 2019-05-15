@@ -7,5 +7,7 @@ public:
 private:
 	GameObj::CSkinModelRender m_model;
 	GameObj::CSkybox m_sky;
+
+	PhysicsStaticObject m_phyStaticObject;
 };
 
