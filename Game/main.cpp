@@ -8,6 +8,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	initparam.isEnableDOF = true;
 	GetEngine().InitGame(hInstance, hPrevInstance, lpCmdLine, nCmdShow, "Game", initparam);	
 	
+	//判定表示
+	//SetPhysicsDebugDrawMode(btIDebugDraw::DBG_DrawWireframe);
+
 	Game game;
 
 	//ゲームループ。

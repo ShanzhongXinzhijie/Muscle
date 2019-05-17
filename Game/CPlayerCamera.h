@@ -6,7 +6,7 @@ class CPlayerCamera : public IGameObject {
 public:
 	CPlayerCamera(){//bool Start()override {
 		//TPSƒJƒƒ‰‚Ì‰Šú‰»
-		m_camera.Init(CVector3::Zero(), CVector3::AxisZ()*100.0f + CVector3::AxisX()*50.0f, CVector3::Up());
+		m_camera.Init(CVector3::Zero(), CVector3::AxisZ()*100.0f, CVector3::Up());//+ CVector3::AxisX()*50.0f
 		m_camera.GetCamera().SetFar(5000.0f);
 		//m_camera.GetCamera().SetNear(1000);
 		//ƒƒCƒ“ƒJƒƒ‰‚Éİ’è

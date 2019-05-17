@@ -9,6 +9,5 @@ public:
 private:
 	CDeathHotoke m_hotoke;
 	Shibuya m_shibuya;	
-	GameObj::CDirectionLight l;	
 };
 

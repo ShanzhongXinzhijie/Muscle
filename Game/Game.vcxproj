@@ -38,6 +38,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Preview|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="TpsCamera.cpp" />
+    <ClCompile Include="TreeGene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CDeathHotoke.h" />
@@ -46,6 +47,7 @@
     <ClInclude Include="Shibuya.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="TpsCamera.h" />
+    <ClInclude Include="TreeGene.h" />
   </ItemGroup>
   <ItemGroup>
     <MeshContentTask Include="Asset\modelData\hotoke\birdwing.FBX" />
@@ -53,6 +55,7 @@
     <MeshContentTask Include="Asset\modelData\hotoke\fishhead.FBX" />
     <MeshContentTask Include="Asset\modelData\hotoke\humanleg.FBX" />
     <MeshContentTask Include="Asset\modelData\hotoke\kaniarm.FBX" />
+    <MeshContentTask Include="Asset\modelData\ki\ki.fbx" />
     <MeshContentTask Include="Asset\modelData\SizeM\city.FBX" />
     <MeshContentTask Include="Asset\modelData\tikei.fbx" />
   </ItemGroup>
