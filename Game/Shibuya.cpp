@@ -10,11 +10,30 @@ Shibuya::Shibuya()
 
 	//街モデル
 	m_model.Init(L"Resource/modelData/tikei.cmo");//city
-	m_model.GetSkinModel().FindMaterialSetting([](MaterialSetting* mat) {
+	//m_model.GetSkinModel().FindMaterialSetting([](MaterialSetting* mat) {
 		//mat->SetLightingEnable(false);
-	});
+	//});
 	m_model.SetScale(CVector3::One()*50.0f);
 	m_phyStaticObject.CreateMesh(m_model);
+
+	//シェーダ
+	D3D_SHADER_MACRO macros[] = { "MOTIONBLUR", "1", "NORMAL_MAP", "1", NULL, NULL };
+	m_ps.Load("Preset/shader/TriPlanarMapping.fx", "PS_TriPlanarMapping", Shader::EnType::PS, "MOTIONBLUR,NORMAL_MAP", macros);
+	//ノーマルマップ
+	ID3D11ShaderResourceView* tex = nullptr;
+	HRESULT hr = DirectX::CreateDDSTextureFromFile(GetGraphicsEngine().GetD3DDevice(), L"Resource/spriteData/n_land.dds", nullptr, &tex);
+	DW_ERRORBOX(FAILED(hr), "地形のノーマルマップ読み込みに失敗");
+	//モデルにシェーダとノーマルマップ設定
+	m_model.GetSkinModel().FindMaterialSetting(
+		[&](MaterialSetting* mat) {
+			mat->SetNormalTexture(tex);
+			mat->SetPS(&m_ps);
+		}
+	);
+	//ノーマルマップ、リリース
+	if (tex) {
+		tex->Release();
+	}
 
 	//空
 	m_sky.Init(L"Resource/cubemap/cube2.dds");

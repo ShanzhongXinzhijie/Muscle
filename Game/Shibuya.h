@@ -9,6 +9,7 @@ public:
 	~Shibuya();
 private:
 	GameObj::CSkinModelRender m_model;
+	Shader m_ps;
 	GameObj::CSkybox m_sky;
 	GameObj::CDirectionLight m_directionLight;
 	CascadeShadowHandler m_shadowmap;

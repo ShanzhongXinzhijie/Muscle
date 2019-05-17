@@ -59,6 +59,9 @@
     <MeshContentTask Include="Asset\modelData\SizeM\city.FBX" />
     <MeshContentTask Include="Asset\modelData\tikei.fbx" />
   </ItemGroup>
+  <ItemGroup>
+    <ImageContentTask Include="Asset\modelData\n_land.png" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{6EC7D143-E193-4785-BD3E-BF31C4E185D0}</ProjectGuid>
