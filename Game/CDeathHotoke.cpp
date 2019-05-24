@@ -42,12 +42,12 @@ bool CDeathHotoke::Start() {
 	setting = m_model[4].GetSkinModel().GetSkeleton().GetSkeletonIK().CreateIK();
 	setting->tipBone = m_model[4].FindBone(L"Bone031");
 	setting->rootBone = m_model[4].FindBone(L"Bone026");
-	setting->InitFootIK();
+	//setting->InitFootIK();
 	
 	setting = m_model[4].GetSkinModel().GetSkeleton().GetSkeletonIK().CreateIK();
 	setting->tipBone = m_model[4].FindBone(L"Bone031(mirrored)");
 	setting->rootBone = m_model[4].FindBone(L"Bone026(mirrored)");
-	setting->InitFootIK();
+	//setting->InitFootIK();
 
 	//“–‚½‚è”»’è(‘«)
 	const float radius = 50.0f;

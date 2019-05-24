@@ -50,17 +50,41 @@
     <ClInclude Include="TreeGene.h" />
   </ItemGroup>
   <ItemGroup>
+    <MeshContentTask Include="Asset\modelData\billboard.FBX" />
+    <MeshContentTask Include="Asset\modelData\dinosaur.FBX" />
     <MeshContentTask Include="Asset\modelData\hotoke\birdwing.FBX" />
     <MeshContentTask Include="Asset\modelData\hotoke\core.FBX" />
     <MeshContentTask Include="Asset\modelData\hotoke\fishhead.FBX" />
     <MeshContentTask Include="Asset\modelData\hotoke\humanleg.FBX" />
     <MeshContentTask Include="Asset\modelData\hotoke\kaniarm.FBX" />
     <MeshContentTask Include="Asset\modelData\ki\ki.fbx" />
+    <MeshContentTask Include="Asset\modelData\knight.FBX" />
     <MeshContentTask Include="Asset\modelData\SizeM\city.FBX" />
     <MeshContentTask Include="Asset\modelData\tikei.fbx" />
   </ItemGroup>
   <ItemGroup>
-    <ImageContentTask Include="Asset\modelData\n_land.png" />
+    <ImageContentTask Include="Asset\modelData\n_land.png">
+      <GenerateMips Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateMips>
+      <GenerateMips Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateMips>
+      <GenerateMips Condition="'$(Configuration)|$(Platform)'=='Preview|x64'">true</GenerateMips>
+    </ImageContentTask>
+  </ItemGroup>
+  <ItemGroup>
+    <ImageContentTask Include="Asset\modelData\land2.png">
+      <GenerateMips Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateMips>
+      <GenerateMips Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateMips>
+      <GenerateMips Condition="'$(Configuration)|$(Platform)'=='Preview|x64'">true</GenerateMips>
+    </ImageContentTask>
+  </ItemGroup>
+  <ItemGroup>
+    <ImageContentTask Include="Asset\modelData\land.png">
+      <GenerateMips Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateMips>
+      <GenerateMips Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateMips>
+      <GenerateMips Condition="'$(Configuration)|$(Platform)'=='Preview|x64'">true</GenerateMips>
+    </ImageContentTask>
+  </ItemGroup>
+  <ItemGroup>
+    <ImageContentTask Include="Asset\spriteData\smoke.png" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

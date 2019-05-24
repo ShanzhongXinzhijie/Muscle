@@ -12,7 +12,7 @@ Tree::Tree(int id, const CVector3& pos, const CQuaternion& rot) {
 	m_model.Init(m_sInstancingMax, L"Resource/modelData/ki.cmo", nullptr, 0, enFbxUpAxisY);
 	m_model.SetPos(m_pos);
 	m_model.SetRot(m_rot);
-	m_model.SetScale(CVector3::One()*0.75f);
+	m_model.SetScale({ 0.75f,1.0f,0.75f });
 
 	const float radius = 5.0f;
 	m_col.CreateSphere(m_pos+CVector3::AxisY()*radius, {}, radius);

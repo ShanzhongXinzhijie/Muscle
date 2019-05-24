@@ -30,8 +30,8 @@ public:
 
 	void Update() {
 		//カメラ更新
-		m_camera.SetPos(m_target + m_ar_offsetPos);
-		m_camera.SetTarget(m_target);
+		m_camera.SetPos(m_target + m_ar_offsetPos + GetLeft()*m_offsetPos.x + GetUp()*m_offsetPos.y);
+		m_camera.SetTarget(m_target + GetLeft()*m_offsetPos.x + GetUp()*m_offsetPos.y);
 		m_camera.SetUp(m_ar_up);
 		m_camera.UpdateMatrix();
 	}
@@ -50,12 +50,15 @@ public:
 	CVector3 GetUp() const {
 		return m_ar_up.GetNorm();
 	}
+	CVector3 GetLeft()const {
+		return CVector3::GetCross(GetFront(), GetUp());
+	}
 
 private:
 
 	//回転後の座標算出
 	void UpdateVector() {
-		m_ar_offsetPos = m_offsetPos, m_ar_up = m_up;
+		m_ar_offsetPos = { 0.0f,0.0f,m_offsetPos.z }, m_ar_up = m_up;
 
 		CQuaternion cq;
 		cq.SetRotation(CVector3::AxisX(), m_rot.y);

@@ -16,24 +16,35 @@ Shibuya::Shibuya()
 	m_model.SetScale(CVector3::One()*50.0f);
 	m_phyStaticObject.CreateMesh(m_model);
 
-	//シェーダ
-	D3D_SHADER_MACRO macros[] = { "MOTIONBLUR", "1", "NORMAL_MAP", "1", NULL, NULL };
-	m_ps.Load("Preset/shader/TriPlanarMapping.fx", "PS_TriPlanarMapping", Shader::EnType::PS, "MOTIONBLUR,NORMAL_MAP", macros);
 	//ノーマルマップ
-	ID3D11ShaderResourceView* tex = nullptr;
-	HRESULT hr = DirectX::CreateDDSTextureFromFile(GetGraphicsEngine().GetD3DDevice(), L"Resource/spriteData/n_land.dds", nullptr, &tex);
+	ID3D11ShaderResourceView* tex = nullptr, *normaltex = nullptr;
+	HRESULT hr = DirectX::CreateDDSTextureFromFile(GetGraphicsEngine().GetD3DDevice(), L"Resource/spriteData/n_land.dds", nullptr, &normaltex);
+	hr = DirectX::CreateDDSTextureFromFile(GetGraphicsEngine().GetD3DDevice(), L"Resource/spriteData/land.dds", nullptr, &tex);
 	DW_ERRORBOX(FAILED(hr), "地形のノーマルマップ読み込みに失敗");
+	
 	//モデルにシェーダとノーマルマップ設定
 	m_model.GetSkinModel().FindMaterialSetting(
 		[&](MaterialSetting* mat) {
-			mat->SetNormalTexture(tex);
-			mat->SetPS(&m_ps);
+			mat->SetNormalTexture(normaltex);
+			mat->SetAlbedoTexture(tex);
+			mat->SetTriPlanarMappingPS();
+			//mat->SetTriPlanarMappingUVScale(0.01f);
 		}
 	);
+
 	//ノーマルマップ、リリース
 	if (tex) {
 		tex->Release();
 	}
+	normaltex->Release();
+
+	m_knight.Init(L"Resource/modelData/knight.cmo");
+	m_knight.SetPos(CVector3::AxisY()*850.0f);
+	m_knight.SetScale(CVector3::One()*0.4f);
+	
+	m_dinosaur.Init(L"Resource/modelData/dinosaur.cmo");
+	m_dinosaur.SetPos(CVector3::AxisY()*900.0f+ CVector3::AxisX()*50.0f);
+	m_dinosaur.SetScale(CVector3::One()*0.09f);
 
 	//空
 	m_sky.Init(L"Resource/cubemap/cube2.dds");
@@ -50,8 +61,28 @@ Shibuya::Shibuya()
 	//);
 	//m_shadowmap.SetNear(50.0f);
 	//m_shadowmap.SetFar(20000.0f);
+
+	//ビルボテスト
+	m_billboard.Init(L"Resource/spriteData/test.png",256);
+	m_billboard.SetPos(CVector3::Up()*1000.0f);
+	m_billboard.SetScale(100.0f);
+
+	m_imp.Init(L"Resource/modelData/knight.cmo", { 2048*4,2048*4 }, { 15,15 });
+	m_imp.SetPos(CVector3::Up()*1500.0f);
+	m_imp.SetScale(CVector3::One()*0.4f*10.0f);
 }
 
 Shibuya::~Shibuya()
 {
+}
+
+void Shibuya::Update() {
+	//m_imp.RenderImposter(m_knight.GetSkinModel());
+}
+
+void Shibuya::PostLoopUpdate() {
+	//軸
+	DrawLine(CVector3::Zero(), CVector3::AxisX()*1000.0f, { 1.0f,0.0f,0.0f,1.0f });
+	DrawLine(CVector3::Zero(), CVector3::AxisY()*1000.0f, { 0.0f,1.0f,0.0f,1.0f });
+	DrawLine(CVector3::Zero(), CVector3::AxisZ()*1000.0f, { 0.0f,0.0f,1.0f,1.0f });
 }
