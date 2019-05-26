@@ -63,13 +63,17 @@ Shibuya::Shibuya()
 	//m_shadowmap.SetFar(20000.0f);
 
 	//ビルボテスト
-	m_billboard.Init(L"Resource/spriteData/test.png",256);
+	/*m_billboard.Init(L"Resource/spriteData/test.png",256);
 	m_billboard.SetPos(CVector3::Up()*1000.0f);
-	m_billboard.SetScale(100.0f);
+	m_billboard.SetScale(100.0f);*/
 
 	m_imp.Init(L"Resource/modelData/knight.cmo", { 2048*4,2048*4 }, { 15,15 });
 	m_imp.SetPos(CVector3::Up()*1500.0f);
 	m_imp.SetScale(CVector3::One()*0.4f*10.0f);
+
+	//m_knight.SetPos(CVector3::AxisY()*1500.0f);
+	m_knight.SetScale(CVector3::One()*0.4f*10.0f);
+	//m_knight.SetRot(CQuaternion(CVector3::AxisY(), CMath::PI));
 }
 
 Shibuya::~Shibuya()
