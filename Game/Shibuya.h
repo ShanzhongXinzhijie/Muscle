@@ -8,7 +8,6 @@ public:
 	Shibuya();
 	~Shibuya();
 
-	void Update()override;
 	void PostLoopUpdate()override;
 
 private:
@@ -21,7 +20,7 @@ private:
 
 	TreeGene m_treeGene;
 	GameObj::CSkinModelRender m_knight, m_dinosaur;
-	GameObj::CBillboard m_billboard;
+	CBillboard m_billboard;
 	GameObj::CImposter m_imp;
 };
 

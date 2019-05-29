@@ -3,13 +3,16 @@
 /// <summary>
 /// ñÿÇ≈Å[Ç∑
 /// </summary>
-class Tree {
+class Tree : public IGameObject{
 public:
 	Tree(int id, const CVector3& pos, const CQuaternion& rot);
+
+	void PostLoopUpdate()override;
 
 private:
 	int m_id = -1;
 	GameObj::CInstancingModelRender m_model;
+	GameObj::CImposter m_imposter;
 	CVector3 m_pos;
 	CQuaternion m_rot, m_rotOffset;
 

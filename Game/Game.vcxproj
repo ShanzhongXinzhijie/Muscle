@@ -58,6 +58,7 @@
     <MeshContentTask Include="Asset\modelData\hotoke\humanleg.FBX" />
     <MeshContentTask Include="Asset\modelData\hotoke\kaniarm.FBX" />
     <MeshContentTask Include="Asset\modelData\ki\ki.fbx" />
+    <MeshContentTask Include="Asset\modelData\ki\kiZ.fbx" />
     <MeshContentTask Include="Asset\modelData\knight.FBX" />
     <MeshContentTask Include="Asset\modelData\SizeM\city.FBX" />
     <MeshContentTask Include="Asset\modelData\tikei.fbx" />

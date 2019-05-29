@@ -11,7 +11,16 @@ PSOutput_RenderImposter PSMain_RenderImposter(PSInput In)
 	PSOutput_RenderImposter finalOut = (PSOutput_RenderImposter)0;
 	PSOutput_RenderGBuffer Out = (PSOutput_RenderGBuffer)0;
 
-	AlbedoRender(In, Out);
+	//アルベド
+	//リニア空間への変換はしない
+#if ALBEDO_MAP
+	//通常
+	Out.albedo = albedoTexture.Sample(Sampler, In.TexCoord + uvOffset);
+	Out.albedo *= albedoScale;//スケールをかける
+#else
+	//アルベドテクスチャがない場合はスケールをそのまま使う
+	Out.albedo = albedoScale;
+#endif
 
 	//αテスト
 	if (Out.albedo.a > 0.5f) {
@@ -38,28 +47,27 @@ PSOutput_RenderImposter PSMain_RenderImposter(PSInput In)
 PSOutput_RenderGBuffer PSMain_ImposterRenderGBuffer(PSInput In)
 {
 	PSOutput_RenderGBuffer Out = (PSOutput_RenderGBuffer)0;
+
+	/*
 #if ALBEDO_MAP && NORMAL_MAP
 	Out.albedo = albedoTexture.Sample(Sampler, In.TexCoord + uvOffset);
 #endif
-
 	if (In.TexCoord.x < 0.01f || In.TexCoord.x > 1.0f - 0.01f || -In.TexCoord.y < 0.01f || -In.TexCoord.y > 1.0f - 0.01f) {
 		Out.albedo = float4(-In.TexCoord.y, 0, 0, 1);
 		return Out;
 	}
-
-	const uint m_partNumX = 15;//定数にする
-	const uint m_partNumY = 15;
+	*/
 	
-	In.TexCoord.x /= m_partNumX;
-	In.TexCoord.y /= m_partNumY;
+	In.TexCoord.x /= imposterPartNum.x;
+	In.TexCoord.y /= imposterPartNum.y;
 
-	In.TexCoord.x += (1.0f / m_partNumX) * imposterIndex.x;
-	In.TexCoord.y += (1.0f / m_partNumY) * imposterIndex.y;
-
+	In.TexCoord.x += (1.0f / imposterPartNum.x) * imposterIndex.x;
+	In.TexCoord.y += (1.0f / imposterPartNum.y) * imposterIndex.y;
 
 #if ALBEDO_MAP && NORMAL_MAP
-	if(Out.albedo.a < 0.1f)
-	Out.albedo = albedoTexture.Sample(Sampler, In.TexCoord + uvOffset);
+	//if(Out.albedo.a < 0.1f)
+	Out.albedo = albedoTexture.Sample(Sampler, In.TexCoord);
+	Out.albedo.xyz = pow(Out.albedo.xyz, 2.2f);//リニア空間に変換
 #else
 	discard;
 #endif
@@ -73,7 +81,7 @@ PSOutput_RenderGBuffer PSMain_ImposterRenderGBuffer(PSInput In)
 	}
 
 #if ALBEDO_MAP && NORMAL_MAP
-	Out.normal = NormalTexture.Sample(Sampler, In.TexCoord + uvOffset);
+	Out.normal = NormalTexture.Sample(Sampler, In.TexCoord);
 	//Out.normal = Out.normal * 2.0f - 1.0f;
 	Out.normal = Out.normal.x * In.Tangent + Out.normal.y * In.Binormal + Out.normal.z * In.Normal;
 	Out.normal = normalize(Out.normal);
