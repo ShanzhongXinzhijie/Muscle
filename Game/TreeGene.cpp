@@ -14,7 +14,7 @@ Tree::Tree(int id, const CVector3& pos, const CQuaternion& rot) {
 	//m_model.SetRot(m_rot);
 	//m_model.SetScale({ 0.75f,1.0f,0.75f });
 
-	m_imposter.Init(L"Resource/modelData/kiZ.cmo", { 2048 * 2,2048 * 2 }, { 19,19 }, m_sInstancingMax);
+	m_imposter.Init(L"Resource/modelData/kiZ.cmo", { 2048*4,2048*4}, { 9,9 }, m_sInstancingMax);
 	m_imposter.SetPos(m_pos);
 	//m_imposter.SetScale({ 0.75f,1.0f,0.75f });
 	//m_imposter.SetIsDraw(false);
@@ -67,18 +67,25 @@ Tree::Tree(int id, const CVector3& pos, const CQuaternion& rot) {
 }
 
 void Tree::PostLoopUpdate() {
-	float nearDistance = CMath::Square(1200.0f);
-	if ((CVector3(m_pos.x, 0.0f, m_pos.z) - CVector3(GetMainCamera()->GetPos().x, 0.0f, GetMainCamera()->GetPos().z)).LengthSq() < nearDistance) {//if(GetKeyInput(VK_TAB)) {//
+	const float nearDistance = CMath::Square(1200.0f), farDistance = CMath::Square(2500.0f);
+	const float distance = (CVector3(m_pos.x, 0.0f, m_pos.z) - CVector3(GetMainCamera()->GetPos().x, 0.0f, GetMainCamera()->GetPos().z)).LengthSq();
+
+	//if (distance > farDistance) {
+	//	m_model.SetIsDraw(false);
+	//	m_imposter.SetIsDraw(false);
+	//	m_col.SetEnable(false);//‰“‚¢‚Æ”»’è‚à–³Œø‰»
+	//	return;
+	//}
+	if (distance < nearDistance) {//if(GetKeyInput(VK_TAB)) {//
 		m_model.SetIsDraw(true);
 		m_imposter.SetIsDraw(false);
+		m_col.SetEnable(true);
 	}
 	else {
 		m_model.SetIsDraw(false);
 		if (!m_isHited) { m_imposter.SetIsDraw(true); }
+		//m_col.SetEnable(false);//‰“‚¢‚Æ”»’è‚à–³Œø‰»
 	}
-
-	//m_model.SetIsDraw(false);
-	//m_imposter.SetIsDraw(true);
 }
 
 void TreeGene::Generate(const CVector3& minArea, const CVector3& maxArea, int num) {

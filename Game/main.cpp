@@ -11,6 +11,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	//判定表示
 	//SetPhysicsDebugDrawMode(btIDebugDraw::DBG_DrawWireframe);
 
+	SetIsDebugDraw(true);
+	SetIsDebugInput(true);
+
 	Game game;
 
 	//ゲームループ。

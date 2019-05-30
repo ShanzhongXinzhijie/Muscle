@@ -38,9 +38,10 @@ Shibuya::Shibuya()
 	}
 	normaltex->Release();
 
-	m_knight.Init(L"Resource/modelData/kiZ.cmo");
+	m_knight.Init(L"Resource/modelData/knight.cmo");
 	m_knight.SetPos(CVector3::AxisY()*850.0f);
 	m_knight.SetScale(CVector3::One()*0.4f);
+	m_knight.GetSkinModel().FindMaterial([](ModelEffect* mat) {mat->SetEmissive(4.0f); });
 	
 	m_dinosaur.Init(L"Resource/modelData/dinosaur.cmo");
 	m_dinosaur.SetPos(CVector3::AxisY()*900.0f+ CVector3::AxisX()*50.0f);
@@ -52,7 +53,7 @@ Shibuya::Shibuya()
 	//木々
 	//float area_min = -8000.0f - 500.0f, area_max = -8000.0f + 500.0f;
 	//m_treeGene.Generate({ area_min,-70.0f*500.0f,-500.0f }, { area_max,70.0f*50.0f,500.0f }, 500);
-	m_treeGene.Generate({ -70.0f*50.0f*0.1f,-70.0f*50.0f,-70.0f*50.0f*0.1f }, { 70.0f*50.0f*0.1f,70.0f*50.0f,70.0f*50.0f*0.1f }, 500);
+	m_treeGene.Generate({ -70.0f*50.0f,-70.0f*50.0f,-70.0f*50.0f }, { 70.0f*50.0f,70.0f*50.0f,70.0f*50.0f }, 4000);
 
 	//シャドウマップ
 	//m_shadowmap.Init(3,//分割数
@@ -67,9 +68,8 @@ Shibuya::Shibuya()
 	m_billboard.SetPos(CVector3::Up()*1000.0f);
 	m_billboard.SetScale(100.0f);
 
-	m_imp.Init(L"Resource/modelData/kiZ.cmo", { 2048*4,2048*4 }, { 9,9 });
+	m_imp.Init(L"Resource/modelData/knight.cmo", { 2048*2,2048*2 }, { 19,19 });
 	m_imp.SetPos(CVector3::Up()*1500.0f+ CVector3::AxisX()*300.0f);
-	//m_imp.SetScale(CVector3::One()*0.09f);
 	m_imp.SetScale(0.4f*10.0f);
 
 	m_knight.SetPos(CVector3::AxisY()*1500.0f);
