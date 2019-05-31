@@ -9,12 +9,12 @@ Tree::Tree(int id, const CVector3& pos, const CQuaternion& rot) {
 	m_pos = pos;
 	m_rot = rot;
 
-	m_model.Init(m_sInstancingMax, L"Resource/modelData/ki.cmo", nullptr, 0, enFbxUpAxisY);
+	m_model.Init(m_sInstancingMax, L"Resource/modelData/kiZ.cmo");
 	m_model.SetPos(m_pos);
 	//m_model.SetRot(m_rot);
 	//m_model.SetScale({ 0.75f,1.0f,0.75f });
 
-	m_imposter.Init(L"Resource/modelData/kiZ.cmo", { 2048*4,2048*4}, { 9,9 }, m_sInstancingMax);
+	m_imposter.Init(L"Resource/modelData/kiZ.cmo", { 2048*4,2048*4}, { 19,19 }, m_sInstancingMax);
 	m_imposter.SetPos(m_pos);
 	//m_imposter.SetScale({ 0.75f,1.0f,0.75f });
 	//m_imposter.SetIsDraw(false);
@@ -76,7 +76,7 @@ void Tree::PostLoopUpdate() {
 	//	m_col.SetEnable(false);//‰“‚¢‚Æ”»’è‚à–³Œø‰»
 	//	return;
 	//}
-	if (distance < nearDistance) {//if(GetKeyInput(VK_TAB)) {//
+	if (0){//distance < nearDistance) {//if(GetKeyInput(VK_TAB)) {//
 		m_model.SetIsDraw(true);
 		m_imposter.SetIsDraw(false);
 		m_col.SetEnable(true);

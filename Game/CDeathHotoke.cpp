@@ -75,7 +75,12 @@ void CDeathHotoke::Update() {
 	}	
 	moveDir.y = 0.0f;
 	moveDir.Normalize();
-	m_pos += moveDir * 10.0f;
+	if (GetKeyInput(VK_LSHIFT)) {
+		m_pos += moveDir * 1.0f;
+	}
+	else {
+		m_pos += moveDir * 10.0f;
+	}
 
 	if (GetKeyInput(VK_SPACE)) {
 		m_pos.y += 2.0f;
