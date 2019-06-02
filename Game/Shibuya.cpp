@@ -53,25 +53,24 @@ Shibuya::Shibuya()
 	//木々
 	//float area_min = -8000.0f - 500.0f, area_max = -8000.0f + 500.0f;
 	//m_treeGene.Generate({ area_min,-70.0f*500.0f,-500.0f }, { area_max,70.0f*50.0f,500.0f }, 500);
-	//m_treeGene.Generate({ -70.0f*50.0f,-70.0f*50.0f,-70.0f*50.0f }, { 70.0f*50.0f,70.0f*50.0f,70.0f*50.0f }, 40);
+	m_treeGene.Generate({ -70.0f*5.0f,-70.0f*50.0f,-70.0f*5.0f }, { 70.0f*5.0f,70.0f*50.0f,70.0f*5.0f }, 400);
 
 	//シャドウマップ
-	m_shadowmap.Init(3,//分割数
-		m_directionLight.GetDirection(),//ライトの方向
-		1.0f//シャドウマップの範囲(メインカメラのFarにかかる係数です)
-	);
-	m_shadowmap.SetNear(50.0f);
-	m_shadowmap.SetFar(20000.0f);
+	//m_shadowmap.Init(3,//分割数
+	//	m_directionLight.GetDirection(),//ライトの方向
+	//	1.0f//シャドウマップの範囲(メインカメラのFarにかかる係数です)
+	//);
+	//m_shadowmap.SetNear(50.0f);
+	//m_shadowmap.SetFar(20000.0f);
 
 	//ビルボテスト
 	m_billboard.Init(L"Resource/spriteData/test.png",256);
 	m_billboard.SetPos(CVector3::Up()*1000.0f);
 	m_billboard.SetScale(100.0f);
 
-	m_imp.Init(L"Resource/modelData/kiZ.cmo", { 2048*2,2048*2 }, { 19,19 });
-	m_imp.SetPos(CVector3::Up()*1500.0f+ CVector3::AxisX()*-300.0f);
-	//m_imp.SetScale(0.4f*10.0f);
-	//TODO テクスチャがインスタンシングに対応してない
+	m_imp.Init(L"Resource/modelData/knight.cmo", { 2048*2,2048*2 }, { 19,19 },100);
+	m_imp.SetPos(CVector3::Up()*1500.0f+ CVector3::AxisX()*300.0f);
+	m_imp.SetScale(0.4f*10.0f);
 
 	m_knight.SetPos(CVector3::AxisY()*1500.0f);
 	m_knight.SetScale(CVector3::One()*0.4f*10.0f);

@@ -68,7 +68,7 @@ Tree::Tree(int id, const CVector3& pos, const CQuaternion& rot) {
 
 void Tree::PostLoopUpdate() {
 	const float nearDistance = CMath::Square(1200.0f), farDistance = CMath::Square(2500.0f);
-	const float distance = (CVector3(m_pos.x, 0.0f, m_pos.z) - CVector3(GetMainCamera()->GetPos().x, 0.0f, GetMainCamera()->GetPos().z)).LengthSq();
+	const float distance = (m_pos - GetMainCamera()->GetPos()).LengthSq();
 
 	//if (distance > farDistance) {
 	//	m_model.SetIsDraw(false);
@@ -76,7 +76,7 @@ void Tree::PostLoopUpdate() {
 	//	m_col.SetEnable(false);//‰“‚¢‚Æ”»’è‚à–³Œø‰»
 	//	return;
 	//}
-	if (0){//distance < nearDistance) {//if(GetKeyInput(VK_TAB)) {//
+	if (distance < nearDistance) {//if(GetKeyInput(VK_TAB)) {//
 		m_model.SetIsDraw(true);
 		m_imposter.SetIsDraw(false);
 		m_col.SetEnable(true);
