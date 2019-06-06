@@ -19,8 +19,9 @@ bool CDeathHotoke::Start() {
 	m_model[2].Init(L"Resource/modelData/fishhead.cmo");
 	m_model[3].Init(L"Resource/modelData/birdwing.cmo");
 	m_model[4].Init(L"Resource/modelData/kaniarm.cmo", &m_animationClip[1], 1);
+	const float modelScale = 0.0188f;
 	for (auto& model : m_model) {
-		model.SetScale(CVector3::One()*0.01f);
+		model.SetScale(modelScale);
 	}
 	m_pos = CVector3::AxisY()*1000.0f;
 
@@ -30,13 +31,13 @@ bool CDeathHotoke::Start() {
 	setting->tipBone = m_model[1].FindBone(L"Bone022");
 	setting->rootBone = m_model[1].FindBone(L"Bone019");
 	setting->InitFootIK();
-	setting->footIKRayEndOffset = CVector3::AxisY()*-2500.0f*0.01f;
+	setting->footIKRayEndOffset = CVector3::AxisY()*-2500.0f*modelScale;
 
 	setting = m_model[1].GetSkinModel().GetSkeleton().GetSkeletonIK().CreateIK();
 	setting->tipBone = m_model[1].FindBone(L"Bone022(mirrored)");
 	setting->rootBone = m_model[1].FindBone(L"Bone019(mirrored)");
 	setting->InitFootIK();
-	setting->footIKRayEndOffset = CVector3::AxisY()*-2500.0f*0.01f;
+	setting->footIKRayEndOffset = CVector3::AxisY()*-2500.0f*modelScale;
 	
 	//òrÇÃIKê›íË
 	setting = m_model[4].GetSkinModel().GetSkeleton().GetSkeletonIK().CreateIK();

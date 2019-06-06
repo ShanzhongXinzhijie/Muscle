@@ -8,6 +8,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	initparam.isEnableDOF = true;
 	//initparam.standardFps = 25;
 	//initparam.limitFps = 25;
+	//initparam.shadowMapSetting = enON;
 	GetEngine().InitGame(hInstance, hPrevInstance, lpCmdLine, nCmdShow, "究極混成体デスホトケ", initparam);	
 
 	//DOF設定

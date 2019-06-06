@@ -20,7 +20,7 @@ private:
 
 	TreeGene m_treeGene;
 	GameObj::CSkinModelRender m_knight, m_dinosaur;
-	CBillboard m_billboard;
-	GameObj::CImposter m_imp;
+	CBillboard m_billboard, m_billboard2;
+	GameObj::CImposter m_imp, m_imp2;
 };
 

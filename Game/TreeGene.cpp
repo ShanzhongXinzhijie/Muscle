@@ -13,6 +13,9 @@ Tree::Tree(int id, const CVector3& pos, const CQuaternion& rot) {
 	m_model.SetPos(m_pos);
 	//m_model.SetRot(m_rot);
 	//m_model.SetScale({ 0.75f,1.0f,0.75f });
+	m_model.GetInstancingModel()->GetModelRender().GetSkinModel().FindMaterialSetting(
+		[](MaterialSetting* me) {me->SetIsUseTexZShader(true); }
+	);
 
 	m_imposter.Init(L"Resource/modelData/kiZ.cmo", { 2048*4,2048*4}, { 19,19 }, m_sInstancingMax);
 	m_imposter.SetPos(m_pos);
