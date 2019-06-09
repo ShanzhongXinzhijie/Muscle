@@ -38,7 +38,7 @@ Shibuya::Shibuya()
 	}
 	normaltex->Release();
 
-	m_knight.Init(L"Resource/modelData/knight.cmo");
+	m_knight.Init(L"Resource/modelData/testplane.cmo");
 	m_knight.SetPos(CVector3::AxisY()*850.0f);
 	m_knight.SetScale(CVector3::One()*0.4f);
 	//m_knight.GetSkinModel().FindMaterial([](ModelEffect* mat) {mat->SetEmissive(4.0f); });
@@ -53,7 +53,7 @@ Shibuya::Shibuya()
 	//木々
 	//float area_min = -8000.0f - 500.0f, area_max = -8000.0f + 500.0f;
 	//m_treeGene.Generate({ area_min,-70.0f*500.0f,-500.0f }, { area_max,70.0f*50.0f,500.0f }, 500);
-	//m_treeGene.Generate({ -70.0f*50.0f,-70.0f*50.0f,-70.0f*50.0f }, { 70.0f*50.0f,70.0f*50.0f,70.0f*50.0f }, 400);
+	m_treeGene.Generate({ -70.0f*50.0f,-70.0f*50.0f,-70.0f*50.0f }, { 70.0f*50.0f,70.0f*50.0f,70.0f*50.0f }, 4000);
 
 	//シャドウマップ
 	m_shadowmap.Init(3,//分割数
@@ -76,7 +76,7 @@ Shibuya::Shibuya()
 	m_imp.SetPos(CVector3::Up()*1500.0f+ CVector3::AxisX()*300.0f);
 	m_imp.SetScale(0.4f*10.0f);
 
-	m_imp2.Init(L"Resource/modelData/knight.cmo", { 2048 * 2,2048 * 2 }, { 19,19 });
+	m_imp2.Init(L"Resource/modelData/knight.cmo", { 2048 * 2,2048 * 2 }, { 19,19 },256);
 	m_imp2.SetPos(CVector3::Up()*1000.0f + CVector3::AxisX()*300.0f);
 	m_imp2.SetScale(0.4f*10.0f);
 

@@ -9,18 +9,35 @@ Tree::Tree(int id, const CVector3& pos, const CQuaternion& rot) {
 	m_pos = pos;
 	m_rot = rot;
 
-	m_model.Init(m_sInstancingMax, L"Resource/modelData/kiZ.cmo");
+	m_bill.Init(L"Resource/spriteData/test.png", m_sInstancingMax);
+	m_bill.SetPos(m_pos);
+	m_bill.SetScale({ 50.75f,51.0f,50.75f });
+	m_bill.SetIsDraw(false);
+
+	ID3D11ShaderResourceView* srv = nullptr;
+	DirectX::CreateWICTextureFromFile(GetGraphicsEngine().GetD3DDevice(), L"Resource/spriteData/test.png", nullptr, &srv);
+
+	m_model.Init(m_sInstancingMax, L"Preset/modelData/billboard.cmo");
 	m_model.SetPos(m_pos);
 	//m_model.SetRot(m_rot);
-	//m_model.SetScale({ 0.75f,1.0f,0.75f });
+	m_model.SetScale({ 50.75f,51.0f,50.75f });
 	m_model.GetInstancingModel()->GetModelRender().GetSkinModel().FindMaterialSetting(
-		[](MaterialSetting* me) {me->SetIsUseTexZShader(true); }
+		[&](MaterialSetting* me) {
+			me->SetAlbedoTexture(srv);
+			me->SetIsUseTexZShader(true); 
+		}
 	);
+	m_model.SetIsDraw(false);
+	if (srv) {
+		srv->Release();
+	}
 
-	m_imposter.Init(L"Resource/modelData/kiZ.cmo", { 2048*4,2048*4}, { 19,19 }, m_sInstancingMax);
+	m_imposter.Init(L"Resource/modelData/kiZ.cmo", { 2048,2048}, { 9,9 }, m_sInstancingMax);
 	m_imposter.SetPos(m_pos);
 	//m_imposter.SetScale({ 0.75f,1.0f,0.75f });
-	//m_imposter.SetIsDraw(false);
+	m_imposter.SetIsDraw(false);
+	//TODO　カリング?
+	//テクスチャの使用が重い?　解像度
 
 	const float radius = 5.0f;
 	m_col.CreateSphere(m_pos+CVector3::AxisY()*radius, {}, radius);
@@ -79,7 +96,7 @@ void Tree::PostLoopUpdate() {
 	//	m_col.SetEnable(false);//遠いと判定も無効化
 	//	return;
 	//}
-	if (distance < nearDistance) {//if(GetKeyInput(VK_TAB)) {//
+	if (distance < nearDistance|| GetKeyInput(VK_TAB)) {//if(GetKeyInput(VK_TAB)) {//
 		m_model.SetIsDraw(true);
 		m_imposter.SetIsDraw(false);
 		m_col.SetEnable(true);
@@ -89,6 +106,8 @@ void Tree::PostLoopUpdate() {
 		if (!m_isHited) { m_imposter.SetIsDraw(true); }
 		//m_col.SetEnable(false);//遠いと判定も無効化
 	}
+	m_model.SetIsDraw(false);
+	m_imposter.SetIsDraw(true);
 }
 
 void TreeGene::Generate(const CVector3& minArea, const CVector3& maxArea, int num) {
