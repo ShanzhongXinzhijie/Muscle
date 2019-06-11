@@ -139,6 +139,8 @@ struct PSInput{
 	uint instanceID		: InstanceID;
 
 	float3 cubemapPos	: CUBE_POS;
+
+	int2 imposterIndex : IMPOSTER_INDEX;
 };
 
 //Z値書き込みピクセルシェーダーの入力
@@ -148,6 +150,8 @@ struct ZPSInput {
 	float4 posInProj	: TEXCOORD1;
 
 	uint instanceID		: InstanceID;
+
+	int2 imposterIndex : IMPOSTER_INDEX;
 };
 
 
@@ -168,7 +172,12 @@ PSInput VSMain( VSInputNmTxVcTangent In
 	float4 pos = mul(mWorld, In.Position);
 #endif
 
-	float3 posW = pos.xyz; psInput.cubemapPos = normalize(posW - camWorldPos); psInput.Worldpos = posW;
+	float3 posW = pos.xyz;
+#if defined(SKY_CUBE)
+	psInput.cubemapPos = normalize(posW - camWorldPos);
+#endif
+	psInput.Worldpos = posW;
+
 	pos = mul(mView, pos); psInput.Viewpos = pos.xyz;
 	pos = mul(mProj, pos);
 	psInput.Position = pos;
@@ -308,7 +317,11 @@ PSInput VSMainSkin( VSInputNmTxWeights In
 	psInput.Binormal = cross(psInput.Normal, psInput.Tangent);//normalize( mul(skinning, In.Binormal) );
 #endif
 
-	float3 posW = pos.xyz; psInput.cubemapPos = normalize(posW - camWorldPos); psInput.Worldpos = posW;
+	float3 posW = pos.xyz; 
+#if defined(SKY_CUBE)
+	psInput.cubemapPos = normalize(posW - camWorldPos);
+#endif
+	psInput.Worldpos = posW;
 
 	pos = mul(mView, pos);  psInput.Viewpos = pos.xyz;
 	pos = mul(mProj, pos);

@@ -9,37 +9,36 @@ Tree::Tree(int id, const CVector3& pos, const CQuaternion& rot) {
 	m_pos = pos;
 	m_rot = rot;
 
-	m_bill.Init(L"Resource/spriteData/test.png", m_sInstancingMax);
+	/*m_bill.Init(L"Resource/spriteData/test.png", m_sInstancingMax);
 	m_bill.SetPos(m_pos);
-	m_bill.SetScale({ 50.75f,51.0f,50.75f });
-	m_bill.SetIsDraw(false);
+	m_bill.SetScale({ 70.75f*2.0f,70.75f*2.0f,70.75f*2.0f });*/	
 
-	ID3D11ShaderResourceView* srv = nullptr;
-	DirectX::CreateWICTextureFromFile(GetGraphicsEngine().GetD3DDevice(), L"Resource/spriteData/test.png", nullptr, &srv);
+	//ID3D11ShaderResourceView* srv = nullptr;
+	//DirectX::CreateWICTextureFromFile(GetGraphicsEngine().GetD3DDevice(), L"Resource/spriteData/test.png", nullptr, &srv);
 
-	m_model.Init(m_sInstancingMax, L"Preset/modelData/billboard.cmo");
-	m_model.SetPos(m_pos);
-	//m_model.SetRot(m_rot);
-	m_model.SetScale({ 50.75f,51.0f,50.75f });
-	m_model.GetInstancingModel()->GetModelRender().GetSkinModel().FindMaterialSetting(
-		[&](MaterialSetting* me) {
-			me->SetAlbedoTexture(srv);
-			me->SetIsUseTexZShader(true); 
-		}
-	);
-	m_model.SetIsDraw(false);
-	if (srv) {
-		srv->Release();
-	}
+	//m_model.Init(m_sInstancingMax, L"Preset/modelData/billboard.cmo");
+	//m_model.SetPos(m_pos);
+	////m_model.SetRot(m_rot);
+	//m_model.SetScale({ 50.75f,51.0f,50.75f });
+	//m_model.GetInstancingModel()->GetModelRender().GetSkinModel().FindMaterialSetting(
+	//	[&](MaterialSetting* me) {
+	//		me->SetAlbedoTexture(srv);
+	//		me->SetIsUseTexZShader(true); 
+	//	}
+	//);
+	//m_model.SetIsDraw(false);
+	//if (srv) {
+	//	srv->Release();
+	//}
 
 	m_imposter.Init(L"Resource/modelData/kiZ.cmo", { 2048,2048}, { 9,9 }, m_sInstancingMax);
 	m_imposter.SetPos(m_pos);
 	//m_imposter.SetScale({ 0.75f,1.0f,0.75f });
-	m_imposter.SetIsDraw(false);
+	//m_imposter.SetIsDraw(false);
 	//TODO　カリング?
 	//テクスチャの使用が重い?　解像度
 
-	const float radius = 5.0f;
+	/*const float radius = 5.0f;
 	m_col.CreateSphere(m_pos+CVector3::AxisY()*radius, {}, radius);
 	m_col.SetIsHurtCollision(true);
 	m_col.SetCallback(
@@ -83,7 +82,7 @@ Tree::Tree(int id, const CVector3& pos, const CQuaternion& rot) {
 				}
 			}
 		}
-	);
+	);*/
 }
 
 void Tree::PostLoopUpdate() {
@@ -96,7 +95,7 @@ void Tree::PostLoopUpdate() {
 	//	m_col.SetEnable(false);//遠いと判定も無効化
 	//	return;
 	//}
-	if (distance < nearDistance|| GetKeyInput(VK_TAB)) {//if(GetKeyInput(VK_TAB)) {//
+	/*if (distance < nearDistance|| GetKeyInput(VK_TAB)) {//if(GetKeyInput(VK_TAB)) {//
 		m_model.SetIsDraw(true);
 		m_imposter.SetIsDraw(false);
 		m_col.SetEnable(true);
@@ -105,9 +104,40 @@ void Tree::PostLoopUpdate() {
 		m_model.SetIsDraw(false);
 		if (!m_isHited) { m_imposter.SetIsDraw(true); }
 		//m_col.SetEnable(false);//遠いと判定も無効化
+	}*/
+	//m_model.SetIsDraw(false);
+	
+	m_imposter.SetIsDraw(false);
+
+	//GameObj::ICamera* mc = GetMainCamera();
+
+	//GameObj::PerspectiveCamera cam;
+	//cam.SetPos({ 0,900.0f,500 });
+	//cam.SetTarget(CVector3::AxisY()*900.0f);
+	//cam.SetFar(5000.0f);
+	//cam.SetViewAngleDeg(20.0f);
+	//cam.UpdateMatrix();
+	//SetMainCamera(&cam);
+	
+	float d = GetMainCamera()->GetFront().Dot(m_pos - GetMainCamera()->GetPos());
+	if (d > GetMainCamera()->GetNear() && d < GetMainCamera()->GetFar()) {//nearとfarの間か
+		CVector2 frustum;
+		GetMainCamera()->GetFrustumPlaneSize(d, frustum); frustum *= 0.5f;
+
+		CVector3 left = GetMainCamera()->GetFront(); left.Cross(GetMainCamera()->GetUp());
+		d = left.Dot(m_pos - GetMainCamera()->GetPos());
+		if (d > -frustum.x && d < frustum.x) {
+
+			d = GetMainCamera()->GetUp().Dot(m_pos - GetMainCamera()->GetPos());
+			if (d > -frustum.y && d < frustum.y) {
+				m_imposter.SetIsDraw(true);
+			}
+		}
 	}
-	m_model.SetIsDraw(false);
-	m_imposter.SetIsDraw(true);
+
+	//SetMainCamera(mc);
+
+	if (GetKeyInput(VK_TAB)) { m_imposter.SetIsDraw(true); }
 }
 
 void TreeGene::Generate(const CVector3& minArea, const CVector3& maxArea, int num) {

@@ -38,7 +38,7 @@ Shibuya::Shibuya()
 	}
 	normaltex->Release();
 
-	m_knight.Init(L"Resource/modelData/testplane.cmo");
+	m_knight.Init(L"Resource/modelData/knight.cmo");
 	m_knight.SetPos(CVector3::AxisY()*850.0f);
 	m_knight.SetScale(CVector3::One()*0.4f);
 	//m_knight.GetSkinModel().FindMaterial([](ModelEffect* mat) {mat->SetEmissive(4.0f); });

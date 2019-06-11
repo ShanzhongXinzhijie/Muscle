@@ -11,13 +11,13 @@ public:
 
 private:
 	int m_id = -1;
-	GameObj::CInstancingModelRender m_model;
+	//GameObj::CInstancingModelRender m_model;
 	GameObj::CImposter m_imposter;
-	CBillboard m_bill;
+	//CBillboard m_bill;
 	CVector3 m_pos;
 	CQuaternion m_rot, m_rotOffset;
 
-	SuicideObj::CCollisionObj m_col;
+	//SuicideObj::CCollisionObj m_col;
 	bool m_isHited = false;
 
 public:
