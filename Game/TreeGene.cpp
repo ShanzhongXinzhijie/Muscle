@@ -141,6 +141,8 @@ void Tree::PostLoopUpdate() {
 		m_model.SetIsDraw(false);
 		m_imposter.SetIsDraw(false);
 	}
+	m_model.SetIsDraw(false);
+	m_imposter.SetIsDraw(true);
 }
 
 void TreeGene::Generate(const CVector3& minArea, const CVector3& maxArea, int num) {

@@ -40,7 +40,7 @@ Shibuya::Shibuya()
 
 	m_knight.Init(L"Resource/modelData/knight.cmo");
 	m_knight.SetPos(CVector3::AxisY()*850.0f);
-	m_knight.SetScale(CVector3::One()*0.4f);
+	m_knight.SetScale(0.4f);
 	//m_knight.GetSkinModel().FindMaterial([](ModelEffect* mat) {mat->SetEmissive(4.0f); });
 	
 	m_dinosaur.Init(L"Resource/modelData/dinosaur.cmo");
@@ -72,16 +72,16 @@ Shibuya::Shibuya()
 	m_billboard2.SetPos(CVector3::Up()*1200.0f);
 	m_billboard2.SetScale(50.0f);
 
-	m_imp.Init(L"Resource/modelData/knight.cmo", { 2048*2,2048*2 }, { 9,9 });
+	m_imp.Init(L"Resource/modelData/knight.cmo", { 2048*2,2048*2 }, { 9,9 },256);
 	m_imp.SetPos(CVector3::Up()*1500.0f+ CVector3::AxisX()*300.0f);
 	m_imp.SetScale(0.4f*10.0f);
 
-	m_imp2.Init(L"Resource/modelData/knight.cmo", { 2048 * 2,2048 * 2 }, { 9,9 },256);
+	m_imp2.Init(L"Resource/modelData/knight.cmo", { 2048 * 2,2048 * 2 }, { 9,9 });
 	m_imp2.SetPos(CVector3::Up()*1000.0f + CVector3::AxisX()*300.0f);
 	m_imp2.SetScale(0.4f*10.0f);
 
 	m_knight.SetPos(CVector3::AxisY()*1500.0f);
-	m_knight.SetScale(CVector3::One()*0.4f*10.0f);
+	m_knight.SetScale(0.4f*10.0f);
 }
 
 Shibuya::~Shibuya()
