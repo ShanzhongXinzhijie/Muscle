@@ -31,7 +31,7 @@ Tree::Tree(int id, const CVector3& pos, const CQuaternion& rot) {
 		srv->Release();
 	}*/
 
-	m_imposter.Init(L"Resource/modelData/kiZ.cmo", { 2048,2048}, { 15,15 }, m_sInstancingMax);
+	m_imposter.Init(L"Resource/modelData/kiZ.cmo", { 2048*4, 2048*4 }, { 35,35 }, m_sInstancingMax);
 	m_imposter.SetPos(m_pos);
 	//m_imposter.SetScale({ 0.75f,1.0f,0.75f });
 	//m_imposter.SetIsDraw(false);
@@ -108,6 +108,7 @@ void Tree::PostLoopUpdate() {
 
 	bool isDraw = false;
 	
+	//TODO Ž‹‘äƒJƒŠƒ“ƒO
 	float d = GetMainCamera()->GetFront().Dot(m_pos - GetMainCamera()->GetPos());
 	if (d > GetMainCamera()->GetNear() && d < GetMainCamera()->GetFar()) {//near‚Æfar‚ÌŠÔ‚©
 		CVector2 frustum;
@@ -141,8 +142,6 @@ void Tree::PostLoopUpdate() {
 		m_model.SetIsDraw(false);
 		m_imposter.SetIsDraw(false);
 	}
-	m_model.SetIsDraw(false);
-	m_imposter.SetIsDraw(true);
 }
 
 void TreeGene::Generate(const CVector3& minArea, const CVector3& maxArea, int num) {
