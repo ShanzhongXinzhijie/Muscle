@@ -27,25 +27,25 @@ bool CDeathHotoke::Start() {
 
 	SkeletonIK::IKSetting* setting;
 	//‘«‚ÌIKÝ’è
-	setting = m_model[1].GetSkinModel().GetSkeleton().GetSkeletonIK().CreateIK();
+	setting = m_model[1].GetSkinModel().GetSkeleton().CreateIK();
 	setting->tipBone = m_model[1].FindBone(L"Bone022");
 	setting->rootBone = m_model[1].FindBone(L"Bone019");
 	setting->InitFootIK();
 	setting->footIKRayEndOffset = CVector3::AxisY()*-2500.0f*modelScale;
 
-	setting = m_model[1].GetSkinModel().GetSkeleton().GetSkeletonIK().CreateIK();
+	setting = m_model[1].GetSkinModel().GetSkeleton().CreateIK();
 	setting->tipBone = m_model[1].FindBone(L"Bone022(mirrored)");
 	setting->rootBone = m_model[1].FindBone(L"Bone019(mirrored)");
 	setting->InitFootIK();
 	setting->footIKRayEndOffset = CVector3::AxisY()*-2500.0f*modelScale;
 	
 	//˜r‚ÌIKÝ’è
-	setting = m_model[4].GetSkinModel().GetSkeleton().GetSkeletonIK().CreateIK();
+	setting = m_model[4].GetSkinModel().GetSkeleton().CreateIK();
 	setting->tipBone = m_model[4].FindBone(L"Bone031");
 	setting->rootBone = m_model[4].FindBone(L"Bone026");
 	//setting->InitFootIK();
 	
-	setting = m_model[4].GetSkinModel().GetSkeleton().GetSkeletonIK().CreateIK();
+	setting = m_model[4].GetSkinModel().GetSkeleton().CreateIK();
 	setting->tipBone = m_model[4].FindBone(L"Bone031(mirrored)");
 	setting->rootBone = m_model[4].FindBone(L"Bone026(mirrored)");
 	//setting->InitFootIK();

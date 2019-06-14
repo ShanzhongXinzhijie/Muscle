@@ -36,7 +36,8 @@ Tree::Tree(int id, const CVector3& pos, const CQuaternion& rot) {
 	//m_imposter.SetScale({ 0.75f,1.0f,0.75f });
 	//m_imposter.SetIsDraw(false);
 
-	/*const float radius = 5.0f;
+	//“–‚½‚è”»’è
+	const float radius = 5.0f;
 	m_col.CreateSphere(m_pos+CVector3::AxisY()*radius, {}, radius);
 	m_col.SetIsHurtCollision(true);
 	m_col.SetCallback(
@@ -80,7 +81,9 @@ Tree::Tree(int id, const CVector3& pos, const CQuaternion& rot) {
 				}
 			}
 		}
-	);*/
+	);
+	m_col.SetEnable(false);
+	m_col.IGameObject::SetEnable(false);
 }
 
 void Tree::PostLoopUpdate() {
