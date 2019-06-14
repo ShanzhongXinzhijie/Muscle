@@ -27,27 +27,31 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CDeathHotoke.cpp" />
-    <ClCompile Include="CPlayerCamera.cpp" />
-    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="src\CPlayerController.cpp" />
+    <ClCompile Include="src\CBodyPart.cpp" />
+    <ClCompile Include="src\CDeathHotoke.cpp" />
+    <ClCompile Include="src\CPlayer.cpp" />
+    <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Shibuya.cpp" />
+    <ClCompile Include="src\Shibuya.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Preview|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="TpsCamera.cpp" />
-    <ClCompile Include="TreeGene.cpp" />
+    <ClCompile Include="src\TreeGene.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CDeathHotoke.h" />
-    <ClInclude Include="CPlayerCamera.h" />
-    <ClInclude Include="Game.h" />
-    <ClInclude Include="Shibuya.h" />
+    <ClInclude Include="include\CPlayerController.h" />
+    <ClInclude Include="include\CBodyPart.h" />
+    <ClInclude Include="include\CDeathHotoke.h" />
+    <ClInclude Include="include\CPlayer.h" />
+    <ClInclude Include="include\CPlayerCamera.h" />
+    <ClInclude Include="include\Game.h" />
+    <ClInclude Include="include\Shibuya.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="TpsCamera.h" />
-    <ClInclude Include="TreeGene.h" />
+    <ClInclude Include="include\TpsCamera.h" />
+    <ClInclude Include="include\TreeGene.h" />
   </ItemGroup>
   <ItemGroup>
     <MeshContentTask Include="Asset\modelData\billboard.FBX" />

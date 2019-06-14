@@ -9,13 +9,7 @@ Tree::Tree(int id, const CVector3& pos, const CQuaternion& rot) {
 	m_pos = pos;
 	m_rot = rot;
 
-	/*m_bill.Init(L"Resource/spriteData/test.png", m_sInstancingMax);
-	m_bill.SetPos(m_pos);
-	m_bill.SetScale({ 70.75f*2.0f,70.75f*2.0f,70.75f*2.0f });*/	
-
-	//ID3D11ShaderResourceView* srv = nullptr;
-	//DirectX::CreateWICTextureFromFile(GetGraphicsEngine().GetD3DDevice(), L"Resource/spriteData/test.png", nullptr, &srv);
-
+	//‹ßŒiƒ‚ƒfƒ‹
 	m_model.Init(m_sInstancingMax, L"Resource/modelData/kiZ.cmo");
 	m_model.SetPos(m_pos);
 	//m_model.SetRot(m_rot);
@@ -27,14 +21,12 @@ Tree::Tree(int id, const CVector3& pos, const CQuaternion& rot) {
 		}
 	);
 	m_model.SetIsDraw(false);
-	/*if (srv) {
-		srv->Release();
-	}*/
 
+	//‰“Œiƒ‚ƒfƒ‹
 	m_imposter.Init(L"Resource/modelData/kiZ.cmo", { 2048*4, 2048*4 }, { 35,35 }, m_sInstancingMax);
 	m_imposter.SetPos(m_pos);
 	//m_imposter.SetScale({ 0.75f,1.0f,0.75f });
-	//m_imposter.SetIsDraw(false);
+	m_imposter.SetIsDraw(false);
 
 	//“–‚½‚è”»’è
 	const float radius = 5.0f;

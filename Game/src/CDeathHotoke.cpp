@@ -24,6 +24,7 @@ bool CDeathHotoke::Start() {
 		model.SetScale(modelScale);
 	}
 	m_pos = CVector3::AxisY()*1000.0f;
+	m_pos.z += 200.0f;
 
 	SkeletonIK::IKSetting* setting;
 	//ë´ÇÃIKê›íË
@@ -62,7 +63,7 @@ bool CDeathHotoke::Start() {
 void CDeathHotoke::Update() {
 
 	CVector3 moveDir;
-	if (GetKeyInput('W')) {
+	/*if (GetKeyInput('W')) {
 		moveDir += m_cam.GetFront();
 	}
 	if (GetKeyInput('S')) {
@@ -73,7 +74,7 @@ void CDeathHotoke::Update() {
 	}
 	if (GetKeyInput('D')) {
 		moveDir += m_cam.GetLeft()*-1.0f;
-	}	
+	}*/	
 	moveDir.y = 0.0f;
 	moveDir.Normalize();
 	if (GetKeyInput(VK_LSHIFT)) {
@@ -93,7 +94,7 @@ void CDeathHotoke::Update() {
 	for (auto& model : m_model) {
 		model.SetPos(m_pos);
 	}
-	m_cam.SetPos(m_pos);
+	//m_cam.SetPos(m_pos);
 
 	//îªíËÇÃçXêV
 	m_col.SetPosition(m_pos);

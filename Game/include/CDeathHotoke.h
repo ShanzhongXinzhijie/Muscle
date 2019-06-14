@@ -1,5 +1,4 @@
 #pragma once
-#include"CPlayerCamera.h"
 
 class CDeathHotoke :
 	public IGameObject
@@ -16,7 +15,6 @@ public:
 private:
 	GameObj::CSkinModelRender m_model[5];
 	AnimationClip m_animationClip[2];
-	CPlayerCamera m_cam;
 
 	SuicideObj::CCollisionObj m_col;
 
