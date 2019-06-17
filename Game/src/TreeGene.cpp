@@ -10,10 +10,10 @@ Tree::Tree(int id, const CVector3& pos, const CQuaternion& rot) {
 	m_rot = rot;
 
 	//‹ßŒiƒ‚ƒfƒ‹
-	m_model.Init(m_sInstancingMax, L"Resource/modelData/kiZ.cmo");
+	m_model.Init(m_sInstancingMax, L"Resource/modelData/midtreebig3.cmo");
 	m_model.SetPos(m_pos);
 	//m_model.SetRot(m_rot);
-	//m_model.SetScale({ 50.75f,51.0f,50.75f });
+	m_model.SetScale(0.1f);
 	m_model.GetInstancingModel()->GetModelRender().GetSkinModel().FindMaterialSetting(
 		[&](MaterialSetting* me) {
 			//me->SetAlbedoTexture(srv);
@@ -23,9 +23,9 @@ Tree::Tree(int id, const CVector3& pos, const CQuaternion& rot) {
 	m_model.SetIsDraw(false);
 
 	//‰“Œiƒ‚ƒfƒ‹
-	m_imposter.Init(L"Resource/modelData/kiZ.cmo", { 2048*4, 2048*4 }, { 35,35 }, m_sInstancingMax);
+	m_imposter.Init(L"Resource/modelData/midtreebig3.cmo", { 2048*4, 2048*4 }, { 35,35 }, m_sInstancingMax);
 	m_imposter.SetPos(m_pos);
-	//m_imposter.SetScale({ 0.75f,1.0f,0.75f });
+	m_imposter.SetScale(0.1f);
 	m_imposter.SetIsDraw(false);
 
 	//“–‚½‚è”»’è

@@ -66,6 +66,7 @@
     <MeshContentTask Include="Asset\modelData\knight.FBX" />
     <MeshContentTask Include="Asset\modelData\SizeM\city.FBX" />
     <MeshContentTask Include="Asset\modelData\tikei.fbx" />
+    <MeshContentTask Include="Asset\modelData\Tree\midtreebig3.fbx" />
   </ItemGroup>
   <ItemGroup>
     <ImageContentTask Include="Asset\modelData\n_land.png">
