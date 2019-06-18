@@ -53,7 +53,7 @@ Shibuya::Shibuya()
 	//木々
 	//float area_min = -8000.0f - 500.0f, area_max = -8000.0f + 500.0f;
 	//m_treeGene.Generate({ area_min,-70.0f*500.0f,-500.0f }, { area_max,70.0f*50.0f,500.0f }, 500);
-	m_treeGene.Generate({ -70.0f*50.0f,-70.0f*50.0f,-70.0f*50.0f }, { 70.0f*50.0f,70.0f*50.0f,70.0f*50.0f }, 4000);
+	m_treeGene.Generate({ -70.0f*50.0f*0.5f,-70.0f*50.0f,-70.0f*50.0f*0.5f }, { 70.0f*50.0f*0.5f,70.0f*50.0f,70.0f*50.0f*0.5f }, 4000);
 
 	//シャドウマップ
 	//m_shadowmap.Init(3,//分割数

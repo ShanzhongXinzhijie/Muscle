@@ -9,8 +9,8 @@ public:
 		m_camera.SetViewAngleDeg(m_angle);
 		m_camera.SetNear(10.0f);
 		m_camera.SetFar(10000.0f);
-		m_camera.SetPos(CVector3::AxisY()*1500.0f + CVector3::AxisZ()*4000.0f);
-		m_camera.SetTarget(CVector3::AxisY()*500.0f);
+		m_camera.SetPos(CVector3::AxisY()*500.0f + CVector3::AxisZ()*1500.0f);
+		m_camera.SetTarget(CVector3::AxisY()*1500.0f);
 
 		//ƒƒCƒ“ƒJƒƒ‰‚Éİ’è
 		SetMainCamera(&m_camera);
