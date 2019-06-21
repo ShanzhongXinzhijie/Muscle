@@ -113,7 +113,9 @@ void Tree::PostLoopUpdate() {
 		d = left.Dot(m_pos - GetMainCamera()->GetPos());
 		if (d > -frustum.x && d < frustum.x) {
 
-			d = GetMainCamera()->GetUp().Dot(m_pos - GetMainCamera()->GetPos());
+			CVector3 up; up.Cross(GetMainCamera()->GetFront(), left);
+
+			d = up.Dot(m_pos - GetMainCamera()->GetPos());
 			if (d > -frustum.y && d < frustum.y) {
 				isDraw = true;
 			}

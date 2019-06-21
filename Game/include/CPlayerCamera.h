@@ -42,6 +42,29 @@ public:
 		//	m_camera.SetUp(up);
 		//}
 
+		CVector3 moveDir = m_camera.GetPos();
+		if (GetKeyInput('W')) {
+			moveDir.z += 10.0f;
+		}
+		if (GetKeyInput('S')) {
+			moveDir.z += -1.0f*10.0f;
+		}
+		if (GetKeyInput('A')) {
+			moveDir.x += -1.0f*10.0f;
+		}
+		if (GetKeyInput('D')) {
+			moveDir.x +=10.0f;
+		}
+		if (GetKeyInput(VK_SPACE)) {
+			moveDir.y += 2.0f*10.0f;
+		}
+		if (GetKeyInput('C')) {
+			moveDir.y -= 2.0f*10.0f;
+		}
+		m_camera.SetPos(moveDir);
+		m_camera.SetTarget(m_camera.GetPos()- CVector3::AxisX()*1500.0f - CVector3::AxisZ()*1500.0f);//+CVector3::AxisY()*1000.0f
+		m_camera.SetUp(CVector3::AxisY());
+
 		/*if (GetAsyncKeyState('R')) {
 			m_camera.RotationCamera({ 0.15f,0.0f });
 		}
