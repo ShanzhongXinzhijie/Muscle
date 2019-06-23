@@ -13,11 +13,11 @@ Tree::Tree(int id, const CVector3& pos, const CQuaternion& rot) {
 	m_model.Init(m_sInstancingMax, L"Resource/modelData/tree_tall.cmo");
 	m_model.SetPos(m_pos);
 	//m_model.SetRot(m_rot);
-	//m_model.SetScale(0.1f);
+	m_model.SetScale(0.4f);
 	m_model.GetInstancingModel()->GetModelRender().GetSkinModel().FindMaterialSetting(
 		[&](MaterialSetting* me) {
 			//me->SetAlbedoTexture(srv);
-			me->SetIsUseTexZShader(true); 
+			me->SetIsUseTexZShader(true); //TODO 葉にのみ適用
 		}
 	);
 	m_model.SetIsDraw(false);
@@ -25,7 +25,7 @@ Tree::Tree(int id, const CVector3& pos, const CQuaternion& rot) {
 	//遠景モデル
 	m_imposter.Init(L"Resource/modelData/tree_tall.cmo", { 2048*4, 2048*4 }, { 35,35 }, m_sInstancingMax);
 	m_imposter.SetPos(m_pos);
-	//m_imposter.SetScale(0.1f);
+	m_imposter.SetScale(0.4f);
 	m_imposter.SetIsDraw(false);
 
 	//当たり判定

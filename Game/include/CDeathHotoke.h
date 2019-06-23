@@ -11,6 +11,7 @@ public:
 	void Update()override;
 
 	const CVector3& GetPos()const { return m_pos; }
+	void SetPos(const CVector3& pos) { m_pos = pos; }
 
 private:
 	GameObj::CSkinModelRender m_model[5];

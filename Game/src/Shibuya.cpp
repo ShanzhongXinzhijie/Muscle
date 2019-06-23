@@ -28,7 +28,7 @@ Shibuya::Shibuya()
 			mat->SetNormalTexture(normaltex);
 			mat->SetAlbedoTexture(tex);
 			mat->SetTriPlanarMappingPS();
-			//mat->SetTriPlanarMappingUVScale(0.01f);
+			mat->SetTriPlanarMappingUVScale(0.02f);
 		}
 	);
 
@@ -64,13 +64,13 @@ Shibuya::Shibuya()
 	//m_shadowmap.SetFar(20000.0f);
 
 	//ビルボテスト
-	m_billboard.Init(L"Resource/spriteData/test.png");
+	/*m_billboard.Init(L"Resource/spriteData/test.png");
 	m_billboard.SetPos(CVector3::Up()*1000.0f);
 	m_billboard.SetScale(100.0f);
 
 	m_billboard2.Init(L"Resource/spriteData/test.png",256);
 	m_billboard2.SetPos(CVector3::Up()*1200.0f);
-	m_billboard2.SetScale(50.0f);
+	m_billboard2.SetScale(50.0f);*/
 
 	m_imp.Init(L"Resource/modelData/knight.cmo", { 2048*2,2048*2 }, { 19,19 },256);
 	m_imp.SetPos(CVector3::Up()*1500.0f+ CVector3::AxisX()*300.0f);

@@ -21,49 +21,26 @@ public:
 		MouseCursor().SetShowMouseCursor(false);
 	}
 	void Update()override {
-		//if (!m_lock) {
-		//	//マウスカーソルの動きに連動してカメラ回転
-		//	CVector2 mousemove = MouseCursor().GetMouseMove();
-		//	mousemove.x *= m_sensi.x; mousemove.y *= m_sensi.y;
-		//	//m_camera.RotationCamera(mousemove);
+		if (!m_lock) {
+			//マウスカーソルの動きに連動してカメラ回転
+			CVector2 mousemove = MouseCursor().GetMouseMove();
+			m_rot.y += mousemove.x*m_sensi.x / CMath::PI; m_rot.x -= mousemove.y *m_sensi.y / CMath::PI;
+		}
 
-		//	CVector3 up = m_camera.GetUp(), toTarget = m_camera.GetTarget() - m_camera.GetPos();
+		CVector3 up = CVector3::AxisY(), toTarget = m_target - m_pos;
 
-		//	CQuaternion cq;
-		//	cq.SetRotation(CVector3::AxisX(), mousemove.y);
-		//	cq.Multiply(toTarget);
-		//	cq.Multiply(up);
+		CQuaternion cq;
+		cq.SetRotation(CVector3::AxisX(), m_rot.x);
+		cq.Multiply(toTarget);
+		cq.Multiply(up);
 
-		//	cq.SetRotation(CVector3::AxisY(), mousemove.x);
-		//	cq.Multiply(toTarget);
-		//	cq.Multiply(up);
+		cq.SetRotation(CVector3::AxisY(), m_rot.y);
+		cq.Multiply(toTarget);
+		cq.Multiply(up);
 
-		//	m_camera.SetTarget(m_camera.GetPos() + toTarget);
-		//	m_camera.SetUp(up);
-		//}
-
-		CVector3 moveDir = m_camera.GetPos();
-		if (GetKeyInput('W')) {
-			moveDir.z += 10.0f;
-		}
-		if (GetKeyInput('S')) {
-			moveDir.z += -1.0f*10.0f;
-		}
-		if (GetKeyInput('A')) {
-			moveDir.x += -1.0f*10.0f;
-		}
-		if (GetKeyInput('D')) {
-			moveDir.x +=10.0f;
-		}
-		if (GetKeyInput(VK_SPACE)) {
-			moveDir.y += 2.0f*10.0f;
-		}
-		if (GetKeyInput('C')) {
-			moveDir.y -= 2.0f*10.0f;
-		}
-		m_camera.SetPos(moveDir);
-		m_camera.SetTarget(m_camera.GetPos()- CVector3::AxisX()*1500.0f - CVector3::AxisZ()*1500.0f);//+CVector3::AxisY()*1000.0f
-		m_camera.SetUp(CVector3::AxisY());
+		m_camera.SetPos(m_pos);
+		m_camera.SetTarget(m_camera.GetPos() + toTarget);
+		m_camera.SetUp(up);
 
 		/*if (GetAsyncKeyState('R')) {
 			m_camera.RotationCamera({ 0.15f,0.0f });
@@ -115,10 +92,17 @@ public:
 		return CVector3::GetCross(m_camera.GetFront(), m_camera.GetUp());
 	}*/
 
+	void SetPos(const CVector3& pos) { m_pos = pos; }
+	void SetTarget(const CVector3& target) { m_target = target; }
+	
+
 private:
 	GameObj::PerspectiveCamera m_camera;
+	CVector3 m_rot;
 	CVector2 m_sensi = { 4.0f*(1.0f/1280.0f),-4.0f*(1.0f / 1280.0f) };
 	bool m_lock = false;
 	float m_angle = 24.0f;
+
+	CVector3 m_pos, m_target;
 };
 
