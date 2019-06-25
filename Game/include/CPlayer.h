@@ -15,6 +15,7 @@ private:
 	CDeathHotoke m_hotoke;
 	CPlayerCamera m_cam;
 
+	AnimationClip m_anim;
 	GameObj::CSkinModelRender m_human;
 };
 

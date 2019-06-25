@@ -14,8 +14,10 @@ CPlayer::~CPlayer()
 bool CPlayer::Start() {
 	m_cam.SetPos(CVector3::AxisY()*900.0f);
 	
-	//m_human.Init(L"Resource/modelData/human.cmo", enFbxUpAxisY);
-	m_human.SetPos(CVector3::AxisY()*800.0f);
+	m_anim.Load(L"Resource/animation/human/stand.tka");
+	m_human.Init(L"Resource/modelData/human.cmo", &m_anim, 1);
+	m_human.SetPos(CVector3::AxisY()*900.0f + CVector3::AxisX()*50.0f + CVector3::AxisZ()*100.0f);
+	m_human.SetScale(10.0f);
 
 	return true;
 }
@@ -52,6 +54,10 @@ void CPlayer::Update() {
 	}
 	m_hotoke.SetPos(pos);
 
-	//m_cam.SetPos(m_hotoke.GetPos() + CVector3(100.0f, -50.0f, -500.0f));
+	m_cam.SetPos(m_hotoke.GetPos() + CVector3(100.0f, -50.0f, -500.0f));
 	m_cam.SetTarget(m_hotoke.GetPos() + CVector3(100.0f, 0.0f, 0.0f));
+
+	if (GetKeyInput('F')) {
+		m_cam.SetPos(m_human.GetBonePos(m_human.FindBoneID(L"Head")));
+	}
 }

@@ -9,11 +9,13 @@ Tree::Tree(int id, const CVector3& pos, const CQuaternion& rot) {
 	m_pos = pos;
 	m_rot = rot;
 
+	float sizeScale = 0.8f*CMath::RandomZeroToOne() > 0.5f ? 1.0f : 1.5f;
+
 	//‹ßŒiƒ‚ƒfƒ‹
 	m_model.Init(m_sInstancingMax, L"Resource/modelData/tree_tall.cmo");
 	m_model.SetPos(m_pos);
 	//m_model.SetRot(m_rot);
-	m_model.SetScale(0.8f);
+	m_model.SetScale(sizeScale);
 	m_model.GetInstancingModel()->GetModelRender().GetSkinModel().FindMaterialSetting(
 		[&](MaterialSetting* me) {
 			//me->SetAlbedoTexture(srv);
@@ -25,7 +27,7 @@ Tree::Tree(int id, const CVector3& pos, const CQuaternion& rot) {
 	//‰“Œiƒ‚ƒfƒ‹
 	m_imposter.Init(L"Resource/modelData/tree_tall.cmo", { 2048*4, 2048*4 }, { 35,35 }, m_sInstancingMax);
 	m_imposter.SetPos(m_pos);
-	m_imposter.SetScale(0.8f);
+	m_imposter.SetScale(sizeScale);
 	m_imposter.SetIsDraw(false);
 
 	//“–‚½‚è”»’è

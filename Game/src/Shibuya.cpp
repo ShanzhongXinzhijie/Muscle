@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Shibuya.h"
-
+#include "DemolisherWeapon/Graphic/FrustumCulling.h"
 
 Shibuya::Shibuya()
 {
@@ -42,10 +42,12 @@ Shibuya::Shibuya()
 	m_knight.SetPos(CVector3::AxisY()*850.0f);
 	m_knight.SetScale(0.4f);
 	//m_knight.GetSkinModel().FindMaterial([](ModelEffect* mat) {mat->SetEmissive(4.0f); });
-	
+	//m_knight.GetSkinModel().SetIsFrustumCulling(true);
+
 	m_dinosaur.Init(L"Resource/modelData/dinosaur.cmo");
 	m_dinosaur.SetPos(CVector3::AxisY()*900.0f+ CVector3::AxisX()*50.0f);
 	m_dinosaur.SetScale(CVector3::One()*0.09f);
+	m_dinosaur.GetSkinModel().SetIsFrustumCulling(true);
 
 	//空
 	m_sky.Init(L"Resource/cubemap/cube2.dds");
@@ -53,7 +55,7 @@ Shibuya::Shibuya()
 	//木々
 	//float area_min = -8000.0f - 500.0f, area_max = -8000.0f + 500.0f;
 	//m_treeGene.Generate({ area_min,-70.0f*500.0f,-500.0f }, { area_max,70.0f*50.0f,500.0f }, 500);
-	m_treeGene.Generate({ -70.0f*50.0f*0.5f,-70.0f*50.0f,-70.0f*50.0f*0.5f }, { 70.0f*50.0f*0.5f,70.0f*50.0f,70.0f*50.0f*0.5f }, 4000);
+	m_treeGene.Generate({ -70.0f*50.0f,-70.0f*50.0f,-70.0f*50.0f }, { 70.0f*50.0f,70.0f*50.0f,70.0f*50.0f }, 4000);
 
 	//シャドウマップ
 	//m_shadowmap.Init(3,//分割数
@@ -72,13 +74,13 @@ Shibuya::Shibuya()
 	m_billboard2.SetPos(CVector3::Up()*1200.0f);
 	m_billboard2.SetScale(50.0f);*/
 
-	m_imp.Init(L"Resource/modelData/knight.cmo", { 2048*2,2048*2 }, { 19,19 },256);
+	/*m_imp.Init(L"Resource/modelData/knight.cmo", { 2048*2,2048*2 }, { 19,19 },256);
 	m_imp.SetPos(CVector3::Up()*1500.0f+ CVector3::AxisX()*300.0f);
 	m_imp.SetScale(0.4f*10.0f);
 
 	m_imp2.Init(L"Resource/modelData/knight.cmo", { 2048 * 2,2048 * 2 }, { 19,19 });
 	m_imp2.SetPos(CVector3::Up()*1000.0f + CVector3::AxisX()*300.0f);
-	m_imp2.SetScale(0.4f*10.0f);
+	m_imp2.SetScale(0.4f*10.0f);*/
 
 	m_knight.SetPos(CVector3::AxisY()*1500.0f);
 	m_knight.SetScale(0.4f*10.0f);
@@ -93,11 +95,15 @@ void Shibuya::PostLoopUpdate() {
 	DrawLine(CVector3::Zero(), CVector3::AxisX()*1000.0f, { 1.0f,0.0f,0.0f,1.0f });
 	DrawLine(CVector3::Zero(), CVector3::AxisY()*1000.0f, { 0.0f,1.0f,0.0f,1.0f });
 	DrawLine(CVector3::Zero(), CVector3::AxisZ()*1000.0f, { 0.0f,0.0f,1.0f,1.0f });
-
+	
 	/*
 	//視錐台
 	GameObj::ICamera* Icam = GetMainCamera();
 	GameObj::PerspectiveCamera cam(false);
+	cam.SetPos({ 100.0f,1500.0f,-100.0f });
+	cam.SetTarget({ 0.0f,1500.0f,0.0f });
+	cam.SetFar(150.0f);
+	cam.UpdateMatrix();
 	SetMainCamera(&cam);
 
 	//視錐台の各方向
@@ -170,9 +176,9 @@ void Shibuya::PostLoopUpdate() {
 			c = nearPlaneCenter + vX * nearPlaneHalfWidth + vY * nearPlaneHalfHeight;
 		}
 		if (i == 3) {//左
-			a = farPlaneCenter - vX * farPlaneHalfWidth + vY * farPlaneHalfHeight;
-			b = farPlaneCenter - vX * farPlaneHalfWidth - vY * farPlaneHalfHeight;
-			c = nearPlaneCenter - vX * nearPlaneHalfWidth + vY * nearPlaneHalfHeight;
+			a = farPlaneCenter - vX * farPlaneHalfWidth - vY * farPlaneHalfHeight;
+			b = farPlaneCenter - vX * farPlaneHalfWidth + vY * farPlaneHalfHeight;
+			c = nearPlaneCenter - vX * nearPlaneHalfWidth - vY * nearPlaneHalfHeight;
 		}
 		if (i == 4) {//下
 			a = farPlaneCenter + vX * farPlaneHalfWidth + vY * farPlaneHalfHeight;
@@ -189,11 +195,20 @@ void Shibuya::PostLoopUpdate() {
 		planes[i][1] = a + b + c;//平面上の一点
 		planes[i][1] /= 3.0f;
 
-		DrawLine(planes[i][1], planes[i][1]+ planes[i][0]*100.0f, { 0.0f,1.0f,1.0f,1.0f });
-		DrawLine(planes[i][1] + planes[i][0] * 100.0f + CVector3::AxisX()*10.0f, planes[i][1] + planes[i][0] * 100.0f - CVector3::AxisX()*10.0f, { 0.0f,0.0f,1.0f,1.0f });
-		DrawLine(planes[i][1] + planes[i][0] * 100.0f + CVector3::AxisY()*10.0f, planes[i][1] + planes[i][0] * 100.0f - CVector3::AxisY()*10.0f, { 0.0f,0.0f,1.0f,1.0f });
-		DrawLine(planes[i][1] + planes[i][0] * 100.0f + CVector3::AxisZ()*10.0f, planes[i][1] + planes[i][0] * 100.0f - CVector3::AxisZ()*10.0f, { 0.0f,0.0f,1.0f,1.0f });
+		DrawLine(planes[i][1], planes[i][1]+ planes[i][0]*50.0f, { 0.0f,1.0f,1.0f,1.0f });
+		
+		DrawLine(planes[i][1] + planes[i][0] * 50.0f + CVector3::AxisX()*10.0f, planes[i][1] + planes[i][0] * 50.0f - CVector3::AxisX()*10.0f, { 0.0f,0.0f,1.0f,1.0f });
+		DrawLine(planes[i][1] + planes[i][0] * 50.0f + CVector3::AxisY()*10.0f, planes[i][1] + planes[i][0] * 50.0f - CVector3::AxisY()*10.0f, { 0.0f,0.0f,1.0f,1.0f });
+		DrawLine(planes[i][1] + planes[i][0] * 50.0f + CVector3::AxisZ()*10.0f, planes[i][1] + planes[i][0] * 50.0f - CVector3::AxisZ()*10.0f, { 0.0f,0.0f,1.0f,1.0f });
+		
+		DrawLine(planes[i][1] + CVector3::AxisX()*5.0f, planes[i][1] - CVector3::AxisX()*5.0f, { 1.0f,0.0f,1.0f,1.0f });
+		DrawLine(planes[i][1] + CVector3::AxisY()*5.0f, planes[i][1] - CVector3::AxisY()*5.0f, { 1.0f,0.0f,1.0f,1.0f });
+		DrawLine(planes[i][1] + CVector3::AxisZ()*5.0f, planes[i][1] - CVector3::AxisZ()*5.0f, { 1.0f,0.0f,1.0f,1.0f });
 	}
+
+	//Box
+	CVector3 aabb[2] = { {-100.0f,-100.0f + 1500.0f,-100.0f},{100.0f,100.0f + 1500.0f,100.0f} };
+	DrawLine(aabb[0], aabb[1], { 1.0f,1.0f*FrustumCulling::AABBTest(GetMainCamera(), aabb[0], aabb[1]),0.0f,1.0f });
 
 	SetMainCamera(Icam);
 	*/
