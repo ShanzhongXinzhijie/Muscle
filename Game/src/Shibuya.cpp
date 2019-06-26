@@ -38,16 +38,14 @@ Shibuya::Shibuya()
 	}
 	normaltex->Release();
 
-	m_knight.Init(L"Resource/modelData/knight.cmo");
-	m_knight.SetPos(CVector3::AxisY()*850.0f);
-	m_knight.SetScale(0.4f);
+	//m_knight.Init(L"Resource/modelData/knight.cmo");
+	//m_knight.SetPos(CVector3::AxisY()*850.0f);
+	//m_knight.SetScale(0.4f);
 	//m_knight.GetSkinModel().FindMaterial([](ModelEffect* mat) {mat->SetEmissive(4.0f); });
-	//m_knight.GetSkinModel().SetIsFrustumCulling(true);
-
+	
 	m_dinosaur.Init(L"Resource/modelData/dinosaur.cmo");
 	m_dinosaur.SetPos(CVector3::AxisY()*900.0f+ CVector3::AxisX()*50.0f);
 	m_dinosaur.SetScale(CVector3::One()*0.09f);
-	m_dinosaur.GetSkinModel().SetIsFrustumCulling(true);
 
 	//空
 	m_sky.Init(L"Resource/cubemap/cube2.dds");
@@ -66,24 +64,24 @@ Shibuya::Shibuya()
 	//m_shadowmap.SetFar(20000.0f);
 
 	//ビルボテスト
-	/*m_billboard.Init(L"Resource/spriteData/test.png");
+	m_billboard.Init(L"Resource/spriteData/test.png");
 	m_billboard.SetPos(CVector3::Up()*1000.0f);
 	m_billboard.SetScale(100.0f);
 
 	m_billboard2.Init(L"Resource/spriteData/test.png",256);
 	m_billboard2.SetPos(CVector3::Up()*1200.0f);
-	m_billboard2.SetScale(50.0f);*/
+	m_billboard2.SetScale(50.0f);
 
 	/*m_imp.Init(L"Resource/modelData/knight.cmo", { 2048*2,2048*2 }, { 19,19 },256);
 	m_imp.SetPos(CVector3::Up()*1500.0f+ CVector3::AxisX()*300.0f);
-	m_imp.SetScale(0.4f*10.0f);
+	m_imp.SetScale(0.4f*10.0f);*/
 
 	m_imp2.Init(L"Resource/modelData/knight.cmo", { 2048 * 2,2048 * 2 }, { 19,19 });
 	m_imp2.SetPos(CVector3::Up()*1000.0f + CVector3::AxisX()*300.0f);
-	m_imp2.SetScale(0.4f*10.0f);*/
+	m_imp2.SetScale(0.4f*10.0f);
 
-	m_knight.SetPos(CVector3::AxisY()*1500.0f);
-	m_knight.SetScale(0.4f*10.0f);
+	//m_knight.SetPos(CVector3::AxisY()*1500.0f);
+	//m_knight.SetScale(0.4f*10.0f);
 }
 
 Shibuya::~Shibuya()

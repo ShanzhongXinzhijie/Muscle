@@ -105,7 +105,8 @@ void Tree::PostLoopUpdate() {
 
 	bool isDraw = false;
 	
-	//TODO 視錐台カリング
+	/*
+	//視錐台カリング
 	float d = GetMainCamera()->GetFront().Dot(m_pos - GetMainCamera()->GetPos());
 	if (d > GetMainCamera()->GetNear() && d < GetMainCamera()->GetFar()) {//nearとfarの間か
 		CVector2 frustum;
@@ -124,6 +125,8 @@ void Tree::PostLoopUpdate() {
 		}
 	}
 	if (GetKeyInput(VK_TAB)) { isDraw = true; }
+	*/
+	isDraw = true;
 
 	if (isDraw) {
 		if (distance < nearDistance) {
