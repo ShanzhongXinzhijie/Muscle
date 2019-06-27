@@ -38,7 +38,7 @@ Shibuya::Shibuya()
 	}
 	normaltex->Release();
 
-	//m_knight.Init(L"Resource/modelData/knight.cmo");
+	m_knight.Init(L"Resource/modelData/knight.cmo");
 	//m_knight.SetPos(CVector3::AxisY()*850.0f);
 	//m_knight.SetScale(0.4f);
 	//m_knight.GetSkinModel().FindMaterial([](ModelEffect* mat) {mat->SetEmissive(4.0f); });
@@ -79,9 +79,11 @@ Shibuya::Shibuya()
 	m_imp2.Init(L"Resource/modelData/knight.cmo", { 2048 * 2,2048 * 2 }, { 19,19 });
 	m_imp2.SetPos(CVector3::Up()*1000.0f + CVector3::AxisX()*300.0f);
 	m_imp2.SetScale(0.4f*10.0f);
+	m_imp2.SetRotY(CMath::DegToRad(90.0f));
 
-	//m_knight.SetPos(CVector3::AxisY()*1500.0f);
-	//m_knight.SetScale(0.4f*10.0f);
+	m_knight.SetPos(CVector3::AxisY()*1500.0f);
+	m_knight.SetScale(0.4f*10.0f);
+	m_knight.SetRot(CQuaternion(CVector3::AxisY(), CMath::DegToRad(90.0f)));
 }
 
 Shibuya::~Shibuya()

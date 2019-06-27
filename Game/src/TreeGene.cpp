@@ -11,10 +11,12 @@ Tree::Tree(int id, const CVector3& pos, const CQuaternion& rot) {
 
 	float sizeScale = 0.8f*CMath::RandomZeroToOne() > 0.5f ? 1.0f : 1.5f;
 
+	float radY = CMath::PI2*CMath::RandomZeroToOne();
+
 	//‹ßŒiƒ‚ƒfƒ‹
 	m_model.Init(m_sInstancingMax, L"Resource/modelData/tree_tall.cmo");
 	m_model.SetPos(m_pos);
-	//m_model.SetRot(m_rot);
+	m_model.SetRot(CQuaternion(CVector3::AxisY(),radY));
 	m_model.SetScale(sizeScale);
 	m_model.GetInstancingModel()->GetModelRender().GetSkinModel().FindMaterialSetting(
 		[&](MaterialSetting* me) {
@@ -27,6 +29,7 @@ Tree::Tree(int id, const CVector3& pos, const CQuaternion& rot) {
 	//‰“Œiƒ‚ƒfƒ‹
 	m_imposter.Init(L"Resource/modelData/tree_tall.cmo", { 2048*4, 2048*4 }, { 35,35 }, m_sInstancingMax);
 	m_imposter.SetPos(m_pos);
+	m_imposter.SetRotY(radY);
 	m_imposter.SetScale(sizeScale);
 	m_imposter.SetIsDraw(false);
 
@@ -129,7 +132,7 @@ void Tree::PostLoopUpdate() {
 	isDraw = true;
 
 	if (isDraw) {
-		if (distance < nearDistance) {
+		if (GetKeyInput(VK_TAB) || distance < nearDistance) {
 			m_model.SetIsDraw(true);
 			m_imposter.SetIsDraw(false);
 			//m_col.SetEnable(true);

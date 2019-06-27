@@ -155,15 +155,15 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LibraryPath>$(ProjectDir)/../../DemolisherWeapon/DemolisherWeapon/lib/$(Platform)\$(Configuration)\;$(LibraryPath)</LibraryPath>
-    <IncludePath>..\..\DemolisherWeapon\DemolisherWeapon\bulletPhysics\src;..\..\DemolisherWeapon;..\..;..\..\DemolisherWeapon\DemolisherWeapon\EffekseerRuntime140\Compiled\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);..\..\DemolisherWeapon\DemolisherWeapon\bulletPhysics\src;..\..\DemolisherWeapon;..\..;..\..\DemolisherWeapon\DemolisherWeapon\EffekseerRuntime140\Compiled\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LibraryPath>$(ProjectDir)/../../DemolisherWeapon/DemolisherWeapon/lib/$(Platform)\$(Configuration)\;$(LibraryPath)</LibraryPath>
-    <IncludePath>..\..\DemolisherWeapon\DemolisherWeapon\bulletPhysics\src;..\..\DemolisherWeapon;..\..;..\..\DemolisherWeapon\DemolisherWeapon\EffekseerRuntime140\Compiled\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);..\..\DemolisherWeapon\DemolisherWeapon\bulletPhysics\src;..\..\DemolisherWeapon;..\..;..\..\DemolisherWeapon\DemolisherWeapon\EffekseerRuntime140\Compiled\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Preview|x64'">
     <LibraryPath>$(ProjectDir)/../../DemolisherWeapon/DemolisherWeapon/lib/$(Platform)\$(Configuration)\;$(LibraryPath)</LibraryPath>
-    <IncludePath>..\..\DemolisherWeapon\DemolisherWeapon\bulletPhysics\src;..\..\DemolisherWeapon;..\..;..\..\DemolisherWeapon\DemolisherWeapon\EffekseerRuntime140\Compiled\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);..\..\DemolisherWeapon\DemolisherWeapon\bulletPhysics\src;..\..\DemolisherWeapon;..\..;..\..\DemolisherWeapon\DemolisherWeapon\EffekseerRuntime140\Compiled\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>.\Include;..\..\DemolisherWeapon\DemolisherWeapon\bulletPhysics\src;..\..\DemolisherWeapon;..\..;$(IncludePath)</IncludePath>
