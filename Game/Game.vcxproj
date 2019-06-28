@@ -27,8 +27,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\IGamePad.cpp" />
+    <ClCompile Include="src\BirdWing.cpp" />
     <ClCompile Include="src\CPlayerController.cpp" />
-    <ClCompile Include="src\CBodyPart.cpp" />
+    <ClCompile Include="src\IBodyPart.cpp" />
     <ClCompile Include="src\CDeathHotoke.cpp" />
     <ClCompile Include="src\CPlayer.cpp" />
     <ClCompile Include="src\Game.cpp" />
@@ -42,8 +44,10 @@
     <ClCompile Include="src\TreeGene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\IGamePad.h" />
+    <ClInclude Include="include\BirdWing.h" />
     <ClInclude Include="include\CPlayerController.h" />
-    <ClInclude Include="include\CBodyPart.h" />
+    <ClInclude Include="include\IBodyPart.h" />
     <ClInclude Include="include\CDeathHotoke.h" />
     <ClInclude Include="include\CPlayer.h" />
     <ClInclude Include="include\CPlayerCamera.h" />

@@ -1,16 +1,6 @@
 #include "stdafx.h"
 #include "CPlayer.h"
 
-
-CPlayer::CPlayer()
-{
-}
-
-
-CPlayer::~CPlayer()
-{
-}
-
 bool CPlayer::Start() {	
 	m_anim.Load(L"Resource/animation/human/stand.tka");
 	m_human.Init(L"Resource/modelData/human.cmo", &m_anim, 1);
