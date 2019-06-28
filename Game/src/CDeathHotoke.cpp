@@ -22,7 +22,7 @@ bool CDeathHotoke::Start() {
 	const float modelScale = 0.0188f*2.0f;
 	for (auto& model : m_model) {
 		model.SetScale(modelScale);
-		model.SetIsDrawBoundingBox(true);
+		//model.SetIsDrawBoundingBox(true);
 	}
 	m_pos = CVector3::AxisY()*1000.0f;
 	m_pos.z += 200.0f;

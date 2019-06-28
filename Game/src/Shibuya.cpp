@@ -93,15 +93,16 @@ Shibuya::~Shibuya()
 void Shibuya::PostLoopUpdate() {
 	//é≤
 	CVector3 right; right.Cross(CVector3::AxisY(), CVector3::AxisZ());//âEï˚å¸
-	DrawLine(CVector3::Zero(), right*1000.0f, { 1.0f,0.0f,0.0f,1.0f });
-	DrawLine(CVector3::Zero(), CVector3::AxisZ().GetCross(right)*1000.0f, { 0.0f,1.0f,0.0f,1.0f });//è„ï˚å¸
-	DrawLine(CVector3::Zero(), CVector3::AxisZ()*1000.0f, { 0.0f,0.0f,1.0f,1.0f });
+	DrawLine(CVector3::Zero(), right*100.0f, { 1.0f,0.0f,0.0f,1.0f });
+	DrawLine(CVector3::Zero(), CVector3::AxisZ().GetCross(right)*100.0f, { 0.0f,1.0f,0.0f,1.0f });//è„ï˚å¸
+	DrawLine(CVector3::Zero(), CVector3::AxisZ()*100.0f, { 0.0f,0.0f,1.0f,1.0f });
 
 	//ÉrÉÖÅ[é≤0
+	/*
 	CVector3 pos = GetMainCamera()->GetPos() + GetMainCamera()->GetFront()*1000.0f;
 	DrawLine(pos, GetMainCamera()->GetLeft()*2000.0f + pos, { 1.0f,0.0f,0.0f,1.0f });
 	DrawLine(pos, GetMainCamera()->GetLeft().GetCross(GetMainCamera()->GetFront())*2000.0f + pos, { 0.0f,1.0f,0.0f,1.0f });
-	//DrawLine(CVector3::Zero(), CVector3::AxisZ()*1000.0f, { 0.0f,0.0f,1.0f,1.0f });
+	*/
 
 	/*
 	//éãêçë‰
