@@ -47,17 +47,17 @@ void CPlayer::Update() {
 		pos += moveDir * 10.0f;
 	}
 	if (GetKeyInput(VK_SPACE)) {
-		pos.y += 2.0f;
+		pos.y += 20.0f;
 	}
 	if (GetKeyInput('C')) {
-		pos.y -= 2.0f;
+		pos.y -= 20.0f;
 	}
 	m_hotoke.SetPos(pos);
 
 	m_cam.SetPos(m_hotoke.GetPos() + CVector3(100.0f, -50.0f, -500.0f));
 	m_cam.SetTarget(m_hotoke.GetPos() + CVector3(100.0f, 0.0f, 0.0f));
 
-	if (GetKeyInput('F')) {
+	if (!GetKeyInput('F')) {
 		m_cam.SetPos(m_human.GetBonePos(m_human.FindBoneID(L"Head")));
 	}
 }

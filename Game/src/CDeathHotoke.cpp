@@ -19,9 +19,10 @@ bool CDeathHotoke::Start() {
 	m_model[2].Init(L"Resource/modelData/fishhead.cmo");
 	m_model[3].Init(L"Resource/modelData/birdwing.cmo");
 	m_model[4].Init(L"Resource/modelData/kaniarm.cmo", &m_animationClip[1], 1);
-	const float modelScale = 0.0188f;
+	const float modelScale = 0.0188f*2.0f;
 	for (auto& model : m_model) {
 		model.SetScale(modelScale);
+		model.SetIsDrawBoundingBox(true);
 	}
 	m_pos = CVector3::AxisY()*1000.0f;
 	m_pos.z += 200.0f;

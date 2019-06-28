@@ -11,7 +11,7 @@ Tree::Tree(int id, const CVector3& pos, const CQuaternion& rot) {
 
 	float sizeScale = 0.8f*CMath::RandomZeroToOne() > 0.5f ? 1.0f : 1.5f;
 
-	float radY = CMath::PI2*CMath::RandomZeroToOne();
+	float radY = -CMath::PI2 + CMath::PI2*2.0f*CMath::RandomZeroToOne();
 
 	//‹ßŒiƒ‚ƒfƒ‹
 	m_model.Init(m_sInstancingMax, L"Resource/modelData/tree_tall.cmo");
@@ -27,7 +27,7 @@ Tree::Tree(int id, const CVector3& pos, const CQuaternion& rot) {
 	m_model.SetIsDraw(false);
 
 	//‰“Œiƒ‚ƒfƒ‹
-	m_imposter.Init(L"Resource/modelData/tree_tall.cmo", { 2048*4, 2048*4 }, { 35,35 }, m_sInstancingMax);
+	m_imposter.Init(L"Resource/modelData/tree_tall.cmo", { 2048*4, 2048*2 }, { 35,17 }, m_sInstancingMax);
 	m_imposter.SetPos(m_pos);
 	m_imposter.SetRotY(radY);
 	m_imposter.SetScale(sizeScale);
@@ -84,7 +84,7 @@ Tree::Tree(int id, const CVector3& pos, const CQuaternion& rot) {
 }
 
 void Tree::PostLoopUpdate() {
-	const float nearDistance = CMath::Square(1200.0f), farDistance = CMath::Square(2500.0f);
+	const float nearDistance = CMath::Square(1200.0f*2.0f), farDistance = CMath::Square(2500.0f);
 	const float distance = (m_pos - GetMainCamera()->GetPos()).LengthSq();
 
 	//if (distance > farDistance) {
