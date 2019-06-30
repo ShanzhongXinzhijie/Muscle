@@ -6,6 +6,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	//ゲームの初期化。
 	InitEngineParameter initparam;
 	
+	initparam.windowStyle = WS_POPUP;
 	initparam.screenWidth = 720;			//ウィンドウの幅
 	initparam.screenHeight = 720;			//ウィンドウの高さ
 	initparam.frameBufferWidth = 720;		//フレームバッファの幅。これが内部解像度。
