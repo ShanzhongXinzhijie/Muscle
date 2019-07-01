@@ -13,19 +13,20 @@ public:
 	void Update()override;
 	void PostRender()override;
 
-	const CVector3& GetPos()const { return m_pos; }
+	//セッター
 	void SetPos(const CVector3& pos) { m_pos = pos; }
+	void SetRot(const CQuaternion& rot) { m_rot = rot; }
 
+	//ゲッター
+	const CVector3& GetPos()const { return m_pos; }	
 	const CQuaternion& GetRot()const { return m_rot; }
 	const CVector3& GetScale()const { return m_scale; }
 
+	//パッドの取得
 	IGamePad* GetPad() { return m_ptrPad; }
 
 private:
-	GameObj::CSkinModelRender m_model[4];
-	AnimationClip m_animationClip[2];
-
-	SuicideObj::CCollisionObj m_col;
+	GameObj::CSkinModelRender m_coreModel;
 
 	//TRS
 	CVector3 m_pos, m_scale;
@@ -39,7 +40,7 @@ private:
 
 public:
 	enum enBodyParts {
-		enWing,
+		enWing, enLeg, enArm, enHead, enPartsNum, 
 	};
 };
 

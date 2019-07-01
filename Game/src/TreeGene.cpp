@@ -134,7 +134,7 @@ void Tree::PostLoopUpdate() {
 	if (isDraw) {
 		//TODO 描画数がmaxより低いとバグる
 		//なんか縦のサイズが変わる
-		if (!GetKeyInput(VK_TAB) && distance < nearDistance) {
+		if (GetKeyInput(VK_TAB) || distance < nearDistance) {
 			m_model.SetIsDraw(true);
 			m_imposter.SetIsDraw(false);
 			//m_col.SetEnable(true);
