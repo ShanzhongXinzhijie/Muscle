@@ -97,16 +97,15 @@ void BP_BirdWing::Update() {
 	if (m_spinCount <= 1) {
 		rot.SetRotation(CVector3::AxisY(), stick.x*yaw);
 	}
-	rot.Multiply(m_ptrCore->GetRot());
 
 	//ˆÚ“®
 	CVector3 move = CVector3(0.0f, 0.25f, 1.0f)*m_accel;
-	rot.Multiply(move);
+	m_ptrCore->GetRot().Multiply(move);
 
 	//V‚µ‚¢À•W‚ðÝ’è
-	m_ptrCore->SetPos(m_ptrCore->GetPos() + move);
+	m_ptrCore->AddMove(move);
 	//V‚µ‚¢‰ñ“]‚ðÝ’è
-	m_ptrCore->SetRot(rot);
+	m_ptrCore->AddRot(rot);
 }
 
 void BP_BirdWing::Draw2D() {

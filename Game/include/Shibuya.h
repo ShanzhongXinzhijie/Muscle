@@ -1,12 +1,12 @@
 #pragma once
 
 #include"TreeGene.h"
+#include"CDeathHotoke.h"
 
 class Shibuya : IGameObject
 {
 public:
 	Shibuya();
-	~Shibuya();
 
 	void PostLoopUpdate()override;
 
@@ -22,5 +22,7 @@ private:
 	GameObj::CSkinModelRender m_knight, m_dinosaur;
 	CBillboard m_billboard, m_billboard2;
 	CImposter m_imp, m_imp2;
+
+	//CDeathHotoke m_hotoke;
 };
 

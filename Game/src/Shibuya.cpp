@@ -86,10 +86,6 @@ Shibuya::Shibuya()
 	m_knight.SetRot(CQuaternion(CVector3::AxisY(), CMath::PI2));
 }
 
-Shibuya::~Shibuya()
-{
-}
-
 void Shibuya::PostLoopUpdate() {
 	//Ž²
 	CVector3 right; right.Cross(CVector3::AxisY(), CVector3::AxisZ());//‰E•ûŒü
