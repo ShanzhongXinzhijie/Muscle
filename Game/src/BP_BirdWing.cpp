@@ -19,6 +19,7 @@ void BP_BirdWing::InnerStart() {
 
 void BP_BirdWing::Update() {
 	CVector2 stick = m_ptrCore->GetPad()->GetStick(L);
+	float length = stick.LengthSq();
 	stick.Normalize();
 
 	//入力猶予切れ
@@ -28,7 +29,7 @@ void BP_BirdWing::Update() {
 		m_inputTimer = 0.0f; m_spinCount = 0; m_spinCountBefore = 0;
 	}
 
-	if (stick.LengthSq() > CMath::Square(0.5f)) {
+	if (length > CMath::Square(0.75f)) {
 		if (m_nextDirection == enDirNum) {
 			float angle = 10000.0f;
 			for (int i = 0; i < enDirNum; i++) {
@@ -82,6 +83,9 @@ void BP_BirdWing::Update() {
 
 	//TODO 一定時間の入力が必要
 	//ピッチ TODO
+	
+	//TODO 揚力発生
+	//押し込みでブレーキ
 
 	//ヨー
 	//旋回速度

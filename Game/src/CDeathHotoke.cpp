@@ -35,9 +35,11 @@ void CDeathHotoke::Update() {
 	//移動適応
 	m_pos += m_move;
 	m_rot = m_rotMove * m_rot;
-
+	//減速
 	m_move *= 0.5f;
 	m_rotMove.Slerp(0.5f, m_rotMove, CQuaternion::Identity());
+	//重力
+	m_move.y -= 1.0f;
 
 	//パーツのUpdate
 	for (auto& part : m_parts) {
