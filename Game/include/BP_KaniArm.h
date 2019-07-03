@@ -12,5 +12,8 @@ public:
 private:
 	AnimationClip m_initPose;
 
+	//エフェクト
+	CBillboard m_muzzleFlash;
+	Shader m_ps;
 };
 
