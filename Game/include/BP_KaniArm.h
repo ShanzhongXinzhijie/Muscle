@@ -14,6 +14,7 @@ private:
 
 	//エフェクト
 	CBillboard m_muzzleFlash;
+	Shader m_vs[2];
 	Shader m_ps;
 };
 
