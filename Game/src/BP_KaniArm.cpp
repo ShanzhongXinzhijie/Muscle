@@ -15,13 +15,13 @@ void BP_KaniArm::InnerStart() {
 	m_ikSetting[R] = m_model->GetSkinModel().GetSkeleton().CreateIK();
 	m_ikSetting[R]->tipBone = m_model->FindBone(L"Bone031");
 	m_ikSetting[R]->rootBone = m_model->FindBone(L"Bone026");
-	m_ikSetting[R]->iteration = 1;
+	m_ikSetting[R]->iteration = 3;
 	//m_ikSetting[R]->footIKRayEndOffset = 
 
 	m_ikSetting[L] = m_model->GetSkinModel().GetSkeleton().CreateIK();
 	m_ikSetting[L]->tipBone = m_model->FindBone(L"Bone031(mirrored)");
 	m_ikSetting[L]->rootBone = m_model->FindBone(L"Bone026(mirrored)");
-	m_ikSetting[L]->iteration = 1;
+	m_ikSetting[L]->iteration = 3;
 
 	//
 	m_muzzleBoneID[R] = m_model->FindBoneID(L"Bone031");
@@ -34,7 +34,7 @@ void BP_KaniArm::InnerStart() {
 	m_muzzleFlash.GetModel().SetIsShadowCaster(false);
 }
 
-void BP_KaniArm::Update() {
+void BP_KaniArm::PostUTRSUpdate() {
 	m_ikSetting[0]->targetPos = CVector3::Zero();
 	m_ikSetting[1]->targetPos = CVector3::Zero();
 
@@ -43,6 +43,15 @@ void BP_KaniArm::Update() {
 		m_muzzleFlash.SetIsDraw(true);
 		m_muzzleFlash.SetPos(m_model->GetBonePos(m_muzzleBoneID[L]));
 		m_muzzleFlash.SetScaleHoldAspectRatio(100.0f);
+
+		std::unique_ptr<CBillboard> billboard = std::make_unique<CBillboard>();
+		billboard->Init(L"Resource/spriteData/smoke.png");
+		//billboard->GetModel().InitPostDraw(PostDrawModelRender::enAlpha);
+		billboard->SetPos(m_model->GetBonePos(m_muzzleBoneID[L]));
+		billboard->SetScale(20.0f);
+		SuicideObj::CParticle<CBillboard>* particle = new SuicideObj::CParticle<CBillboard>(std::move(billboard),30);
+		particle->SetMove(CVector3(-1.0f,0.0f,-2.0f)*10.0f);
+		particle->SetScaling(1.05f);
 	}
 	else {
 		m_muzzleFlash.SetIsDraw(false);

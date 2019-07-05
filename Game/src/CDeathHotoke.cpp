@@ -43,15 +43,18 @@ void CDeathHotoke::Update() {
 
 	//パーツのUpdate
 	for (auto& part : m_parts) {
-		if (part)part->Update();
-		
-		//パーツのTRS更新
-		for (auto& part : m_parts) {
-			if (part)part->UpdateTRS();
-		}
-		//コアのTRS更新
-		m_coreModel.SetPRS(m_pos, m_rot, m_scale);
+		if (part)part->Update();	
 	}	
+	//パーツのTRS更新
+	for (auto& part : m_parts) {
+		if (part)part->UpdateTRS();
+	}
+	//コアのTRS更新
+	m_coreModel.SetPRS(m_pos, m_rot, m_scale);
+	//パーツのワールド行列更新後アップデート
+	for (auto& part : m_parts) {
+		if (part)part->PostUTRSUpdate();
+	}
 }
 
 void CDeathHotoke::PostRender() {

@@ -7,7 +7,7 @@ public:
 	using IBodyPart::IBodyPart;
 	
 	void InnerStart()override;
-	void Update()override;
+	void PostUTRSUpdate()override;
 
 	//ƒAƒNƒVƒ‡ƒ“
 	void Charge();
