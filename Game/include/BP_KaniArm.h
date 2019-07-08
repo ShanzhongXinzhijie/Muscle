@@ -24,5 +24,21 @@ private:
 
 	//エフェクト
 	CBillboard m_muzzleFlash; int m_muzzleCnt = 0;
+
+	float m_chargeTime = 0.0f;
 };
 
+class ICon_KaniArm {
+public:
+	ICon_KaniArm(BP_KaniArm* ptrbody): m_ptrBody(ptrbody){}
+	virtual void Update() = 0;
+
+private:
+	BP_KaniArm* m_ptrBody = nullptr;
+};
+
+class HCon_KaniArm : public ICon_KaniArm {
+public:
+	void Update()override;
+private:
+};

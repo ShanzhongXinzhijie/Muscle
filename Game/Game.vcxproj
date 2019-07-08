@@ -27,6 +27,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\BulletKani.cpp" />
     <ClCompile Include="src\BP_FishHead.cpp" />
     <ClCompile Include="src\BP_KaniArm.cpp" />
     <ClCompile Include="src\BP_HumanLeg.cpp" />
@@ -47,6 +48,7 @@
     <ClCompile Include="src\TreeGene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\BulletKani.h" />
     <ClInclude Include="include\BP_FishHead.h" />
     <ClInclude Include="include\BP_KaniArm.h" />
     <ClInclude Include="include\BP_HumanLeg.h" />

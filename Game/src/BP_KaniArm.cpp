@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "BP_KaniArm.h"
+#include "BulletKani.h"
 
 using namespace GameObj;
 
@@ -52,9 +53,32 @@ void BP_KaniArm::PostUTRSUpdate() {
 		SuicideObj::CParticle<CBillboard>* particle = new SuicideObj::CParticle<CBillboard>(std::move(billboard),30);
 		particle->SetMove(CVector3(-1.0f,0.0f,-2.0f)*10.0f);
 		particle->SetScaling(1.05f);
+
+		new BulletKani(m_model->GetBonePos(m_muzzleBoneID[L]), (m_ikSetting[L]->targetPos - m_model->GetBonePos(m_muzzleBoneID[L])).GetNorm()*10.0f);
 	}
 	else {
 		m_muzzleFlash.SetIsDraw(false);
 		if (m_muzzleCnt >= 8) { m_muzzleCnt = 0; }
 	}
 }
+//
+//void BP_KaniArm::Charge() {
+//	m_chargeTime += GetDeltaTimeSec();
+//	if (m_chargeTime > m_machineGunTime) {
+//		//マシンガン
+//	}
+//}
+//void BP_KaniArm::MachineGun() {
+//
+//}
+//void BP_KaniArm::Rocket() {
+//	if (m_chargeTime > FLT_EPSILON && m_chargeTime < m_fullCharge) {
+//		//ダブルタップ
+//	}
+//}
+//void BP_KaniArm::Lazer() {
+//	//レーザー出す
+//}
+//void BP_KaniArm::Stab() {
+//	//スタブ出す
+//}
