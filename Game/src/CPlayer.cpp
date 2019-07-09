@@ -7,6 +7,9 @@ bool CPlayer::Start() {
 	m_human.SetPos(CVector3::AxisY()*900.0f + CVector3::AxisX()*50.0f + CVector3::AxisZ()*100.0f);
 	m_human.SetScale(10.0f);
 
+	//m_humanCam.SetViewAngleDeg(25.0f);
+	m_humanCam.SetFar(15000.0f);
+
 	return true;
 }
 
@@ -47,6 +50,11 @@ void CPlayer::Update() {
 	//m_cam.SetTarget(m_hotoke.GetPos() + CVector3(100.0f, 0.0f, 0.0f));
 
 	if (GetKeyInput('F')) {
-		m_cam.SetPos(m_human.GetBonePos(m_human.FindBoneID(L"Head")));
+		m_humanCam.SetPos(m_human.GetBonePos(m_human.FindBoneID(L"Head")));
+		m_humanCam.SetTarget(m_hotoke.GetPos());
+		SetMainCamera(&m_humanCam);
+	}
+	else {
+		m_cam.SetToMainCamera();
 	}
 }

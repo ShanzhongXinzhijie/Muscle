@@ -5,7 +5,7 @@
 Shibuya::Shibuya()
 {
 	//ƒ‰ƒCƒgì¬
-	m_directionLight.SetDirection(CVector3::AxisZ()*-1.0f);
+	m_directionLight.SetDirection(CVector3::AxisY()*-1.0f+ CVector3::AxisZ()*-1.0f);
 	m_directionLight.SetColor(CVector3::One() * 0.5f);
 
 	//ŠXƒ‚ƒfƒ‹

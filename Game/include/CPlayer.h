@@ -14,7 +14,9 @@ public:
 private:
 	IGamePad m_pad;
 	CDeathHotoke m_hotoke;
+	
 	CPlayerCamera m_cam;
+	GameObj::PerspectiveCamera m_humanCam;
 
 	AnimationClip m_anim;
 	GameObj::CSkinModelRender m_human;

@@ -88,6 +88,11 @@ public:
 		return CVector3::GetCross(m_camera.GetFront(), m_camera.GetUp());
 	}
 
+	//ƒƒCƒ“ƒJƒƒ‰‚Éİ’è
+	void SetToMainCamera() {
+		m_camera.SetToMainCamera();
+	}
+
 private:
 	TpsCamera m_camera;
 	CVector2 m_sensi = { 4.0f*(1.0f/1280.0f),-4.0f*(1.0f / 1280.0f) };
