@@ -27,6 +27,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\ShadowMapBaker.cpp" />
     <ClCompile Include="src\BulletKani.cpp" />
     <ClCompile Include="src\BP_FishHead.cpp" />
     <ClCompile Include="src\BP_KaniArm.cpp" />
@@ -61,6 +62,7 @@
     <ClInclude Include="include\CPlayerCamera.h" />
     <ClInclude Include="include\Game.h" />
     <ClInclude Include="include\Shibuya.h" />
+    <ClInclude Include="include\ShadowMapBaker.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="include\TpsCamera.h" />
     <ClInclude Include="include\TreeGene.h" />
