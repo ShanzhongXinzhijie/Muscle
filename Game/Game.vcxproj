@@ -209,6 +209,7 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <AdditionalIncludeDirectories>.\Include;..\..\DemolisherWeapon/DemolisherWeapon/Photon/Photon-cpp/inc;..\..\DemolisherWeapon/DemolisherWeapon/Photon/LoadBalancing-cpp/inc;..\..\DemolisherWeapon/DemolisherWeapon/Photon/;..\..\DemolisherWeapon/DemolisherWeapon/Photon/Common-cpp/inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;DemolisherWeapon.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -269,6 +270,7 @@
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PreprocessorDefinitions>DW_MASTER;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>.\Include;..\..\DemolisherWeapon/DemolisherWeapon/Photon/Photon-cpp/inc;..\..\DemolisherWeapon/DemolisherWeapon/Photon/LoadBalancing-cpp/inc;..\..\DemolisherWeapon/DemolisherWeapon/Photon/;..\..\DemolisherWeapon/DemolisherWeapon/Photon/Common-cpp/inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -298,6 +300,7 @@
       <SupportJustMyCode>false</SupportJustMyCode>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <WholeProgramOptimization>false</WholeProgramOptimization>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>

@@ -30,6 +30,7 @@ public:
 	IGamePad* GetPad() { return m_ptrPad; }
 
 private:
+	//コアのモデル
 	GameObj::CSkinModelRender m_coreModel;
 
 	//TRS
@@ -47,6 +48,7 @@ private:
 	IGamePad* m_ptrPad = nullptr;
 
 public:
+	//ボディパーツの種類
 	enum enBodyParts {
 		enWing, enLeg, enArm, enHead, enPartsNum, 
 	};
