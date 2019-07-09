@@ -2,6 +2,7 @@
 
 #include"TreeGene.h"
 #include"CDeathHotoke.h"
+#include"ShadowMapBaker.h"
 
 class Shibuya : IGameObject
 {
@@ -22,6 +23,8 @@ private:
 	GameObj::CSkinModelRender m_knight, m_dinosaur;
 	CBillboard m_billboard, m_billboard2;
 	CImposter m_imp, m_imp2;
+
+	ShadowMapBaker m_shadowMapBaker;
 
 	//CDeathHotoke m_hotoke;
 };

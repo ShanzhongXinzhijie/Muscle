@@ -9,6 +9,9 @@ public:
 
 	void PostLoopUpdate()override;
 
+	//ƒ‚ƒfƒ‹‚ğæ“¾
+	GameObj::CInstancingModelRender& GetModel() { return m_model; }
+
 private:
 	int m_id = -1;
 
@@ -32,6 +35,13 @@ public:
 	void Generate(const CVector3& minArea, const CVector3& maxArea, int num);
 	//–ØX‚ğ–Å‚Ú‚·
 	void Clear();
+
+	//–Ø‚Ìƒ‚ƒfƒ‹æ“¾
+	GameObj::CInstancingModelRender& GetTreeModel(int index) {
+		return m_trees[index]->GetModel();
+	}
+	//–Ø‚Ì”‚ğæ“¾
+	size_t GetTreeNum()const { return m_trees.size(); }
 
 private:
 	std::vector<std::unique_ptr<Tree>> m_trees;

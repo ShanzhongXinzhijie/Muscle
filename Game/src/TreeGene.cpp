@@ -32,6 +32,7 @@ Tree::Tree(int id, const CVector3& pos, const CQuaternion& rot) {
 	m_imposter.SetRotY(radY);
 	m_imposter.SetScale(sizeScale);
 	m_imposter.SetIsDraw(false);
+	m_imposter.SetIsShadowCaster(false);
 
 	//“–‚½‚è”»’è
 	const float radius = 5.0f;

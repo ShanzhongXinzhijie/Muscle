@@ -54,15 +54,7 @@ Shibuya::Shibuya()
 	//float area_min = -8000.0f - 500.0f, area_max = -8000.0f + 500.0f;
 	//m_treeGene.Generate({ area_min,-70.0f*500.0f,-500.0f }, { area_max,70.0f*50.0f,500.0f }, 500);
 	m_treeGene.Generate({ -70.0f*50.0f,-70.0f*50.0f,-70.0f*50.0f }, { 70.0f*50.0f,70.0f*50.0f,70.0f*50.0f }, 4000);
-
-	//シャドウマップ
-	//m_shadowmap.Init(3,//分割数
-	//	m_directionLight.GetDirection(),//ライトの方向
-	//	1.0f//シャドウマップの範囲(メインカメラのFarにかかる係数です)
-	//);
-	//m_shadowmap.SetNear(50.0f);
-	//m_shadowmap.SetFar(20000.0f);
-
+	
 	//ビルボテスト
 	m_billboard.Init(L"Resource/spriteData/test.png");
 	m_billboard.SetPos(CVector3::Up()*1000.0f);
@@ -84,6 +76,27 @@ Shibuya::Shibuya()
 	m_knight.SetPos(CVector3::AxisY()*1500.0f);
 	m_knight.SetScale(0.4f*10.0f);
 	m_knight.SetRot(CQuaternion(CVector3::AxisY(), CMath::PI2));
+
+	//シャドウマップのベイク
+	if (!m_shadowMapBaker.GetIsBaked()) {
+		m_model.RefreshWorldMatrix();
+		m_shadowMapBaker.AddDrawModel(m_model);
+		for (int i = 0; i < m_treeGene.GetTreeNum(); i++) {
+			m_treeGene.GetTreeModel(i).SetIsDraw(true);
+			m_treeGene.GetTreeModel(i).PostLoopUpdate();
+		}
+		m_shadowMapBaker.AddDrawModel(m_treeGene.GetTreeModel(0).GetInstancingModel()->GetModelRender());
+		m_shadowMapBaker.Bake(2048*2, 2048*2, m_directionLight.GetDirection(), { 10000.0f,10000.0f,20000.0f }, CVector3::Up()*1000.0f);
+		m_treeGene.GetTreeModel(0).GetInstancingModel()->PreLoopUpdate();
+	}
+
+	//シャドウマップ
+	m_shadowmap.Init(1,//分割数
+		m_directionLight.GetDirection(),//ライトの方向
+		1.0f//シャドウマップの範囲(メインカメラのFarにかかる係数です)
+	);
+	m_shadowmap.SetNear(50.0f);
+	m_shadowmap.SetFar(20000.0f);
 }
 
 void Shibuya::PostLoopUpdate() {
