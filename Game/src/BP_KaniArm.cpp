@@ -29,10 +29,12 @@ void BP_KaniArm::InnerStart() {
 	m_muzzleBoneID[L] = m_model->FindBoneID(L"Bone031(mirrored)");
 
 	//エフェクト
-	m_muzzleFlash.Init(L"Resource/spriteData/kaniFlare.png", 1, false);
-	m_muzzleFlash.GetModel().InitPostDraw(PostDrawModelRender::enAdd);
-	m_muzzleFlash.GetModel().GetSkinModel().SetCullMode(D3D11_CULL_NONE);
-	m_muzzleFlash.GetModel().SetIsShadowCaster(false);
+	for (auto& model : m_muzzleFlash) {
+		model.Init(L"Resource/spriteData/kaniFlare.png", 1, false);
+		model.GetModel().InitPostDraw(PostDrawModelRender::enAdd);
+		model.GetModel().GetSkinModel().SetCullMode(D3D11_CULL_NONE);
+		model.GetModel().SetIsShadowCaster(false);
+	}
 
 	//コントローラー
 	m_controller = new HCon_KaniArm(this,m_ptrCore);
@@ -40,28 +42,42 @@ void BP_KaniArm::InnerStart() {
 
 void BP_KaniArm::Update() {
 	//毎フレームの初期化
-	m_isCharging = false;
-	m_muzzleFlash.SetIsDraw(false);
+	for (int i = 0; i < enLRNUM; i++){
+		m_isCharging[i] = false;
+		m_isMachineGunning[i] = false;
+		m_muzzleFlash[i].SetIsDraw(false);
+	}	
 
 	//コントローラーに操作させる
 	m_controller->Update();
 
 	//チャージ時間リセット
-	if (!m_isCharging) { m_chargeTime = 0.0f; }
+	for (int i = 0; i < enLRNUM; i++) {
+		if (!m_isCharging[i]) { m_chargeTime[i] = 0; }
+	}
 }
 
 void BP_KaniArm::PostUTRSUpdate() {
-	m_ikSetting[0]->targetPos = CVector3::Zero();
-	m_ikSetting[1]->targetPos = CVector3::Zero();
+	for (int i = 0; i < enLRNUM; i++) {
+		//IKの目標
+		m_ikSetting[i]->targetPos = CVector3::Zero();
 
-	//マズルエフェクト
-	if (m_isCharging) {
-		if (m_muzzleCnt <= 4) {
-			m_muzzleFlash.SetIsDraw(true);
-			m_muzzleFlash.SetPos(m_model->GetBonePos(m_muzzleBoneID[L]));
-			m_muzzleFlash.SetScaleHoldAspectRatio(100.0f);
+		if (m_isMachineGunning[i]) {
+			if (m_chargeTime[i]%5 == 0) {				
+				//マズルエフェクト
+				m_muzzleTime[i] = 2;
+				//発射
+				new BulletKani(m_model->GetBonePos(m_muzzleBoneID[i]), (m_ikSetting[i]->targetPos - m_model->GetBonePos(m_muzzleBoneID[i])).GetNorm()*100.0f);
+			}
 		}
-		if (m_muzzleCnt > 8) { m_muzzleCnt = 0; }
+
+		//マズルエフェクト
+		if (m_muzzleTime[i] > 0) {
+			m_muzzleTime[i] --;
+			m_muzzleFlash[i].SetIsDraw(true);
+			m_muzzleFlash[i].SetPos(m_model->GetBonePos(m_muzzleBoneID[i]));
+			m_muzzleFlash[i].SetScaleHoldAspectRatio(100.0f);
+		}
 	}
 
 	//m_muzzleCnt++;
@@ -86,26 +102,23 @@ void BP_KaniArm::PostUTRSUpdate() {
 	//}
 }
 
-void BP_KaniArm::Charge() {
+void BP_KaniArm::Charge(enLR lr) {
 	//チャージ
-	m_isCharging = true;//これでリセット
-	m_chargeTime += GetDeltaTimeSec();
-	if (m_chargeTime > m_machineGunTime) {
+	m_isCharging[lr] = true;
+	m_chargeTime[lr] ++;
+}
+void BP_KaniArm::MachineGun(enLR lr) {
+	if (m_chargeTime[lr] > m_machineGunTime) {
 		//マシンガン
+		m_isMachineGunning[lr] = true;
 	}
-
-	//マズルエフェクト
-	m_muzzleCnt++;
 }
-void BP_KaniArm::MachineGun() {
-
-}
-void BP_KaniArm::Rocket() {
+void BP_KaniArm::Rocket(enLR lr) {
 	//if (m_chargeTime > FLT_EPSILON && m_chargeTime < m_fullCharge) {
 		//ダブルタップ
 	//}
 }
-void BP_KaniArm::Lazer() {
+void BP_KaniArm::Lazer(enLR lr) {
 	//レーザー出す
 }
 void BP_KaniArm::Stab() {
@@ -116,7 +129,8 @@ void BP_KaniArm::Stab() {
 void HCon_KaniArm::Update() {
 	for (auto lr : { L, R }) {
 		if (m_ptrCore->GetPad()->GetFire(lr)) {
-			m_ptrBody->Charge();
+			m_ptrBody->Charge(lr);
+			m_ptrBody->MachineGun(lr);
 		}
 	}
 }

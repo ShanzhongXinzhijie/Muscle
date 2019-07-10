@@ -78,20 +78,28 @@ Shibuya::Shibuya()
 	m_knight.SetRot(CQuaternion(CVector3::AxisY(), CMath::PI2));
 
 	//シャドウマップのベイク
-	if (!m_shadowMapBaker.GetIsBaked()) {
+	CVector3 forcusPoint = CVector3::Up()*1000.0f - CVector3::AxisX()*5000.0f - CVector3::AxisZ()*5000.0f;
+	for (int i = 0; i < 4; i++) {
 		m_model.RefreshWorldMatrix();
-		m_shadowMapBaker.AddDrawModel(m_model);
+		m_shadowMapBaker[i].AddDrawModel(m_model);
 		for (int i = 0; i < m_treeGene.GetTreeNum(); i++) {
 			m_treeGene.GetTreeModel(i).SetIsDraw(true);
 			m_treeGene.GetTreeModel(i).PostLoopUpdate();
 		}
-		m_shadowMapBaker.AddDrawModel(m_treeGene.GetTreeModel(0).GetInstancingModel()->GetModelRender());
-		m_shadowMapBaker.Bake(2048*2, 2048*2, m_directionLight.GetDirection(), { 10000.0f,10000.0f,20000.0f }, CVector3::Up()*1000.0f);
+		m_shadowMapBaker[i].AddDrawModel(m_treeGene.GetTreeModel(0).GetInstancingModel()->GetModelRender());
+		m_shadowMapBaker[i].Bake(2048, 2048, m_directionLight.GetDirection(), { 5000.0f,5000.0f,20000.0f }, forcusPoint);
 		m_treeGene.GetTreeModel(0).GetInstancingModel()->PreLoopUpdate();
+		
+		if (i == 0 || i == 2) {
+			forcusPoint += CVector3::AxisX()*5000.0f;
+		}
+		else {
+			forcusPoint -= CVector3::AxisX()*5000.0f;
+			forcusPoint += CVector3::AxisZ()*5000.0f;
+		}
 	}
-
 	//シャドウマップ
-	m_shadowmap.Init(1,//分割数
+	m_shadowmap.Init(2,//分割数
 		m_directionLight.GetDirection(),//ライトの方向
 		1.0f//シャドウマップの範囲(メインカメラのFarにかかる係数です)
 	);

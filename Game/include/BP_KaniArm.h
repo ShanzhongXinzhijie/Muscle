@@ -14,28 +14,28 @@ public:
 	void PostUTRSUpdate()override;
 
 	//アクション
-	void Charge();
-	void MachineGun();
-	void Rocket();
-	void Lazer();	
+	void Charge(enLR);
+	void MachineGun(enLR);
+	void Rocket(enLR);
+	void Lazer(enLR);
 	void Stab();
 
 private:
 	//コントローラー
 	ICon_KaniArm* m_controller = nullptr;
 
+	//
 	AnimationClip m_initPose;
-	SkeletonIK::IKSetting* m_ikSetting[2] = {};
-
-	int m_muzzleBoneID[2] = {};
+	SkeletonIK::IKSetting* m_ikSetting[enLRNUM] = {};
+	int m_muzzleBoneID[enLRNUM] = {};
 
 	//エフェクト
-	CBillboard m_muzzleFlash; int m_muzzleCnt = 0;
+	CBillboard m_muzzleFlash[enLRNUM]; int m_muzzleTime[enLRNUM] = {};
 
 	//チャージタイマー
-	bool m_isCharging = false;
-	float m_chargeTime = 0.0f;
-	static constexpr float m_machineGunTime = 24.0f;
+	bool m_isCharging[enLRNUM] = {}, m_isMachineGunning[enLRNUM] = {};
+	int m_chargeTime[enLRNUM] = {};
+	static constexpr int m_machineGunTime = 10;// 24 * 60;
 };
 
 //TODO これテンプレート化?

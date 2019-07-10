@@ -1,20 +1,23 @@
 #include "stdafx.h"
 #include "BulletKani.h"
 
-bool BulletKani::Start() {
-	//m_model.Init(m_sInstancingMax, L"Resource/modelData/tree_tall.cmo");
-
-	return true;
+BulletKani::BulletKani(const CVector3& pos, const CVector3& move) : m_pos(pos), m_posOld(pos), m_vector(move) {
+	m_model.Init();
+	m_model.SetPos(m_posOld, m_pos);
+	m_model.SetRadius(3.0f);
 }
 
 void BulletKani::Update() {
+	//à⁄ìÆ
 	m_posOld = m_pos;
 	m_pos += m_vector;
 
+	//éıñΩèàóù
 	m_lifeTime -= GetDeltaTimeSec();
-	if (m_lifeTime < FLT_EPSILON) { delete this; return; }
-}
+	if (m_lifeTime < FLT_EPSILON) {
+		delete this; return;
+	}
 
-void BulletKani::PostLoopUpdate() {
-	DrawLine(m_pos, m_posOld, { 1.0f,1.0f ,1.0f ,1.0f });
+	//ÉÇÉfÉãçXêV
+	m_model.Move(m_vector);
 }

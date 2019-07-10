@@ -27,6 +27,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\BeamModel.cpp" />
     <ClCompile Include="src\ShadowMapBaker.cpp" />
     <ClCompile Include="src\BulletKani.cpp" />
     <ClCompile Include="src\BP_FishHead.cpp" />
@@ -49,6 +50,7 @@
     <ClCompile Include="src\TreeGene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\BeamModel.h" />
     <ClInclude Include="include\BulletKani.h" />
     <ClInclude Include="include\BP_FishHead.h" />
     <ClInclude Include="include\BP_KaniArm.h" />
@@ -69,6 +71,7 @@
   </ItemGroup>
   <ItemGroup>
     <MeshContentTask Include="Asset\modelData\billboard.FBX" />
+    <MeshContentTask Include="Asset\modelData\bullet\beam.FBX" />
     <MeshContentTask Include="Asset\modelData\dinosaur.FBX" />
     <MeshContentTask Include="Asset\modelData\hotoke\birdwing.FBX" />
     <MeshContentTask Include="Asset\modelData\hotoke\core.FBX" />

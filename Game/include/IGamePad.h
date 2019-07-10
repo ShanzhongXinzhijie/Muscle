@@ -10,12 +10,11 @@ public:
 	}
 
 	[[nodiscard]] bool GetFire(enLR lr) {
-		if (lr == L) {
-			return Pad(0).GetButton(enButtonLB);
+		bool isFire = Pad(0).GetButton((lr == L) ? enButtonLB : enButtonRB);
+		if (!isFire) {
+			isFire = GetKeyInput((lr == L) ? VK_LBUTTON : VK_RBUTTON);
 		}
-		else {
-			return Pad(0).GetButton(enButtonRB);
-		}
+		return isFire;
 	}
 };
 

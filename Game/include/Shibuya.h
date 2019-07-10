@@ -24,7 +24,7 @@ private:
 	CBillboard m_billboard, m_billboard2;
 	CImposter m_imp, m_imp2;
 
-	ShadowMapBaker m_shadowMapBaker;
+	ShadowMapBaker m_shadowMapBaker[4];
 
 	//CDeathHotoke m_hotoke;
 };
