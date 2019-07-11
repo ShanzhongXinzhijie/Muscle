@@ -1,7 +1,7 @@
 #pragma once
 #include"IGamePad.h"
 #include"CDeathHotoke.h"
-#include"CPlayerCamera.h"
+#include"HotokeCamera.h"
 
 class CPlayer : public IGameObject
 {
@@ -15,7 +15,7 @@ private:
 	IGamePad m_pad;
 	CDeathHotoke m_hotoke;
 	
-	CPlayerCamera m_cam;
+	HotokeCameraController m_cam;
 	GameObj::PerspectiveCamera m_humanCam;
 
 	AnimationClip m_anim;

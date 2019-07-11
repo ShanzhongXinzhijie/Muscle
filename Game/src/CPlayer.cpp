@@ -45,10 +45,9 @@ void CPlayer::Update() {
 	}
 	m_hotoke.SetPos(pos);
 
-	CVector3 rightVec = CVector3::Right()*200.0f; m_hotoke.GetRot().Multiply(rightVec);
-	m_cam.SetPos(m_hotoke.GetPos() + rightVec);
-	//m_cam.SetTarget(m_hotoke.GetPos() + CVector3(100.0f, 0.0f, 0.0f));
-
+	CVector3 rightVec = CVector3::Right()*60.0f; m_hotoke.GetRot().Multiply(rightVec);
+	m_cam.SetPos(m_hotoke.GetPos() + rightVec + CVector3::AxisY() * 200.0f + CVector3::AxisZ() * -170.0f);
+	
 	if (GetKeyInput('F')) {
 		m_humanCam.SetPos(m_human.GetBonePos(m_human.FindBoneID(L"Head")));
 		m_humanCam.SetTarget(m_hotoke.GetPos());

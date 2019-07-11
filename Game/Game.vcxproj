@@ -27,6 +27,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\HotokeCamera.cpp" />
     <ClCompile Include="src\BeamModel.cpp" />
     <ClCompile Include="src\ShadowMapBaker.cpp" />
     <ClCompile Include="src\BulletKani.cpp" />
@@ -50,6 +51,7 @@
     <ClCompile Include="src\TreeGene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\HotokeCamera.h" />
     <ClInclude Include="include\BeamModel.h" />
     <ClInclude Include="include\BulletKani.h" />
     <ClInclude Include="include\BP_FishHead.h" />
