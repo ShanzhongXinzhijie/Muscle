@@ -19,11 +19,14 @@ public:
 	void Lazer(enLR);
 	void Stab();
 
+	//チャージを取得
+	int GetChargeTimer(enLR lr)const { return m_chargeTime[lr]; }
+
 private:
 	//コントローラー
 	ICon_KaniArm* m_controller = nullptr;
 
-	//
+	//ボーン関係
 	AnimationClip m_initPose;
 	SkeletonIK::IKSetting* m_ikSetting[enLRNUM] = {};
 	int m_muzzleBoneID[enLRNUM] = {};
@@ -34,7 +37,7 @@ private:
 	//チャージタイマー
 	bool m_isCharging[enLRNUM] = {}, m_isMachineGunning[enLRNUM] = {};
 	int m_chargeTime[enLRNUM] = {};
-	static constexpr int m_machineGunTime = 10;// 24 * 60;
+	static constexpr int MACHINE_GUN_CHARGE_TIME = 10, LAZER_CHARGE_TIME = MACHINE_GUN_CHARGE_TIME - 3;
 };
 
 //TODO これテンプレート化?

@@ -71,7 +71,7 @@ void BP_KaniArm::PostUTRSUpdate() {
 			billboard->SetPos(m_model->GetBonePos(m_muzzleBoneID[i]));
 			billboard->SetScale(20.0f);
 			//パーティクル化
-			SuicideObj::CParticle<CBillboard>* particle = new SuicideObj::CParticle<CBillboard>(std::move(billboard), m_machineGunTime);
+			SuicideObj::CParticle<CBillboard>* particle = new SuicideObj::CParticle<CBillboard>(std::move(billboard), MACHINE_GUN_CHARGE_TIME);
 			CVector3 move = CVector3::AxisX()*-40.0f; m_model->GetBoneRot(m_muzzleBoneID[i]).Multiply(move);
 			particle->SetMove(move);
 			particle->SetScaling(1.2f);
@@ -83,7 +83,10 @@ void BP_KaniArm::PostUTRSUpdate() {
 				//マズルエフェクト
 				m_muzzleTime[i] = 2;
 				//発射
-				new BulletKani(m_model->GetBonePos(m_muzzleBoneID[i]), (m_ikSetting[i]->targetPos - m_model->GetBonePos(m_muzzleBoneID[i])).GetNorm()*100.0f);
+				new BulletKani(
+					m_model->GetBonePos(m_muzzleBoneID[i]),
+					(m_ikSetting[i]->targetPos - m_model->GetBonePos(m_muzzleBoneID[i])).GetNorm()*(100.0f+m_ptrCore->GetMove().Length())
+				);
 			}
 		}
 
@@ -103,17 +106,19 @@ void BP_KaniArm::ChargeAndMachinegun(enLR lr) {
 	m_isCharging[lr] = true;
 	m_chargeTime[lr] ++;
 	//マシンガン
-	if (m_chargeTime[lr] > m_machineGunTime) {
+	if (m_chargeTime[lr] > MACHINE_GUN_CHARGE_TIME) {
 		m_isMachineGunning[lr] = true;
 	}
 }
 void BP_KaniArm::Rocket(enLR lr) {
-	//if (m_chargeTime > FLT_EPSILON && m_chargeTime < m_fullCharge) {
-		//ダブルタップ
-	//}
+	//ロケット出す
+
 }
 void BP_KaniArm::Lazer(enLR lr) {
 	//レーザー出す
+	if (m_chargeTime[lr] >= LAZER_CHARGE_TIME && m_chargeTime[lr] < MACHINE_GUN_CHARGE_TIME) {
+
+	}
 }
 void BP_KaniArm::Stab() {
 	//スタブ出す
@@ -121,9 +126,18 @@ void BP_KaniArm::Stab() {
 
 //ヒューマンコントローラー
 void HCon_KaniArm::Update() {
+	{
+		m_ptrBody->Stab();
+	}
 	for (auto lr : { L, R }) {
 		if (m_ptrCore->GetPad()->GetFire(lr)) {
 			m_ptrBody->ChargeAndMachinegun(lr);
+		}
+		else {
+			m_ptrBody->Lazer(lr);
+		}
+		if (m_ptrCore->GetPad()->GetDoubleTapFire(lr)) {
+			m_ptrBody->Rocket(lr);
 		}
 	}
 }

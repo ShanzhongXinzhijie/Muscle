@@ -1,4 +1,7 @@
 #pragma once
+
+#include"CDeathHotoke.h"
+
 class HotokeCamera
 {
 public:
@@ -24,6 +27,12 @@ public:
 	void SetPos(const CVector3& vec) {
 		m_pos = vec;
 	}
+	//カメラ回転設定
+	//※マウス回転とは別
+	void SetRot(const CQuaternion& rot) {
+		m_rotOffset = rot;
+	}
+
 	//メインカメラに設定
 	void SetToMainCamera() {
 		SetMainCamera(&m_camera);
@@ -38,7 +47,7 @@ public:
 		return m_camera.GetFront();
 	}
 	//消失点を取得
-	const CVector3& GetVanishingPoint() {
+	CVector3 GetVanishingPoint() {
 		return m_pos + m_updatedTarget * m_camera.GetFar();
 	}
 
@@ -56,10 +65,8 @@ private:
 
 		CQuaternion cq;
 		cq.SetRotation(CVector3::AxisX(), m_rot.y);
-		cq.Multiply(m_updatedTarget);
-		cq.Multiply(m_updatedUp);
-
-		cq.SetRotation(CVector3::AxisY(), m_rot.x);
+		cq.Concatenate(CQuaternion(CVector3::AxisY(), m_rot.x));
+		cq.Concatenate(m_rotOffset);
 		cq.Multiply(m_updatedTarget);
 		cq.Multiply(m_updatedUp);
 	}
@@ -68,13 +75,14 @@ private:
 	GameObj::PerspectiveCamera m_camera;
 
 	CVector3 m_pos, m_target = CVector3::AxisZ(), m_up = CVector3::Up();
+	CQuaternion m_rotOffset;
 	CVector3 m_updatedTarget = CVector3::AxisZ(), m_updatedUp = CVector3::Up();
 	CVector2 m_rot;
 };
 
 class HotokeCameraController : public IGameObject {
 public:
-	HotokeCameraController() {
+	HotokeCameraController(CDeathHotoke* ptrHotoke) : m_ptrHotoke(ptrHotoke) {
 		//マウスカーソルを中央に固定
 		MouseCursor().SetLockMouseCursor(true);
 		//マウスカーソルを非表示
@@ -83,19 +91,6 @@ public:
 
 	void Update()override;
 
-	//カメラ位置設定
-	void SetPos(const CVector3& vec) {
-		CVector3 offset;
-		float z = m_hotokeCam.GetRot().y;
-		if (z > FLT_EPSILON) {
-			offset = CVector3::AxisZ()*((z / CMath::PI_HALF)*270.0f);
-		}
-		else {
-			offset = CVector3::AxisZ()*((z / CMath::PI_HALF)*100.0f);
-			offset += CVector3::AxisY()*((z / CMath::PI_HALF)*270.0f);
-		}
-		m_hotokeCam.SetPos(vec + offset);
-	}
 	//メインカメラに設定
 	void SetToMainCamera() {
 		m_hotokeCam.SetToMainCamera();
@@ -106,7 +101,7 @@ public:
 		return m_hotokeCam.GetFront();
 	}
 	//消失点を取得
-	const CVector3& GetVanishingPoint() {
+	CVector3 GetVanishingPoint() {
 		return m_hotokeCam.GetVanishingPoint();
 	}
 
@@ -114,4 +109,6 @@ private:
 	HotokeCamera m_hotokeCam;
 	CVector2 m_sensi = { 4.0f*(1.0f / 1280.0f),4.0f*(1.0f / 1280.0f) };
 	bool m_lock = false;
+
+	CDeathHotoke* m_ptrHotoke = nullptr;
 };

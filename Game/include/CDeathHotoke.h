@@ -28,6 +28,8 @@ public:
 	const CQuaternion& GetRot()const { return m_rot; }
 	const CVector3& GetScale()const { return m_scale; }
 
+	const CVector3& GetMove() { return m_move; }
+
 	const CVector3& GetTargetPos() { return m_targetPos; }
 
 	//ƒpƒbƒh‚ÌŽæ“¾

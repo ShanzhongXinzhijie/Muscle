@@ -2,6 +2,9 @@
 #include "TreeGene.h"
 #include "CDeathHotoke.h"
 
+/// <summary>
+/// 木
+/// </summary>
 int Tree::m_sInstancingMax = 512;
 
 Tree::Tree(int id, const CVector3& pos, const CQuaternion& rot) {
@@ -9,8 +12,8 @@ Tree::Tree(int id, const CVector3& pos, const CQuaternion& rot) {
 	m_pos = pos;
 	m_rot = rot;
 
+	//バリエーション
 	float sizeScale = 0.8f*CMath::RandomZeroToOne() > 0.5f ? 1.0f : 1.5f;
-
 	float radY = -CMath::PI2 + CMath::PI2*2.0f*CMath::RandomZeroToOne();
 
 	//近景モデル
@@ -18,13 +21,15 @@ Tree::Tree(int id, const CVector3& pos, const CQuaternion& rot) {
 	m_model.SetPos(m_pos);
 	m_model.SetRot(CQuaternion(CVector3::AxisY(),radY));
 	m_model.SetScale(sizeScale);
+	m_model.SetIsDraw(false);
+	m_model.GetInstancingModel()->GetModelRender().SetIsShadowCaster(false);
 	m_model.GetInstancingModel()->GetModelRender().GetSkinModel().FindMaterialSetting(
 		[&](MaterialSetting* me) {
-			//me->SetAlbedoTexture(srv);
-			me->SetIsUseTexZShader(true); //TODO 葉にのみ適用
+			if (me->EqualMaterialName(L"leaf fern")) {
+				me->SetIsUseTexZShader(true);
+			}
 		}
 	);
-	m_model.SetIsDraw(false);
 
 	//遠景モデル
 	m_imposter.Init(L"Resource/modelData/tree_tall.cmo", { 2048*4, 2048*2 }, { 35,17 }, m_sInstancingMax);
@@ -88,13 +93,7 @@ void Tree::PostLoopUpdate() {
 	const float nearDistance = CMath::Square(1200.0f*2.0f), farDistance = CMath::Square(2500.0f);
 	const float distance = (m_pos - GetMainCamera()->GetPos()).LengthSq();
 
-	//if (distance > farDistance) {
-	//	m_model.SetIsDraw(false);
-	//	m_imposter.SetIsDraw(false);
-	//	m_col.SetEnable(false);//遠いと判定も無効化
-	//	return;
-	//}
-	/*if (distance < nearDistance|| GetKeyInput(VK_TAB)) {//if(GetKeyInput(VK_TAB)) {//
+	if (GetKeyInput(VK_TAB) || distance < nearDistance) {
 		m_model.SetIsDraw(true);
 		m_imposter.SetIsDraw(false);
 		m_col.SetEnable(true);
@@ -102,56 +101,13 @@ void Tree::PostLoopUpdate() {
 	else {
 		m_model.SetIsDraw(false);
 		if (!m_isHited) { m_imposter.SetIsDraw(true); }
-		//m_col.SetEnable(false);//遠いと判定も無効化
-	}*/
-	//m_model.SetIsDraw(false);
-	
-
-	bool isDraw = false;
-	
-	/*
-	//視錐台カリング
-	float d = GetMainCamera()->GetFront().Dot(m_pos - GetMainCamera()->GetPos());
-	if (d > GetMainCamera()->GetNear() && d < GetMainCamera()->GetFar()) {//nearとfarの間か
-		CVector2 frustum;
-		GetMainCamera()->GetFrustumPlaneSize(d, frustum); frustum *= 0.5f;
-
-		CVector3 left = GetMainCamera()->GetFront(); left.Cross(GetMainCamera()->GetUp());
-		d = left.Dot(m_pos - GetMainCamera()->GetPos());
-		if (d > -frustum.x && d < frustum.x) {
-
-			CVector3 up; up.Cross(GetMainCamera()->GetFront(), left);
-
-			d = up.Dot(m_pos - GetMainCamera()->GetPos());
-			if (d > -frustum.y && d < frustum.y) {
-				isDraw = true;
-			}
-		}
-	}
-	if (GetKeyInput(VK_TAB)) { isDraw = true; }
-	*/
-	isDraw = true;
-
-	if (isDraw) {
-		//TODO 描画数がmaxより低いとバグる
-		//なんか縦のサイズが変わる
-		if (GetKeyInput(VK_TAB) || distance < nearDistance) {
-			m_model.SetIsDraw(true);
-			m_imposter.SetIsDraw(false);
-			//m_col.SetEnable(true);
-		}
-		else {
-			m_model.SetIsDraw(false);
-			if (!m_isHited) { m_imposter.SetIsDraw(true); }
-			//m_col.SetEnable(false);//遠いと判定も無効化
-		}
-	}
-	else {
-		m_model.SetIsDraw(false);
-		m_imposter.SetIsDraw(false);
+		m_col.SetEnable(false);//遠いと判定も無効化
 	}
 }
 
+/// <summary>
+/// ツリージェネレーター
+/// </summary>
 void TreeGene::Generate(const CVector3& minArea, const CVector3& maxArea, int num) {
 
 	//インスタンシングの数設定

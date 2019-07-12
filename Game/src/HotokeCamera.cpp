@@ -24,6 +24,24 @@ void HotokeCameraController::Update() {
 		m_lock = true;
 	}
 
+	//カメラ位置設定
+	CVector3 offsetVec = { 60.0f, 250.0f, -170.0f };
+	
+	float z = m_hotokeCam.GetRot().y;
+	if (z > FLT_EPSILON) {
+		offsetVec += CVector3::AxisZ()*((z / CMath::PI_HALF)*270.0f);
+	}
+	else {
+		offsetVec += CVector3::AxisZ()*((z / CMath::PI_HALF)*100.0f);
+		offsetVec += CVector3::AxisY()*((z / CMath::PI_HALF)*270.0f);
+	}
+
+	m_ptrHotoke->GetRot().Multiply(offsetVec);
+	m_hotokeCam.SetPos(m_ptrHotoke->GetPos() + offsetVec);
+
+	//カメラ回転設定
+	m_hotokeCam.SetRot(m_ptrHotoke->GetRot());
+
 	//カメラ更新
 	m_hotokeCam.Update();
 };
