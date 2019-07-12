@@ -33,6 +33,14 @@ public:
 	const CVector2& GetRot()const {
 		return m_rot;
 	}
+	//前方向を取得
+	const CVector3& GetFront() {
+		return m_camera.GetFront();
+	}
+	//消失点を取得
+	const CVector3& GetVanishingPoint() {
+		return m_pos + m_updatedTarget * m_camera.GetFar();
+	}
 
 	void Update() {
 		//カメラ更新
@@ -91,6 +99,15 @@ public:
 	//メインカメラに設定
 	void SetToMainCamera() {
 		m_hotokeCam.SetToMainCamera();
+	}
+
+	//前方向を取得
+	const CVector3& GetFront() {
+		return m_hotokeCam.GetFront();
+	}
+	//消失点を取得
+	const CVector3& GetVanishingPoint() {
+		return m_hotokeCam.GetVanishingPoint();
 	}
 
 private:

@@ -14,8 +14,7 @@ public:
 	void PostUTRSUpdate()override;
 
 	//ƒAƒNƒVƒ‡ƒ“
-	void Charge(enLR);
-	void MachineGun(enLR);
+	void ChargeAndMachinegun(enLR);
 	void Rocket(enLR);
 	void Lazer(enLR);
 	void Stab();

@@ -13,18 +13,22 @@ public:
 	void Update()override;
 	void PostRender()override;
 
-	//セッター
-	void SetPos(const CVector3& pos) { m_pos = pos; }
-	void SetRot(const CQuaternion& rot) { m_rot = rot; }
-
 	//移動量を加える
 	void AddMove(const CVector3& vec) { m_move += vec; }
 	void AddRot(const CQuaternion& rot) { m_rotMove = rot * m_rotMove; }
 
+	//セッター
+	void SetPos(const CVector3& pos) { m_pos = pos; }
+	void SetRot(const CQuaternion& rot) { m_rot = rot; }
+
+	void SetTargetPos(const CVector3& pos) { m_targetPos = pos; }
+	
 	//ゲッター
 	const CVector3& GetPos()const { return m_pos; }	
 	const CQuaternion& GetRot()const { return m_rot; }
 	const CVector3& GetScale()const { return m_scale; }
+
+	const CVector3& GetTargetPos() { return m_targetPos; }
 
 	//パッドの取得
 	IGamePad* GetPad() { return m_ptrPad; }
@@ -46,6 +50,9 @@ private:
 
 	//ゲームパッド
 	IGamePad* m_ptrPad = nullptr;
+
+	//ターゲット位置
+	CVector3 m_targetPos;
 
 public:
 	//ボディパーツの種類

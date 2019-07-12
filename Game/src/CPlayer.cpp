@@ -45,6 +45,7 @@ void CPlayer::Update() {
 	}
 	m_hotoke.SetPos(pos);
 
+	//カメラ位置設定
 	CVector3 rightVec = CVector3::Right()*60.0f; m_hotoke.GetRot().Multiply(rightVec);
 	m_cam.SetPos(m_hotoke.GetPos() + rightVec + CVector3::AxisY() * 200.0f + CVector3::AxisZ() * -170.0f);
 	
@@ -56,4 +57,7 @@ void CPlayer::Update() {
 	else {
 		m_cam.SetToMainCamera();
 	}
+
+	//ホトケのターゲット位置設定
+	m_hotoke.SetTargetPos(m_cam.GetVanishingPoint());
 }

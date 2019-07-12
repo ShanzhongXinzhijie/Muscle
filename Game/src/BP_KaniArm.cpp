@@ -60,8 +60,24 @@ void BP_KaniArm::Update() {
 void BP_KaniArm::PostUTRSUpdate() {
 	for (int i = 0; i < enLRNUM; i++) {
 		//IKの目標
-		m_ikSetting[i]->targetPos = CVector3::Zero();
+		m_ikSetting[i]->targetPos = m_ptrCore->GetTargetPos();
 
+		//チャージ
+		if (m_isCharging[i] && !m_isMachineGunning[i]) {
+			//ビルボード読み込み
+			std::unique_ptr<CBillboard> billboard = std::make_unique<CBillboard>();
+			billboard->Init(L"Resource/spriteData/smoke.png");
+			billboard->GetModel().InitPostDraw(PostDrawModelRender::enAlpha);
+			billboard->SetPos(m_model->GetBonePos(m_muzzleBoneID[i]));
+			billboard->SetScale(20.0f);
+			//パーティクル化
+			SuicideObj::CParticle<CBillboard>* particle = new SuicideObj::CParticle<CBillboard>(std::move(billboard), m_machineGunTime);
+			CVector3 move = CVector3::AxisX()*-40.0f; m_model->GetBoneRot(m_muzzleBoneID[i]).Multiply(move);
+			particle->SetMove(move);
+			particle->SetScaling(1.2f);
+		}
+
+		//マシンガン
 		if (m_isMachineGunning[i]) {
 			if (m_chargeTime[i]%5 == 0) {				
 				//マズルエフェクト
@@ -76,40 +92,18 @@ void BP_KaniArm::PostUTRSUpdate() {
 			m_muzzleTime[i] --;
 			m_muzzleFlash[i].SetIsDraw(true);
 			m_muzzleFlash[i].SetPos(m_model->GetBonePos(m_muzzleBoneID[i]));
+			m_muzzleFlash[i].SetRot(m_model->GetBoneRot(m_muzzleBoneID[i])*CQuaternion(CVector3::AxisY(), CMath::PI_HALF));
 			m_muzzleFlash[i].SetScaleHoldAspectRatio(100.0f);
 		}
 	}
-
-	//m_muzzleCnt++;
-	//if (m_muzzleCnt <= 4) {
-	//	m_muzzleFlash.SetIsDraw(true);
-	//	m_muzzleFlash.SetPos(m_model->GetBonePos(m_muzzleBoneID[L]));
-	//	m_muzzleFlash.SetScaleHoldAspectRatio(100.0f);
-
-	//	std::unique_ptr<CBillboard> billboard = std::make_unique<CBillboard>();
-	//	billboard->Init(L"Resource/spriteData/smoke.png");
-	//	//billboard->GetModel().InitPostDraw(PostDrawModelRender::enAlpha);
-	//	billboard->SetPos(m_model->GetBonePos(m_muzzleBoneID[L]));
-	//	billboard->SetScale(20.0f);
-	//	SuicideObj::CParticle<CBillboard>* particle = new SuicideObj::CParticle<CBillboard>(std::move(billboard),30);
-	//	particle->SetMove(CVector3(-1.0f,0.0f,-2.0f)*10.0f);
-	//	particle->SetScaling(1.05f);
-
-	//	new BulletKani(m_model->GetBonePos(m_muzzleBoneID[L]), (m_ikSetting[L]->targetPos - m_model->GetBonePos(m_muzzleBoneID[L])).GetNorm()*10.0f);
-	//}
-	//else {
-	//	if (m_muzzleCnt >= 8) { m_muzzleCnt = 0; }
-	//}
 }
 
-void BP_KaniArm::Charge(enLR lr) {
+void BP_KaniArm::ChargeAndMachinegun(enLR lr) {
 	//チャージ
 	m_isCharging[lr] = true;
 	m_chargeTime[lr] ++;
-}
-void BP_KaniArm::MachineGun(enLR lr) {
+	//マシンガン
 	if (m_chargeTime[lr] > m_machineGunTime) {
-		//マシンガン
 		m_isMachineGunning[lr] = true;
 	}
 }
@@ -129,8 +123,7 @@ void BP_KaniArm::Stab() {
 void HCon_KaniArm::Update() {
 	for (auto lr : { L, R }) {
 		if (m_ptrCore->GetPad()->GetFire(lr)) {
-			m_ptrBody->Charge(lr);
-			m_ptrBody->MachineGun(lr);
+			m_ptrBody->ChargeAndMachinegun(lr);
 		}
 	}
 }

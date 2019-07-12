@@ -56,14 +56,18 @@ public:
 private:
 	void UpdateModel() {
 		m_model.SetPos(m_rootPos);
-		CVector3 move = m_rootPos - m_tipPos; move.x *= -1.0f;
+
+		CVector3 move = m_tipPos - m_rootPos;
 		float moveLength = 0.0f;
 		if (move.LengthSq() > FLT_EPSILON) {
-			CQuaternion rot;
-			rot.MakeLookTo(move, CVector3::AxisY());
-			m_model.SetRot(rot); 
 			moveLength = move.Length();
+			//クォータニオン作成
+			CQuaternion rot;
+			rot.MakeLookToUseXYAxis(move);
+			//設定
+			m_model.SetRot(rot);
 		}
+
 		m_model.SetScale({ m_radius,m_radius,m_radius + moveLength*0.5f });
 	}
 
