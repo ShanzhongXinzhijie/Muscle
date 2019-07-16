@@ -30,6 +30,17 @@ Tree::Tree(int id, const CVector3& pos) {
 			}
 		}
 	);
+	//ƒ‚ƒfƒ‹‚Ì‚‚³Žæ“¾
+	CVector3 min, max;
+	m_model.GetInstancingModel()->GetModelRender().GetSkinModel().GetBoundingBox(min, max);
+	if (m_model.GetInstancingModel()->GetModelRender().GetSkinModel().GetFBXUpAxis() == enFbxUpAxisZ) {
+		m_modelHeight = max.z;//Z-UP
+		m_modelRadius = (abs(max.x) + abs(max.y) + abs(min.x) + abs(min.y)) / 4.0f;
+	}
+	else {
+		m_modelHeight = max.y;//Y-UP
+		m_modelRadius = (abs(max.x) + abs(max.z) + abs(min.x) + abs(min.z)) / 4.0f;
+	}
 
 	//‰“Œiƒ‚ƒfƒ‹
 	m_imposter.Init(L"Resource/modelData/tree_tall.cmo", { 2048 * 4, 2048 * 4 }, { 69,35 }, m_sInstancingMax);
@@ -60,15 +71,15 @@ Tree::Tree(int id, const CVector3& pos) {
 					m_rotOffset = CQuaternion(CVector3::AxisY(), sign*rad) * CQuaternion(CVector3::AxisX(), CMath::DegToRad(80.0f));
 					
 					//ƒŒƒC‚Å”»’è
-					CVector3 topPos = m_pos+CVector3::AxisY()*(100.0f*m_model.GetScale().y);
+					CVector3 topPos = m_pos+CVector3::AxisY()*(m_modelHeight * m_model.GetScale().y);
 					btVector3 rayStart = topPos;
 					CVector3 topPosRotaed = topPos;
 					m_rotOffset.Multiply(topPosRotaed);
-					btVector3 rayEnd = topPosRotaed;
+					btVector3 rayEnd = topPosRotaed + CVector3::AxisY()*(topPosRotaed.y - topPos.y);
 					btCollisionWorld::ClosestRayResultCallback gnd_ray(rayStart, rayEnd);
 					GetEngine().GetPhysicsWorld().RayTest(rayStart, rayEnd, gnd_ray);
 					if (gnd_ray.hasHit()) {
-						CVector3 dir2 = gnd_ray.m_hitPointWorld - m_pos; dir2.Normalize();
+						CVector3 dir2 = (gnd_ray.m_hitPointWorld + CVector3::AxisY()*m_modelRadius) - m_pos; dir2.Normalize();
 						//Šp“x
 						float rad = CVector3::AngleOf2NormalizeVector(CVector3::AxisY(), dir2);
 						if (rad > FLT_EPSILON) {
@@ -89,7 +100,7 @@ Tree::Tree(int id, const CVector3& pos) {
 			}
 		}
 	);
-	m_col.m_collision.SetEnable(false);
+	//m_col.m_collision.SetEnable(false);
 	//m_col.IGameObject::SetEnable(false);
 }
 

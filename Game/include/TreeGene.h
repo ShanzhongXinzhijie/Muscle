@@ -26,6 +26,7 @@ private:
 	//当たり判定
 	DHCollision m_col;
 	bool m_isHited = false;
+	float m_modelHeight = 100.0f, m_modelRadius = 0.0f;
 
 public:
 	static int m_sInstancingMax; //このクラスの最大インスタンス数
