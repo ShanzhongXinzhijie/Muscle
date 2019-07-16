@@ -9,9 +9,11 @@ public:
 
 	void InnerStart()override;
 	void Update()override;
+	void PostUTRSUpdate()override;
 
 private:
-	AnimationClip m_initPose;
-	SkeletonIK::IKSetting* m_ikSetting[2];
+	AnimationClip m_initPose;							//初期ポーズ
+	SkeletonIK::IKSetting* m_ikSetting[enLRNUM] = {};	//IK設定
+	DHCollision m_col[enLRNUM];							//コリジョン
 };
 

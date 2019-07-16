@@ -26,10 +26,13 @@ void BP_HumanLeg::InnerStart() {
 	m_ikSetting[1]->footIKRayEndOffset = CVector3::AxisY()*-2500.0f*m_ptrCore->GetScale().y;
 
 	//“–‚½‚è”»’è(‘«)
-	//const float radius = 50.0f;
-	//m_col.CreateSphere(m_pos, {}, radius);
-	//m_col.SetName(L"DH_foot");
-	//m_col.SetClass(this);
+	constexpr float radius = 50.0f;
+	const float modelScale = m_ptrCore->GetScale().GetMax() / (0.0188f*2.0f);
+	for (auto lr : {L,R}) {
+		m_col[lr].m_collision.CreateSphere(m_model->GetBonePos(m_ikSetting[lr]->tipBone->GetNo()), {}, radius * modelScale);
+		m_col[lr].m_reference.position = m_model->GetBonePos(m_ikSetting[lr]->tipBone->GetNo());
+		m_col[lr].m_reference.attributes.set(enPhysical);
+	}
 }
 
 void BP_HumanLeg::Update() {
@@ -49,8 +52,12 @@ void BP_HumanLeg::Update() {
 		//™X‚É‘«‚ðL‚Î‚·
 		float stretchMax = maxFootDistance - footDistance;
 		m_ptrCore->AddMove(CVector3(0.0f, min(stretchMax, 5.0f), 0.0f));
-	}
-	
+	}	
+}
+
+void BP_HumanLeg::PostUTRSUpdate() {
 	//”»’è‚ÌXV
-	//m_col.SetPosition(m_pos);
+	for (auto lr : { L,R }) {
+		m_col[lr].SetPos(m_model->GetBonePos(m_ikSetting[lr]->tipBone->GetNo()));
+	}
 }

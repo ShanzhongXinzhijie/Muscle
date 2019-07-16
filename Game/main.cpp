@@ -3,10 +3,10 @@
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
 {
-	//ゲームの初期化。
+	//エンジンの初期化設定
 	InitEngineParameter initparam;
 	
-	initparam.windowStyle = WS_POPUP;
+	initparam.windowStyle = WS_POPUP;		//ウィンドウスタイル
 	initparam.screenWidth = 720;			//ウィンドウの幅
 	initparam.screenHeight = 720;			//ウィンドウの高さ
 	initparam.frameBufferWidth = 720;		//フレームバッファの幅。これが内部解像度。
@@ -19,6 +19,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	//initparam.limitFps = 25;
 	//initparam.shadowMapSetting = enON;
 	
+	//エンジン初期化
 	GetEngine().InitGame(hInstance, hPrevInstance, lpCmdLine, nCmdShow, "究極混成体デスホトケ", initparam);	
 
 	//DOF設定
@@ -30,9 +31,11 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	//判定表示
 	//SetPhysicsDebugDrawMode(btIDebugDraw::DBG_DrawWireframe);
 
+	//デバッグ表示・入力、常時有効化
 	SetIsDebugDraw(true);
 	SetIsDebugInput(true);
 
+	//ゲームインスタンス作成
 	Game game;
 
 	//ゲームループ。

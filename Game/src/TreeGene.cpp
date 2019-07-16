@@ -7,19 +7,19 @@
 /// </summary>
 int Tree::m_sInstancingMax = 512;
 
-Tree::Tree(int id, const CVector3& pos, const CQuaternion& rot) {
+Tree::Tree(int id, const CVector3& pos) {
 	m_id = id;
 	m_pos = pos;
-	m_rot = rot;
 
 	//ÉoÉäÉGÅ[ÉVÉáÉì
 	float sizeScale = 0.8f*CMath::RandomZeroToOne() > 0.5f ? 1.0f : 1.5f;
 	float radY = -CMath::PI2 + CMath::PI2*2.0f*CMath::RandomZeroToOne();
+	m_rot.SetRotation(CVector3::AxisY(), radY);
 
 	//ãﬂåiÉÇÉfÉã
 	m_model.Init(m_sInstancingMax, L"Resource/modelData/tree_tall.cmo");
 	m_model.SetPos(m_pos);
-	m_model.SetRot(CQuaternion(CVector3::AxisY(),radY));
+	m_model.SetRot(m_rot);
 	m_model.SetScale(sizeScale);
 	m_model.SetIsDraw(false);
 	m_model.GetInstancingModel()->GetModelRender().SetIsShadowCaster(false);
@@ -32,7 +32,7 @@ Tree::Tree(int id, const CVector3& pos, const CQuaternion& rot) {
 	);
 
 	//âìåiÉÇÉfÉã
-	m_imposter.Init(L"Resource/modelData/tree_tall.cmo", { 2048*4, 2048*2 }, { 35,17 }, m_sInstancingMax);
+	m_imposter.Init(L"Resource/modelData/tree_tall.cmo", { 2048 * 4, 2048 * 4 }, { 69,35 }, m_sInstancingMax);
 	m_imposter.SetPos(m_pos);
 	m_imposter.SetRotY(radY);
 	m_imposter.SetScale(sizeScale);
@@ -40,17 +40,21 @@ Tree::Tree(int id, const CVector3& pos, const CQuaternion& rot) {
 	m_imposter.SetIsShadowCaster(false);
 
 	//ìñÇΩÇËîªíË
-	const float radius = 5.0f;
-	m_col.CreateSphere(m_pos+CVector3::AxisY()*radius, {}, radius);
-	m_col.SetIsHurtCollision(true);
-	m_col.SetCallback(
+	constexpr float radius = 50.0f;
+	m_col.m_collision.CreateSphere(m_pos + CVector3::AxisY()*radius*sizeScale, {}, radius*sizeScale);
+	m_col.m_reference.position = m_pos + CVector3::AxisY()*radius*sizeScale;
+	m_col.m_collision.SetIsHurtCollision(true);
+	m_col.m_collision.SetCallback(
 		[&](SuicideObj::CCollisionObj::SCallbackParam& p) {
 			//Ç»Ç¨ì|Ç≥ÇÍÇÈ
 			if (m_isHited) { return; }//Ç∑Ç≈Ç…ì|ÇÍÇƒÇÈ
-			if (p.EqualName(L"DH_foot")) {
-				CDeathHotoke* H = p.GetClass<CDeathHotoke>();
-				CVector3 dir = m_pos - H->GetPos(); dir.y = 0.0f; dir.Normalize();
+			if (p.EqualName(L"ReferenceCollision")) {
+				//ÉNÉâÉXéÊÇËèoÇ∑
+				ReferenceCollision* H = p.GetClass<ReferenceCollision>();
+				//ì|ÇÍÇÈï˚å¸éZèo
+				CVector3 dir = m_pos - H->position; dir.y = 0.0f; 
 				if (dir.LengthSq() > FLT_EPSILON) {
+					dir.Normalize();
 					float rad = CVector3::AngleOf2NormalizeVector(dir, CVector3::AxisZ());
 					float sign = 1.0f; if (CVector2(dir.x,dir.z).Cross({ 0.0f, 1.0f }) < 0.0f) { sign = -1.0f; }
 					m_rotOffset = CQuaternion(CVector3::AxisY(), sign*rad) * CQuaternion(CVector3::AxisX(), CMath::DegToRad(80.0f));
@@ -78,30 +82,37 @@ Tree::Tree(int id, const CVector3& pos, const CQuaternion& rot) {
 							return;
 						}
 					}
-					
+					//ê›íË		
 					m_model.SetRot(m_rotOffset*m_rot);
 					m_isHited = true;
 				}
 			}
 		}
 	);
-	m_col.SetEnable(false);
-	m_col.IGameObject::SetEnable(false);
+	m_col.m_collision.SetEnable(false);
+	//m_col.IGameObject::SetEnable(false);
 }
 
 void Tree::PostLoopUpdate() {
-	const float nearDistance = CMath::Square(1200.0f*2.0f), farDistance = CMath::Square(2500.0f);
+	constexpr float nearDistance = CMath::Square(1200.0f*2.0f), farDistance = CMath::Square(2500.0f);
 	const float distance = (m_pos - GetMainCamera()->GetPos()).LengthSq();
 
 	if (GetKeyInput(VK_TAB) || distance < nearDistance) {
-		m_model.SetIsDraw(true);
-		m_imposter.SetIsDraw(false);
-		m_col.SetEnable(true);
+		if (m_model.GetIsDraw() == false) {
+			m_model.SetIsDraw(true);
+			m_imposter.SetIsDraw(false);
+			m_col.m_collision.SetEnable(true);
+		}
 	}
 	else {
-		m_model.SetIsDraw(false);
-		if (!m_isHited) { m_imposter.SetIsDraw(true); }
-		m_col.SetEnable(false);//âìÇ¢Ç∆îªíËÇ‡ñ≥å¯âª
+		if (m_model.GetIsDraw() == true) {
+			m_model.SetIsDraw(false);
+			m_imposter.SetIsDraw(true);
+			m_col.m_collision.SetEnable(false);//âìÇ¢Ç∆îªíËÇ‡ñ≥å¯âª
+			m_isHited = false;
+			m_rotOffset = CQuaternion::Identity();
+			m_model.SetRot(m_rotOffset*m_rot);
+		}
 	}
 }
 
@@ -121,8 +132,6 @@ void TreeGene::Generate(const CVector3& minArea, const CVector3& maxArea, int nu
 		CVector3 pos = { minArea.x + (maxArea.x - minArea.x)*CMath::RandomZeroToOne(), maxArea.y, minArea.z + (maxArea.z - minArea.z)*CMath::RandomZeroToOne() };
 		//âÒì]ê∂ê¨
 		CQuaternion rot(CVector3::AxisY(), CMath::PI2*CMath::RandomZeroToOne());
-		//rot *= CQuaternion(CVector3::AxisX(), CMath::DegToRad(0.5f) - CMath::DegToRad(1.0f)*CMath::RandomZeroToOne());
-		//rot *= CQuaternion(CVector3::AxisZ(), CMath::DegToRad(0.5f) - CMath::DegToRad(1.0f)*CMath::RandomZeroToOne());
 		//ÉåÉCÇ≈îªíË
 		btVector3 rayStart = pos;
 		btVector3 rayEnd = btVector3(pos.x, minArea.y, pos.z);
@@ -131,13 +140,9 @@ void TreeGene::Generate(const CVector3& minArea, const CVector3& maxArea, int nu
 		if (gnd_ray.hasHit()) {
 			//ê⁄êGì_Çç¿ïWÇ…
 			pos = gnd_ray.m_hitPointWorld;
-
-			/*CQuaternion lookTo;
-			lookTo.MakeLookTo(gnd_ray.m_hitNormalWorld);
-			rot = lookTo * rot;*/
 		}		
 		//ê∂Ç‹ÇÍÇÎ!
-		m_trees.emplace_back(std::make_unique<Tree>(i,pos,rot));
+		m_trees.emplace_back(std::make_unique<Tree>(i,pos));
 	}
 }
 
