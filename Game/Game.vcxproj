@@ -86,9 +86,13 @@
     <MeshContentTask Include="Asset\modelData\ki\ki.fbx" />
     <MeshContentTask Include="Asset\modelData\ki\kiZ.fbx" />
     <MeshContentTask Include="Asset\modelData\knight.FBX" />
+    <MeshContentTask Include="Asset\modelData\miniTree\minitree.fbx" />
     <MeshContentTask Include="Asset\modelData\pmaTest.FBX" />
     <MeshContentTask Include="Asset\modelData\sigemi\sigemi.fbx" />
     <MeshContentTask Include="Asset\modelData\SizeM\city.FBX" />
+    <MeshContentTask Include="Asset\modelData\stone\stone_pillar.fbx" />
+    <MeshContentTask Include="Asset\modelData\stone\stone_square.fbx" />
+    <MeshContentTask Include="Asset\modelData\stone\stone_tri.fbx" />
     <MeshContentTask Include="Asset\modelData\tall\tree_tall.fbx" />
     <MeshContentTask Include="Asset\modelData\tikei.fbx" />
   </ItemGroup>
