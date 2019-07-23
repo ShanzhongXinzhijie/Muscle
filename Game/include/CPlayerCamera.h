@@ -85,7 +85,7 @@ public:
 		return m_camera.GetUp();
 	}
 	CVector3 GetLeft()const {
-		return CVector3::GetCross(m_camera.GetFront(), m_camera.GetUp());
+		return CVector3::GetCross(m_camera.GetFront(), m_camera.GetUp()).GetNorm();
 	}
 
 	//ƒƒCƒ“ƒJƒƒ‰‚Éİ’è

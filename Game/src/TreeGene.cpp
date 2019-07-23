@@ -27,7 +27,7 @@ Tree::Tree(int id, const CVector3& pos) {
 	m_model.SetPos(m_pos);
 	m_model.SetRot(m_rot);
 	m_model.SetScale(sizeScale);
-	m_model.SetIsDraw(false);
+	m_model.SetIsDraw(true);
 	m_model.GetInstancingModel()->GetModelRender().SetIsShadowCaster(false);
 	m_model.GetInstancingModel()->GetModelRender().GetSkinModel().FindMaterialSetting(
 		[&](MaterialSetting* me) {
