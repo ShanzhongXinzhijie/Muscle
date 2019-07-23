@@ -13,6 +13,15 @@ bool CDeathHotoke::Start() {
 
 	//コア生成
 	m_coreModel.Init(L"Resource/modelData/core.cmo");	
+	//ノーマルマップ適用
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> textureView;
+	HRESULT hr = DirectX::CreateWICTextureFromFile(GetGraphicsEngine().GetD3DDevice(), L"Resource/normalMap/ngasi.png", nullptr, textureView.ReleaseAndGetAddressOf());
+	m_coreModel.GetSkinModel().FindMaterialSetting(
+		[&](MaterialSetting* mat) {
+			mat->SetNormalTexture(textureView.Get());
+			mat->SetShininess(0.9f);
+		}
+	);
 
 	//位置初期化
 	m_pos = CVector3::AxisY()*1000.0f;

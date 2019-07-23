@@ -11,6 +11,15 @@ void BP_KaniArm::InnerStart() {
 	//モデル
 	m_model = std::make_unique<CSkinModelRender>();
 	m_model->Init(L"Resource/modelData/kaniarm.cmo", &m_initPose, 1);
+	//ノーマルマップ適用
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> textureView;
+	HRESULT hr = DirectX::CreateWICTextureFromFile(GetGraphicsEngine().GetD3DDevice(), L"Resource/normalMap/Crab1NormalsMap.png", nullptr, textureView.ReleaseAndGetAddressOf());
+	m_model->GetSkinModel().FindMaterialSetting(
+		[&](MaterialSetting* mat) {
+			mat->SetNormalTexture(textureView.Get());
+			mat->SetShininess(0.7f);
+		}
+	);
 
 	//腕のIK設定
 	m_ikSetting[R] = m_model->GetSkinModel().GetSkeleton().CreateIK();
