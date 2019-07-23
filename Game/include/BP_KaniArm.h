@@ -1,8 +1,9 @@
 #pragma once
 #include "IBodyPart.h"
 
-class ICon_KaniArm;
-
+/// <summary>
+/// カニ腕
+/// </summary>
 class BP_KaniArm :
 	public IBodyPart
 {
@@ -24,7 +25,7 @@ public:
 
 private:
 	//コントローラー
-	ICon_KaniArm* m_controller = nullptr;
+	IBodyController<BP_KaniArm>* m_controller = nullptr;
 
 	//ボーン関係
 	AnimationClip m_initPose;
@@ -40,33 +41,24 @@ private:
 	static constexpr int MACHINE_GUN_CHARGE_TIME = 10, LAZER_CHARGE_TIME = MACHINE_GUN_CHARGE_TIME - 3;
 };
 
-//TODO これテンプレート化?
-class ICon_KaniArm {
+/// <summary>
+/// カニ腕 #人コントローラー
+/// </summary>
+class HCon_KaniArm : public IBodyController<BP_KaniArm> {
 public:
-	ICon_KaniArm(BP_KaniArm* ptrbody, CDeathHotoke* ptrCore): m_ptrBody(ptrbody), m_ptrCore(ptrCore){}
-	virtual void Update() = 0;
-
-protected:
-	BP_KaniArm* m_ptrBody = nullptr;
-	CDeathHotoke* m_ptrCore = nullptr;
-};
-
-class HCon_KaniArm : public ICon_KaniArm {
-public:
-	using ICon_KaniArm::ICon_KaniArm;
-	
+	using IBodyController::IBodyController;	
 	void Update()override;
-private:
 };
 
-class AICon_KaniArm : 
-	public ICon_KaniArm
+/// <summary>
+/// カニ腕 #AIコントローラー
+/// </summary>
+class AICon_KaniArm : public IBodyController<BP_KaniArm>
 	//TODO もう一個、ムーブセットのインターフェースクラスを継承させる?
 {
 public:
-	using ICon_KaniArm::ICon_KaniArm;
-	
-	void Update()override;
+	using IBodyController::IBodyController;	
+	void Update()override {};
 	//TODO
 	//どこどこへの移動、相手への攻撃などムーブセットを実装する仮想関数作る?
 private:

@@ -46,7 +46,12 @@ void BP_KaniArm::InnerStart() {
 	}
 
 	//コントローラー
-	m_controller = new HCon_KaniArm(this,m_ptrCore);
+	if (m_ptrCore->GetPad()) {
+		m_controller = new HCon_KaniArm(this, m_ptrCore);
+	}
+	else {
+		m_controller = new AICon_KaniArm(this, m_ptrCore);
+	}
 }
 
 void BP_KaniArm::Update() {

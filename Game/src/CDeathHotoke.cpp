@@ -23,6 +23,15 @@ bool CDeathHotoke::Start() {
 		}
 	);
 
+	//当たり判定
+	m_col.m_collision.CreateMesh({}, {}, m_scale, m_coreModel.GetSkinModel());
+	m_col.m_collision.SetIsHurtCollision(true);//これは喰らい判定
+	m_col.m_collision.SetCallback(
+		[&](SuicideObj::CCollisionObj::SCallbackParam& p) {
+			//TODO エフェクト出して、ダメージ
+		}
+	);
+	
 	//位置初期化
 	m_pos = CVector3::AxisY()*1000.0f;
 	m_pos.z += 200.0f;
@@ -60,6 +69,8 @@ void CDeathHotoke::Update() {
 	}
 	//コアのTRS更新
 	m_coreModel.SetPRS(m_pos, m_rot, m_scale);
+	//コアのコリジョン更新
+	m_col.SetPos(m_pos); m_col.SetRot(m_rot);
 	//パーツのワールド行列更新後アップデート
 	for (auto& part : m_parts) {
 		if (part)part->PostUTRSUpdate();

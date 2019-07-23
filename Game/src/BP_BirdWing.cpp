@@ -18,7 +18,7 @@ void BP_BirdWing::InnerStart() {
 }
 
 void BP_BirdWing::Update() {
-	CVector2 stick = m_ptrCore->GetPad()->GetStick(L);
+	CVector2 stick; if(m_ptrCore->GetPad())stick = m_ptrCore->GetPad()->GetStick(L);
 	float length = stick.LengthSq();
 	stick.Normalize();
 

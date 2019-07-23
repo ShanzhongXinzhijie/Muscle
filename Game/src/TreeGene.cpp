@@ -17,12 +17,13 @@ Tree::Tree(int id, const CVector3& pos) {
 	m_rot.SetRotation(CVector3::AxisY(), radY);
 
 	//‹ßŒiƒ‚ƒfƒ‹
-	/*if (CMath::RandomZeroToOne() > 0.8f) {
+	if (CMath::RandomZeroToOne() > 0.8f) {
 		m_model.Init(m_sInstancingMax, L"Resource/modelData/sigemi.cmo", nullptr, 0, enFbxUpAxisY);
+		sizeScale *= 0.05f;
 	}
-	else {*/
+	else {
 		m_model.Init(m_sInstancingMax, L"Resource/modelData/tree_tall.cmo");
-	//}
+	}
 	m_model.SetPos(m_pos);
 	m_model.SetRot(m_rot);
 	m_model.SetScale(sizeScale);

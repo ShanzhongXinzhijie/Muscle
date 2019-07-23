@@ -7,8 +7,10 @@ class CDeathHotoke :
 	public IGameObject
 {
 public:
+	//コンストラクタ
 	CDeathHotoke(IGamePad* ptrPad):m_ptrPad(ptrPad){}
 
+	//IGameObject関係
 	bool Start()override;
 	void Update()override;
 	void PostRender()override;
@@ -20,16 +22,16 @@ public:
 	//セッター
 	void SetPos(const CVector3& pos) { m_pos = pos; }
 	void SetRot(const CQuaternion& rot) { m_rot = rot; }
-
+	//ターゲット位置を設定
 	void SetTargetPos(const CVector3& pos) { m_targetPos = pos; }
 	
 	//ゲッター
 	const CVector3& GetPos()const { return m_pos; }	
 	const CQuaternion& GetRot()const { return m_rot; }
 	const CVector3& GetScale()const { return m_scale; }
-
+	//移動量を取得
 	const CVector3& GetMove() const { return m_move; }
-
+	//ターゲット位置を取得
 	const CVector3& GetTargetPos() const { return m_targetPos; }
 
 	//パッドの取得
@@ -38,6 +40,9 @@ public:
 private:
 	//コアのモデル
 	GameObj::CSkinModelRender m_coreModel;
+
+	//コリジョン
+	DHCollision m_col;
 
 	//TRS
 	CVector3 m_pos, m_scale;

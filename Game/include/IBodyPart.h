@@ -1,6 +1,27 @@
 #pragma once
 #include"CDeathHotoke.h"
 
+/// <summary>
+/// ボディパーツコントローラーの親クラス
+/// </summary>
+template <class T> 
+class IBodyController {
+public:
+	//コンストラクタ
+	IBodyController(T* ptrbody, CDeathHotoke* ptrCore) : m_ptrBody(ptrbody), m_ptrCore(ptrCore) {}
+	//毎フレーム実行する処理
+	virtual void Update() = 0;
+
+protected:
+	//操作するボディパーツのポインタ
+	T* m_ptrBody = nullptr;
+	//本体のポインタ
+	CDeathHotoke* m_ptrCore = nullptr;
+};
+
+/// <summary>
+/// ボディパーツの親クラス
+/// </summary>
 class IBodyPart
 {
 public:
@@ -21,21 +42,13 @@ private:
 	virtual void InnerStart() = 0;
 	
 protected:
+	//本体のポインタ
 	CDeathHotoke* m_ptrCore = nullptr;
 
+	//モデル
 	std::unique_ptr<GameObj::CSkinModelRender> m_model;
 
+	//座標等
 	CVector3 m_localPos, m_localScale = 1.0f;
 	CQuaternion m_localRot;
 };
-
-//見た目
-//毎フレームの挙動
-	//アクション
-	//移動
-//ダメージ
-
-//翼
-	//インタラクト判定
-	//移動(入力で)
-	//エフェクト

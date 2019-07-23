@@ -26,6 +26,6 @@ private:
 
 	ShadowMapBaker m_shadowMapBaker[4];
 
-	//CDeathHotoke m_hotoke;
+	CDeathHotoke m_hotoke;
 };
 

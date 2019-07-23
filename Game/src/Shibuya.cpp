@@ -2,7 +2,7 @@
 #include "Shibuya.h"
 #include "DemolisherWeapon/Graphic/FrustumCulling.h"
 
-Shibuya::Shibuya()
+Shibuya::Shibuya() : m_hotoke(nullptr)
 {
 	//ライト作成
 	m_directionLight.SetDirection(CVector3::AxisY()*-1.0f+ CVector3::AxisZ()*-1.0f);
@@ -29,6 +29,7 @@ Shibuya::Shibuya()
 			mat->SetAlbedoTexture(tex);
 			mat->SetTriPlanarMappingPS();
 			mat->SetTriPlanarMappingUVScale(0.02f);
+			//mat->SetShininess(0.9f);
 		}
 	);
 
@@ -38,7 +39,7 @@ Shibuya::Shibuya()
 	}
 	normaltex->Release();
 
-	m_knight.Init(L"Resource/modelData/knight.cmo");
+	//m_knight.Init(L"Resource/modelData/knight.cmo");
 	//m_knight.SetPos(CVector3::AxisY()*850.0f);
 	//m_knight.SetScale(0.4f);
 	//m_knight.GetSkinModel().FindMaterial([](ModelEffect* mat) {mat->SetEmissive(4.0f); });
@@ -68,17 +69,19 @@ Shibuya::Shibuya()
 	m_imp.SetPos(CVector3::Up()*1500.0f+ CVector3::AxisX()*300.0f);
 	m_imp.SetScale(0.4f*10.0f);*/
 
-	m_imp2.Init(L"Resource/modelData/knight.cmo", { 2048 * 2,2048 * 2 }, { 19,19 });
+	/*m_imp2.Init(L"Resource/modelData/knight.cmo", { 2048 * 2,2048 * 2 }, { 19,19 });
 	m_imp2.SetPos(CVector3::Up()*1000.0f + CVector3::AxisX()*300.0f);
 	m_imp2.SetScale(0.4f*10.0f);
 	m_imp2.SetRotY(CMath::PI2);
 
 	m_knight.SetPos(CVector3::AxisY()*1500.0f);
 	m_knight.SetScale(0.4f*10.0f);
-	m_knight.SetRot(CQuaternion(CVector3::AxisY(), CMath::PI2));
+	m_knight.SetRot(CQuaternion(CVector3::AxisY(), CMath::PI2));*/
 
+	//TODO 木が倒れても影が動かない
+	//TODO グラフィック設定で動的シャドウかどうか
 	//シャドウマップのベイク
-	CVector3 forcusPoint = CVector3::Up()*1000.0f - CVector3::AxisX()*5000.0f - CVector3::AxisZ()*5000.0f;
+	/*CVector3 forcusPoint = CVector3::Up()*1000.0f - CVector3::AxisX()*5000.0f - CVector3::AxisZ()*5000.0f;
 	for (int i = 0; i < 4; i++) {
 		m_model.RefreshWorldMatrix();
 		m_shadowMapBaker[i].AddDrawModel(m_model);
@@ -97,7 +100,7 @@ Shibuya::Shibuya()
 			forcusPoint -= CVector3::AxisX()*5000.0f;
 			forcusPoint += CVector3::AxisZ()*5000.0f;
 		}
-	}
+	}*/
 	//シャドウマップ
 	m_shadowmap.Init(2,//分割数
 		m_directionLight.GetDirection(),//ライトの方向

@@ -19,6 +19,8 @@ struct ReferenceCollision : public IDW_Class {
 public:	
 	std::bitset<enAttributesNum> attributes;//属性ビットマスク
 	CVector3 position;//位置
+
+	float damege = 0.0f;//ダメージ
 };
 
 /// <summary>
@@ -27,18 +29,26 @@ public:
 class DHCollision
 {
 public:
+	//コンストラクタ
 	DHCollision() {
 		//衝突時に参照する構造体を設定
 		m_collision.SetName(L"ReferenceCollision");
 		m_collision.SetClass(&m_reference);
 	}
 
+	//座標を設定
 	void SetPos(const CVector3& pos) {
 		m_collision.SetPosition(pos);
 		m_reference.position = pos;
 	}
+	//回転を設定
+	void SetRot(const CQuaternion& rot) {
+		m_collision.SetRotation(rot);
+	}
 
+	//コリジョンオブジェクト
 	SuicideObj::CCollisionObj m_collision;
+	//コリジョン情報
 	ReferenceCollision m_reference;
 };
 

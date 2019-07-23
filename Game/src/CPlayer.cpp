@@ -47,7 +47,7 @@ void CPlayer::Update() {
 
 	//ƒJƒƒ‰Ø‚è‘Ö‚¦
 	if (GetKeyInput('F')) {
-		m_humanCam.SetPos(m_human.GetBonePos(m_human.FindBoneID(L"Head"))+CVector3::AxisY()*300);
+		m_humanCam.SetPos(m_human.GetBonePos(m_human.FindBoneID(L"Head"))+CVector3::AxisY()*0);
 		m_humanCam.SetTarget(m_hotoke.GetPos());
 		SetMainCamera(&m_humanCam);
 	}
