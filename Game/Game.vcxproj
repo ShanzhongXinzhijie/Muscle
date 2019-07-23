@@ -87,6 +87,7 @@
     <MeshContentTask Include="Asset\modelData\ki\kiZ.fbx" />
     <MeshContentTask Include="Asset\modelData\knight.FBX" />
     <MeshContentTask Include="Asset\modelData\pmaTest.FBX" />
+    <MeshContentTask Include="Asset\modelData\sigemi\sigemi.fbx" />
     <MeshContentTask Include="Asset\modelData\SizeM\city.FBX" />
     <MeshContentTask Include="Asset\modelData\tall\tree_tall.fbx" />
     <MeshContentTask Include="Asset\modelData\tikei.fbx" />
