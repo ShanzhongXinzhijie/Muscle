@@ -44,6 +44,7 @@
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="src\Shibuya.cpp" />
+    <ClCompile Include="src\StageObjectGenerator.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
@@ -69,6 +70,7 @@
     <ClInclude Include="include\Game.h" />
     <ClInclude Include="include\Shibuya.h" />
     <ClInclude Include="include\ShadowMapBaker.h" />
+    <ClInclude Include="include\StageObjectGenerator.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="include\TpsCamera.h" />
     <ClInclude Include="include\TreeGene.h" />
@@ -83,16 +85,14 @@
     <MeshContentTask Include="Asset\modelData\hotoke\humanleg.FBX" />
     <MeshContentTask Include="Asset\modelData\hotoke\kaniarm.FBX" />
     <MeshContentTask Include="Asset\modelData\human\human.fbx" />
-    <MeshContentTask Include="Asset\modelData\ki\ki.fbx" />
-    <MeshContentTask Include="Asset\modelData\ki\kiZ.fbx" />
     <MeshContentTask Include="Asset\modelData\knight.FBX" />
     <MeshContentTask Include="Asset\modelData\miniTree\minitree.fbx" />
     <MeshContentTask Include="Asset\modelData\pmaTest.FBX" />
     <MeshContentTask Include="Asset\modelData\sigemi\sigemi.fbx" />
-    <MeshContentTask Include="Asset\modelData\SizeM\city.FBX" />
     <MeshContentTask Include="Asset\modelData\stone\stone_pillar.fbx" />
     <MeshContentTask Include="Asset\modelData\stone\stone_square.fbx" />
     <MeshContentTask Include="Asset\modelData\stone\stone_tri.fbx" />
+    <MeshContentTask Include="Asset\modelData\tall\tree_notall.fbx" />
     <MeshContentTask Include="Asset\modelData\tall\tree_tall.fbx" />
     <MeshContentTask Include="Asset\modelData\tikei.fbx" />
   </ItemGroup>

@@ -7,8 +7,7 @@
 /// </summary>
 int Tree::m_sInstancingMax = 512;
 
-Tree::Tree(int id, const CVector3& pos) {
-	m_id = id;
+void Tree::Init(const CVector3& pos, const CVector3& normal){
 	m_pos = pos;
 
 	//バリエーション
@@ -17,13 +16,15 @@ Tree::Tree(int id, const CVector3& pos) {
 	m_rot.SetRotation(CVector3::AxisY(), radY);
 
 	//近景モデル
-	if (CMath::RandomZeroToOne() > 0.8f) {
-		m_model.Init(m_sInstancingMax, L"Resource/modelData/sigemi.cmo", nullptr, 0, enFbxUpAxisY);
-		sizeScale *= 0.05f;
-	}
-	else {
+	//if (CMath::RandomZeroToOne() > 0.8f) {
+	//	m_model.Init(m_sInstancingMax, L"Resource/modelData/tree_notall.cmo");
+		//茂み
+		//m_model.Init(m_sInstancingMax, L"Resource/modelData/sigemi.cmo", nullptr, 0, enFbxUpAxisY);
+		//sizeScale *= 0.05f;
+	//}
+	//else {
 		m_model.Init(m_sInstancingMax, L"Resource/modelData/tree_tall.cmo");
-	}
+	//}
 	m_model.SetPos(m_pos);
 	m_model.SetRot(m_rot);
 	m_model.SetScale(sizeScale);
@@ -49,7 +50,12 @@ Tree::Tree(int id, const CVector3& pos) {
 	}
 
 	//遠景モデル
-	m_imposter.Init(L"Resource/modelData/tree_tall.cmo", { 2048 * 4, 2048 * 4 }, { 69,35 }, m_sInstancingMax);
+	//if (m_model.GetInstancingModel()->GetModelRender().GetSkinModel().EqualModelName(L"tree_notall")) {
+	//	m_imposter.Init(L"Resource/modelData/tree_notall.cmo", { 2048 * 4, 2048 * 4 }, { 69,35 }, m_sInstancingMax);
+	//}
+	//else {
+		m_imposter.Init(L"Resource/modelData/tree_tall.cmo", { 2048 * 4, 2048 * 4 }, { 69,35 }, m_sInstancingMax);
+	//}
 	m_imposter.SetPos(m_pos);
 	m_imposter.SetRotY(radY);
 	m_imposter.SetScale(sizeScale);
@@ -133,6 +139,7 @@ void Tree::PostLoopUpdate() {
 	}
 }
 
+/*
 /// <summary>
 /// ツリージェネレーター
 /// </summary>
@@ -166,3 +173,4 @@ void TreeGene::Generate(const CVector3& minArea, const CVector3& maxArea, int nu
 void TreeGene::Clear() {
 	m_trees.clear();
 }
+*/

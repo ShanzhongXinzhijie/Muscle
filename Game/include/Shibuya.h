@@ -1,6 +1,7 @@
 #pragma once
 
 #include"TreeGene.h"
+#include"StageObjectGenerator.h"
 #include"CDeathHotoke.h"
 #include"ShadowMapBaker.h"
 
@@ -19,7 +20,7 @@ private:
 
 	PhysicsStaticObject m_phyStaticObject;
 
-	TreeGene m_treeGene;
+	StageObjectGenerator m_objGene;
 	GameObj::CSkinModelRender m_knight, m_dinosaur;
 	CBillboard m_billboard, m_billboard2;
 	CImposter m_imp, m_imp2;

@@ -1,20 +1,24 @@
 #pragma once
 
+#include"StageObjectGenerator.h"
+
 /// <summary>
 /// 木でーす
 /// </summary>
-class Tree : public IGameObject{
+class Tree : public IGameObject, public IStageObject{
 public:
-	Tree(int id, const CVector3& pos);
+	using IStageObject::IStageObject;
 
+	//初期化関数
+	void Init(const CVector3& pos, const CVector3& normal)override;
+
+	//
 	void PostLoopUpdate()override;
 
 	//モデルを取得
 	GameObj::CInstancingModelRender& GetModel() { return m_model; }
 
 private:
-	int m_id = -1;//固有ID
-
 	//グラフィック
 	GameObj::CInstancingModelRender m_model;
 	CImposter m_imposter;
@@ -32,6 +36,7 @@ public:
 	static int m_sInstancingMax; //このクラスの最大インスタンス数
 };
 
+/*
 /// <summary>
 /// 木々を生成するクラス
 /// </summary>
@@ -53,4 +58,4 @@ public:
 private:
 	std::vector<std::unique_ptr<Tree>> m_trees;//木々のリスト
 };
-
+*/
