@@ -3,6 +3,54 @@
 #include "CDeathHotoke.h"
 
 /// <summary>
+/// 石
+/// </summary>
+int Stone::m_sInstancingMax = 512;
+
+void Stone::Init(const CVector3& pos, const CVector3& normal) {
+	float scale = 1.0f;
+	switch (CMath::RandomInt()%100)
+	{
+	/*case 0:
+		m_model.Init(m_sInstancingMax, L"Resource/modelData/stone_square.cmo", nullptr, 0, enFbxUpAxisY);
+		break;
+	case 1:
+		m_model.Init(m_sInstancingMax, L"Resource/modelData/stone_tri.cmo", nullptr, 0, enFbxUpAxisY);
+		break;
+	case 2:
+		m_model.Init(m_sInstancingMax, L"Resource/modelData/stone_pillar.cmo", nullptr, 0, enFbxUpAxisY);
+		break;
+	case 3:
+		m_model.Init(m_sInstancingMax, L"Resource/modelData/minitree.cmo", nullptr, 0, enFbxUpAxisY);
+		break;*/
+	case 4:
+		m_model.Init(m_sInstancingMax, L"Resource/modelData/tettou.cmo");
+		scale = 1.0f;
+		break;
+	default:
+		return;
+		m_model.Init(m_sInstancingMax, L"Resource/modelData/sigemi.cmo", nullptr, 0, enFbxUpAxisY);
+		scale = (CMath::RandomZeroToOne() > 0.5f ? 0.05f : 0.1f)*(0.5f + CMath::RandomZeroToOne());
+		break;
+	}
+	m_model.SetPos(pos);
+	CQuaternion rot(CVector3::AxisX(), CMath::RandomZeroToOne()*CMath::PI2);
+	rot.Concatenate(CQuaternion(CVector3::AxisY(), CMath::RandomZeroToOne()*CMath::PI2));
+	rot.Concatenate(CQuaternion(CVector3::AxisZ(), CMath::RandomZeroToOne()*CMath::PI2));
+	//m_model.SetRot(rot);
+	m_model.SetScale(scale);
+	m_model.SetIsDraw(true);
+	m_model.GetInstancingModel()->GetModelRender().SetIsShadowCaster(false);
+	m_model.GetInstancingModel()->GetModelRender().GetSkinModel().FindMaterialSetting(
+		[&](MaterialSetting* me) {
+			me->SetEmissive(0.0f);
+			me->SetMetallic(1.0f);
+			//me->SetShininess(0.5f);
+		}
+	);
+}
+
+/// <summary>
 /// 木
 /// </summary>
 int Tree::m_sInstancingMax = 512;
@@ -11,7 +59,7 @@ void Tree::Init(const CVector3& pos, const CVector3& normal){
 	m_pos = pos;
 
 	//バリエーション
-	float sizeScale = 0.8f*CMath::RandomZeroToOne() > 0.5f ? 1.0f : 1.5f;
+	float sizeScale = 0.8f*(CMath::RandomZeroToOne() > 0.5f ? 1.0f : 1.5f)*(1.0f + CMath::RandomZeroToOne()*0.3f);
 	float radY = -CMath::PI2 + CMath::PI2*2.0f*CMath::RandomZeroToOne();
 	m_rot.SetRotation(CVector3::AxisY(), radY);
 

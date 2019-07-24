@@ -94,7 +94,9 @@
     <MeshContentTask Include="Asset\modelData\stone\stone_tri.fbx" />
     <MeshContentTask Include="Asset\modelData\tall\tree_notall.fbx" />
     <MeshContentTask Include="Asset\modelData\tall\tree_tall.fbx" />
+    <MeshContentTask Include="Asset\modelData\tettou.FBX" />
     <MeshContentTask Include="Asset\modelData\tikei.fbx" />
+    <MeshContentTask Include="Asset\modelData\tower.FBX" />
   </ItemGroup>
   <ItemGroup>
     <ImageContentTask Include="Asset\modelData\land2.png">
