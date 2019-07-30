@@ -11,8 +11,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	initparam.screenHeight = 720;			//ウィンドウの高さ
 	initparam.frameBufferWidth = 720;		//フレームバッファの幅。これが内部解像度。
 	initparam.frameBufferHeight = 720;		//フレームバッファの高さ。これが内部解像度。
-	initparam.frameBufferWidth3D = 724;		//3D描画の解像度(幅)
-	initparam.frameBufferHeight3D = 724;	//3D描画の解像度(高さ)
+	initparam.frameBufferWidth3D = 720;		//3D描画の解像度(幅)
+	initparam.frameBufferHeight3D = 720;	//3D描画の解像度(高さ)
 
 	//initparam.isEnableDOF = true;
 	//initparam.standardFps = 25;

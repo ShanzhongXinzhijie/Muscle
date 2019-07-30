@@ -9,9 +9,10 @@ int Stone::m_sInstancingMax = 512;
 
 void Stone::Init(const CVector3& pos, const CVector3& normal) {
 	float scale = 1.0f;
+	scale = (CMath::RandomZeroToOne() > 0.5f ? 0.05f : 0.1f)*(0.5f + CMath::RandomZeroToOne());
 	switch (CMath::RandomInt()%100)
 	{
-	/*case 0:
+	case 0:
 		m_model.Init(m_sInstancingMax, L"Resource/modelData/stone_square.cmo", nullptr, 0, enFbxUpAxisY);
 		break;
 	case 1:
@@ -22,15 +23,21 @@ void Stone::Init(const CVector3& pos, const CVector3& normal) {
 		break;
 	case 3:
 		m_model.Init(m_sInstancingMax, L"Resource/modelData/minitree.cmo", nullptr, 0, enFbxUpAxisY);
-		break;*/
+		break;
 	case 4:
 		m_model.Init(m_sInstancingMax, L"Resource/modelData/tettou.cmo");
-		scale = 1.0f;
+		scale = 1.4f;
+		m_model.GetInstancingModel()->GetModelRender().GetSkinModel().FindMaterialSetting(
+			[&](MaterialSetting* me) {
+				me->SetEmissive(0.0f);
+				me->SetMetallic(0.5f);
+				//me->SetShininess(0.5f);
+			}
+		);
 		break;
 	default:
 		return;
 		m_model.Init(m_sInstancingMax, L"Resource/modelData/sigemi.cmo", nullptr, 0, enFbxUpAxisY);
-		scale = (CMath::RandomZeroToOne() > 0.5f ? 0.05f : 0.1f)*(0.5f + CMath::RandomZeroToOne());
 		break;
 	}
 	m_model.SetPos(pos);
@@ -44,8 +51,6 @@ void Stone::Init(const CVector3& pos, const CVector3& normal) {
 	m_model.GetInstancingModel()->GetModelRender().GetSkinModel().FindMaterialSetting(
 		[&](MaterialSetting* me) {
 			me->SetEmissive(0.0f);
-			me->SetMetallic(1.0f);
-			//me->SetShininess(0.5f);
 		}
 	);
 }
@@ -59,16 +64,19 @@ void Tree::Init(const CVector3& pos, const CVector3& normal){
 	m_pos = pos;
 
 	//バリエーション
-	float sizeScale = 0.8f*(CMath::RandomZeroToOne() > 0.5f ? 1.0f : 1.5f)*(1.0f + CMath::RandomZeroToOne()*0.3f);
+	float sizeScale;// = 0.8f*1.5f*(CMath::RandomZeroToOne() > 0.5f ? 1.0f : 1.5f)*(1.0f + CMath::RandomZeroToOne()*0.3f);
+	sizeScale = 0.8f*2.0f*(1.0f + CMath::RandomZeroToOne()*0.3f);
 	float radY = -CMath::PI2 + CMath::PI2*2.0f*CMath::RandomZeroToOne();
 	m_rot.SetRotation(CVector3::AxisY(), radY);
+
+	//TODO
+	//砂漠の縞　大きいものとブレンド
+	//木の色・地面の色ムラ
+	//フォグ・被写界深度
 
 	//近景モデル
 	//if (CMath::RandomZeroToOne() > 0.8f) {
 	//	m_model.Init(m_sInstancingMax, L"Resource/modelData/tree_notall.cmo");
-		//茂み
-		//m_model.Init(m_sInstancingMax, L"Resource/modelData/sigemi.cmo", nullptr, 0, enFbxUpAxisY);
-		//sizeScale *= 0.05f;
 	//}
 	//else {
 		m_model.Init(m_sInstancingMax, L"Resource/modelData/tree_tall.cmo");
