@@ -50,6 +50,21 @@ Shibuya::Shibuya() : m_hotoke(nullptr)
 
 	//空
 	m_sky.Init(L"Resource/cubemap/cube2.dds");
+	
+	//m_skyModel.Init(L"Resource/modelData/sky.cmo");
+	////設定
+	//m_skyModel.SetDrawPriority(DRAW_PRIORITY_MAX - 1);
+	//m_skyModel.SetIsMostDepth(true);
+	//m_skyModel.SetIsShadowCaster(false);
+	//m_skyModel.SetScale(100.0f);	
+	//m_skyModel.GetSkinModel().FindMaterialSetting(
+	//	[&](MaterialSetting* mat) {
+	//		mat->SetLightingEnable(false);
+	//	}
+	//);
+
+	//フォグを有効化
+	SetEnableFog(true);
 
 	//木々
 	//float area_min = -8000.0f - 500.0f, area_max = -8000.0f + 500.0f;

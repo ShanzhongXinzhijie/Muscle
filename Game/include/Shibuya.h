@@ -21,7 +21,7 @@ private:
 	PhysicsStaticObject m_phyStaticObject;
 
 	StageObjectGenerator m_objGene;
-	GameObj::CSkinModelRender m_knight, m_dinosaur;
+	GameObj::CSkinModelRender m_knight, m_dinosaur, m_skyModel;
 	CBillboard m_billboard, m_billboard2;
 	CImposter m_imp, m_imp2;
 

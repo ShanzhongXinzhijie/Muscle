@@ -89,6 +89,7 @@
     <MeshContentTask Include="Asset\modelData\miniTree\minitree.fbx" />
     <MeshContentTask Include="Asset\modelData\pmaTest.FBX" />
     <MeshContentTask Include="Asset\modelData\sigemi\sigemi.fbx" />
+    <MeshContentTask Include="Asset\modelData\sky.FBX" />
     <MeshContentTask Include="Asset\modelData\stone\stone_pillar.fbx" />
     <MeshContentTask Include="Asset\modelData\stone\stone_square.fbx" />
     <MeshContentTask Include="Asset\modelData\stone\stone_tri.fbx" />
