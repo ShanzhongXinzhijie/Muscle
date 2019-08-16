@@ -36,7 +36,7 @@ void Stone::Init(const CVector3& pos, const CVector3& normal) {
 		);
 		break;
 	default:
-		return;
+		//return;
 		m_model.Init(m_sInstancingMax, L"Resource/modelData/sigemi.cmo", nullptr, 0, enFbxUpAxisY);
 		break;
 	}
@@ -72,7 +72,6 @@ void Tree::Init(const CVector3& pos, const CVector3& normal){
 	//TODO
 	//砂漠の縞　大きいものとブレンド
 	//木の色・地面の色ムラ
-	//フォグ・被写界深度
 
 	//近景モデル
 	//if (CMath::RandomZeroToOne() > 0.8f) {
@@ -85,14 +84,28 @@ void Tree::Init(const CVector3& pos, const CVector3& normal){
 	m_model.SetRot(m_rot);
 	m_model.SetScale(sizeScale);
 	m_model.SetIsDraw(true);
-	m_model.GetInstancingModel()->GetModelRender().SetIsShadowCaster(false);
-	m_model.GetInstancingModel()->GetModelRender().GetSkinModel().FindMaterialSetting(
-		[&](MaterialSetting* me) {
-			if (me->EqualMaterialName(L"leaf fern")) {
-				me->SetIsUseTexZShader(true);
-			}
+	m_model.GetInstancingModel()->GetModelRender().SetIsShadowCaster(false);	
+	
+	//ファクトリでノーマルマップ読み込み
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> leafNormaltex, barkNormaltex, leafTranstex;
+	TextureFactory::GetInstance().Load(L"Resource/normalMap/leaf fern_n.png", nullptr, &leafNormaltex, nullptr, true);
+	TextureFactory::GetInstance().Load(L"Resource/normalMap/bark03_n.png", nullptr, &barkNormaltex, nullptr, true);
+	TextureFactory::GetInstance().Load(L"Resource/translucentMap/leaf fern_t.png", nullptr, &leafTranstex, nullptr, true);
+	//マテリアル設定
+	std::function setMaterial
+	= [&](MaterialSetting* me) {
+		me->SetShininess(0.1f);
+		if (me->EqualMaterialName(L"leaf fern")) {
+			me->SetIsUseTexZShader(true);
+			me->SetNormalTexture(leafNormaltex.Get());
+			me->SetTranslucentTexture(leafTranstex.Get());
 		}
-	);
+		else {
+			me->SetNormalTexture(barkNormaltex.Get());
+		}
+	};
+	m_model.GetInstancingModel()->GetModelRender().GetSkinModel().FindMaterialSetting(setMaterial);
+
 	//モデルの高さ取得
 	CVector3 min, max;
 	m_model.GetInstancingModel()->GetModelRender().GetSkinModel().GetBoundingBox(min, max);
@@ -110,7 +123,12 @@ void Tree::Init(const CVector3& pos, const CVector3& normal){
 	//	m_imposter.Init(L"Resource/modelData/tree_notall.cmo", { 2048 * 4, 2048 * 4 }, { 69,35 }, m_sInstancingMax);
 	//}
 	//else {
-		m_imposter.Init(L"Resource/modelData/tree_tall.cmo", { 2048 * 4, 2048 * 4 }, { 69,35 }, m_sInstancingMax);
+	if (!m_imposter.Init(L"tree_tall")) {
+		SkinModel model;
+		model.Init(L"Resource/modelData/tree_tall.cmo");		
+		model.FindMaterialSetting(setMaterial);//マテリアル設定
+		m_imposter.Init(L"tree_tall", model, { 2048 * 4, 2048 * 4 }, { 69,35 }, m_sInstancingMax);
+	}
 	//}
 	m_imposter.SetPos(m_pos);
 	m_imposter.SetRotY(radY);
@@ -193,6 +211,10 @@ void Tree::PostLoopUpdate() {
 			m_model.SetRot(m_rotOffset*m_rot);
 		}
 	}
+	/*if (!GetKeyInput(VK_TAB)) {
+		m_model.SetIsDraw(false);
+		m_imposter.SetIsDraw(true);
+	}*/
 }
 
 /*

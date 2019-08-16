@@ -15,6 +15,12 @@ using namespace GameObj;
 void BP_BirdWing::InnerStart() {
 	m_model = std::make_unique<CSkinModelRender>();
 	m_model->Init(L"Resource/modelData/birdwing.cmo");
+	m_model->GetSkinModel().FindMaterialSetting(
+		[&](MaterialSetting* me) {
+			//me->SetAlbedoScale({ 0.05f ,0.05f ,0.05f ,1.0f});
+			me->SetTranslucent(0.3f);
+		}
+	);
 }
 
 void BP_BirdWing::Update() {

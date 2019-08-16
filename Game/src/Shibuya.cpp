@@ -5,7 +5,7 @@
 Shibuya::Shibuya() : m_hotoke(nullptr)
 {
 	//ライト作成
-	m_directionLight.SetDirection(CVector3::AxisY()*-1.0f+ CVector3::AxisZ()*-1.0f);
+	m_directionLight.SetDirection(CVector3::AxisZ()*-1.0f);
 	m_directionLight.SetColor(CVector3::One() * 0.5f);
 
 	//街モデル
@@ -39,11 +39,49 @@ Shibuya::Shibuya() : m_hotoke(nullptr)
 	}
 	normaltex->Release();
 
+	//雲
+	DirectX::CreateWICTextureFromFile(GetGraphicsEngine().GetD3DDevice(), L"Resource/texture/colud2.png", nullptr, &m_cloudtex);
+	int cloud_i = 0;
+	for (auto& cloud : m_cloud) {
+		cloud.Init(L"Resource/modelData/sphere.cmo");
+		DirectX::CreateWICTextureFromFile(GetGraphicsEngine().GetD3DDevice(), L"Resource/texture/colud.png", nullptr, &tex);
+
+		D3D_SHADER_MACRO macros[] = {
+			//	"USE_LOCALPOS", "1",
+				"CLOUD", "1",
+				NULL, NULL
+		};
+		m_psCloud.Load("Preset/shader/TriPlanarMapping.fx", "PS_TriPlanarMapping", Shader::EnType::PS, "CLOUD", macros);
+
+		cloud.GetSkinModel().FindMaterialSetting(
+			[&](MaterialSetting* mat) {
+				mat->SetAlbedoTexture(tex);
+				mat->SetPS(&m_psCloud);
+				mat->SetTriPlanarMappingUVScale(0.0025f);
+			}
+		);
+		cloud.GetSkinModel().SetPreDrawFunction(
+			[&](SkinModel*) {
+				GetGraphicsEngine().GetD3DDeviceContext()->PSSetShaderResources(7, 1, m_cloudtex.GetAddressOf());
+			}
+		);
+		if (tex) { tex->Release(); }
+
+		cloud.SetPos(CVector3::AxisY()*(5200.0f+1000.0f*CMath::RandomZeroToOne()) +CVector3::AxisZ()*700.0f*cloud_i + CVector3::AxisX()*1000.0f*CMath::RandomZeroToOne());
+		cloud.SetScale(28.0f+20.0f*CMath::RandomZeroToOne());
+		cloud_i++;
+	}	
+
 	//m_knight.Init(L"Resource/modelData/knight.cmo");
 	//m_knight.SetPos(CVector3::AxisY()*850.0f);
 	//m_knight.SetScale(0.4f);
 	//m_knight.GetSkinModel().FindMaterial([](ModelEffect* mat) {mat->SetEmissive(4.0f); });
 	
+	//m_uni.Init(L"Resource/modelData/unityChan.cmo");
+	//m_uni.SetPos(CVector3::AxisY()*900.0f + CVector3::AxisX()*50.0f + CVector3::AxisZ()*100.0f);
+	//m_uni.SetIsDrawBoundingBox(true);
+	//m_uni.SetScale(3.5f); //0.15f 3.5f
+
 	m_dinosaur.Init(L"Resource/modelData/dinosaur.cmo");
 	m_dinosaur.SetPos(CVector3::AxisY()*900.0f+ CVector3::AxisX()*50.0f);
 	m_dinosaur.SetScale(CVector3::One()*0.09f);
@@ -65,6 +103,7 @@ Shibuya::Shibuya() : m_hotoke(nullptr)
 
 	//フォグを有効化
 	SetEnableFog(true);
+	SetFogDistance(30000.0f);
 
 	//木々
 	//float area_min = -8000.0f - 500.0f, area_max = -8000.0f + 500.0f;

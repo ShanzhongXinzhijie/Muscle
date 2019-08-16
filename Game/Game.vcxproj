@@ -78,6 +78,7 @@
   <ItemGroup>
     <MeshContentTask Include="Asset\modelData\billboard.FBX" />
     <MeshContentTask Include="Asset\modelData\bullet\beam.FBX" />
+    <MeshContentTask Include="Asset\modelData\cloud\sphere.fbx" />
     <MeshContentTask Include="Asset\modelData\dinosaur.FBX" />
     <MeshContentTask Include="Asset\modelData\hotoke\birdwing.FBX" />
     <MeshContentTask Include="Asset\modelData\hotoke\core.FBX" />
@@ -98,6 +99,7 @@
     <MeshContentTask Include="Asset\modelData\tettou.FBX" />
     <MeshContentTask Include="Asset\modelData\tikei.fbx" />
     <MeshContentTask Include="Asset\modelData\tower.FBX" />
+    <MeshContentTask Include="Asset\modelData\uni\unityChan.fbx" />
   </ItemGroup>
   <ItemGroup>
     <ImageContentTask Include="Asset\modelData\land2.png">
