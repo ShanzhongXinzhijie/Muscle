@@ -99,7 +99,6 @@
     <MeshContentTask Include="Asset\modelData\tettou.FBX" />
     <MeshContentTask Include="Asset\modelData\tikei.fbx" />
     <MeshContentTask Include="Asset\modelData\tower.FBX" />
-    <MeshContentTask Include="Asset\modelData\uni\unityChan.fbx" />
   </ItemGroup>
   <ItemGroup>
     <ImageContentTask Include="Asset\modelData\land2.png">
