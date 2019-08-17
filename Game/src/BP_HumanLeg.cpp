@@ -10,6 +10,11 @@ void BP_HumanLeg::InnerStart() {
 	//ƒ‚ƒfƒ‹
 	m_model = std::make_unique<CSkinModelRender>();
 	m_model->Init(L"Resource/modelData/humanleg.cmo", &m_initPose, 1);
+	m_model->GetSkinModel().FindMaterialSetting(
+		[&](MaterialSetting* me) {
+			me->SetTranslucent(0.1f);
+		}
+	);
 
 	//‘«‚ÌIKİ’è
 	//
