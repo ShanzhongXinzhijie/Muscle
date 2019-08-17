@@ -13,6 +13,46 @@ private:
 	BeamModel m_model;
 	float m_lifeTime = 3.0f;
 	CVector3 m_pos, m_posOld, m_vector;
+
+	
 };
 
-//TODO DecolatorパターンでBulletクラス作る
+/// <summary>
+/// バレットに
+/// ホーミング・特殊軌道
+/// 接触処理・爆発
+/// ↑この辺をデコるためのやつ
+/// </summary>
+class IBulletDecolator {
+public:
+	void Update() {
+		m_ptrBullet->Update();
+		InnerUpdate();
+	}
+	void Contact() {
+		m_ptrBullet->Contact();
+		InnerContact();
+	}
+
+	virtual void InnerUpdate() = 0;
+	virtual void InnerContact() = 0;
+
+private:
+	IBulletDecolator* m_ptrBullet = nullptr;
+};
+
+/// <summary>
+/// バレットクラス
+/// </summary>
+class IBullet : public IGameObject {
+public:
+
+private:
+	//IBulletModel*;
+	IBulletDecolator* m_decolator = nullptr;
+
+	float m_lifeTime = 3.0f;
+	CVector3 m_pos, m_posOld, m_vector;
+};
+
+//TODO トランスルーセント(羽・植物) ムラ(MHW) 地形ノイズ
