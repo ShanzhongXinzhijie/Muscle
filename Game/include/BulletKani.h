@@ -55,4 +55,4 @@ private:
 	CVector3 m_pos, m_posOld, m_vector;
 };
 
-//TODO トランスルーセント(羽・植物) ムラ(MHW) 地形ノイズ
+//TODO ムラ(MHW) 地形ノイズ

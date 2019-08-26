@@ -14,7 +14,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	
 	initparam.frameBufferWidth3D = 1080;	//3D描画の解像度(幅)
 	initparam.frameBufferHeight3D = 1080;	//3D描画の解像度(高さ)
-	initparam.isAntiAliasing = false;		//アンチエイリアス無効
+	//initparam.isAntiAliasing = false;		//アンチエイリアス無効
 
 	initparam.SDUnityChanScale = 3.5f;		//距離スケール設定
 	//0.15f
