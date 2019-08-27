@@ -1,7 +1,13 @@
 #include "stdafx.h"
 #include "BulletKani.h"
 
-BulletKani::BulletKani(const CVector3& pos, const CVector3& move) : m_pos(pos), m_posOld(pos), m_vector(move) {
+BulletGO::BulletGO(IBulletDecolator* ptrDecolator, const CVector3& pos, const CVector3& move)
+	: m_decolator(ptrDecolator), m_pos(pos), m_posOld(pos), m_vector(move)
+{
+	//初期化
+	if(m_decolator)m_decolator->SetBullet(this);
+
+	//モデル
 	m_model.Init();
 	m_model.SetPos(m_posOld, m_pos);
 	m_model.SetRadius(3.0f);
@@ -25,12 +31,10 @@ BulletKani::BulletKani(const CVector3& pos, const CVector3& move) : m_pos(pos), 
 	);
 }
 
-void BulletKani::Update() {
+void BulletGO::Update() {
 	//移動
 	m_posOld = m_pos;
 	m_pos += m_vector;
-
-	//TODO 地形判定デコレーター
 
 	//寿命処理
 	m_lifeTime -= GetDeltaTimeSec();
