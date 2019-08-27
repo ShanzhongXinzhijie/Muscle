@@ -54,10 +54,10 @@ void BP_BirdWing::Draw2D() {
 }
 
 void BP_BirdWing::Accel() {
-	m_accel += 2.0f;
+	m_accel += 2.0f*0.08f;
 }
 void BP_BirdWing::Brake() {
-	m_accel -= 4.0f;
+	m_accel -= 2.0f*0.16f;
 }
 
 void BP_BirdWing::Pitch(float lerp) {
@@ -76,12 +76,18 @@ void BP_BirdWing::Yaw(float lerp) {
 	roll += 0.003f;
 	m_yawAccel += roll * 0.1f;
 	//旋回
-	m_ptrCore->AddRot(CQuaternion(CVector3::AxisY(), lerp*m_yawAccel));
+	m_ptrCore->AddRot(CQuaternion(CVector3::AxisY(), lerp*m_yawAccel*2.0f));
 }
 
 void HCon_BirdWing::Update() {
 	//左スティック一回転以上で加減速
 	if (m_ptrCore->GetPad()->GetStickCircleInput(L) - m_beforeClrcleInputNum > 0) {
+		m_accelTime = 0.3f;		
+	}
+	m_beforeClrcleInputNum = m_ptrCore->GetPad()->GetStickCircleInput(L);
+	//一定時間加速
+	if (m_accelTime > 0.0f) {
+		m_accelTime -= GetDeltaTimeSec();
 		//時計回りか?
 		if (m_ptrCore->GetPad()->GetStickCircleenSpinMode(L) == IGamePad::enClockwise) {
 			m_ptrBody->Accel();
@@ -90,7 +96,6 @@ void HCon_BirdWing::Update() {
 			m_ptrBody->Brake();
 		}
 	}
-	m_beforeClrcleInputNum = m_ptrCore->GetPad()->GetStickCircleInput(L);
 
 	//旋回
 	if (abs(m_ptrCore->GetPad()->GetStick(L).x) > FLT_EPSILON) {

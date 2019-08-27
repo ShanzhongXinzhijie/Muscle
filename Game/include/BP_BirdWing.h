@@ -33,6 +33,7 @@ public:
 	using IBodyController::IBodyController;
 	void Update()override;
 private:
+	float m_accelTime = 0.0f;
 	int m_beforeClrcleInputNum = 0;
 };
 /// <summary>
