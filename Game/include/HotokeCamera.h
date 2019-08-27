@@ -82,7 +82,7 @@ private:
 
 class HotokeCameraController : public IGameObject {
 public:
-	HotokeCameraController(CDeathHotoke* ptrHotoke) : m_ptrHotoke(ptrHotoke) {
+	HotokeCameraController(CDeathHotoke* ptrHotoke, IGamePad* ptrPad) : m_ptrHotoke(ptrHotoke), m_ptrPad(ptrPad) {
 		//マウスカーソルを中央に固定
 		MouseCursor().SetLockMouseCursor(true);
 		//マウスカーソルを非表示
@@ -107,8 +107,11 @@ public:
 
 private:
 	HotokeCamera m_hotokeCam;
-	CVector2 m_sensi = { 4.0f*(1.0f / 1280.0f),4.0f*(1.0f / 1280.0f) };
-	bool m_lock = false;
 
+	bool m_lock = false;//マウスカーソルの固定設定
+	CVector2 m_mouseSensi = { 4.0f*(1.0f / 1280.0f),4.0f*(1.0f / 1280.0f) };//視点感度(マウス
+	CVector2 m_padSensi = { 0.025f,-0.025f };//視点感度(パッド
+	
 	CDeathHotoke* m_ptrHotoke = nullptr;
+	IGamePad* m_ptrPad = nullptr;
 };

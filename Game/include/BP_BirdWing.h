@@ -10,23 +10,36 @@ public:
 	void Update()override;
 	void Draw2D()override;
 
+	//ƒAƒNƒVƒ‡ƒ“
+	void Accel();
+	void Brake();
+	void Pitch(float lerp);//ã‰º‰ñ“] lerp:‰ñ“]—Ê(0.0f`1.0f)
+	void Yaw(float lerp);//¶‰E‰ñ“] lerp:‰ñ“]—Ê(0.0f`1.0f)
+
 private:
-	//SuicideObj::CCollisionObj m_col;
+	//ƒRƒ“ƒgƒ[ƒ‰[
+	IBodyController<BP_BirdWing>* m_controller = nullptr;
 
-	float m_accel = 0.0f;
-
-	//‰ñ“]“ü—ÍŠÖŒW
-	float m_inputTimer = 0.0f;//“ü—Í—P—\
-	int m_spinCount = 0, m_spinCountBefore = 0;//‰ñ“]ƒJƒEƒ“ƒg
-	enum enSpinDirection{
-		enUp, enRight, enDown, enLeft,
-		enDirNum,
-	};
-	enSpinDirection m_nextDirection = enDirNum;//Ÿ‚É“ü—Í‚·‚é‰ñ“]
-	enSpinDirection m_backDirection = enDirNum;//Ÿ‚É“ü—Í‚·‚é‹t‰ñ“]
-	enum enSpinMode {
-		enNone,enClockwise,enBack,
-	};
-	enSpinMode m_spinMode = enNone;//‰ñ“]ƒ‚[ƒh
+	float m_accel = 0.0f;//‰Á‘¬
+	float m_yawAccel = 0.0f;
+	CQuaternion m_pitch;//c‰ñ“]
 };
 
+/// <summary>
+/// ’¹‰H #lƒRƒ“ƒgƒ[ƒ‰[
+/// </summary>
+class HCon_BirdWing : public IBodyController<BP_BirdWing> {
+public:
+	using IBodyController::IBodyController;
+	void Update()override;
+private:
+	int m_beforeClrcleInputNum = 0;
+};
+/// <summary>
+/// ’¹‰H #AIƒRƒ“ƒgƒ[ƒ‰[
+/// </summary>
+class AICon_BirdWing : public IBodyController<BP_BirdWing> {
+public:
+	using IBodyController::IBodyController;
+	void Update()override;
+};

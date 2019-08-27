@@ -2,7 +2,7 @@
 #include "Shibuya.h"
 #include "DemolisherWeapon/Graphic/FrustumCulling.h"
 
-Shibuya::Shibuya() : m_hotoke(nullptr)
+Shibuya::Shibuya() : m_hotoke(nullptr,false)
 {
 	//ƒ‰ƒCƒgì¬
 	m_directionLight.SetDirection(CVector3::AxisZ()*-1.0f);
@@ -67,7 +67,7 @@ Shibuya::Shibuya() : m_hotoke(nullptr)
 		);
 		if (tex) { tex->Release(); }
 
-		cloud.SetPos(CVector3::AxisY()*(5200.0f+1000.0f*CMath::RandomZeroToOne()) +CVector3::AxisZ()*700.0f*cloud_i + CVector3::AxisX()*1000.0f*CMath::RandomZeroToOne());
+		cloud.SetPos(CVector3::AxisY()*(5200.0f+1000.0f*CMath::RandomZeroToOne()) +CVector3::AxisZ()*700.0f*(float)cloud_i + CVector3::AxisX()*1000.0f*CMath::RandomZeroToOne());
 		cloud.SetScale(28.0f+20.0f*CMath::RandomZeroToOne());
 		cloud_i++;
 	}	

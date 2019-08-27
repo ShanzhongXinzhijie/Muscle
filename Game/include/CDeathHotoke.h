@@ -8,7 +8,7 @@ class CDeathHotoke :
 {
 public:
 	//コンストラクタ
-	CDeathHotoke(IGamePad* ptrPad):m_ptrPad(ptrPad){}
+	CDeathHotoke(IGamePad* ptrPad, bool isDrawHUD):m_ptrPad(ptrPad),m_isDrawHUD(isDrawHUD){}
 
 	//IGameObject関係
 	bool Start()override;
@@ -33,9 +33,18 @@ public:
 	const CVector3& GetMove() const { return m_move; }
 	//ターゲット位置を取得
 	const CVector3& GetTargetPos() const { return m_targetPos; }
+	//前ベクトルを取得
+	[[nodiscard]] const CVector3& GetFront()const { return m_front; }
+	//左ベクトルを取得
+	[[nodiscard]] const CVector3& GetLeft()const { return m_left; }
+	//左ベクトルを取得
+	[[nodiscard]] const CVector3& GetUp()const { return m_up; }
 
 	//パッドの取得
 	IGamePad* GetPad() { return m_ptrPad; }
+
+	//HUDを表示するか取得
+	[[nodiscard]] bool GetIsDrawHUD()const { return m_isDrawHUD; }
 
 private:
 	//コアのモデル
@@ -48,6 +57,9 @@ private:
 	CVector3 m_pos, m_scale;
 	CQuaternion m_rot;
 
+	//方向ベクトル
+	CVector3 m_front = CVector3::Front(), m_left = CVector3::Left(), m_up = CVector3::Up();
+
 	//移動量
 	CVector3 m_move;
 	CQuaternion m_rotMove;
@@ -57,6 +69,9 @@ private:
 
 	//ゲームパッド
 	IGamePad* m_ptrPad = nullptr;
+
+	//HUDを表示するか
+	bool m_isDrawHUD = false;
 
 	//ターゲット位置
 	CVector3 m_targetPos;

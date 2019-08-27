@@ -6,7 +6,7 @@
 class CPlayer : public IGameObject
 {
 public:
-	CPlayer():m_hotoke(&m_pad),m_cam(&m_hotoke){};
+	CPlayer():m_hotoke(&m_pad,true),m_cam(&m_hotoke, &m_pad){};
 
 	bool Start()override;
 	void Update()override;

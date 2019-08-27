@@ -70,6 +70,10 @@ void CDeathHotoke::Update() {
 	}
 	//コアのTRS更新
 	m_coreModel.SetPRS(m_pos, m_rot, m_scale);
+	//方向ベクトル更新
+	m_front = CVector3::Front(); GetRot().Multiply(m_front);
+	m_left = CVector3::Left(); GetRot().Multiply(m_left);
+	m_up = CVector3::Up(); GetRot().Multiply(m_up);
 	//コアのコリジョン更新
 	m_col.SetPos(m_pos); m_col.SetRot(m_rot);
 	//パーツのワールド行列更新後アップデート
