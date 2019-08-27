@@ -14,7 +14,8 @@ private:
 	float m_lifeTime = 3.0f;
 	CVector3 m_pos, m_posOld, m_vector;
 
-	
+	//ƒRƒŠƒWƒ‡ƒ“
+	DHCollision m_col;
 };
 
 /// <summary>

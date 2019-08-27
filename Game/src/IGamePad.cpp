@@ -83,8 +83,7 @@ void IGamePad::PreUpdate() {
 				float angle;
 
 				//時計回り
-				angle = CVector3::AngleOf2NormalizeVector(SpinDirection[lr.m_nextDirection], { stick.x,stick.y,0.0f });
-				//TODO これマイナスになる?
+				angle = abs(CVector3::AngleOf2NormalizeVector(SpinDirection[lr.m_nextDirection], { stick.x,stick.y,0.0f }));
 				if (angle < CIRCLE_INPUT_RANGE) {
 					isReflesh = lr.m_nextDirection;
 					if (lr.m_spinMode == enBack) { //回転方向が変わったらカウントリセット
@@ -96,7 +95,7 @@ void IGamePad::PreUpdate() {
 					lr.m_spinMode = enClockwise;
 				}
 				//反時計回り
-				angle = CVector3::AngleOf2NormalizeVector(SpinDirection[lr.m_backDirection], { stick.x,stick.y,0.0f });
+				angle = abs(CVector3::AngleOf2NormalizeVector(SpinDirection[lr.m_backDirection], { stick.x,stick.y,0.0f }));
 				if (angle < CIRCLE_INPUT_RANGE) {
 					isReflesh = lr.m_backDirection;
 					if (lr.m_spinMode == enClockwise) { //回転方向が変わったらカウントリセット

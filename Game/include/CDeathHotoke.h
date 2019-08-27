@@ -19,6 +19,9 @@ public:
 	void AddMove(const CVector3& vec) { m_move += vec; }
 	void AddRot(const CQuaternion& rot) { m_rotMove = rot * m_rotMove; }
 
+	//ダメージをあたえる
+	void Damage(const ReferenceCollision& ref);
+
 	//セッター
 	void SetPos(const CVector3& pos) { m_pos = pos; }
 	void SetRot(const CQuaternion& rot) { m_rot = rot; }
@@ -63,6 +66,9 @@ private:
 	//移動量
 	CVector3 m_move;
 	CQuaternion m_rotMove;
+
+	//ステータス
+	float m_hp = 100.0f;
 
 	//パーツ
 	IBodyPart* m_parts[4] = {};

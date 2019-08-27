@@ -29,7 +29,12 @@ bool CDeathHotoke::Start() {
 	m_col.m_collision.SetIsHurtCollision(true);//これは喰らい判定
 	m_col.m_collision.SetCallback(
 		[&](SuicideObj::CCollisionObj::SCallbackParam& p) {
-			//TODO エフェクト出して、ダメージ
+			if (p.EqualName(L"ReferenceCollision")) {
+				//クラス取り出す
+				ReferenceCollision* H = p.GetClass<ReferenceCollision>();
+				//ダメージ
+				Damage(*H);
+			}
 		}
 	);
 	
@@ -87,4 +92,15 @@ void CDeathHotoke::PostRender() {
 	for (auto& part : m_parts) {
 		if (part)part->Draw2D();
 	}
+	//ステータス描画
+	if (!m_isDrawHUD) {
+		CFont font;
+		wchar_t output[256];
+		swprintf_s(output, L"%.1f", m_hp);
+		font.Draw(output, { 0.0f,0.25f });
+	}
+}
+
+void CDeathHotoke::Damage(const ReferenceCollision& ref) {
+	m_hp -= ref.damege;
 }
