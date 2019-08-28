@@ -16,6 +16,8 @@ public:
 	void Pitch(float lerp);//ã‰º‰ñ“] lerp:‰ñ“]—Ê(0.0f`1.0f)
 	void Yaw(float lerp);//¶‰E‰ñ“] lerp:‰ñ“]—Ê(0.0f`1.0f)
 
+	float GetAccel()const { return m_accel; }
+
 private:
 	//ƒRƒ“ƒgƒ[ƒ‰[
 	IBodyController<BP_BirdWing>* m_controller = nullptr;

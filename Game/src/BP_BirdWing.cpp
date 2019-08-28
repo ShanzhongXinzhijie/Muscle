@@ -57,7 +57,7 @@ void BP_BirdWing::Accel() {
 	m_accel += 2.0f*0.08f;
 }
 void BP_BirdWing::Brake() {
-	m_accel -= 2.0f*0.16f;
+	m_accel -= 2.0f*0.10f;
 }
 
 void BP_BirdWing::Pitch(float lerp) {
@@ -107,4 +107,20 @@ void HCon_BirdWing::Update() {
 }
 
 void AICon_BirdWing::Update() {
+	if (m_ptrBody->GetAccel() < 5.0f){
+		m_ptrBody->Accel();
+	}
+
+	//–Ú“I’n‚ÖˆÚ“®
+	if (m_ptrCore->GetAIStatus()->isMovingToTarget) {
+		CVector3 v = m_ptrCore->GetAIStatus()->moveTargetPosition - m_ptrCore->GetPos();
+		float dot = m_ptrCore->GetRight().Dot(v.GetNorm());
+		if (abs(dot) > 0.1f) {
+			dot /= abs(dot);
+		}
+		else {
+			dot = 0.0f;
+		}
+		m_ptrBody->Yaw(dot);//ù‰ñ
+	}
 }

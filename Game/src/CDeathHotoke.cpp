@@ -6,6 +6,12 @@
 #include "BP_KaniArm.h"
 #include "BP_FishHead.h"
 
+void CDeathHotoke::CalcDirection() {
+	m_front = CVector3::Front(); GetRot().Multiply(m_front); m_back = m_front * -1.0f;
+	m_left = CVector3::Left(); GetRot().Multiply(m_left); m_right = m_left * -1.0f;
+	m_up = CVector3::Up(); GetRot().Multiply(m_up); m_down = m_up * -1.0f;
+}
+
 bool CDeathHotoke::Start() {
 	//スケール
 	constexpr float modelScale = 0.0188f*2.0f;
@@ -52,10 +58,16 @@ bool CDeathHotoke::Start() {
 		if (part)part->Start();
 	}
 
+	//AI作成
+	m_ai = std::make_unique<TestAI>(this);
+
 	return true;
 }
 
 void CDeathHotoke::Update() {
+	//AI実行
+	m_ai->Update();
+
 	//移動適応
 	m_pos += m_move;
 	m_rot = m_rotMove * m_rot;
@@ -76,9 +88,7 @@ void CDeathHotoke::Update() {
 	//コアのTRS更新
 	m_coreModel.SetPRS(m_pos, m_rot, m_scale);
 	//方向ベクトル更新
-	m_front = CVector3::Front(); GetRot().Multiply(m_front);
-	m_left = CVector3::Left(); GetRot().Multiply(m_left);
-	m_up = CVector3::Up(); GetRot().Multiply(m_up);
+	CalcDirection();
 	//コアのコリジョン更新
 	m_col.SetPos(m_pos); m_col.SetRot(m_rot);
 	//パーツのワールド行列更新後アップデート

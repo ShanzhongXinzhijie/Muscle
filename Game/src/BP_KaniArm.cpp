@@ -156,3 +156,10 @@ void HCon_KaniArm::Update() {
 		}
 	}
 }
+
+//AIコントローラー
+void AICon_KaniArm::Update() {
+	for (auto lr : { L, R }) {
+	//	m_ptrBody->ChargeAndMachinegun(lr);
+	}
+}

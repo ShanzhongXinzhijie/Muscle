@@ -1,5 +1,6 @@
 #pragma once
 #include"IGamePad.h"
+#include"AI.h"
 
 class IBodyPart;
 
@@ -8,7 +9,9 @@ class CDeathHotoke :
 {
 public:
 	//コンストラクタ
-	CDeathHotoke(IGamePad* ptrPad, bool isDrawHUD):m_ptrPad(ptrPad),m_isDrawHUD(isDrawHUD){}
+	CDeathHotoke(IGamePad* ptrPad, bool isDrawHUD):m_ptrPad(ptrPad),m_isDrawHUD(isDrawHUD){
+		SetName(L"CDeathHotoke");
+	}
 
 	//IGameObject関係
 	bool Start()override;
@@ -29,25 +32,39 @@ public:
 	void SetTargetPos(const CVector3& pos) { m_targetPos = pos; }
 	
 	//ゲッター
-	const CVector3& GetPos()const { return m_pos; }	
-	const CQuaternion& GetRot()const { return m_rot; }
-	const CVector3& GetScale()const { return m_scale; }
+	[[nodiscard]] const CVector3& GetPos()const { return m_pos; }
+	[[nodiscard]] const CQuaternion& GetRot()const { return m_rot; }
+	[[nodiscard]] const CVector3& GetScale()const { return m_scale; }
 	//移動量を取得
-	const CVector3& GetMove() const { return m_move; }
+	[[nodiscard]] const CVector3& GetMove() const { return m_move; }
 	//ターゲット位置を取得
-	const CVector3& GetTargetPos() const { return m_targetPos; }
+	[[nodiscard]] const CVector3& GetTargetPos() const { return m_targetPos; }
+	
 	//前ベクトルを取得
 	[[nodiscard]] const CVector3& GetFront()const { return m_front; }
+	//後ベクトルを取得
+	[[nodiscard]] const CVector3& GetBack()const { return m_back; }
 	//左ベクトルを取得
 	[[nodiscard]] const CVector3& GetLeft()const { return m_left; }
-	//左ベクトルを取得
+	//右ベクトルを取得
+	[[nodiscard]] const CVector3& GetRight()const { return m_right; }
+	//上ベクトルを取得
 	[[nodiscard]] const CVector3& GetUp()const { return m_up; }
+	//下ベクトルを取得
+	[[nodiscard]] const CVector3& GetDown()const { return m_down; }
 
 	//パッドの取得
-	IGamePad* GetPad() { return m_ptrPad; }
+	[[nodiscard]] IGamePad* GetPad() { return m_ptrPad; }
 
 	//HUDを表示するか取得
 	[[nodiscard]] bool GetIsDrawHUD()const { return m_isDrawHUD; }
+
+	//AIの生み出すステータスを取得
+	[[nodiscard]] const AIStatus* GetAIStatus()const { if (m_ai) { return &m_ai->GetOutputStatus(); } return nullptr; }
+
+private:
+	//方向ベクトルを計算・更新
+	void CalcDirection();
 
 private:
 	//コアのモデル
@@ -62,6 +79,7 @@ private:
 
 	//方向ベクトル
 	CVector3 m_front = CVector3::Front(), m_left = CVector3::Left(), m_up = CVector3::Up();
+	CVector3 m_back = CVector3::Back(), m_right = CVector3::Right(), m_down = CVector3::Down();
 
 	//移動量
 	CVector3 m_move;
@@ -81,6 +99,9 @@ private:
 
 	//ターゲット位置
 	CVector3 m_targetPos;
+
+	//AI
+	std::unique_ptr<IAI> m_ai;
 
 public:
 	//ボディパーツの種類
