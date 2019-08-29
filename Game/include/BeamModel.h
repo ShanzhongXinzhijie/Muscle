@@ -14,31 +14,12 @@ public:
 	BeamModel(const wchar_t** beamName = nullptr) {
 		Init(beamName);
 	}
-	void Init(const wchar_t** identifiers = nullptr) {
-		m_model.Init(BEAM_MODEL_MAXNUM, L"Resource/modelData/beam.cmo"
-			,nullptr,0,enFbxUpAxisZ,enFbxRightHanded,
-			identifiers);
-		//色変更
-		bool isChanged = false;
-		for (auto& type : m_s_beamTypes) {
-			if (identifiers && wcscmp(type.name, *identifiers) == 0 || !identifiers && !isChanged) {
-				m_model.GetInstancingModel()->GetModelRender().GetSkinModel().FindMaterialSetting(
-					[&](MaterialSetting* mat) {
-						if (mat->EqualMaterialName(L"outside")) {
-							mat->SetAlbedoScale(type.color);
-							mat->SetEmissive(16.0f);
-						}
-						else {
-							mat->SetEmissive(0.25f);
-						}
-						mat->SetLightingEnable(false);
-					}
-				);
-				isChanged = true;
-			}
-		}
-		DW_ERRORBOX(!isChanged, "BeamModel::Init() こんな色はない");		
-	}
+
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	/// <param name="identifiers">ロードするビーム名</param>
+	void Init(const wchar_t** identifiers = nullptr);
 
 	void SetPos(const CVector3& rootPos, const CVector3& tipPos) {
 		m_tipPos = tipPos, m_rootPos = rootPos;
@@ -48,28 +29,25 @@ public:
 		m_radius = radius; 
 		UpdateModel();
 	}
-	void Move(const CVector3& moveVec) {
-		m_rootPos = m_tipPos; m_tipPos += moveVec;
+	void Move(const CVector3& moveVec) {		
+		CVector3 soutaiPos = m_tipPos;// -GetMainCamera()->GetPosOld();
+		CMatrix viewMat = GetMainCamera()->GetViewMatrixOld();
+		viewMat.Mul(soutaiPos);
+		//viewMat = GetMainCamera()->GetViewMatrix();
+		//viewMat.Transpose();
+		//viewMat.Mul(soutaiPos);
+
+		m_rootPos = GetMainCamera()->GetPos() + GetMainCamera()->GetLeft()*-soutaiPos.x + GetMainCamera()->GetUp()*soutaiPos.y + GetMainCamera()->GetFront()*-soutaiPos.z;//
+		
+		m_tipPos += moveVec;
 		UpdateModel();
 	}
 
 private:
-	void UpdateModel() {
-		m_model.SetPos(m_rootPos);
-
-		CVector3 move = m_tipPos - m_rootPos;
-		float moveLength = 0.0f;
-		if (move.LengthSq() > FLT_EPSILON) {
-			moveLength = move.Length();
-			//クォータニオン作成
-			CQuaternion rot;
-			rot.MakeLookToUseXYAxis(move);
-			//設定
-			m_model.SetRot(rot);
-		}
-
-		m_model.SetScale({ m_radius,m_radius,m_radius + moveLength*0.5f });
-	}
+	/// <summary>
+	/// モデルの更新
+	/// </summary>
+	void UpdateModel();
 
 private:
 	static constexpr int BEAM_MODEL_MAXNUM = 512;

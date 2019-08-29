@@ -58,6 +58,7 @@ public:
 	BulletGO(IBulletDecolator* ptrDecolator, const CVector3& pos, const CVector3& move);
 
 	void Update()override;
+	void PostLoopUpdate()override;
 
 private:
 	//デコレーター

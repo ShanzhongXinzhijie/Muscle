@@ -42,9 +42,11 @@ void BulletGO::Update() {
 		delete this; return;
 	}
 
-	//モデル更新
-	m_model.Move(m_vector);
-
 	//コリジョン更新
 	m_col.SetPos(m_pos);
+}
+
+void BulletGO::PostLoopUpdate() {
+	//モデル更新
+	m_model.Move(m_vector);
 }
