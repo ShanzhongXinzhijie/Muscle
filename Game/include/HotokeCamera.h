@@ -13,7 +13,7 @@ public:
 		SetMainCamera(&m_camera);
 	}
 
-	//カメラ回転
+	//カメラを回転させる
 	void RotationCamera(const CVector2& rot) {
 		m_rot += rot;
 		if (m_rot.x < -CMath::PI2) { m_rot.x -= -CMath::PI2; }
@@ -23,6 +23,17 @@ public:
 		//座標アップデート
 		UpdateVector();
 	}
+	//カメラ回転値を設定
+	void SetRotationCamera(const CVector2& rad) {
+		m_rot = rad;
+		if (m_rot.x < -CMath::PI2) { m_rot.x -= -CMath::PI2; }
+		if (m_rot.x > CMath::PI2) { m_rot.x -= CMath::PI2; }
+		if (m_rot.y < -CMath::PI_HALF) { m_rot.y = -CMath::PI_HALF; }
+		if (m_rot.y > CMath::PI_HALF) { m_rot.y = CMath::PI_HALF; }
+		//座標アップデート
+		UpdateVector();
+	}
+
 	//カメラ位置設定
 	void SetPos(const CVector3& vec) {
 		m_pos = vec;

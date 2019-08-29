@@ -3,7 +3,12 @@
 
 void HotokeCameraController::Update() {
 	//パッドの入力によって視点を回転
-	m_hotokeCam.RotationCamera(m_ptrPad->GetStick(R)*m_padSensi);
+	//m_hotokeCam.RotationCamera(m_ptrPad->GetStick(R)*m_padSensi);
+	m_hotokeCam.SetRotationCamera(CVector2(m_ptrPad->GetStick(R).x, -m_ptrPad->GetStick(R).y)*CMath::PI_HALF);
+	//バックミラー
+	if (m_ptrPad->GetBackMirror()) {
+		m_hotokeCam.SetRotationCamera(CVector2(m_ptrPad->GetStick(R).x, -m_ptrPad->GetStick(R).y)*CMath::PI_HALF + CVector2(CMath::PI,0.0f));
+	}
 
 	if (!m_lock) {
 		//マウスカーソルの動きに連動してカメラ回転
@@ -26,11 +31,12 @@ void HotokeCameraController::Update() {
 	}
 
 	//カメラ位置設定
-	CVector3 offsetVec = { 120.0f, 250.0f, -370.0f };	
+	CVector3 offsetVec = { 120.0f, 200.0f, -370.0f };	
 	float z = m_hotokeCam.GetRot().y / CMath::PI_HALF;
 	if (z > FLT_EPSILON) {
 		offsetVec.z += z*470.0f;
 		offsetVec.x += z * -60.0f;
+		offsetVec.y += z * 50.0f;
 	}
 	else {
 		offsetVec.z += z*-100.0f;

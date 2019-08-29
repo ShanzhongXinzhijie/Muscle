@@ -72,6 +72,14 @@ public:
 		return m_isDoubleTapFire[lr];
 	}
 
+	/// <summary>
+	/// バックミラー入力を取得
+	/// </summary>
+	[[nodiscard]]
+	bool GetBackMirror() const {
+		return m_usePad->GetButton(enButtonRSB);
+	}
+
 private:
 	XInputPad* m_usePad = &Pad(0);//使用するパッド
 

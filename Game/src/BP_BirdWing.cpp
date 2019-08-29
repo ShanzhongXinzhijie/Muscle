@@ -49,7 +49,7 @@ void BP_BirdWing::Draw2D() {
 	CFont font;
 	wchar_t output[256];
 
-	swprintf_s(output, L"%.1f", m_accel);
+	swprintf_s(output, L"%.1fkm/h", m_accel);
 	font.Draw(output, {0.0f,0.5f});
 }
 
