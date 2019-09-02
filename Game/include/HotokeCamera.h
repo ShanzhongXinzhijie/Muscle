@@ -13,6 +13,9 @@ public:
 		SetMainCamera(&m_camera);
 	}
 
+	//モーションブラーをリセット
+	void ResetMotionBlur() { m_camera.ResetIsFirstMatrixUpdate(); }
+
 	//カメラを回転させる
 	void RotationCamera(const CVector2& rot) {
 		m_rot += rot;
@@ -62,8 +65,8 @@ public:
 		return m_pos + m_updatedTarget * m_camera.GetFar();
 	}
 
+	//カメラ更新
 	void Update() {
-		//カメラ更新
 		m_camera.SetPos(m_pos);
 		m_camera.SetTarget(m_pos + m_updatedTarget);
 		m_camera.SetUp(m_updatedUp);
@@ -95,7 +98,8 @@ class HotokeCameraController : public IGameObject {
 public:
 	HotokeCameraController(CDeathHotoke* ptrHotoke, IGamePad* ptrPad) : m_ptrHotoke(ptrHotoke), m_ptrPad(ptrPad) {
 		//マウスカーソルを中央に固定
-		MouseCursor().SetLockMouseCursor(true);
+		//MouseCursor().SetLockMouseCursor(true);
+		m_lock = true;
 		//マウスカーソルを非表示
 		MouseCursor().SetShowMouseCursor(false);
 	}
@@ -118,6 +122,8 @@ public:
 
 private:
 	HotokeCamera m_hotokeCam;
+
+	bool m_isBackMirror = false;//バックミラー状態か？
 
 	bool m_lock = false;//マウスカーソルの固定設定
 	CVector2 m_mouseSensi = { 4.0f*(1.0f / 1280.0f),4.0f*(1.0f / 1280.0f) };//視点感度(マウス

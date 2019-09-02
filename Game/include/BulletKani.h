@@ -53,7 +53,7 @@ private:
 /// <summary>
 /// バレットを動かすクラス
 /// </summary>
-class BulletGO : public IGameObject{
+class BulletGO : public IQSGameObject{
 public:
 	BulletGO(IBulletDecolator* ptrDecolator, const CVector3& pos, const CVector3& move);
 
@@ -66,6 +66,7 @@ private:
 
 	//モデル
 	BeamModel m_model;
+	bool m_isMoved = false;
 	//寿命
 	float m_lifeTime = 3.0f;
 	//座標とか

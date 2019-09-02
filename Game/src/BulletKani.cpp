@@ -10,7 +10,7 @@ BulletGO::BulletGO(IBulletDecolator* ptrDecolator, const CVector3& pos, const CV
 	//モデル
 	m_model.Init();
 	m_model.SetPos(m_posOld, m_pos);
-	m_model.SetRadius(3.0f);
+	m_model.SetRadius(6.0f);
 
 	//当たり判定
 	m_col.m_collision.CreateSphere(m_pos, {}, 3.0f);
@@ -32,6 +32,8 @@ BulletGO::BulletGO(IBulletDecolator* ptrDecolator, const CVector3& pos, const CV
 }
 
 void BulletGO::Update() {
+	//m_isMoved = true;
+
 	//移動
 	m_posOld = m_pos;
 	m_pos += m_vector;
@@ -47,6 +49,11 @@ void BulletGO::Update() {
 }
 
 void BulletGO::PostLoopUpdate() {
+	if (!m_isMoved) { 
+		m_model.SetPos(m_posOld, m_pos); m_isMoved = true;
+		return;
+	}
+
 	//モデル更新
 	m_model.Move(m_vector);
 }

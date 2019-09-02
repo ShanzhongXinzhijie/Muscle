@@ -108,12 +108,14 @@ Shibuya::Shibuya() : m_hotoke(nullptr,false)
 	//木々
 	//float area_min = -8000.0f - 500.0f, area_max = -8000.0f + 500.0f;
 	//m_treeGene.Generate({ area_min,-70.0f*500.0f,-500.0f }, { area_max,70.0f*50.0f,500.0f }, 500);
+	
+/*
 	Tree::m_sInstancingMax = 4000;
 	m_objGene.Generate<Tree>({ -70.0f*50.0f,-70.0f*50.0f,-70.0f*50.0f }, { 70.0f*50.0f,70.0f*50.0f,70.0f*50.0f }, Tree::m_sInstancingMax);
 	
 	Stone::m_sInstancingMax = 4000;
 	m_objGene.Generate<Stone>({ -70.0f*50.0f,-70.0f*50.0f,-70.0f*50.0f }, { 70.0f*50.0f,70.0f*50.0f,70.0f*50.0f }, Stone::m_sInstancingMax);
-
+*/
 	//ビルボテスト
 	/*m_billboard.Init(L"Resource/spriteData/test.png");
 	m_billboard.SetPos(CVector3::Up()*1000.0f);

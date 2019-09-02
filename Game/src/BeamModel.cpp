@@ -51,3 +51,20 @@
 
 	 m_model.SetScale({ m_radius,m_radius,m_radius + moveLength * 0.5f });
  }
+
+ void BeamModel::Move(const CVector3& moveVec) {
+	 CVector3 soutaiPos = m_tipPos;
+	 CMatrix viewMat = GetMainCamera()->GetViewMatrixOld();
+	 viewMat.Mul(soutaiPos);
+	 viewMat = GetMainCamera()->GetViewMatrix();
+	 viewMat.Inverse();
+	 viewMat.Mul(soutaiPos);
+
+	 m_rootPos = soutaiPos;
+
+	 m_tipPos += moveVec;
+
+	 m_rootPos = m_tipPos + (m_rootPos - m_tipPos)*0.5f;// *MotionBlurScale;
+
+	 UpdateModel();
+ }

@@ -100,7 +100,7 @@ void BP_KaniArm::PostUTRSUpdate() {
 				new BulletGO(
 					nullptr,
 					m_model->GetBonePos(m_muzzleBoneID[i]),
-					(m_ikSetting[i]->targetPos - m_model->GetBonePos(m_muzzleBoneID[i])).GetNorm()*(100.0f+m_ptrCore->GetMove().Length())
+					(m_ikSetting[i]->targetPos - m_model->GetBonePos(m_muzzleBoneID[i])).GetNorm()*(800.0f+m_ptrCore->GetMove().Length())
 				);
 			}
 		}
