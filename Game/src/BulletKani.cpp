@@ -8,7 +8,7 @@ BulletGO::BulletGO(IBulletDecolator* ptrDecolator, const CVector3& pos, const CV
 	if(m_decolator)m_decolator->SetBullet(this);
 
 	//ƒ‚ƒfƒ‹
-	m_model.Init();
+	m_model.Init(L"BLUE");
 	m_model.SetPos(m_posOld, m_pos);
 	m_model.SetRadius(6.0f);
 

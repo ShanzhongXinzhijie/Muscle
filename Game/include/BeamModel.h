@@ -10,19 +10,19 @@ public:
 		wchar_t name[64];
 		CVector4 color;
 	};
-	static constexpr int BEAM_TYPE_MAXNUM = 3;
+	static constexpr int BEAM_TYPE_MAXNUM = 4;
 	static const BeamType m_s_beamTypes[BEAM_TYPE_MAXNUM];
 
 public:
-	BeamModel(const wchar_t** beamName = nullptr) {
+	BeamModel(const wchar_t* beamName = nullptr) {
 		Init(beamName);
 	}
 
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	/// <param name="identifiers">ロードするビーム名</param>
-	void Init(const wchar_t** identifiers = nullptr);
+	/// <param name="beamName">ロードするビーム名</param>
+	void Init(const wchar_t* beamName = nullptr);
 
 	/// <summary>
 	/// 座標を設定
@@ -54,7 +54,12 @@ private:
 
 private:
 	static constexpr int BEAM_MODEL_MAXNUM = 512;
-	GameObj::CInstancingModelRender m_model;
+	enum enumBeamModel{
+		enInSide,
+		enOutSide,
+		enBeamModelNum
+	};
+	GameObj::CInstancingModelRender m_model[enBeamModelNum];
 
 	CVector3 m_tipPos, m_rootPos;
 	float m_radius = 1.0f;

@@ -2,54 +2,81 @@
 #include "BeamModel.h"
 
  const BeamModel::BeamType BeamModel::m_s_beamTypes[BEAM_TYPE_MAXNUM] = {
+	   {L"White",{1.0f,1.0f,1.0f,1.0f}},
 	   {L"BLUE",{0.0f,0.0f,1.0f,1.0f}},
 	   {L"Red",{1.0f,0.0f,0.0f,1.0f}},
 	   {L"Yellow",{1.0f,1.0f,0.0f,1.0f}},
 };
 
- void BeamModel::Init(const wchar_t** identifiers) {
-	 m_model.Init(BEAM_MODEL_MAXNUM, L"Resource/modelData/beam.cmo"
-		 , nullptr, 0, enFbxUpAxisZ, enFbxRightHanded,
-		 identifiers);
-	 m_model.GetInstancingModel()->GetModelRender().SetIsShadowCaster(false);
-	 //色変更
-	 bool isChanged = false;
-	 for (auto& type : m_s_beamTypes) {
-		 if (identifiers && wcscmp(type.name, *identifiers) == 0 || !identifiers && !isChanged) {
-			 m_model.GetInstancingModel()->GetModelRender().GetSkinModel().FindMaterialSetting(
-				 [&](MaterialSetting* mat) {
-					 if (mat->EqualMaterialName(L"outside")) {
-						 mat->SetAlbedoScale(type.color);
-						 mat->SetEmissive(16.0f);
-					 }
-					 else {
-						 mat->SetEmissive(0.25f);
-					 }
-					 mat->SetLightingEnable(false);
-					 mat->SetIsMotionBlur(false);
-				 }
-			 );
-			 isChanged = true;
-		 }
+ void BeamModel::Init(const wchar_t* beamName) {
+	 for (int i = 0; i < enBeamModelNum; i++) {
+		//ビームタイプをロード
+		const BeamType* ptrBeamType = nullptr;
+		if (i == enInSide) {
+			//白ビーム
+			ptrBeamType = &m_s_beamTypes[0];
+		}
+		else {
+			//identifiersと名前が一致するビームタイプをロード
+			bool isChanged = false;
+			for (auto& type : m_s_beamTypes) {
+				if (beamName && wcscmp(type.name, beamName) == 0 || !beamName && !isChanged) {
+					ptrBeamType = &type;
+					isChanged = true;
+				}
+			}
+			//一致するビームがなければ白ビームにする
+			if (!isChanged) { ptrBeamType = &m_s_beamTypes[0]; }
+			DW_ERRORBOX(!isChanged, "BeamModel::Init() こんな色はない");
+		}
+
+		//モデルをロード
+		const wchar_t* identArray[1] = { ptrBeamType->name };
+		m_model[i].Init(BEAM_MODEL_MAXNUM, L"Resource/modelData/beam.cmo"
+			, nullptr, 0, enFbxUpAxisZ, enFbxRightHanded,
+			identArray);
+		//外側は反転描画
+		if (i == enOutSide) { m_model[i].GetInstancingModel()->GetModelRender().SetIsDrawReverse(true); }		
+		//影は落とさない
+		m_model[i].GetInstancingModel()->GetModelRender().SetIsShadowCaster(false);		
+		//マテリアル設定	
+		m_model[i].GetInstancingModel()->GetModelRender().GetSkinModel().FindMaterialSetting(
+			[&](MaterialSetting* mat) {
+				if (i == enOutSide) {
+					mat->SetAlbedoScale(ptrBeamType->color);//色変更
+					mat->SetEmissive(16.0f);//発光
+				}
+				else {
+					mat->SetEmissive(0.25f);//発光
+				}
+				mat->SetLightingEnable(false);//ライティングしない
+				mat->SetIsMotionBlur(false);//モーションブラーかけない
+			}
+		);			
 	 }
-	 DW_ERRORBOX(!isChanged, "BeamModel::Init() こんな色はない");
  }
 
  void BeamModel::UpdateModel(){
-	 m_model.SetPos(m_rootPos);
-
+	 CQuaternion rot;
 	 CVector3 move = m_tipPos - m_rootPos;
 	 float moveLength = 0.0f;
 	 if (move.LengthSq() > FLT_EPSILON) {
 		 moveLength = move.Length();
 		 //クォータニオン作成
-		 CQuaternion rot;
 		 rot.MakeLookToUseXYAxis(move);
-		 //設定
-		 m_model.SetRot(rot);
 	 }
 
-	 m_model.SetScale({ m_radius,m_radius,m_radius + moveLength * 0.5f });
+	 //設定
+	 for (int i = 0; i < enBeamModelNum; i++) {
+		 if (i == enOutSide) {
+			 m_model[i].SetScale({ m_radius*1.5f,m_radius*1.5f,m_radius*1.5f + moveLength * 0.5f });
+		 }
+		 else {
+			 m_model[i].SetScale({ m_radius,m_radius,m_radius + moveLength * 0.5f });
+		 }
+		 m_model[i].SetPos(m_rootPos + move * 0.5f);
+		 m_model[i].SetRot(rot);
+	 }
  }
 
  void BeamModel::Move(const CVector3& moveVec) {
@@ -64,7 +91,8 @@
 
 	 m_tipPos += moveVec;
 
-	 m_rootPos = m_tipPos + (m_rootPos - m_tipPos)*0.5f;// *MotionBlurScale;
+	 constexpr float blurScale = 1.0f;// 0.9f;
+	 m_rootPos = m_tipPos + (m_rootPos - m_tipPos)*blurScale;// *MotionBlurScale;
 
 	 UpdateModel();
  }

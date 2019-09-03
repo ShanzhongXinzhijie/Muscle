@@ -33,7 +33,8 @@ private:
 	int m_muzzleBoneID[enLRNUM] = {};
 
 	//エフェクト
-	CBillboard m_muzzleFlash[enLRNUM]; int m_muzzleTime[enLRNUM] = {};
+	CBillboard m_muzzleFlash[enLRNUM]; 
+	int m_muzzleTime[enLRNUM] = {};
 
 	//チャージタイマー
 	bool m_isCharging[enLRNUM] = {}, m_isMachineGunning[enLRNUM] = {};

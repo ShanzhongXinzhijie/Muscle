@@ -37,12 +37,21 @@ void BP_KaniArm::InnerStart() {
 	m_muzzleBoneID[R] = m_model->FindBoneID(L"Bone031");
 	m_muzzleBoneID[L] = m_model->FindBoneID(L"Bone031(mirrored)");
 
-	//エフェクト
+	//マズルフラッシュ
 	for (auto& model : m_muzzleFlash) {
 		model.Init(L"Resource/spriteData/kaniFlare.png", 1, false);
-		model.GetModel().InitPostDraw(PostDrawModelRender::enAdd);
-		model.GetModel().GetSkinModel().SetCullMode(D3D11_CULL_NONE);
-		model.GetModel().SetIsShadowCaster(false);
+		//model.GetModel().InitPostDraw(PostDrawModelRender::enAdd);
+		model.GetModel().GetSkinModel().SetCullMode(D3D11_CULL_NONE);//バックカリングしない
+		model.GetModel().SetIsShadowCaster(false);//影落とさない
+		//マテリアル設定	
+		model.GetModel().GetSkinModel().FindMaterialSetting(
+			[&](MaterialSetting* mat) {
+				//mat->SetAlbedoScale({ 0.0f,0.0f,1.0f,1.0f });//色変更
+				mat->SetEmissive(16.0f);//発光
+				mat->SetLightingEnable(false);//ライティングしない
+				//mat->SetIsMotionBlur(false);//モーションブラーかけない
+			}
+		);
 	}
 
 	//コントローラー
@@ -100,7 +109,7 @@ void BP_KaniArm::PostUTRSUpdate() {
 				new BulletGO(
 					nullptr,
 					m_model->GetBonePos(m_muzzleBoneID[i]),
-					(m_ikSetting[i]->targetPos - m_model->GetBonePos(m_muzzleBoneID[i])).GetNorm()*(800.0f+m_ptrCore->GetMove().Length())
+					(m_ikSetting[i]->targetPos - m_model->GetBonePos(m_muzzleBoneID[i])).GetNorm()*(100.0f+m_ptrCore->GetMove().Length())
 				);
 			}
 		}
