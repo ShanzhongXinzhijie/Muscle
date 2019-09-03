@@ -9,7 +9,7 @@ class CDeathHotoke :
 {
 public:
 	//コンストラクタ
-	CDeathHotoke(IGamePad* ptrPad, bool isDrawHUD):m_ptrPad(ptrPad),m_isDrawHUD(isDrawHUD){
+	CDeathHotoke(IGamePad* ptrPad, bool isDrawHUD, std::unique_ptr<IAI> AI):m_ptrPad(ptrPad),m_isDrawHUD(isDrawHUD),m_ai(std::move(AI)){
 		SetName(L"CDeathHotoke");
 	}
 

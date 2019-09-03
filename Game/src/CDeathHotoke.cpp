@@ -57,16 +57,13 @@ bool CDeathHotoke::Start() {
 	for (auto& part : m_parts) {
 		if (part)part->Start();
 	}
-
-	//AIì¬
-	m_ai = std::make_unique<TestAI>(this);
-
+	
 	return true;
 }
 
 void CDeathHotoke::Update() {
 	//AIÀs
-	m_ai->Update();
+	if (m_ai) { m_ai->Update(); }
 
 	//ˆÚ“®“K‰
 	m_pos += m_move;

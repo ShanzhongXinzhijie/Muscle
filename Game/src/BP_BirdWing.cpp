@@ -119,7 +119,13 @@ void AICon_BirdWing::Update() {
 			dot /= abs(dot);
 		}
 		else {
-			dot = 0.0f;
+			dot = m_ptrCore->GetFront().Dot(v.GetNorm());
+			if (dot < 0.75f) {
+				dot = 1.0f;
+			}
+			else {
+				dot = 0.0f;
+			}
 		}
 		m_ptrBody->Yaw(dot);//ù‰ñ
 	}

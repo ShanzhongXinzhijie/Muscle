@@ -6,9 +6,9 @@ class CDeathHotoke;
 /// AIの生み出すステータス
 /// </summary>
 struct AIStatus {
-	bool isMovingToTarget = false;
+	bool isMovingToTarget = false;//目標に移動するか?
 	CVector3 moveTargetPosition;//移動したい位置
-	bool isAttackingTarget = false;
+	bool isAttackingTarget = false;//目標を攻撃するか?
 };
 
 /// <summary>
