@@ -73,13 +73,12 @@ bool CDeathHotoke::Start() {
 			int vertexCount = bufferDesc.ByteWidth / mesh->vertexStride;//頂点数
 			char* pData = reinterpret_cast<char*>(subresource.pData);
 			VertexBufferPtr vertexBuffer = std::make_unique<VertexBuffer>();
-			CVector3 pos;
 			for (int i = 0; i < vertexCount; i++) {
-				pos = *reinterpret_cast<CVector3*>(pData);
-				vertexBuffer->push_back(pos);
+				vertexBuffer->emplace_back(*reinterpret_cast<DirectX::VertexPositionNormalTangentColorTexture*>(pData));
 				//次の頂点へ。
 				pData += mesh->vertexStride;
 			}
+
 			//頂点バッファをアンロック
 			deviceContext->Unmap(mesh->vertexBuffer.Get(), 0);
 			m_vertexBufferArray.push_back(std::move(vertexBuffer));
@@ -154,7 +153,7 @@ void CDeathHotoke::PostLoopUpdate() {
 				//頂点の書き込み
 				HRESULT hr = deviceContext->Map(mesh->vertexBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &subresource);
 				if (FAILED(hr)) { return; }
-				memcpy(subresource.pData, &(*(m_vertexBufferArray[i].get()->begin())), sizeof(CVector3) * m_vertexBufferArray[i].get()->size()); //コピー				
+				memcpy(subresource.pData, &m_vertexBufferArray[i].get()->front(), sizeof(DirectX::VertexPositionNormalTangentColorTexture) * m_vertexBufferArray[i].get()->size()); //コピー				
 				deviceContext->Unmap(mesh->vertexBuffer.Get(), 0);	
 
 				i++;
