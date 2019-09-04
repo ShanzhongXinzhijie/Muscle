@@ -18,6 +18,11 @@ public:
 	void Update()override;
 	void PostRender()override;
 
+	void PostLoopUpdate()override;
+	typedef std::vector<CVector3>					VertexBuffer;		//頂点バッファ。
+	typedef std::unique_ptr<VertexBuffer>			VertexBufferPtr;
+	std::vector<VertexBufferPtr> m_vertexBufferArray;
+
 	//移動量を加える
 	void AddMove(const CVector3& vec) { m_move += vec; }
 	void AddRot(const CQuaternion& rot) { m_rotMove = rot * m_rotMove; }

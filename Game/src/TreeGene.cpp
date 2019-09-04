@@ -127,7 +127,7 @@ void Tree::Init(const CVector3& pos, const CVector3& normal){
 		SkinModel model;
 		model.Init(L"Resource/modelData/tree_tall.cmo");		
 		model.FindMaterialSetting(setMaterial);//É}ÉeÉäÉAÉãê›íË
-		m_imposter.Init(L"tree_tall", model, { 2048 * 4, 2048 * 4 }, { 69,35 }, m_sInstancingMax);
+		m_imposter.Init(L"tree_tall", model, { 2048 * 4 / 2, 2048 * 4 / 2 }, { 69,35 }, m_sInstancingMax);
 	}
 	//}
 	m_imposter.SetPos(m_pos);

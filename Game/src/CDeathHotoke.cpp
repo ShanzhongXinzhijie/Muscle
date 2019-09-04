@@ -31,7 +31,7 @@ bool CDeathHotoke::Start() {
 	);
 
 	//当たり判定
-	m_col.m_collision.CreateMesh({}, {}, m_scale, m_coreModel.GetSkinModel());
+	m_col.m_collision.CreateMesh({}, {}, m_scale, m_coreModel.GetSkinModel());//TODO 球にしようか
 	m_col.m_collision.SetIsHurtCollision(true);//これは喰らい判定
 	m_col.m_collision.SetCallback(
 		[&](SuicideObj::CCollisionObj::SCallbackParam& p) {
@@ -58,6 +58,35 @@ bool CDeathHotoke::Start() {
 		if (part)part->Start();
 	}
 	
+
+	m_coreModel.GetSkinModel().FindMesh([&](const auto& mesh) {
+		ID3D11DeviceContext* deviceContext = GetGraphicsEngine().GetD3DDeviceContext();
+		{
+			D3D11_MAPPED_SUBRESOURCE subresource;
+
+			//頂点のロード
+			HRESULT hr = deviceContext->Map(mesh->vertexBuffer.Get(), 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &subresource);
+			if (FAILED(hr)) { return; }			
+
+			D3D11_BUFFER_DESC bufferDesc;
+			mesh->vertexBuffer->GetDesc(&bufferDesc);
+			int vertexCount = bufferDesc.ByteWidth / mesh->vertexStride;//頂点数
+			char* pData = reinterpret_cast<char*>(subresource.pData);
+			VertexBufferPtr vertexBuffer = std::make_unique<VertexBuffer>();
+			CVector3 pos;
+			for (int i = 0; i < vertexCount; i++) {
+				pos = *reinterpret_cast<CVector3*>(pData);
+				vertexBuffer->push_back(pos);
+				//次の頂点へ。
+				pData += mesh->vertexStride;
+			}
+			//頂点バッファをアンロック
+			deviceContext->Unmap(mesh->vertexBuffer.Get(), 0);
+			m_vertexBufferArray.push_back(std::move(vertexBuffer));
+		}
+	}
+	);
+
 	return true;
 }
 
@@ -110,4 +139,26 @@ void CDeathHotoke::PostRender() {
 
 void CDeathHotoke::Damage(const ReferenceCollision& ref) {
 	m_hp -= ref.damege;
+}
+
+void CDeathHotoke::PostLoopUpdate() {
+
+	int i = 0;
+	m_coreModel.GetSkinModel().FindMesh([&](const auto& mesh) {
+			ID3D11DeviceContext* deviceContext = GetGraphicsEngine().GetD3DDeviceContext();
+
+			//頂点バッファを作成。
+			{
+				D3D11_MAPPED_SUBRESOURCE subresource;
+
+				//頂点の書き込み
+				HRESULT hr = deviceContext->Map(mesh->vertexBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &subresource);
+				if (FAILED(hr)) { return; }
+				memcpy(subresource.pData, &(*(m_vertexBufferArray[i].get()->begin())), sizeof(CVector3) * m_vertexBufferArray[i].get()->size()); //コピー				
+				deviceContext->Unmap(mesh->vertexBuffer.Get(), 0);	
+
+				i++;
+			}		
+		}
+	);
 }
