@@ -75,6 +75,9 @@ bool CDeathHotoke::Start() {
 			VertexBufferPtr vertexBuffer = std::make_unique<VertexBuffer>();
 			for (int i = 0; i < vertexCount; i++) {
 				vertexBuffer->emplace_back(*reinterpret_cast<DirectX::VertexPositionNormalTangentColorTexture*>(pData));
+				vertexBuffer->back().position.x += CMath::RandomZeroToOne()*1000.0f;
+				vertexBuffer->back().position.y += CMath::RandomZeroToOne()*1000.0f;
+				vertexBuffer->back().position.z += CMath::RandomZeroToOne()*1000.0f;
 				//ŽŸ‚Ì’¸“_‚ÖB
 				pData += mesh->vertexStride;
 			}
@@ -141,6 +144,16 @@ void CDeathHotoke::Damage(const ReferenceCollision& ref) {
 }
 
 void CDeathHotoke::PostLoopUpdate() {
+
+	DirectX::XMFLOAT3 offset(0,0,0);
+	offset.x += CMath::RandomZeroToOne()*10.0f;
+	offset.y += CMath::RandomZeroToOne()*100.0f;
+	offset.z += CMath::RandomZeroToOne()*1000.0f;
+	for (auto& v : m_vertexBufferArray) {
+		for (auto& v2 : *v) {
+			v2.position.x += offset.x;
+		}
+	}
 
 	int i = 0;
 	m_coreModel.GetSkinModel().FindMesh([&](const auto& mesh) {

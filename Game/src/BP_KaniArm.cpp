@@ -47,7 +47,7 @@ void BP_KaniArm::InnerStart() {
 		model.GetModel().GetSkinModel().FindMaterialSetting(
 			[&](MaterialSetting* mat) {
 				//mat->SetAlbedoScale({ 0.0f,0.0f,1.0f,1.0f });//色変更
-				mat->SetEmissive(16.0f);//発光
+				mat->SetEmissive(16.0f*0.5f);//発光
 				mat->SetLightingEnable(false);//ライティングしない
 				//mat->SetIsMotionBlur(false);//モーションブラーかけない
 			}
