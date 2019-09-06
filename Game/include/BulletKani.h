@@ -67,6 +67,7 @@ private:
 	//ƒ‚ƒfƒ‹
 	BeamModel m_model;
 	bool m_isMoved = false;
+	CVector3 m_lastDrawPos;
 	//õ–½
 	float m_lifeTime = 3.0f;
 	//À•W‚Æ‚©

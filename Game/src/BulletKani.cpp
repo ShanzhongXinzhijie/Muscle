@@ -11,7 +11,8 @@ BulletGO::BulletGO(IBulletDecolator* ptrDecolator, const CVector3& pos, const CV
 	m_model.Init(L"BLUE");
 	m_model.SetPos(m_posOld, m_pos);
 	m_model.SetRadius(6.0f);
-
+	m_lastDrawPos = m_pos;
+	
 	//ìñÇΩÇËîªíË
 	m_col.m_collision.CreateSphere(m_pos, {}, 3.0f);
 	m_col.m_reference.damege = 1.0f;
@@ -49,11 +50,12 @@ void BulletGO::Update() {
 }
 
 void BulletGO::PostLoopUpdate() {
-	if (!m_isMoved) { 
-		m_model.SetPos(m_posOld, m_pos); m_isMoved = true;
-		return;
-	}
-
 	//ÉÇÉfÉãçXêV
-	m_model.Move(m_vector);
+	if (!m_isMoved) {
+		m_model.SetPos(m_posOld, m_pos); m_isMoved = true;
+	}
+	else {
+		m_model.Move(m_pos - m_lastDrawPos);
+	}
+	m_lastDrawPos = m_pos;
 }
