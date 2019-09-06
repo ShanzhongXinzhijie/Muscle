@@ -1,6 +1,7 @@
 #pragma once
 #include"IGamePad.h"
 #include"AI.h"
+#include"DemolisherWeapon/physics2/MeshData.h"
 
 class IBodyPart;
 
@@ -19,9 +20,11 @@ public:
 	void PostRender()override;
 
 	void PostLoopUpdate()override;
-	typedef std::vector<DirectX::VertexPositionNormalTangentColorTexture>					VertexBuffer;		//頂点バッファ。
-	typedef std::unique_ptr<VertexBuffer>			VertexBufferPtr;
-	std::vector<VertexBufferPtr> m_vertexBufferArray;
+	typedef std::vector<DirectX::VertexPositionNormalTangentColorTexture>					VertexPosition;		//頂点バッファ。
+	typedef std::unique_ptr<VertexPosition>			VertexPositionPtr;
+	std::vector<VertexPositionPtr> m_vertexBufferArray;
+	Physics2::MeshData m_meshdata;
+	btSoftBody* m_soft_body = nullptr;
 
 	//移動量を加える
 	void AddMove(const CVector3& vec) { m_move += vec; }

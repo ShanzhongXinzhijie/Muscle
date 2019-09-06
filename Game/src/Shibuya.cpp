@@ -2,7 +2,7 @@
 #include "Shibuya.h"
 #include "DemolisherWeapon/Graphic/FrustumCulling.h"
 
-Shibuya::Shibuya() : m_hotoke(nullptr,false, std::make_unique<TestAI>(&m_hotoke))
+Shibuya::Shibuya()// : m_hotoke(nullptr,false, std::make_unique<TestAI>(&m_hotoke))
 {
 	//ライト作成
 	m_directionLight.SetDirection(CVector3::AxisZ()*-1.0f);
@@ -111,10 +111,10 @@ Shibuya::Shibuya() : m_hotoke(nullptr,false, std::make_unique<TestAI>(&m_hotoke)
 	
 
 	Tree::m_sInstancingMax = 4000;
-	m_objGene.Generate<Tree>({ -70.0f*50.0f,-70.0f*50.0f,-70.0f*50.0f }, { 70.0f*50.0f,70.0f*50.0f,70.0f*50.0f }, Tree::m_sInstancingMax);
+	//m_objGene.Generate<Tree>({ -70.0f*50.0f,-70.0f*50.0f,-70.0f*50.0f }, { 70.0f*50.0f,70.0f*50.0f,70.0f*50.0f }, Tree::m_sInstancingMax);
 	
 	Stone::m_sInstancingMax = 4000;
-	m_objGene.Generate<Stone>({ -70.0f*50.0f,-70.0f*50.0f,-70.0f*50.0f }, { 70.0f*50.0f,70.0f*50.0f,70.0f*50.0f }, Stone::m_sInstancingMax);
+	//m_objGene.Generate<Stone>({ -70.0f*50.0f,-70.0f*50.0f,-70.0f*50.0f }, { 70.0f*50.0f,70.0f*50.0f,70.0f*50.0f }, Stone::m_sInstancingMax);
 
 	//ビルボテスト
 	/*m_billboard.Init(L"Resource/spriteData/test.png");
@@ -168,6 +168,40 @@ Shibuya::Shibuya() : m_hotoke(nullptr,false, std::make_unique<TestAI>(&m_hotoke)
 	);
 	m_shadowmap.SetNear(50.0f);
 	m_shadowmap.SetFar(20000.0f);
+
+	//btSoftBody* rope = btSoftBodyHelpers::CreateRope(*GetPhysicsWorld().GetSoftBodyWorldInfo(),
+	//	btVector3(-100, 1200, 0), // ロープの端点1
+	//	btVector3(100, 1200, 0), // ロープの端点2
+	//	16,   // 分割数(ばねの数)
+	//	1 + 2); // 端点の固定フラグ
+	//rope->m_cfg.piterations = 4;     // ばねによる位置修正の最大反復回数
+	//rope->m_materials[0]->m_kLST = 0.5; // 剛性(Linear Stiffness Coefficient) (変形のしやすさ)
+	//rope->setTotalMass(1.0);            // 全体の質量
+	//rope->getCollisionShape()->setMargin(0.01);
+	//GetPhysicsWorld().GetDynamicWorld()->addSoftBody(rope);
+
+	btScalar sl = 100.0;
+	btScalar y = 1200.0;
+	int res = 9;
+	btSoftBody* cloth = btSoftBodyHelpers::CreatePatch(*GetPhysicsWorld().GetSoftBodyWorldInfo(),
+		btVector3(-sl, y, -sl),    // 四隅の座標 00
+		btVector3(-sl, y, sl),    // 四隅の座標 10
+		btVector3(sl, y, -sl),    // 四隅の座標 01
+		btVector3(sl, y, sl),    // 四隅の座標 11
+		res, res, // 分割数(2方向)
+		1 + 2 + 4, // 四隅の固定フラグ(1,2,4,8)
+		true); // 斜め方向のばねのON/OFF
+	cloth->getCollisionShape()->setMargin(0.01);
+	cloth->setTotalMass(0.02); // 全体の質量
+	cloth->m_materials[0]->m_kLST = 0.5;
+	GetPhysicsWorld().GetDynamicWorld()->addSoftBody(cloth);
+
+	//cloth->addForce(btVector3(0, 100, 0));
+
+	btTransform trans;
+	trans.setIdentity();		// 位置姿勢行列の初期化
+	trans.setOrigin(btVector3(0, 10000, 0));		// 初期位
+	cloth->transform(trans);
 }
 
 void Shibuya::PostLoopUpdate() {

@@ -72,7 +72,7 @@ bool CDeathHotoke::Start() {
 			mesh->vertexBuffer->GetDesc(&bufferDesc);
 			int vertexCount = bufferDesc.ByteWidth / mesh->vertexStride;//頂点数
 			char* pData = reinterpret_cast<char*>(subresource.pData);
-			VertexBufferPtr vertexBuffer = std::make_unique<VertexBuffer>();
+			VertexPositionPtr vertexBuffer = std::make_unique<VertexPosition>();
 			for (int i = 0; i < vertexCount; i++) {
 				vertexBuffer->emplace_back(*reinterpret_cast<DirectX::VertexPositionNormalTangentColorTexture*>(pData));
 				vertexBuffer->back().position.x += CMath::RandomZeroToOne()*1000.0f;
@@ -89,10 +89,74 @@ bool CDeathHotoke::Start() {
 	}
 	);
 
+	CMatrix mat,mat2;
+	mat2.MakeTranslation(CVector3::Up()*1200.0f);
+	mat.MakeScaling(m_scale);
+	mat.Mul(mat,mat2);
+	m_meshdata.CreateFromSkinModel(m_coreModel.GetSkinModel(),&mat);
+
+	int vertex_count = (int)m_meshdata.GetVertexBuffer().size(); // 総頂点数
+	int index_count = 0;
+	for (int i = 0; i < m_meshdata.GetPolygonNum(); i++) {
+		index_count += (int)m_meshdata.GetPolygonIndexs(i).size(); // 総ポリゴン数
+	}
+	index_count /= 3;
+	btScalar *vertices = new btScalar[vertex_count * 3]; // 頂点座標を格納する配列
+	int *indices = new int[index_count * 3]; // ポリゴンを構成する頂点番号を格納する配列
+
+	// 頂点座標の取り出し
+	for (int i = 0; i < vertex_count; ++i) {
+		vertices[3 * i] = m_meshdata.GetVertexBuffer()[i].x;
+		vertices[3 * i + 1] = m_meshdata.GetVertexBuffer()[i].y;
+		vertices[3 * i + 2] = m_meshdata.GetVertexBuffer()[i].z;
+	}
+	// ポリゴンを構成する頂点番号の取り出し
+	/*for (int i = 0; i < index_count; ++i) {
+		indices[3 * i] = m_meshdata.GetPolygonIndexs(i)[0];
+		indices[3 * i + 1] = m_meshdata.GetPolygonIndexs(i)[1];
+		indices[3 * i + 2] = m_meshdata.GetPolygonIndexs(i)[2];
+	}*/
+	int i2 = 0;
+	for (int i = 0; i < m_meshdata.GetPolygonNum(); i++) {
+		for (auto& ind : m_meshdata.GetPolygonIndexs(i)) {
+			indices[i2] = ind;
+			i2++;
+		}
+	}
+
+	//ソフトゥボデー作成
+	btSoftBody* soft_body = btSoftBodyHelpers::CreateFromTriMesh(*GetPhysicsWorld().GetSoftBodyWorldInfo(), vertices, indices, index_count);
+	soft_body->getCollisionShape()->setMargin(0.01);
+	soft_body->setTotalMass(10.0); // 全体の質量
+	soft_body->m_materials[0]->m_kLST = 0.5;
+	int nodenum = soft_body->m_nodes.size();
+	//soft_body->m_nodes.at(0).m_x;//座標
+	for (int i = 0; i < nodenum /2; ++i) {
+		soft_body->setMass(i, 0.f);
+	}
+	soft_body->randomizeConstraints();
+	soft_body->setPose(true, true);
+
+	soft_body->m_cfg.kLF = 0.05;
+	soft_body->m_cfg.kDG = 0.01;
+
+	GetPhysicsWorld().GetDynamicWorld()->addSoftBody(soft_body);
+	soft_body->addForce(btVector3(1, 0, 0));
+	
+	m_soft_body = soft_body;
+
 	return true;
 }
 
 void CDeathHotoke::Update() {
+
+	if (GetKeyInput(VK_UP)) {
+		m_soft_body->addForce(btVector3(1, 1, 0));
+	}
+	if (GetKeyInput(VK_DOWN)) {
+		m_soft_body->addForce(btVector3(-1, 1, 0));
+	}
+
 	//AI実行
 	if (m_ai) { m_ai->Update(); }
 
