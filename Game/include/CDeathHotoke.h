@@ -20,20 +20,6 @@ public:
 	void PostLoopUpdate()override;
 	void PostRender()override;
 
-	//void PostLoopUpdate()override;
-	//typedef std::vector<DirectX::VertexPositionNormalTangentColorTexture>					VertexPosition;		//頂点バッファ。
-	//typedef std::unique_ptr<VertexPosition>			VertexPositionPtr;
-	//std::vector<VertexPositionPtr> m_vertexPositionArray;
-	//Physics2::MeshData m_meshdata;
-	//btSoftBody* m_soft_body = nullptr;
-	//std::unique_ptr<btTriangleIndexVertexArray> m_stridingMeshInterface;
-	//typedef std::vector<CVector3>					VertexBuffer;		//頂点バッファ。
-	//typedef std::vector<unsigned int>				IndexBuffer;		//インデックスバッファ。
-	//typedef std::unique_ptr<VertexBuffer>			VertexBufferPtr;
-	//typedef std::unique_ptr<IndexBuffer>			IndexBufferPtr;
-	//std::vector<VertexBufferPtr>					m_vertexBufferArray;		//頂点バッファの配列。
-	//std::vector<IndexBufferPtr>						m_indexBufferArray;		//インデックスバッファの配列。
-
 	//移動量を加える
 	void AddMove(const CVector3& vec) { m_move += vec; }
 	void AddRot(const CQuaternion& rot) { m_rotMove = rot * m_rotMove; }

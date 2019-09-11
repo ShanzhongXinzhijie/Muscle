@@ -10,7 +10,7 @@ void BP_HumanMantle::InnerStart() {
 	//GetPhysicsWorld().GetSoftBodyWorldInfo()->air_density = 1.2f*10.0f;
 
 	//布作る
-	btScalar sl = 500;// 8710.938;// 500.0;//8710.938 ~ 169.777
+	btScalar sl = 500.0f;//8710.938 ~ 169.777
 	btScalar y = 0.0f;// 1200.0;
 	int res = 9;
 	btSoftBody* cloth = btSoftBodyHelpers::CreatePatch(*GetPhysicsWorld().GetSoftBodyWorldInfo(),
@@ -32,35 +32,50 @@ void BP_HumanMantle::InnerStart() {
 	pm->m_kLST = 0.4f;//粘性(0~1
 	cloth->generateBendingConstraints(2, pm);
 
+	//頂点設定
 	int nodenum = cloth->m_nodes.size();
 	for (int i = 0; i < nodenum; ++i) {
-		//X
 		float distance = abs((-sl) - cloth->m_nodes.at(i).m_x.getY()) / (sl*2.0f);
 		distance = 1.0f - distance;
-		constexpr float const_scale = 0.01948929036115284025669795835994f * 10.0f;
-		cloth->m_nodes.at(i).m_x.setX(cloth->m_nodes.at(i).m_x.getX()*(const_scale + (1.0f- const_scale)*distance));
+
+		cloth->m_nodes.at(i).m_x.setX(cloth->m_nodes.at(i).m_x.getX() * max(0.1f,distance));
+
+		////X
+		//cloth->m_nodes.at(i).m_x.setX(CMath::Lerp(169.777f, 8710.938f, distance)*sign);
+		////Y
+		//cloth->m_nodes.at(i).m_x.setY(CMath::Lerp(3093.56f, -4717.89f, distance));
+		///Z
+		//cloth->m_nodes.at(i).m_x.setZ(CMath::Lerp(2204.786f, 7939.328f, distance)*sign);
+		//固定
 		if (distance < FLT_EPSILON) { cloth->setMass(i, 0.f); }
-		//Z
 	}
 
 	//ソフトボディを登録
-	GetPhysicsWorld().GetDynamicWorld()->addSoftBody(cloth);
+	GetPhysicsWorld().GetDynamicWorld()->addSoftBody(cloth, btBroadphaseProxy::DefaultFilter, 0);
 
-	btTransform trans;
-	trans.setIdentity();		// 位置姿勢行列の初期化
-	trans.setOrigin(btVector3(0, 2000, 0));		// 初期位
-	cloth->transform(trans);
+	//btTransform trans;
+	//trans.setIdentity();		// 位置姿勢行列の初期化
+	//trans.setOrigin(btVector3(0, 2000, 0));		// 初期位
+	//cloth->transform(trans);
 
 	m_cloth = cloth;
 	
+	m_localPos.y = -150.0f;
+	m_localPos.z = -60.0f;// -65.0f;
+	m_localScale *= 15.0f;
+
 	m_model = std::make_unique<CSkinModelRender>();
-	m_model->Init(L"Resource/modelData/manto.cmo");
+	m_model->Init(L"Resource/modelData/manto_test.cmo", enFbxUpAxisY);
 	m_model->GetSkinModel().SetCullMode(D3D11_CULL_NONE);//バックカリングしない
 	m_model->GetSkinModel().FindMaterialSetting(
 		[&](MaterialSetting* mat) {
+			mat->SetAlbedoScale({1.0f,0.01f,0.08f,1.0f});
 			mat->SetIsUseTexZShader(true);//シャドウマップ描画にテクスチャ使う
 		}
 	);
+	m_model->SetIsShadowCaster(false);//TODO オフセットにする(model.fxで
+	//TODO 視錐台化リング
+	//TODO 影おかしくない?
 
 	//頂点操作用情報を作成
 	ID3D11DeviceContext* deviceContext = GetGraphicsEngine().GetD3DDeviceContext();
@@ -80,6 +95,11 @@ void BP_HumanMantle::InnerStart() {
 			for (int i = 0; i < vertexCount; i++) {
 				//頂点情報の保存
 				vertexBuffer->emplace_back(*reinterpret_cast<DirectX::VertexPositionNormalTangentColorTexture*>(pData));
+
+				float distance = abs((-sl) - vertexBuffer->back().position.y) / (sl*2.0f);
+				distance = 1.0f - distance;
+				vertexBuffer->back().position.x *=  max(0.1f, distance);
+
 				nodes->emplace_back();
 				float closestDistanse = -1.0f;
 				for (int i = 0; i < nodenum; ++i) {
@@ -88,6 +108,7 @@ void BP_HumanMantle::InnerStart() {
 					if (closestDistanse < 0.0f || closestDistanse > distance) {
 						nodes->back().node = &cloth->m_nodes.at(i);
 						nodes->back().offset = disvec;
+						closestDistanse = distance;
 					}
 				}				
 				pData += mesh->vertexStride;//次の頂点へ
@@ -105,10 +126,10 @@ void BP_HumanMantle::InnerStart() {
 
 void BP_HumanMantle::Update() {
 	if (GetKeyInput(VK_UP)) {
-		m_cloth->setVelocity(btVector3(1000, 1, 0));
+		m_cloth->setVelocity(btVector3(1000, 0, 1000));
 	}
 	if (GetKeyInput(VK_DOWN)) {
-		m_cloth->addForce(btVector3(-1000, 1, 0));
+		m_cloth->addForce(btVector3(-1000, 0, 0));
 	}
 }
 
@@ -120,7 +141,7 @@ void BP_HumanMantle::PostLoopUpdate() {
 			int i2 = 0;
 			for (auto& vertex : *Varray) {
 				auto& nodearray = *m_nodeArrays[i];
-				vertex.position.x = nodearray[i2].node->m_x.x() + nodearray[i2].offset.x;
+				vertex.position.x = (nodearray[i2].node->m_x.x() + nodearray[i2].offset.x)*-1.0f;
 				vertex.position.y = nodearray[i2].node->m_x.y() + nodearray[i2].offset.y;
 				vertex.position.z = nodearray[i2].node->m_x.z() + nodearray[i2].offset.z;
 				i2++;
