@@ -2,9 +2,16 @@
 #include "HotokeCamera.h"
 
 void HotokeCameraController::Update() {
-	//パッドの入力によって視点を回転
-	//m_hotokeCam.RotationCamera(m_ptrPad->GetStick(R)*m_padSensi);
-	m_hotokeCam.SetRotationCamera(CVector2(m_ptrPad->GetStick(R).x, -m_ptrPad->GetStick(R).y)*CMath::PI_HALF);
+	if (!m_lock) {
+		//マウスカーソルの動きに連動してカメラ回転
+		m_hotokeCam.RotationCamera(MouseCursor().GetMouseMove()*m_mouseSensi);
+	}
+	else {
+		//パッドの入力によって視点を回転
+		//m_hotokeCam.RotationCamera(m_ptrPad->GetStick(R)*m_padSensi);
+		m_hotokeCam.SetRotationCamera(CVector2(m_ptrPad->GetStick(R).x, -m_ptrPad->GetStick(R).y)*CMath::PI_HALF);
+	}
+
 	//バックミラー
 	bool oldIsBackMirror = m_isBackMirror;
 	if (m_ptrPad->GetBackMirror()) {
@@ -17,11 +24,6 @@ void HotokeCameraController::Update() {
 	if (oldIsBackMirror != m_isBackMirror) {
 		//モーションブラーをリセット
 		m_hotokeCam.ResetMotionBlur();
-	}
-
-	if (!m_lock) {
-		//マウスカーソルの動きに連動してカメラ回転
-		m_hotokeCam.RotationCamera(MouseCursor().GetMouseMove()*m_mouseSensi);
 	}
 
 	if (GetAsyncKeyState('O')) {

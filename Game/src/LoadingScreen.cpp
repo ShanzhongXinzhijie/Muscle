@@ -1,0 +1,31 @@
+#include "stdafx.h"
+#include "LoadingScreen.h"
+
+bool LoadingScreen::Start() {
+	m_gomiCamera = std::make_unique<GameObj::NoRegisterOrthoCamera>();
+	SetMainCamera(m_gomiCamera.get());
+	m_sprite.Init(L"Resource/spriteData/logo.png");
+	return true;
+}
+
+void LoadingScreen::PostLoopUpdate() {
+	//ロード画面背景
+	DrawQuad(0.0f, 1.0f, CVector4::White());
+}
+
+void LoadingScreen::PostRender() {
+	if (m_isOneLooped) {
+		//ゴミカメラ削除
+		m_gomiCamera.reset();
+		//このクラス無効化
+		SetEnable(false);
+
+		//ロードするぞ
+		m_game = std::make_unique<Game>();
+	}
+	m_isOneLooped = true;
+
+	//ロード画面
+	m_sprite.Draw({ 0.5f,0.5f }, CVector2::One(), { 0.5f,0.5f });
+	m_font.Draw(L"ﾌﾟﾘﾌﾟﾘﾌﾟﾘﾌﾟﾘ...",{ 0.5f,0.8f }, CVector4::Black(), CVector2::One(), { 0.5f,0.5f });
+}

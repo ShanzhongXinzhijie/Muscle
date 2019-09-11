@@ -101,7 +101,7 @@ public:
 		//MouseCursor().SetLockMouseCursor(true);
 		m_lock = true;
 		//マウスカーソルを非表示
-		MouseCursor().SetShowMouseCursor(false);
+		//MouseCursor().SetShowMouseCursor(false);
 	}
 
 	void Update()override;

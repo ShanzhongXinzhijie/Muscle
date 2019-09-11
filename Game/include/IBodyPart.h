@@ -31,11 +31,14 @@ public:
 	void Start() { InnerStart(); UpdateTRS(); }
 	virtual void Update() {};
 	virtual void UpdateTRS() {
-		m_model->SetPos(m_ptrCore->GetPos() + m_localPos);
-		m_model->SetRot(m_localRot*m_ptrCore->GetRot());
-		m_model->SetScale(m_ptrCore->GetScale()*m_localScale);
+		if (m_model) {
+			m_model->SetPos(m_ptrCore->GetPos() + m_localPos);
+			m_model->SetRot(m_localRot*m_ptrCore->GetRot());
+			m_model->SetScale(m_ptrCore->GetScale()*m_localScale);
+		}
 	}
 	virtual void PostUTRSUpdate() {};
+	virtual void PostLoopUpdate() {};
 	virtual void Draw2D() { };
 
 private:

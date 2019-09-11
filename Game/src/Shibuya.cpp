@@ -179,29 +179,20 @@ Shibuya::Shibuya()// : m_hotoke(nullptr,false, std::make_unique<TestAI>(&m_hotok
 	//rope->setTotalMass(1.0);            // 全体の質量
 	//rope->getCollisionShape()->setMargin(0.01);
 	//GetPhysicsWorld().GetDynamicWorld()->addSoftBody(rope);
+}
 
-	btScalar sl = 100.0;
-	btScalar y = 1200.0;
-	int res = 9;
-	btSoftBody* cloth = btSoftBodyHelpers::CreatePatch(*GetPhysicsWorld().GetSoftBodyWorldInfo(),
-		btVector3(-sl, y, -sl),    // 四隅の座標 00
-		btVector3(-sl, y, sl),    // 四隅の座標 10
-		btVector3(sl, y, -sl),    // 四隅の座標 01
-		btVector3(sl, y, sl),    // 四隅の座標 11
-		res, res, // 分割数(2方向)
-		1 + 2 + 4, // 四隅の固定フラグ(1,2,4,8)
-		true); // 斜め方向のばねのON/OFF
-	cloth->getCollisionShape()->setMargin(0.01);
-	cloth->setTotalMass(0.02); // 全体の質量
-	cloth->m_materials[0]->m_kLST = 0.5;
-	GetPhysicsWorld().GetDynamicWorld()->addSoftBody(cloth);
-
-	//cloth->addForce(btVector3(0, 100, 0));
-
-	btTransform trans;
-	trans.setIdentity();		// 位置姿勢行列の初期化
-	trans.setOrigin(btVector3(0, 10000, 0));		// 初期位
-	cloth->transform(trans);
+void Shibuya::Update() {
+	int i = 0;
+	for (auto& cloud : m_cloud) {
+		i++;
+		cloud.GetSkinModel().FindMaterialSetting(
+			[&](MaterialSetting* mat) {
+				mat->SetUVOffset({ m_cloudTimer + 0.33f*i , m_cloudTimer + 0.33f*i });
+			}
+		);
+	}
+	m_cloudTimer += 0.0005f;
+	if (m_cloudTimer > 1.0f) { m_cloudTimer -= 1.0f; }
 }
 
 void Shibuya::PostLoopUpdate() {

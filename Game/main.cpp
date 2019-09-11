@@ -1,12 +1,12 @@
 #include "stdafx.h"
-#include "Game.h"
+#include "LoadingScreen.h"
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
 {
 	//エンジンの初期化設定
 	InitEngineParameter initparam;
 	
-	initparam.windowStyle = WS_POPUP;		//ウィンドウスタイル
+	initparam.windowStyle = WS_POPUP | WS_BORDER ;		//ウィンドウスタイル
 	initparam.screenWidth = 720;			//ウィンドウの幅
 	initparam.screenHeight = 720;			//ウィンドウの高さ
 	initparam.frameBufferWidth = 720;		//フレームバッファの幅。これが内部解像度。
@@ -56,7 +56,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	SetIsDebugInput(true);
 
 	//ゲームインスタンス作成
-	Game game;
+	LoadingScreen game;
 
 	//ゲームループ。
 	GetEngine().RunGameLoop();

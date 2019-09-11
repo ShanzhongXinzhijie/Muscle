@@ -10,19 +10,7 @@ class Shibuya : IGameObject
 public:
 	Shibuya();
 
-	void Update()override {
-		int i = 0;
-		for (auto& cloud : m_cloud) {
-			i++;
-			cloud.GetSkinModel().FindMaterialSetting(
-				[&](MaterialSetting* mat) {
-					mat->SetUVOffset({ m_cloudTimer+0.33f*i , m_cloudTimer + 0.33f*i });
-				}
-			);
-		}
-		m_cloudTimer += 0.0005f;
-		if (m_cloudTimer > 1.0f) { m_cloudTimer -= 1.0f; }
-	}
+	void Update()override;
 	void PostLoopUpdate()override;
 
 private:

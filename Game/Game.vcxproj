@@ -27,6 +27,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\LoadingScreen.cpp" />
+    <ClCompile Include="src\BP_HumanMantle.cpp" />
     <ClCompile Include="src\AI.cpp" />
     <ClCompile Include="src\DHCollision.cpp" />
     <ClCompile Include="src\HotokeCamera.cpp" />
@@ -54,6 +56,7 @@
     <ClCompile Include="src\TreeGene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\BP_HumanMantle.h" />
     <ClInclude Include="include\AI.h" />
     <ClInclude Include="include\DHCollision.h" />
     <ClInclude Include="include\HotokeCamera.h" />
@@ -73,6 +76,7 @@
     <ClInclude Include="include\Shibuya.h" />
     <ClInclude Include="include\ShadowMapBaker.h" />
     <ClInclude Include="include\StageObjectGenerator.h" />
+    <ClInclude Include="include\LoadingScreen.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="include\TpsCamera.h" />
     <ClInclude Include="include\TreeGene.h" />
