@@ -56,7 +56,7 @@ void BP_HumanLeg::Update() {
 	if (footDistance < maxFootDistance) {
 		//™X‚É‘«‚ðL‚Î‚·
 		float stretchMax = maxFootDistance - footDistance;
-		m_ptrCore->AddMove(CVector3(0.0f, min(stretchMax, 5.0f), 0.0f));
+		m_ptrCore->AddMove(CVector3(0.0f, min(stretchMax, 10.0f+1.0f), 0.0f));//TODO 10.0f‚Í—Ž‰º‘¬“x
 	}	
 }
 

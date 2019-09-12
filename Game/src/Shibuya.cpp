@@ -106,14 +106,10 @@ Shibuya::Shibuya()// : m_hotoke(nullptr,false, std::make_unique<TestAI>(&m_hotok
 	SetFogDistance(30000.0f);
 
 	//木々
-	//float area_min = -8000.0f - 500.0f, area_max = -8000.0f + 500.0f;
-	//m_treeGene.Generate({ area_min,-70.0f*500.0f,-500.0f }, { area_max,70.0f*50.0f,500.0f }, 500);
-	
-
-	Tree::m_sInstancingMax = 4000;
+	//Tree::m_sInstancingMax = 4000;
 	//m_objGene.Generate<Tree>({ -70.0f*50.0f,-70.0f*50.0f,-70.0f*50.0f }, { 70.0f*50.0f,70.0f*50.0f,70.0f*50.0f }, Tree::m_sInstancingMax);
 	
-	Stone::m_sInstancingMax = 4000;
+	//Stone::m_sInstancingMax = 4000;
 	//m_objGene.Generate<Stone>({ -70.0f*50.0f,-70.0f*50.0f,-70.0f*50.0f }, { 70.0f*50.0f,70.0f*50.0f,70.0f*50.0f }, Stone::m_sInstancingMax);
 
 	//ビルボテスト

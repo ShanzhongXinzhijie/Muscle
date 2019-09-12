@@ -48,6 +48,7 @@ bool CDeathHotoke::Start() {
 	//位置初期化
 	m_pos = CVector3::AxisY()*1000.0f;
 	m_pos.z += 200.0f;
+	m_posOld = m_pos;
 	
 	//パーツ生成
 	m_parts[enWing] = new BP_HumanMantle(this);//BP_BirdWing
@@ -62,6 +63,11 @@ bool CDeathHotoke::Start() {
 	return true;
 }
 
+void CDeathHotoke::PreUpdate() {
+	//旧座標記録
+	m_posOld = m_pos;
+}
+
 void CDeathHotoke::Update() {
 	//AI実行
 	if (m_ai) { m_ai->Update(); }
@@ -73,7 +79,7 @@ void CDeathHotoke::Update() {
 	m_move *= 0.5f;
 	m_rotMove.Slerp(0.5f, m_rotMove, CQuaternion::Identity());
 	//重力
-	m_move.y -= 1.0f;
+	m_move.y -= 10.0f;
 
 	//パーツのUpdate
 	for (auto& part : m_parts) {

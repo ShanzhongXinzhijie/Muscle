@@ -38,7 +38,7 @@ void CPlayer::Update() {
 		pos += moveDir * 10.0f;
 	}
 	if (GetKeyInput(VK_SPACE)) {
-		pos.y += 20.0f;
+		pos.y += 40.0f;
 	}
 	if (GetKeyInput('C')) {
 		pos.y -= 20.0f;

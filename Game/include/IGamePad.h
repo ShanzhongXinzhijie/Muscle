@@ -80,6 +80,18 @@ public:
 		return m_usePad->GetButton(enButtonRSB);
 	}
 
+	/// <summary>
+	/// 脚入力を取得
+	/// </summary>
+	[[nodiscard]]
+	bool GetLegInput() const {
+		return m_usePad->GetButton(enButtonLT);
+	}
+	[[nodiscard]]
+	bool GetLegDown() const {
+		return m_usePad->GetDown(enButtonLT);
+	}
+
 private:
 	XInputPad* m_usePad = &Pad(0);//使用するパッド
 

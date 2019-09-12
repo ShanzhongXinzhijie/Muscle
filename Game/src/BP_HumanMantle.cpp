@@ -6,13 +6,13 @@ using namespace GameObj;
 void BP_HumanMantle::InnerStart() {
 	//物理ワールド設定
 	//TODO　別の所テ゛
-	GetPhysicsWorld().SetGravity({0.0f,-10.0f,0.0f});	
+	GetPhysicsWorld().SetGravity({0.0f,-20.0f,0.0f});	
 	//GetPhysicsWorld().GetSoftBodyWorldInfo()->air_density = 1.2f*10.0f;
 
 	//布作る
 	btScalar sl = 500.0f;//8710.938 ~ 169.777
 	btScalar y = 0.0f;// 1200.0;
-	int res = 9;
+	constexpr int res = 9;//分割数
 	btSoftBody* cloth = btSoftBodyHelpers::CreatePatch(*GetPhysicsWorld().GetSoftBodyWorldInfo(),
 		btVector3(-sl, -sl, y),    // 四隅の座標 00
 		btVector3(-sl, sl, y),    // 四隅の座標 10
@@ -38,14 +38,10 @@ void BP_HumanMantle::InnerStart() {
 		float distance = abs((-sl) - cloth->m_nodes.at(i).m_x.getY()) / (sl*2.0f);
 		distance = 1.0f - distance;
 
+		//形状
 		cloth->m_nodes.at(i).m_x.setX(cloth->m_nodes.at(i).m_x.getX() * max(0.1f,distance));
+		cloth->m_nodes.at(i).m_x.setY(cloth->m_nodes.at(i).m_x.getY() * 0.5f);
 
-		////X
-		//cloth->m_nodes.at(i).m_x.setX(CMath::Lerp(169.777f, 8710.938f, distance)*sign);
-		////Y
-		//cloth->m_nodes.at(i).m_x.setY(CMath::Lerp(3093.56f, -4717.89f, distance));
-		///Z
-		//cloth->m_nodes.at(i).m_x.setZ(CMath::Lerp(2204.786f, 7939.328f, distance)*sign);
 		//固定
 		if (distance < FLT_EPSILON) { cloth->setMass(i, 0.f); }
 	}
@@ -60,8 +56,9 @@ void BP_HumanMantle::InnerStart() {
 
 	m_cloth = cloth;
 	
-	m_localPos.y = -150.0f;
-	m_localPos.z = -60.0f;// -65.0f;
+	//表示モデル位置調整
+	m_localPos.y = -150.0f*0.25f;
+	m_localPos.z = -65.0f;
 	m_localScale *= 15.0f;
 
 	m_model = std::make_unique<CSkinModelRender>();
@@ -73,7 +70,7 @@ void BP_HumanMantle::InnerStart() {
 			mat->SetIsUseTexZShader(true);//シャドウマップ描画にテクスチャ使う
 		}
 	);
-	m_model->SetIsShadowCaster(false);//TODO オフセットにする(model.fxで
+	//m_model->SetIsShadowCaster(false);//TODO オフセットにする(model.fxで
 	//TODO 視錐台化リング
 	//TODO 影おかしくない?
 
@@ -98,7 +95,8 @@ void BP_HumanMantle::InnerStart() {
 
 				float distance = abs((-sl) - vertexBuffer->back().position.y) / (sl*2.0f);
 				distance = 1.0f - distance;
-				vertexBuffer->back().position.x *=  max(0.1f, distance);
+				vertexBuffer->back().position.x *= max(0.1f, distance);
+				vertexBuffer->back().position.y *= 0.5f;
 
 				nodes->emplace_back();
 				float closestDistanse = -1.0f;
@@ -122,14 +120,45 @@ void BP_HumanMantle::InnerStart() {
 		}
 	);
 	
+	//コントローラー
+	if (m_ptrCore->GetPad()) {
+		m_controller = new HCon_HumanMantle(this, m_ptrCore);
+	}
+	else {
+		m_controller = new AICon_HumanMantle(this, m_ptrCore);
+	}
 }
 
 void BP_HumanMantle::Update() {
+	//コントローラーに操作させる
+	m_controller->Update();
+
+	//targetに向けて旋回
+}
+
+void BP_HumanMantle::PostUTRSUpdate() {
+	//移動量をソフトボディに適用
+	m_cloth->addForce(m_ptrCore->GetMove()*-1000.0f);
+
+	//ソフトボディテスト
 	if (GetKeyInput(VK_UP)) {
-		m_cloth->setVelocity(btVector3(1000, 0, 1000));
+		m_cloth->setVelocity(btVector3(0, 0, 1000));
+	}
+	if (GetKeyInput(VK_LEFT)) {
+		m_cloth->addForce(btVector3(1000, 0, 0));
 	}
 	if (GetKeyInput(VK_DOWN)) {
-		m_cloth->addForce(btVector3(-1000, 0, 0));
+		m_cloth->setVelocity(btVector3(0, 0, 0));
+	}
+
+	//ソフトボディ移動制限
+	int nodenum = m_cloth->m_nodes.size();
+	constexpr int res = 9;//分割数
+	for (int i = 0; i < nodenum; ++i) {
+		if (m_cloth->m_nodes.at(i).m_x.z() > -50.0f*(res - (i % res) - 1)) {
+			m_cloth->m_nodes.at(i).m_x.setZ(-50.0f*(res - (i % res)) - 1);
+			m_cloth->m_nodes.at(i).m_v = btVector3(0, 0, 0);// setVelocity(btVector3(0, 0, 0));
+		}
 	}
 }
 
@@ -165,3 +194,27 @@ void BP_HumanMantle::PostLoopUpdate() {
 		}
 	);
 }
+
+void BP_HumanMantle::Move(const CVector2& dir) {
+	//移動
+	m_ptrCore->AddMove(CVector3(dir.x,0.0f,dir.y)*10.0f);//TODO 向きに変換
+}
+void BP_HumanMantle::Step(const CVector2& dir) {}
+void BP_HumanMantle::Jump() {
+	//ジャンプ
+	m_ptrCore->AddMove(CVector3::AxisY()*1000.0f);
+}
+void BP_HumanMantle::Parachute() {}
+
+void HCon_HumanMantle::Update() {
+
+	//移動
+	m_ptrBody->Move(m_ptrCore->GetPad()->GetStick(L));
+
+	//ジャンプ
+	if (m_ptrCore->GetPad()->GetLegDown()) {//TODO これ脚パーツじゃない
+		m_ptrBody->Jump();
+	}
+}
+
+void AICon_HumanMantle::Update() {}

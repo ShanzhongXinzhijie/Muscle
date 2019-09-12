@@ -16,6 +16,7 @@ public:
 
 	//IGameObject関係
 	bool Start()override;
+	void PreUpdate()override;
 	void Update()override;
 	void PostLoopUpdate()override;
 	void PostRender()override;
@@ -37,8 +38,11 @@ public:
 	[[nodiscard]] const CVector3& GetPos()const { return m_pos; }
 	[[nodiscard]] const CQuaternion& GetRot()const { return m_rot; }
 	[[nodiscard]] const CVector3& GetScale()const { return m_scale; }
+	[[nodiscard]] CVector3 GetMove() const { 
+		return m_pos - m_posOld; 
+	}
 	//移動量を取得
-	[[nodiscard]] const CVector3& GetMove() const { return m_move; }
+	[[nodiscard]] const CVector3& GetVelocity() const { return m_move; }
 	//ターゲット位置を取得
 	[[nodiscard]] const CVector3& GetTargetPos() const { return m_targetPos; }
 	
@@ -76,7 +80,7 @@ private:
 	DHCollision m_col;
 
 	//TRS
-	CVector3 m_pos, m_scale;
+	CVector3 m_pos, m_scale, m_posOld;
 	CQuaternion m_rot;
 
 	//方向ベクトル
