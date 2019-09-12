@@ -32,8 +32,11 @@ public:
 	virtual void Update() {};
 	virtual void UpdateTRS() {
 		if (m_model) {
-			m_model->SetPos(m_ptrCore->GetPos() + m_localPos);
-			m_model->SetRot(m_localRot*m_ptrCore->GetRot());
+			CQuaternion rot = m_localRot * m_ptrCore->GetRot();
+			CVector3 pos = m_localPos;
+			rot.Multiply(pos);
+			m_model->SetPos(m_ptrCore->GetPos() + pos);
+			m_model->SetRot(rot);
 			m_model->SetScale(m_ptrCore->GetScale()*m_localScale);
 		}
 	}

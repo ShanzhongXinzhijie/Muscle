@@ -134,23 +134,21 @@ void BP_HumanMantle::Update() {
 	m_controller->Update();
 
 	//targetに向けて旋回
+	CVector3 targetDir = (m_ptrCore->GetTargetPos() - m_ptrCore->GetPos()).GetNorm();
+	float rad = CVector3::AngleOf2NormalizeVector(m_ptrCore->GetFront(), targetDir);
+	float sign = m_ptrCore->GetLeft().Dot(targetDir);
+	if (abs(sign) > 0.0f) { sign /= abs(sign); }
+	if (abs(rad) < CMath::DegToRad(20.5f)) { rad = 0.0f; }
+	//旋回
+	m_ptrCore->AddRot(CQuaternion(CVector3::AxisY(), sign*-1.0f*min(rad,0.01f)));
 }
 
 void BP_HumanMantle::PostUTRSUpdate() {
 	//移動量をソフトボディに適用
 	m_cloth->addForce(m_ptrCore->GetMove()*-1000.0f);
-
-	//ソフトボディテスト
-	if (GetKeyInput(VK_UP)) {
-		m_cloth->setVelocity(btVector3(0, 0, 1000));
-	}
-	if (GetKeyInput(VK_LEFT)) {
-		m_cloth->addForce(btVector3(1000, 0, 0));
-	}
-	if (GetKeyInput(VK_DOWN)) {
-		m_cloth->setVelocity(btVector3(0, 0, 0));
-	}
-
+	//TODO　方向変換(マントは向き変わらないため)
+	//TODO  回転
+	
 	//ソフトボディ移動制限
 	int nodenum = m_cloth->m_nodes.size();
 	constexpr int res = 9;//分割数
@@ -173,6 +171,10 @@ void BP_HumanMantle::PostLoopUpdate() {
 				vertex.position.x = (nodearray[i2].node->m_x.x() + nodearray[i2].offset.x)*-1.0f;
 				vertex.position.y = nodearray[i2].node->m_x.y() + nodearray[i2].offset.y;
 				vertex.position.z = nodearray[i2].node->m_x.z() + nodearray[i2].offset.z;
+				//TODO 再計算
+				//vertex.normal;
+				//vertex.tangent;
+				//vertex.textureCoordinate//uv座標?
 				i2++;
 			}
 			i++;
@@ -197,7 +199,9 @@ void BP_HumanMantle::PostLoopUpdate() {
 
 void BP_HumanMantle::Move(const CVector2& dir) {
 	//移動
-	m_ptrCore->AddMove(CVector3(dir.x,0.0f,dir.y)*10.0f);//TODO 向きに変換
+	CVector3 move = CVector3(dir.x, 0.0f, dir.y)*10.0f;
+	m_ptrCore->GetRot().Multiply(move);
+	m_ptrCore->AddMove(move);
 }
 void BP_HumanMantle::Step(const CVector2& dir) {}
 void BP_HumanMantle::Jump() {
