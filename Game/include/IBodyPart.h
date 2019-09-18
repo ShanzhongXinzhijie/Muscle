@@ -1,5 +1,6 @@
 #pragma once
-#include"CDeathHotoke.h"
+
+class CDeathHotoke;
 
 /// <summary>
 /// ボディパーツコントローラーの親クラス
@@ -25,24 +26,21 @@ protected:
 class IBodyPart
 {
 public:
-	IBodyPart(CDeathHotoke* ptrCore) : m_ptrCore(ptrCore) {}
-	virtual ~IBodyPart() {}
+	IBodyPart() = default;
+	IBodyPart(CDeathHotoke* ptrCore) : m_ptrCore(ptrCore) {};
+	~IBodyPart() = default;
 
-	void Start() { InnerStart(); UpdateTRS(); }
-	virtual void Update() {};
-	virtual void UpdateTRS() {
-		if (m_model) {
-			CQuaternion rot = m_localRot * m_ptrCore->GetRot();
-			CVector3 pos = m_localPos;
-			rot.Multiply(pos);
-			m_model->SetPos(m_ptrCore->GetPos() + pos);
-			m_model->SetRot(rot);
-			m_model->SetScale(m_ptrCore->GetScale()*m_localScale);
-		}
+	//初期化
+	void Init(CDeathHotoke* ptrCore) {
+		m_ptrCore = ptrCore;
 	}
-	virtual void PostUTRSUpdate() {};
-	virtual void PostLoopUpdate() {};
-	virtual void Draw2D() { };
+
+	void Start();
+	virtual void Update() {}
+	virtual void UpdateTRS();
+	virtual void PostUTRSUpdate() {}
+	virtual void PostLoopUpdate() {}
+	virtual void Draw2D() {}
 
 private:
 	virtual void InnerStart() = 0;

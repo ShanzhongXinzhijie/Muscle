@@ -2,7 +2,7 @@
 #include "Shibuya.h"
 #include "DemolisherWeapon/Graphic/FrustumCulling.h"
 
-Shibuya::Shibuya()// : m_hotoke(nullptr,false, std::make_unique<TestAI>(&m_hotoke))
+Shibuya::Shibuya() : m_hotoke(nullptr,false, std::make_unique<TestAI>(&m_hotoke))
 {
 	//ÉâÉCÉgçÏê¨
 	m_directionLight.SetDirection(CVector3::AxisZ()*-1.0f);

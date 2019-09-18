@@ -6,6 +6,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	//エンジンの初期化設定
 	InitEngineParameter initparam;
 	
+	//TODO フルスク対応
 	initparam.windowStyle = WS_POPUP | WS_BORDER ;		//ウィンドウスタイル
 	initparam.screenWidth = 720;			//ウィンドウの幅
 	initparam.screenHeight = 720;			//ウィンドウの高さ

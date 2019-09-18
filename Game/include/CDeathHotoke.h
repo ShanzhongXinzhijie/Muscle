@@ -1,9 +1,7 @@
 #pragma once
 #include"IGamePad.h"
 #include"AI.h"
-#include"DemolisherWeapon/physics2/MeshData.h"
-
-class IBodyPart;
+#include"BodyPartsHeader.h"
 
 class CDeathHotoke :
 	public IGameObject
@@ -13,6 +11,13 @@ public:
 	CDeathHotoke(IGamePad* ptrPad, bool isDrawHUD, std::unique_ptr<IAI> AI):m_ptrPad(ptrPad),m_isDrawHUD(isDrawHUD),m_ai(std::move(AI)){
 		SetName(L"CDeathHotoke");
 	}
+
+	//ボディパーツの種類
+	enum enBodyParts {
+		enWing, enLeg, enArm, enHead, enPartsNum,
+	};
+	//パーツ設定
+	void SetBodyPart(enBodyParts partsType, std::unique_ptr<IBodyPart> part);
 
 	//IGameObject関係
 	bool Start()override;
@@ -95,7 +100,7 @@ private:
 	float m_hp = 100.0f;
 
 	//パーツ
-	IBodyPart* m_parts[4] = {};
+	std::unique_ptr<IBodyPart> m_parts[4];
 
 	//ゲームパッド
 	IGamePad* m_ptrPad = nullptr;
@@ -108,11 +113,5 @@ private:
 
 	//AI
 	std::unique_ptr<IAI> m_ai;
-
-public:
-	//ボディパーツの種類
-	enum enBodyParts {
-		enWing, enLeg, enArm, enHead, enPartsNum, 
-	};
 };
 

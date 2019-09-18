@@ -27,22 +27,25 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\PartsList.cpp" />
+    <ClCompile Include="src\IFu.cpp" />
+    <ClCompile Include="src\SceneAssemble.cpp" />
     <ClCompile Include="src\LoadingScreen.cpp" />
-    <ClCompile Include="src\BP_HumanMantle.cpp" />
-    <ClCompile Include="src\AI.cpp" />
+    <ClCompile Include="src\Hotoke\BP_HumanMantle.cpp" />
+    <ClCompile Include="src\Hotoke\AI.cpp" />
     <ClCompile Include="src\DHCollision.cpp" />
     <ClCompile Include="src\HotokeCamera.cpp" />
     <ClCompile Include="src\BeamModel.cpp" />
     <ClCompile Include="src\ShadowMapBaker.cpp" />
     <ClCompile Include="src\BulletKani.cpp" />
-    <ClCompile Include="src\BP_FishHead.cpp" />
-    <ClCompile Include="src\BP_KaniArm.cpp" />
-    <ClCompile Include="src\BP_HumanLeg.cpp" />
+    <ClCompile Include="src\Hotoke\BP_FishHead.cpp" />
+    <ClCompile Include="src\Hotoke\BP_KaniArm.cpp" />
+    <ClCompile Include="src\Hotoke\BP_HumanLeg.cpp" />
     <ClCompile Include="src\IGamePad.cpp" />
-    <ClCompile Include="src\BP_BirdWing.cpp" />
+    <ClCompile Include="src\Hotoke\BP_BirdWing.cpp" />
     <ClCompile Include="src\CPlayerController.cpp" />
-    <ClCompile Include="src\IBodyPart.cpp" />
-    <ClCompile Include="src\CDeathHotoke.cpp" />
+    <ClCompile Include="src\Hotoke\IBodyPart.cpp" />
+    <ClCompile Include="src\Hotoke\CDeathHotoke.cpp" />
     <ClCompile Include="src\CPlayer.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="main.cpp" />
@@ -56,6 +59,8 @@
     <ClCompile Include="src\TreeGene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\IFu.h" />
+    <ClInclude Include="include\BodyPartsHeader.h" />
     <ClInclude Include="include\BP_HumanMantle.h" />
     <ClInclude Include="include\AI.h" />
     <ClInclude Include="include\DHCollision.h" />
@@ -77,6 +82,8 @@
     <ClInclude Include="include\ShadowMapBaker.h" />
     <ClInclude Include="include\StageObjectGenerator.h" />
     <ClInclude Include="include\LoadingScreen.h" />
+    <ClInclude Include="include\SceneAssemble.h" />
+    <ClInclude Include="include\PartsList.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="include\TpsCamera.h" />
     <ClInclude Include="include\TreeGene.h" />
@@ -89,6 +96,8 @@
     <MeshContentTask Include="Asset\modelData\hotoke\birdwing.FBX" />
     <MeshContentTask Include="Asset\modelData\hotoke\core.FBX" />
     <MeshContentTask Include="Asset\modelData\hotoke\fishhead.FBX" />
+    <MeshContentTask Include="Asset\modelData\hotoke\humanarms.FBX" />
+    <MeshContentTask Include="Asset\modelData\hotoke\humanhead.FBX" />
     <MeshContentTask Include="Asset\modelData\hotoke\humanleg.FBX" />
     <MeshContentTask Include="Asset\modelData\hotoke\kaniarm.FBX" />
     <MeshContentTask Include="Asset\modelData\hotoke\manto.FBX" />

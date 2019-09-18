@@ -1,5 +1,5 @@
 #pragma once
-#include "IBodyPart.h"
+#include "BodyPartsHeader.h"
 
 /// <summary>
 /// ÉJÉjòr

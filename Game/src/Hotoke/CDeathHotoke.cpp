@@ -7,6 +7,11 @@
 #include "BP_FishHead.h"
 #include "BP_HumanMantle.h"
 
+void CDeathHotoke::SetBodyPart(enBodyParts partsType, std::unique_ptr<IBodyPart> part) {
+	m_parts[partsType] = std::move(part);
+	m_parts[partsType]->Start();
+}
+
 void CDeathHotoke::CalcDirection() {
 	m_front = CVector3::Front(); GetRot().Multiply(m_front); m_back = m_front * -1.0f;
 	m_left = CVector3::Left(); GetRot().Multiply(m_left); m_right = m_left * -1.0f;
@@ -32,7 +37,7 @@ bool CDeathHotoke::Start() {
 	);
 
 	//当たり判定
-	m_col.m_collision.CreateMesh({}, {}, m_scale, m_coreModel.GetSkinModel());//TODO 球にしようか
+	m_col.m_collision.CreateCapsule({}, {}, 60.0f*(m_scale.x / (0.0188f*2.0f)), 100.0f*(m_scale.y / (0.0188f*2.0f)));// .CreateMesh({}, {}, m_scale, m_coreModel.GetSkinModel());
 	m_col.m_collision.SetIsHurtCollision(true);//これは喰らい判定
 	m_col.m_collision.SetCallback(
 		[&](SuicideObj::CCollisionObj::SCallbackParam& p) {
@@ -50,16 +55,6 @@ bool CDeathHotoke::Start() {
 	m_pos.z += 200.0f;
 	m_posOld = m_pos;
 	
-	//パーツ生成
-	m_parts[enWing] = new BP_HumanMantle(this);//BP_BirdWing
-	m_parts[enLeg] = new BP_HumanLeg(this);
-	m_parts[enArm] = new BP_KaniArm(this);
-	m_parts[enHead] = new BP_FishHead(this);
-	//パーツのStart
-	for (auto& part : m_parts) {
-		if (part)part->Start();
-	}
-
 	return true;
 }
 
@@ -79,7 +74,7 @@ void CDeathHotoke::Update() {
 	m_move *= 0.5f;
 	m_rotMove.Slerp(0.5f, m_rotMove, CQuaternion::Identity());
 	//重力
-	m_move.y -= 10.0f;
+	//m_move.y -= 10.0f;
 
 	//パーツのUpdate
 	for (auto& part : m_parts) {
@@ -94,7 +89,9 @@ void CDeathHotoke::Update() {
 	//方向ベクトル更新
 	CalcDirection();
 	//コアのコリジョン更新
-	m_col.SetPos(m_pos); m_col.SetRot(m_rot);
+	CVector3 offset = CVector3(0.0f, 60.0f*(m_scale.y / (0.0188f*2.0f)), -15.0f*(m_scale.z / (0.0188f*2.0f)));
+	m_rot.Multiply(offset);
+	m_col.SetPos(m_pos + offset); m_col.SetRot(m_rot);
 	//パーツのワールド行列更新後アップデート
 	for (auto& part : m_parts) {
 		if (part)part->PostUTRSUpdate();

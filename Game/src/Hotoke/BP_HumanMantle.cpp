@@ -72,7 +72,7 @@ void BP_HumanMantle::InnerStart() {
 	);
 	//m_model->SetIsShadowCaster(false);//TODO オフセットにする(model.fxで
 	//TODO 視錐台化リング
-	//TODO 影おかしくない?
+	//TODO ポストドローで半透明にする?
 
 	//頂点操作用情報を作成
 	ID3D11DeviceContext* deviceContext = GetGraphicsEngine().GetD3DDeviceContext();
@@ -134,9 +134,11 @@ void BP_HumanMantle::Update() {
 	m_controller->Update();
 
 	//targetに向けて旋回
-	CVector3 targetDir = (m_ptrCore->GetTargetPos() - m_ptrCore->GetPos()).GetNorm();
-	float rad = CVector3::AngleOf2NormalizeVector(m_ptrCore->GetFront(), targetDir);
-	float sign = m_ptrCore->GetLeft().Dot(targetDir);
+	CVector3 targetDir = m_ptrCore->GetTargetPos() - m_ptrCore->GetPos(); targetDir.y = 0.f; targetDir.Normalize();
+	CVector3 frontDir = m_ptrCore->GetFront(); frontDir.y = 0.f; frontDir.Normalize();
+	CVector3 leftDir = m_ptrCore->GetLeft(); leftDir.y = 0.f;
+	float rad = CVector3::AngleOf2NormalizeVector(frontDir, targetDir);
+	float sign = leftDir.Dot(targetDir);
 	if (abs(sign) > 0.0f) { sign /= abs(sign); }
 	if (abs(rad) < CMath::DegToRad(20.5f)) { rad = 0.0f; }
 	//旋回

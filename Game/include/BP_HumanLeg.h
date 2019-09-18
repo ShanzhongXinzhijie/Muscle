@@ -1,5 +1,5 @@
 #pragma once
-#include "IBodyPart.h"
+#include "BodyPartsHeader.h"
 
 class BP_HumanLeg :
 	public IBodyPart

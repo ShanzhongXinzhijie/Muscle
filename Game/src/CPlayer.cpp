@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "CPlayer.h"
+#include "BP_FishHead.h"
 
 bool CPlayer::Start() {	
 	m_anim.Load(L"Resource/animation/human/stand.tka");
@@ -9,6 +10,8 @@ bool CPlayer::Start() {
 
 	//m_humanCam.SetViewAngleDeg(25.0f);
 	m_humanCam.SetFar(15000.0f);
+
+	m_hotoke.SetBodyPart(CDeathHotoke::enHead, std::make_unique<BP_FishHead>(&m_hotoke));
 
 	return true;
 }
