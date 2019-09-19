@@ -28,13 +28,14 @@ class IBodyPart
 public:
 	IBodyPart() = default;
 	IBodyPart(CDeathHotoke* ptrCore) : m_ptrCore(ptrCore) {};
-	~IBodyPart() = default;
+	virtual ~IBodyPart() {};
 
 	//初期化
 	void Init(CDeathHotoke* ptrCore) {
 		m_ptrCore = ptrCore;
 	}
-
+	   
+	//ゲームオブジェクト関数
 	void Start();
 	virtual void Update() {}
 	virtual void UpdateTRS();
