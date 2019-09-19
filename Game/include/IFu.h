@@ -6,13 +6,27 @@
 class IFu 
 {
 public:
+	IFu();
+
+protected:
+	//ˆÊ’u‚ğİ’è
+	void SetPos(const CVector3& pos) { m_pos = pos; m_col.SetPos(pos); }
+	//‰ñ“]‚ğİ’è
+	void SetRot(const CQuaternion& rot) { m_rot = rot; m_col.SetRot(rot); }
+
+	/// <summary>
+	/// DHCollision‚Æ‚ÌÕ“Ë‚ÉÀs‚·‚éŠÖ”
+	/// </summary>
+	void SetCollisionFunc(std::function<void(ReferenceCollision*)> func) {
+		m_collisionFunc = func;
+	}
 
 private:
-	CVector3 m_pos,m_scale;
+	CVector3 m_pos;
 	CQuaternion m_rot;
-
-	GameObj::CSkinModelRender m_model;
-
+	//DW_GETSETCONSREF(CVector3, m_scale, Scale)
+	
 	DHCollision m_col;
+	std::function<void(ReferenceCollision*)> m_collisionFunc;
 };
 
