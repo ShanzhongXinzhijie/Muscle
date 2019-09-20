@@ -30,7 +30,7 @@ void Ari::Update() {
 	if (m_moveCnt >= 60) {
 		m_moveCnt = 0;
 		//ˆÚ“®—Ê
-		CVector3 govec = { 0.0f,0.0f,1.0f };
+		CVector3 govec = GetFront();// { 0.0f, 0.0f, 1.0f };
 		CQuaternion rot;
 		rot.SetRotation(GetLeft(), CMath::PI2*CMath::RandomZeroToOne());
 		rot.Concatenate(CQuaternion(GetUp(), CMath::PI2*CMath::RandomZeroToOne()));
@@ -40,7 +40,9 @@ void Ari::Update() {
 		//‰Á‘¬
 		m_velocity += govec * 20.0f*1.25f;
 		//‘Ì‚Ì—h‚ê
-		m_shake.SetRotation(CVector3(CMath::RandomZeroToOne()-0.5f, CMath::RandomZeroToOne() - 0.5f, CMath::RandomZeroToOne() - 0.5f).GetNorm(), 0.5f);
+		m_shake.SetRotation(CVector3::AxisX(), 0.5f*GetFront().Dot(govec));
+		m_shake.Concatenate(CQuaternion(CVector3::AxisZ(), 0.5f*GetLeft().Dot(govec)));
+		//m_shake.SetRotation(CVector3(CMath::RandomZeroToOne()-0.5f, CMath::RandomZeroToOne() - 0.5f, CMath::RandomZeroToOne() - 0.5f).GetNorm(), 0.5f);
 	}
 
 	//Œ¸‘¬

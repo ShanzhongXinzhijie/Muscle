@@ -9,7 +9,7 @@
 
 void CDeathHotoke::SetBodyPart(enBodyParts partsType, std::unique_ptr<IBodyPart> part) {
 	m_parts[partsType] = std::move(part);
-	m_parts[partsType]->Start();
+	if (GetIsStart()) { m_parts[partsType]->Start(); }
 }
 
 bool CDeathHotoke::Start() {
@@ -38,6 +38,11 @@ bool CDeathHotoke::Start() {
 	//位置初期化	
 	SetPos(CVector3::AxisY()*1000.0f + CVector3::AxisZ()*200.0f);
 	m_posOld = GetPos();
+
+	//パーツのStart
+	for (auto& part : m_parts) {
+		if (part)part->Start();
+	}
 	
 	return true;
 }
