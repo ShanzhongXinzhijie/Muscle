@@ -12,12 +12,6 @@ void CDeathHotoke::SetBodyPart(enBodyParts partsType, std::unique_ptr<IBodyPart>
 	m_parts[partsType]->Start();
 }
 
-void CDeathHotoke::CalcDirection() {
-	m_front = CVector3::Front(); GetRot().Multiply(m_front); m_back = m_front * -1.0f;
-	m_left = CVector3::Left(); GetRot().Multiply(m_left); m_right = m_left * -1.0f;
-	m_up = CVector3::Up(); GetRot().Multiply(m_up); m_down = m_up * -1.0f;
-}
-
 bool CDeathHotoke::Start() {
 	//スケール
 	constexpr float modelScale = 0.0188f*2.0f;
@@ -37,30 +31,20 @@ bool CDeathHotoke::Start() {
 	);
 
 	//当たり判定
-	m_col.m_collision.CreateCapsule({}, {}, 60.0f*(m_scale.x / (0.0188f*2.0f)), 100.0f*(m_scale.y / (0.0188f*2.0f)));// .CreateMesh({}, {}, m_scale, m_coreModel.GetSkinModel());
-	m_col.m_collision.SetIsHurtCollision(true);//これは喰らい判定
-	m_col.m_collision.SetCallback(
-		[&](SuicideObj::CCollisionObj::SCallbackParam& p) {
-			if (p.EqualName(L"ReferenceCollision")) {
-				//クラス取り出す
-				ReferenceCollision* H = p.GetClass<ReferenceCollision>();
-				//ダメージ
-				Damage(*H);
-			}
-		}
-	);
+	CreateCapsule({}, {}, 60.0f*(m_scale.x / (0.0188f*2.0f)), 100.0f*(m_scale.y / (0.0188f*2.0f)));
+	SetCollisionFunc([&](ReferenceCollision* H) { Damage(*H); });
+	SetCollisionPos({ 0.0f, 60.0f*(m_scale.y / (0.0188f*2.0f)), -15.0f*(m_scale.z / (0.0188f*2.0f)) });
 	
-	//位置初期化
-	m_pos = CVector3::AxisY()*1000.0f;
-	m_pos.z += 200.0f;
-	m_posOld = m_pos;
+	//位置初期化	
+	SetPos(CVector3::AxisY()*1000.0f + CVector3::AxisZ()*200.0f);
+	m_posOld = GetPos();
 	
 	return true;
 }
 
 void CDeathHotoke::PreUpdate() {
 	//旧座標記録
-	m_posOld = m_pos;
+	m_posOld = GetPos();
 }
 
 void CDeathHotoke::Update() {
@@ -68,8 +52,8 @@ void CDeathHotoke::Update() {
 	if (m_ai) { m_ai->Update(); }
 
 	//移動適応
-	m_pos += m_move;
-	m_rot = m_rotMove * m_rot;
+	Move(m_move);
+	SetRot(m_rotMove * GetRot());
 	//減速
 	m_move *= 0.5f;
 	m_rotMove.Slerp(0.5f, m_rotMove, CQuaternion::Identity());
@@ -85,13 +69,8 @@ void CDeathHotoke::Update() {
 		if (part)part->UpdateTRS();
 	}
 	//コアのTRS更新
-	m_coreModel.SetPRS(m_pos, m_rot, m_scale);
-	//方向ベクトル更新
-	CalcDirection();
-	//コアのコリジョン更新
-	CVector3 offset = CVector3(0.0f, 60.0f*(m_scale.y / (0.0188f*2.0f)), -15.0f*(m_scale.z / (0.0188f*2.0f)));
-	m_rot.Multiply(offset);
-	m_col.SetPos(m_pos + offset); m_col.SetRot(m_rot);
+	m_coreModel.SetPRS(GetPos(), GetRot(), m_scale);
+	SetCollisionPos({ 0.0f, 60.0f*(m_scale.y / (0.0188f*2.0f)), -15.0f*(m_scale.z / (0.0188f*2.0f)) });
 	//パーツのワールド行列更新後アップデート
 	for (auto& part : m_parts) {
 		if (part)part->PostUTRSUpdate();

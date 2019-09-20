@@ -27,6 +27,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Ari.cpp" />
     <ClCompile Include="src\PartsList.cpp" />
     <ClCompile Include="src\IFu.cpp" />
     <ClCompile Include="src\SceneAssemble.cpp" />
@@ -59,6 +60,7 @@
     <ClCompile Include="src\TreeGene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\Ari.h" />
     <ClInclude Include="include\IFu.h" />
     <ClInclude Include="include\BodyPartsHeader.h" />
     <ClInclude Include="include\BP_HumanMantle.h" />
@@ -89,6 +91,7 @@
     <ClInclude Include="include\TreeGene.h" />
   </ItemGroup>
   <ItemGroup>
+    <MeshContentTask Include="Asset\modelData\ari.FBX" />
     <MeshContentTask Include="Asset\modelData\billboard.FBX" />
     <MeshContentTask Include="Asset\modelData\bullet\beam.FBX" />
     <MeshContentTask Include="Asset\modelData\cloud\sphere.fbx" />

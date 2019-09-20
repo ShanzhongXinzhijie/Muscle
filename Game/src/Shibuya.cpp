@@ -1,9 +1,13 @@
 #include "stdafx.h"
 #include "Shibuya.h"
 #include "DemolisherWeapon/Graphic/FrustumCulling.h"
+#include "Ari.h"
 
 Shibuya::Shibuya() : m_hotoke(nullptr,false, std::make_unique<TestAI>(&m_hotoke))
 {
+	Ari* ari = new Ari(CVector3::AxisY()*900.0f + CVector3::AxisX()*50.0f, {});
+	ari->SetTarget(&m_hotoke);
+
 	//ÉâÉCÉgçÏê¨
 	m_directionLight.SetDirection(CVector3::AxisZ()*-1.0f);
 	m_directionLight.SetColor(CVector3::One() * 0.5f);
