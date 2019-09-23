@@ -20,6 +20,15 @@ Shibuya::Shibuya() : m_hotoke(nullptr,false, std::make_unique<TestAI>(&m_hotoke)
 	m_model.SetScale(CVector3::One()*50.0f);
 	m_phyStaticObject.CreateMesh(m_model);
 
+	/*MeshCollider* p = m_phyStaticObject.GetMeshCollider();
+	std::vector<MeshCollider::VertexBufferPtr>& v = p->GetVertexBuffer();
+	for (auto& vec : v) {
+		for (auto& vector : *vec.get()) {
+			vector.y += 1000.0f;
+		}
+	}
+	p->GetMeshShape()->buildOptimizedBvh();*/
+	
 	//ノーマルマップ
 	ID3D11ShaderResourceView* tex = nullptr, *normaltex = nullptr;
 	HRESULT hr = DirectX::CreateDDSTextureFromFile(GetGraphicsEngine().GetD3DDevice(), L"Resource/spriteData/n_land.dds", nullptr, &normaltex);
@@ -193,6 +202,9 @@ void Shibuya::Update() {
 	}
 	m_cloudTimer += 0.0005f;
 	if (m_cloudTimer > 1.0f) { m_cloudTimer -= 1.0f; }
+
+	//TODO 地面を分割して変化あったもののみ更新とか
+	//m_phyStaticObject.GetMeshCollider()->GetMeshShape()->buildOptimizedBvh();
 }
 
 void Shibuya::PostLoopUpdate() {
