@@ -104,4 +104,31 @@ void CDeathHotoke::PostRender() {
 
 void CDeathHotoke::Damage(const ReferenceCollision& ref) {
 	m_hp -= ref.damege;
+
+	//TODO
+	//出血エフェクト
+	//IFu継承をパーティクル化
+	//判定あり
+	
+	//CColObjの地形判定
+
+	//パーティクル回転
+	//dissolve
+	//赤色
+
+	//血しぶきの雨
+	//上に飛んで下に落ちる
+
+
+	//ビルボード読み込み
+	std::unique_ptr<CBillboard> billboard = std::make_unique<CBillboard>();
+	billboard->Init(L"Resource/spriteData/smoke.png");
+	billboard->GetModel().InitPostDraw(PostDrawModelRender::enAlpha);
+	billboard->SetPos(m_model->GetBonePos(m_muzzleBoneID[i]));
+	billboard->SetScale(20.0f);
+	//パーティクル化
+	SuicideObj::CParticle<CBillboard>* particle = new SuicideObj::CParticle<CBillboard>(std::move(billboard), MACHINE_GUN_CHARGE_TIME);
+	CVector3 move = CVector3::AxisX()*-40.0f; m_model->GetBoneRot(m_muzzleBoneID[i]).Multiply(move);
+	particle->SetMove(move);
+	particle->SetScaling(1.2f);
 }
