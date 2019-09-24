@@ -50,7 +50,7 @@ protected:
 	/// <summary>
 	/// DHCollision‚Æ‚ÌÕ“Ë‚ÉÀs‚·‚éŠÖ”
 	/// </summary>
-	void SetCollisionFunc(std::function<void(ReferenceCollision*)> func) {
+	void SetCollisionFunc(std::function<void(ReferenceCollision*, SuicideObj::CCollisionObj::SCallbackParam&)> func) {
 		m_collisionFunc = func;
 	}
 	//‹…Œ`‚Ì‹ò‚ç‚¢”»’è‚ğì¬
@@ -88,6 +88,6 @@ private:
 	DHCollision m_col;
 	CVector3 m_colPos;
 	CQuaternion m_colRot;
-	std::function<void(ReferenceCollision*)> m_collisionFunc;
+	std::function<void(ReferenceCollision*, SuicideObj::CCollisionObj::SCallbackParam&)> m_collisionFunc;
 };
 

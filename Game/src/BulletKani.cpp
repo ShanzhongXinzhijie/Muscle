@@ -47,6 +47,7 @@ void BulletGO::Update() {
 
 	//コリジョン更新
 	m_col.SetPos(m_pos);
+	m_col.SetDir(m_vector.GetNorm());
 }
 
 void BulletGO::PostLoopUpdate() {

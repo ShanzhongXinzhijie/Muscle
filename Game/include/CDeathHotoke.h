@@ -32,7 +32,7 @@ public:
 	void AddRot(const CQuaternion& rot) { m_rotMove = rot * m_rotMove; }
 
 	//ダメージをあたえる
-	void Damage(const ReferenceCollision& ref);
+	void Damage(const ReferenceCollision& ref, const CVector3& pos);
 
 	//ターゲット位置を設定
 	void SetTargetPos(const CVector3& pos) { m_targetPos = pos; }

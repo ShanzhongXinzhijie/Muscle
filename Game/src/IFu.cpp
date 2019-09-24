@@ -9,7 +9,7 @@ IFu::IFu() {
 			if (p.EqualName(L"ReferenceCollision")) {
 				//ƒNƒ‰ƒXæ‚èo‚·
 				ReferenceCollision* H = p.GetClass<ReferenceCollision>();
-				if(m_collisionFunc)m_collisionFunc(H);
+				if(m_collisionFunc)m_collisionFunc(H,p);
 			}
 		}
 	);

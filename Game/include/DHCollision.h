@@ -19,6 +19,7 @@ struct ReferenceCollision : public IDW_Class {
 public:	
 	std::bitset<enAttributesNum> attributes;//属性ビットマスク
 	CVector3 position;//位置
+	CVector3 direction;//方向
 
 	float damege = 0.0f;//ダメージ
 };
@@ -44,6 +45,11 @@ public:
 	//回転を設定
 	void SetRot(const CQuaternion& rot) {
 		m_collision.SetRotation(rot);
+	}
+
+	//方向を設定
+	void SetDir(const CVector3& dir) {
+		m_reference.direction = dir;
 	}
 
 	//コリジョンオブジェクト

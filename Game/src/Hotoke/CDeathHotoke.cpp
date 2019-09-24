@@ -7,6 +7,8 @@
 #include "BP_FishHead.h"
 #include "BP_HumanMantle.h"
 
+#include "CSmoke.h"
+
 void CDeathHotoke::SetBodyPart(enBodyParts partsType, std::unique_ptr<IBodyPart> part) {
 	m_parts[partsType] = std::move(part);
 	if (GetIsStart()) { m_parts[partsType]->Start(); }
@@ -32,7 +34,18 @@ bool CDeathHotoke::Start() {
 
 	//当たり判定
 	CreateCapsule({}, {}, 60.0f*(m_scale.x / (0.0188f*2.0f)), 100.0f*(m_scale.y / (0.0188f*2.0f)));
-	SetCollisionFunc([&](ReferenceCollision* H) { Damage(*H); });
+	SetCollisionFunc(
+		[&](ReferenceCollision* H, SuicideObj::CCollisionObj::SCallbackParam& p) {
+			CVector3 pos;
+			if (p.m_isA) {
+				pos = p.m_contactPoint->getPositionWorldOnB();
+			}
+			else {
+				pos = p.m_contactPoint->getPositionWorldOnA();
+			}
+			Damage(*H,pos);
+		}
+	);
 	SetCollisionPos({ 0.0f, 60.0f*(m_scale.y / (0.0188f*2.0f)), -15.0f*(m_scale.z / (0.0188f*2.0f)) });
 	
 	//位置初期化	
@@ -102,7 +115,7 @@ void CDeathHotoke::PostRender() {
 	}
 }
 
-void CDeathHotoke::Damage(const ReferenceCollision& ref) {
+void CDeathHotoke::Damage(const ReferenceCollision& ref, const CVector3& pos) {
 	m_hp -= ref.damege;
 
 	//TODO
@@ -120,15 +133,5 @@ void CDeathHotoke::Damage(const ReferenceCollision& ref) {
 	//上に飛んで下に落ちる
 
 
-	//ビルボード読み込み
-	std::unique_ptr<CBillboard> billboard = std::make_unique<CBillboard>();
-	billboard->Init(L"Resource/spriteData/smoke.png");
-	billboard->GetModel().InitPostDraw(PostDrawModelRender::enAlpha);
-	billboard->SetPos(m_model->GetBonePos(m_muzzleBoneID[i]));
-	billboard->SetScale(20.0f);
-	//パーティクル化
-	SuicideObj::CParticle<CBillboard>* particle = new SuicideObj::CParticle<CBillboard>(std::move(billboard), MACHINE_GUN_CHARGE_TIME);
-	CVector3 move = CVector3::AxisX()*-40.0f; m_model->GetBoneRot(m_muzzleBoneID[i]).Multiply(move);
-	particle->SetMove(move);
-	particle->SetScaling(1.2f);
+	new CSmoke(pos, ref.direction*-1.0f, {1.0f,0.0f,0.02f,1.0f});
 }
