@@ -9,20 +9,22 @@ public:
 	{
 		wchar_t name[64];
 		CVector4 color;
+		float emissive = 16.0f;
 	};
-	static constexpr int BEAM_TYPE_MAXNUM = 4;
+	static constexpr int BEAM_TYPE_MAXNUM = 5;
 	static const BeamType m_s_beamTypes[BEAM_TYPE_MAXNUM];
 
 public:
-	BeamModel(const wchar_t* beamName = nullptr) {
-		Init(beamName);
+	BeamModel(const wchar_t* beamName = nullptr, bool isUseInside = true) {
+		Init(beamName, isUseInside);
 	}
 
 	/// <summary>
 	/// 初期化
 	/// </summary>
 	/// <param name="beamName">ロードするビーム名</param>
-	void Init(const wchar_t* beamName = nullptr);
+	/// <param name="isUseInside">内側の白ビームをびょうがするか?</param>
+	void Init(const wchar_t* beamName = nullptr, bool isUseInside = true);
 
 	/// <summary>
 	/// 座標を設定
@@ -59,7 +61,8 @@ private:
 		enOutSide,
 		enBeamModelNum
 	};
-	GameObj::CInstancingModelRender m_model[enBeamModelNum];
+	std::unique_ptr<GameObj::CInstancingModelRender[]> m_model;// [enBeamModelNum];
+	bool m_isUseInside = true;
 
 	CVector3 m_tipPos, m_rootPos;
 	float m_radius = 1.0f;

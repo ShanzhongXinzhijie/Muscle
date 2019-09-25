@@ -6,6 +6,7 @@
 class IFu 
 {
 public:
+	//コンストラクタ
 	IFu();
 
 	//位置を設定
@@ -42,11 +43,6 @@ public:
 	const CVector3& GetRight()const { return m_right; }
 
 protected:	
-	//位置を取得
-	//CVector3& GetPosRef() { return m_pos; }
-	//回転を取得
-	//CQuaternion& GetRotRef() { return m_rot; }
-
 	/// <summary>
 	/// DHCollisionとの衝突時に実行する関数
 	/// </summary>
@@ -78,13 +74,15 @@ private:
 	}
 
 private:
+	//位置と回転
 	CVector3 m_pos;
 	CQuaternion m_rot;
-	//DW_GETSETCONSREF(CVector3, m_scale, Scale)
 
+	//各方向
 	CVector3 m_front = CVector3::Front(), m_up = CVector3::Up(), m_left = CVector3::Left();
 	CVector3 m_back = CVector3::Back(), m_down = CVector3::Down(), m_right = CVector3::Right();
 	
+	//コリジョン
 	DHCollision m_col;
 	CVector3 m_colPos;
 	CQuaternion m_colRot;

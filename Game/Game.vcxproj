@@ -27,6 +27,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\CBlood.cpp" />
     <ClCompile Include="src\CSmoke.cpp" />
     <ClCompile Include="src\Ari.cpp" />
     <ClCompile Include="src\PartsList.cpp" />
@@ -61,6 +62,7 @@
     <ClCompile Include="src\TreeGene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\CBlood.h" />
     <ClInclude Include="include\CSmoke.h" />
     <ClInclude Include="include\Ari.h" />
     <ClInclude Include="include\IFu.h" />

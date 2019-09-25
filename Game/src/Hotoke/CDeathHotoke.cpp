@@ -8,6 +8,7 @@
 #include "BP_HumanMantle.h"
 
 #include "CSmoke.h"
+#include "CBlood.h"
 
 void CDeathHotoke::SetBodyPart(enBodyParts partsType, std::unique_ptr<IBodyPart> part) {
 	m_parts[partsType] = std::move(part);
@@ -125,13 +126,7 @@ void CDeathHotoke::Damage(const ReferenceCollision& ref, const CVector3& pos) {
 	
 	//CColObjの地形判定
 
-	//パーティクル回転
-	//dissolve
-	//赤色
-
-	//血しぶきの雨
-	//上に飛んで下に落ちる
-
-
-	new CSmoke(pos, ref.direction*-1.0f, {1.0f,0.0f,0.02f,1.0f});
+	new CSmoke(pos, ref.direction*-1.0f, { 1.0f,0.0f,0.02f,1.0f });
+	new CBlood(pos + CVector3(60.0f - 120.0f*CMath::RandomZeroToOne(), 60.0f - 120.0f*CMath::RandomZeroToOne(), 60.0f - 120.0f*CMath::RandomZeroToOne()), (CVector3::Up() + ref.direction*-1.0f)*50.0f);
+	new CBlood(pos + CVector3(60.0f - 120.0f*CMath::RandomZeroToOne(), 60.0f - 120.0f*CMath::RandomZeroToOne(), 60.0f - 120.0f*CMath::RandomZeroToOne()), (CVector3::Up() + ref.direction*-1.0f)*50.0f);
 }
