@@ -3,7 +3,7 @@
 #include "CDeathHotoke.h"
 
 class Ari :
-	public IGameObject, public IFu
+	public ILifeObject
 {
 public:
 	Ari(const CVector3& pos, const CQuaternion& rot) {
@@ -19,8 +19,13 @@ public:
 	void Update()override;
 
 private:
+	void Damage(const ReferenceCollision& ref, const CVector3& pos);
+
+private:
 	GameObj::CSkinModelRender m_model;
 	AnimationClip m_animation;
+
+	float m_hp = 10.0f;
 
 	int m_moveCnt = 0;
 	CVector3 m_velocity;

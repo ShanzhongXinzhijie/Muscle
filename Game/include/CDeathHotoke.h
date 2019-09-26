@@ -5,7 +5,7 @@
 #include"IFu.h"
 
 class CDeathHotoke :
-	public IGameObject, public IFu
+	public ILifeObject
 {
 public:
 	//コンストラクタ

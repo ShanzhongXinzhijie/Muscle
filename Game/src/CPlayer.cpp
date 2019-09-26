@@ -64,6 +64,27 @@ void CPlayer::Update() {
 		m_cam.SetToMainCamera();
 	}
 
+	//ロックオン
+	bool isLock = false; float distance = 0.0f; CVector3 outPos;
+	QueryGOs<IFu>(L"LockableObject", [&](IFu* go) {
+		if (&m_hotoke == go) { return true; }//自分は除く
+
+		CVector3 screenPos = m_cam.CalcScreenPosFromWorldPos(go->GetCollisionPos());
+		//位置が画面内か?
+		if (screenPos.x > 0.0f && screenPos.x < 1.0f && screenPos.y > 0.0f && screenPos.y < 1.0f && screenPos.z > 0.0f && screenPos.z < 1.0f) {
+			if (!isLock || distance > screenPos.LengthSq()) {
+				isLock = true;
+				outPos = go->GetCollisionPos();
+				distance = screenPos.LengthSq();
+			}
+		}
+		return true; 
+	});
 	//ホトケのターゲット位置設定
-	m_hotoke.SetTargetPos(m_cam.GetVanishingPoint());
+	if (isLock) {
+		m_hotoke.SetTargetPos(outPos);
+	}
+	else {
+		m_hotoke.SetTargetPos(m_cam.GetVanishingPoint());
+	}
 }

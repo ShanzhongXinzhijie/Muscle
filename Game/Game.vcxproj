@@ -65,6 +65,7 @@
     <ClInclude Include="include\CBlood.h" />
     <ClInclude Include="include\CSmoke.h" />
     <ClInclude Include="include\Ari.h" />
+    <ClInclude Include="include\Effect.h" />
     <ClInclude Include="include\IFu.h" />
     <ClInclude Include="include\BodyPartsHeader.h" />
     <ClInclude Include="include\BP_HumanMantle.h" />

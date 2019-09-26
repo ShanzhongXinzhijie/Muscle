@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "Ari.h"
 
+#include "Effect.h"
+
 bool Ari::Start() {
 	//アニメーション
 	m_animation.Load(L"Resource/animation/ari/fly.tka", true);
@@ -20,11 +22,28 @@ bool Ari::Start() {
 
 	//コリジョン
 	CreateSphere({}, {},50.0f);
+	SetCollisionFunc(
+		[&](ReferenceCollision* H, SuicideObj::CCollisionObj::SCallbackParam& p) {
+			CVector3 pos;
+			if (p.m_isA) {
+				pos = p.m_contactPoint->getPositionWorldOnB();
+			}
+			else {
+				pos = p.m_contactPoint->getPositionWorldOnA();
+			}
+			Damage(*H, pos);
+		}
+	);
 
 	return true;
 }
 
 void Ari::Update() {
+	//死
+	if (m_hp < FLT_EPSILON) {
+		Death();
+	}
+
 	//一定時間ごとに移動
 	m_moveCnt++;
 	if (m_moveCnt >= 60) {
@@ -59,4 +78,12 @@ void Ari::Update() {
 	//モデル更新
 	m_model.SetPos(GetPos());
 	m_model.SetRot(GetRot());
+}
+
+void Ari::Damage(const ReferenceCollision& ref, const CVector3& pos) {
+	m_hp -= ref.damege;
+
+	new CSmoke(pos, ref.direction*-1.0f, { 1.0f,0.0f,0.02f,1.0f });
+	new CBlood(pos + CVector3(60.0f - 120.0f*CMath::RandomZeroToOne(), 60.0f - 120.0f*CMath::RandomZeroToOne(), 60.0f - 120.0f*CMath::RandomZeroToOne()), (CVector3::Up() + ref.direction*-1.0f)*50.0f);
+	new CBlood(pos + CVector3(60.0f - 120.0f*CMath::RandomZeroToOne(), 60.0f - 120.0f*CMath::RandomZeroToOne(), 60.0f - 120.0f*CMath::RandomZeroToOne()), (CVector3::Up() + ref.direction*-1.0f)*50.0f);
 }

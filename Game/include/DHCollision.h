@@ -52,6 +52,11 @@ public:
 		m_reference.direction = dir;
 	}
 
+	//有効無効の設定
+	void SetEnable(bool isEnable) {
+		m_collision.SetEnable(isEnable);
+	}
+	
 	//コリジョンオブジェクト
 	SuicideObj::CCollisionObj m_collision;
 	//コリジョン情報

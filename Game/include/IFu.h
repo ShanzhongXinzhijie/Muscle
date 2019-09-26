@@ -26,6 +26,8 @@ public:
 
 	//位置を取得
 	const CVector3& GetPos()const { return m_pos; }
+	//コリジョン位置を取得
+	CVector3 GetCollisionPos()const { return m_pos + m_colPos; }
 	//回転を取得
 	const CQuaternion& GetRot()const { return m_rot; }
 
@@ -49,6 +51,7 @@ protected:
 	void SetCollisionFunc(std::function<void(ReferenceCollision*, SuicideObj::CCollisionObj::SCallbackParam&)> func) {
 		m_collisionFunc = func;
 	}
+
 	//球形の喰らい判定を作成
 	void CreateSphere(const CVector3& pos, const CQuaternion& rot, float radius) {
 		m_colPos = pos; m_colRot = rot;
@@ -59,10 +62,16 @@ protected:
 		m_colPos = pos; m_colRot = rot;
 		m_col.m_collision.CreateCapsule(m_pos + m_colPos, m_colRot * m_rot, radius, height);
 	}
+
 	//喰らい判定の位置オフセットを設定
 	void SetCollisionPos(const CVector3& pos) {
 		m_colPos = pos;
 		UpdateCollisionPos();
+	}
+
+	//喰らい判定の有効無効を設定
+	void SetCollisionEnable(bool isEnable) {
+		m_col.SetEnable(isEnable);
 	}
 
 private:
@@ -89,3 +98,34 @@ private:
 	std::function<void(ReferenceCollision*, SuicideObj::CCollisionObj::SCallbackParam&)> m_collisionFunc;
 };
 
+/// <summary>
+/// 生命体オブジェクト
+/// </summary>
+class ILifeObject : public IGameObject, public IFu {
+public:
+	ILifeObject() {
+		SetName(L"LockableObject");
+	}
+
+	//死ぬ
+	void Death() {
+		if (m_deathFunc) { m_deathFunc(); }
+		SetEnable(false);//ゲームオブジェクト無効化
+		SetCollisionEnable(false);//当たり判定無効
+		if (m_isAutoDelete) { delete this; }//自殺
+	}
+
+	//死亡時にインスタンスを削除するか設定
+	void SetIsAutoDelete(bool isDelete) {
+		m_isAutoDelete = isDelete;
+	}
+
+	//死亡時に実行する関数を設定
+	void SetDeathFunc(std::function<void()> func) {
+		m_deathFunc = func;
+	}
+
+private:
+	bool m_isAutoDelete = true;
+	std::function<void()> m_deathFunc;
+};

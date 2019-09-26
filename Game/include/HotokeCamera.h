@@ -72,6 +72,11 @@ public:
 		m_camera.SetUp(m_updatedUp);
 	}
 
+	//座標を2D上の座標に変換
+	CVector3 CalcScreenPosFromWorldPos(const CVector3& pos) {
+		return m_camera.CalcScreenPosFromWorldPos(pos);
+	}
+
 private:
 	//回転後の座標算出
 	void UpdateVector() {
@@ -118,6 +123,11 @@ public:
 	//消失点を取得
 	CVector3 GetVanishingPoint() {
 		return m_hotokeCam.GetVanishingPoint();
+	}
+
+	//座標を2D上の座標に変換
+	CVector3 CalcScreenPosFromWorldPos(const CVector3& pos) {
+		return m_hotokeCam.CalcScreenPosFromWorldPos(pos);
 	}
 
 private:
