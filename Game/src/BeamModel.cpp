@@ -2,11 +2,11 @@
 #include "BeamModel.h"
 
  const BeamModel::BeamType BeamModel::m_s_beamTypes[BEAM_TYPE_MAXNUM] = {
-	   {L"White",{1.0f,1.0f,1.0f,1.0f}},
-	   {L"BLUE",{0.0f,0.0f,1.0f,1.0f}},
-	   {L"Red",{1.0f,0.0f,0.0f,1.0f}},
-	   {L"Yellow",{1.0f,1.0f,0.0f,1.0f}},
-		{L"BLOOD",{0.8f,0.0f,0.005f,1.0f},0.0f},
+	{L"White",{1.0f,1.0f,1.0f,1.0f},0.25f},
+	{L"BLUE",{0.0f,0.0f,1.0f,1.0f},16.0f},
+	{L"Red",{1.0f,0.0f,0.0f,1.0f},16.0f},
+	{L"Yellow",{1.0f,1.0f,0.0f,1.0f},16.0f},
+	{L"BLOOD",{0.8f,0.0f,0.005f,1.0f},0.0f},//{L"BLOOD",{1.0f,0.0f,0.01f,1.0f},0.0f},
 };
 
  void BeamModel::Init(const wchar_t* beamName, bool isUseInside) {
@@ -48,9 +48,9 @@
 			, nullptr, 0, enFbxUpAxisZ, enFbxRightHanded,
 			identArray);
 		//外側は反転描画
-		if (i == enOutSide) { m_model[i2].GetInstancingModel()->GetModelRender().SetIsDrawReverse(true); }		
+		if (i == enOutSide && m_isUseInside) { m_model[i2].GetInstancingModel()->GetModelRender().SetIsDrawReverse(true); }
 		//影は落とさない
-		m_model[i2].GetInstancingModel()->GetModelRender().SetIsShadowCaster(false);		
+		if (m_isUseInside) { m_model[i2].GetInstancingModel()->GetModelRender().SetIsShadowCaster(false); }
 		//マテリアル設定	
 		m_model[i2].GetInstancingModel()->GetModelRender().GetSkinModel().FindMaterialSetting(
 			[&](MaterialSetting* mat) {
@@ -62,7 +62,12 @@
 					mat->SetEmissive(0.25f);//発光
 				}
 				mat->SetLightingEnable(false);//ライティングしない
-				mat->SetIsMotionBlur(false);//モーションブラーかけない
+				if (m_isUseInside) {
+					mat->SetIsMotionBlur(false);//モーションブラーかけない
+				}
+				else {
+					mat->SetShininess(0.9f);
+				}
 			}
 		);	
 		i2++;

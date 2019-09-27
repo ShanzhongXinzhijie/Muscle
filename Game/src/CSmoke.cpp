@@ -20,6 +20,7 @@ CSmoke::CSmoke(const CVector3& pos, const CVector3& move, const CVector4& color)
 	std::unique_ptr<CBillboard> billboard = std::make_unique<CBillboard>();
 	billboard->Init(L"Resource/spriteData/smoke.png", MAX_NUM);
 	billboard->GetModel().InitPostDraw(PostDrawModelRender::enAlpha);
+	billboard->GetModel().SetIsShadowCaster(false);
 	billboard->GetModel().GetSkinModel().FindMaterialSetting(
 		[&](MaterialSetting* mat) {
 			mat->SetAlbedoScale(color);

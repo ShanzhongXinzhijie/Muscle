@@ -55,10 +55,13 @@ void CPlayer::Update() {
 	m_hotoke.SetPos(pos);
 
 	//ƒJƒƒ‰Ø‚è‘Ö‚¦
+	static bool uih = false;
 	if (GetKeyInput('F')) {
 		m_humanCam.SetPos(m_human.GetBonePos(m_human.FindBoneID(L"Head"))+CVector3::AxisY()*0);
 		m_humanCam.SetTarget(m_hotoke.GetPos());
 		SetMainCamera(&m_humanCam);
+
+		if (!uih) { uih = true; GetEngine().ChangeWindowSize(1280, 720); GetGraphicsEngine().ChangeFrameBufferSize(1280, 720, 1280, 720); }
 	}
 	else {
 		m_cam.SetToMainCamera();

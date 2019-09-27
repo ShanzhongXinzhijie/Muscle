@@ -2,6 +2,7 @@
 #include "Ari.h"
 
 #include "Effect.h"
+#include "BulletKani.h"
 
 bool Ari::Start() {
 	//アニメーション
@@ -48,6 +49,14 @@ void Ari::Update() {
 	m_moveCnt++;
 	if (m_moveCnt >= 60) {
 		m_moveCnt = 0;
+
+		//弾の発射
+		new BulletGO(
+			nullptr,
+			GetPos(),
+			GetFront()*100.0f + m_velocity
+		);
+
 		//移動量
 		CVector3 govec = GetFront();// { 0.0f, 0.0f, 1.0f };
 		CQuaternion rot;
@@ -72,7 +81,7 @@ void Ari::Update() {
 
 	//ターゲット位置に向く
 	CQuaternion rot;
-	rot.MakeLookToUseXYAxis((GetPos() - m_target->GetPos()).GetNorm());
+	rot.MakeLookToUseXYAxis((GetPos() - m_target->GetCollisionPos()).GetNorm());
 	SetRot(rot * m_shake);
 
 	//モデル更新
