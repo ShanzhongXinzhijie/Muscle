@@ -8,10 +8,10 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	
 	//TODO フルスク対応
 	initparam.windowStyle = WS_POPUP | WS_BORDER ;		//ウィンドウスタイル
-	initparam.screenWidth = 720;			//ウィンドウの幅
-	initparam.screenHeight = 720;			//ウィンドウの高さ
-	initparam.frameBufferWidth = 720;		//フレームバッファの幅。これが内部解像度。
-	initparam.frameBufferHeight = 720;		//フレームバッファの高さ。これが内部解像度。
+	initparam.screenWidth = 640;			//ウィンドウの幅
+	initparam.screenHeight = 640;			//ウィンドウの高さ
+	initparam.frameBufferWidth = 640;		//フレームバッファの幅。これが内部解像度。
+	initparam.frameBufferHeight = 640;		//フレームバッファの高さ。これが内部解像度。
 	
 	initparam.frameBufferWidth3D = 1080;	//3D描画の解像度(幅)
 	initparam.frameBufferHeight3D = 1080;	//3D描画の解像度(高さ)
@@ -25,6 +25,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	//initparam.limitFps = 25;
 	//initparam.shadowMapSetting = enON;
 
+	initparam.isSplitScreen = enSide_TwoSplit;
+
 	//TODO:リリース版では消すこと
 	{
 		char str[256] = "";
@@ -34,8 +36,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 			GetUserName(str, &len);
 			if (strcmp("GC1828", str) == 0) {
 				//低スペック設定
-				initparam.frameBufferWidth3D = 480;		//3D描画の解像度(幅)
-				initparam.frameBufferHeight3D = 480;	//3D描画の解像度(高さ)
+				initparam.frameBufferWidth3D = 320;		//3D描画の解像度(幅)
+				initparam.frameBufferHeight3D = 320;	//3D描画の解像度(高さ)
 			}
 		}
 	}

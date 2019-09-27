@@ -6,7 +6,9 @@
 class IGamePad : public IGameObject
 {
 public:
-	IGamePad() = default;
+	IGamePad(int num) {
+		m_usePad = &Pad(num);
+	}
 	virtual ~IGamePad() {}
 
 	void PreUpdate()override;
@@ -93,7 +95,7 @@ public:
 	}
 
 private:
-	XInputPad* m_usePad = &Pad(0);//使用するパッド
+	XInputPad* m_usePad = nullptr;//使用するパッド
 
 	//ダブルタップ系
 	bool m_isDoubleTapFire[enLRNUM] = {};

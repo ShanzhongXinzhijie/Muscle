@@ -56,15 +56,29 @@ void CPlayer::Update() {
 
 	//カメラ切り替え
 	static bool uih = false;
+	static bool iscahsnge = false;
 	if (GetKeyInput('F')) {
 		m_humanCam.SetPos(m_human.GetBonePos(m_human.FindBoneID(L"Head"))+CVector3::AxisY()*0);
 		m_humanCam.SetTarget(m_hotoke.GetPos());
 		SetMainCamera(&m_humanCam);
 
-		if (!uih) { uih = true; GetEngine().ChangeWindowSize(1280, 720); GetGraphicsEngine().ChangeFrameBufferSize(1280, 720, 1280, 720); }
+		if (!uih) {
+			if (iscahsnge) {
+				GetEngine().ChangeWindowSize(640, 640);
+				GetGraphicsEngine().ChangeFrameBufferSize(480, 480, 320, 320, GetGraphicsEngine().GetSplitScreenMode());
+				iscahsnge = false;
+			}
+			else {
+				GetEngine().ChangeWindowSize(1280, 640);
+				GetGraphicsEngine().ChangeFrameBufferSize(1280, 480, 1280, 480, GetGraphicsEngine().GetSplitScreenMode());
+				iscahsnge = true;
+			}
+		}
+		uih = true;
 	}
 	else {
 		m_cam.SetToMainCamera();
+		uih = false;
 	}
 
 	//ロックオン

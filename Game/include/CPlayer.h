@@ -6,7 +6,9 @@
 class CPlayer : public IGameObject
 {
 public:
-	CPlayer():m_hotoke(&m_pad,true,nullptr),m_cam(&m_hotoke, &m_pad){};
+	CPlayer(int padnum):m_pad(padnum),m_hotoke(&m_pad,true,nullptr),m_cam(&m_hotoke, &m_pad){
+		m_cam.SetToMainCamera(padnum);
+	};
 
 	bool Start()override;
 	void Update()override;

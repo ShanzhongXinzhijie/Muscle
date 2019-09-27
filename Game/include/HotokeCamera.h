@@ -51,6 +51,9 @@ public:
 	void SetToMainCamera() {
 		SetMainCamera(&m_camera);
 	}
+	void SetToMainCamera(int num) {
+		GetCameraList().at(num) = &m_camera;
+	}
 
 	//‰ñ“]‚ğæ“¾
 	const CVector2& GetRot()const {
@@ -114,6 +117,10 @@ public:
 	//ƒƒCƒ“ƒJƒƒ‰‚Éİ’è
 	void SetToMainCamera() {
 		m_hotokeCam.SetToMainCamera();
+	}
+	void SetToMainCamera(int num) {
+		GetCameraList().resize(2);
+		m_hotokeCam.SetToMainCamera(num);
 	}
 
 	//‘O•ûŒü‚ğæ“¾
