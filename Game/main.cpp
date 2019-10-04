@@ -25,8 +25,6 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	//initparam.limitFps = 25;
 	//initparam.shadowMapSetting = enON;
 
-	initparam.isSplitScreen = enSide_TwoSplit;
-
 	//TODO:ƒŠƒŠ[ƒX”Å‚Å‚ÍÁ‚·‚±‚Æ
 	{
 		char str[256] = "";

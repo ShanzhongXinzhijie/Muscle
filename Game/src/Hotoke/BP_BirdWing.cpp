@@ -29,18 +29,31 @@ void BP_BirdWing::Update() {
 	//減速
 	m_yawAccel -= 0.01f; m_yawAccel = max(m_yawAccel, 0.0f);
 
+	//加速記録
+	float oldAccel = m_accel;
+
 	//コントローラーに操作させる
 	m_controller->Update();
 
-	//速度制限
-	m_accel = CMath::Clamp(m_accel, 0.0f, 20.0f);	
+	//加速してなかったら減速
+	if(oldAccel >= m_accel){
+		m_accel -= 2.0f*0.01f;
+	}
 
-	//TODO 揚力発生
+	//速度制限
+	m_accel = CMath::Clamp(m_accel, 0.0f, 20.0f);
 
 	//移動
 	CVector3 move = m_ptrCore->GetFront()*m_accel;
 	m_pitch.Multiply(move);
 	m_ptrCore->AddMove(move);
+
+	//落下による加速
+	m_accel += min(move.y, 0.0f)*-0.01f;
+
+	//TODO 揚力発生	
+	move.y = 0.0f;
+	m_ptrCore->AddMove(CVector3::Up()*move.Length()*0.75f);	
 }
 
 void BP_BirdWing::Draw2D() {
@@ -54,17 +67,25 @@ void BP_BirdWing::Draw2D() {
 }
 
 void BP_BirdWing::Accel() {
-	m_accel += 2.0f*0.08f;
+	//if (m_accel < 20.0f) {
+		m_accel += 2.0f*0.08f;
+	//}
 }
 void BP_BirdWing::Brake() {
 	m_accel -= 2.0f*0.10f;
 }
 
 void BP_BirdWing::Pitch(float lerp) {
+	//減速
+	m_accel -= 2.0f*0.01f*abs(lerp);
+
 	//旋回
 	m_pitch.SetRotation(m_ptrCore->GetLeft(), lerp*CMath::PI_HALF*0.8f);
 }
 void BP_BirdWing::Yaw(float lerp) {
+	//減速
+	m_accel -= 2.0f*0.02f*abs(lerp);
+
 	//旋回速度
 	float roll = 0.1f, speed = abs(m_accel);
 	if (speed < 5.0f) {

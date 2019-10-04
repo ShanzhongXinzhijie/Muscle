@@ -43,6 +43,9 @@ public:
 	virtual void PostLoopUpdate() {}
 	virtual void Draw2D() {}
 
+	//最終的な回転クォータニオンを取得
+	CQuaternion GetFinalRot()const;
+
 private:
 	virtual void InnerStart() = 0;
 	

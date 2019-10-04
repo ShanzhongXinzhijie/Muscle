@@ -25,17 +25,23 @@ private:
 	//コントローラー
 	IBodyController<BP_HumanMantle>* m_controller = nullptr;
 
+	//ソフトボディ
 	btSoftBody* m_cloth = nullptr;
 	
-	typedef std::vector<DirectX::VertexPositionNormalTangentColorTexture> VertexPosArray;
-	std::vector<std::unique_ptr<VertexPosArray>> m_vertexPosArrays;
-	struct NodeInfo
+	//頂点更新系
+	typedef std::vector<DirectX::VertexPositionNormalTangentColorTexture> VertexPosArray;	//頂点情報の配列
+	std::vector<std::unique_ptr<VertexPosArray>> m_vertexPosArrays;							//頂点情報の配列の配列
+
+	typedef std::vector<unsigned int> IndexBuffer;					//インデックスバッファ
+	std::vector<std::unique_ptr<IndexBuffer>> m_indexBufferArray;	//インデックスバッファの配列
+
+	struct NodeInfo	//ノード情報
 	{
 		btSoftBody::Node* node;
 		CVector3 offset;
 	};
-	typedef std::vector<NodeInfo> NodeArray;
-	std::vector<std::unique_ptr<NodeArray>> m_nodeArrays;
+	typedef std::vector<NodeInfo> NodeArray;				//ノード情報の配列
+	std::vector<std::unique_ptr<NodeArray>> m_nodeArrays;	//ノード情報の配列の配列
 };
 
 /// <summary>

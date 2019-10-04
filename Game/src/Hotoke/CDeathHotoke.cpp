@@ -77,7 +77,7 @@ void CDeathHotoke::Update() {
 	m_move *= 0.5f;
 	m_rotMove.Slerp(0.5f, m_rotMove, CQuaternion::Identity());
 	//重力
-	//m_move.y -= 10.0f;
+	m_move.y -= 10.0f;
 
 	//パーツのUpdate
 	for (auto& part : m_parts) {
@@ -117,6 +117,8 @@ void CDeathHotoke::PostRender() {
 }
 
 void CDeathHotoke::Damage(const ReferenceCollision& ref, const CVector3& pos) {
+	if (ref.damege < FLT_EPSILON) { return; }//ノーダメージ
+
 	m_hp -= ref.damege;
 
 	//TODO

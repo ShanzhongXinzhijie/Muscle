@@ -63,60 +63,88 @@ void BP_HumanMantle::InnerStart() {
 
 	m_model = std::make_unique<CSkinModelRender>();
 	m_model->Init(L"Resource/modelData/manto_test.cmo", enFbxUpAxisY);
-	m_model->GetSkinModel().SetCullMode(D3D11_CULL_NONE);//バックカリングしない
+	//m_model->GetSkinModel().SetCullMode(D3D11_CULL_NONE);//バックカリングしない
 	m_model->GetSkinModel().FindMaterialSetting(
 		[&](MaterialSetting* mat) {
-			mat->SetAlbedoScale({1.0f,0.01f,0.08f,1.0f});
+			mat->SetAlbedoScale({1.0f,0.01f,0.08f,0.9f});//半透明
 			mat->SetIsUseTexZShader(true);//シャドウマップ描画にテクスチャ使う
 		}
 	);
 	//m_model->SetIsShadowCaster(false);//TODO オフセットにする(model.fxで
-	//TODO 視錐台化リング
-	//TODO ポストドローで半透明にする?
+	m_model->GetSkinModel().SetIsFrustumCulling(false);//視錐台カリングをオフ
+	//ポストドロー設定
+	m_model->InitPostDraw(PostDrawModelRender::enAlpha);
 
 	//頂点操作用情報を作成
 	ID3D11DeviceContext* deviceContext = GetGraphicsEngine().GetD3DDeviceContext();
 	m_model->GetSkinModel().FindMesh([&](const auto& mesh) {
-			D3D11_MAPPED_SUBRESOURCE subresource;
+			//頂点情報の作成
+			{
+				D3D11_MAPPED_SUBRESOURCE subresource;
 
-			//頂点のロード
-			HRESULT hr = deviceContext->Map(mesh->vertexBuffer.Get(), 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &subresource);
-			if (FAILED(hr)) { return; }
+				//頂点のロード
+				HRESULT hr = deviceContext->Map(mesh->vertexBuffer.Get(), 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &subresource);
+				if (FAILED(hr)) { return; }
 
-			D3D11_BUFFER_DESC bufferDesc;
-			mesh->vertexBuffer->GetDesc(&bufferDesc);
-			int vertexCount = bufferDesc.ByteWidth / mesh->vertexStride;//頂点数
-			char* pData = reinterpret_cast<char*>(subresource.pData);
-			std::unique_ptr<VertexPosArray> vertexBuffer = std::make_unique<VertexPosArray>();
-			std::unique_ptr<NodeArray> nodes = std::make_unique<NodeArray>();
-			for (int i = 0; i < vertexCount; i++) {
-				//頂点情報の保存
-				vertexBuffer->emplace_back(*reinterpret_cast<DirectX::VertexPositionNormalTangentColorTexture*>(pData));
+				D3D11_BUFFER_DESC bufferDesc;
+				mesh->vertexBuffer->GetDesc(&bufferDesc);
+				int vertexCount = bufferDesc.ByteWidth / mesh->vertexStride;//頂点数
+				char* pData = reinterpret_cast<char*>(subresource.pData);
+				std::unique_ptr<VertexPosArray> vertexBuffer = std::make_unique<VertexPosArray>();
+				std::unique_ptr<NodeArray> nodes = std::make_unique<NodeArray>();
+				for (int i = 0; i < vertexCount; i++) {
+					//頂点情報の保存
+					vertexBuffer->emplace_back(*reinterpret_cast<DirectX::VertexPositionNormalTangentColorTexture*>(pData));
 
-				float distance = abs((-sl) - vertexBuffer->back().position.y) / (sl*2.0f);
-				distance = 1.0f - distance;
-				vertexBuffer->back().position.x *= max(0.1f, distance);
-				vertexBuffer->back().position.y *= 0.5f;
+					float distance = abs((-sl) - vertexBuffer->back().position.y) / (sl*2.0f);
+					distance = 1.0f - distance;
+					vertexBuffer->back().position.x *= max(0.1f, distance);
+					vertexBuffer->back().position.y *= 0.5f;
 
-				nodes->emplace_back();
-				float closestDistanse = -1.0f;
-				for (int i = 0; i < nodenum; ++i) {
-					CVector3 disvec = CVector3(vertexBuffer->back().position) - (CVector3)cloth->m_nodes.at(i).m_x;
-					float distance = disvec.LengthSq();
-					if (closestDistanse < 0.0f || closestDistanse > distance) {
-						nodes->back().node = &cloth->m_nodes.at(i);
-						nodes->back().offset = disvec;
-						closestDistanse = distance;
+					nodes->emplace_back();
+					float closestDistanse = -1.0f;
+					for (int i = 0; i < nodenum; ++i) {
+						CVector3 disvec = CVector3(vertexBuffer->back().position) - (CVector3)cloth->m_nodes.at(i).m_x;
+						float distance = disvec.LengthSq();
+						if (closestDistanse < 0.0f || closestDistanse > distance) {
+							nodes->back().node = &cloth->m_nodes.at(i);
+							nodes->back().offset = disvec;
+							closestDistanse = distance;
+						}
 					}
-				}				
-				pData += mesh->vertexStride;//次の頂点へ
-			}
-			//保存
-			m_vertexPosArrays.push_back(std::move(vertexBuffer));
-			m_nodeArrays.push_back(std::move(nodes));
+					pData += mesh->vertexStride;//次の頂点へ
+				}
+				//保存
+				m_vertexPosArrays.push_back(std::move(vertexBuffer));
+				m_nodeArrays.push_back(std::move(nodes));
 
-			//頂点バッファをアンロック
-			deviceContext->Unmap(mesh->vertexBuffer.Get(), 0);
+				//頂点バッファをアンロック
+				deviceContext->Unmap(mesh->vertexBuffer.Get(), 0);
+			}
+			//インデックスバッファを作成			
+			{
+				D3D11_MAPPED_SUBRESOURCE subresource;
+
+				//インデックスバッファをロック
+				HRESULT hr = deviceContext->Map(mesh->indexBuffer.Get(), 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &subresource);
+				if (FAILED(hr)) { return; }
+
+				D3D11_BUFFER_DESC bufferDesc;
+				mesh->indexBuffer->GetDesc(&bufferDesc);
+				std::unique_ptr<IndexBuffer> indexBuffer = std::make_unique<IndexBuffer>();
+				int stride = 2;
+				int indexCount = bufferDesc.ByteWidth / stride;
+				unsigned short* pIndex = reinterpret_cast<unsigned short*>(subresource.pData);
+				for (int i = 0; i < indexCount; i++) {
+					indexBuffer->push_back(pIndex[i]);
+				}
+				
+				//インデックスバッファをアンロック
+				deviceContext->Unmap(mesh->indexBuffer.Get(), 0);
+				
+				//保存
+				m_indexBufferArray.push_back(std::move(indexBuffer));
+			}
 		}
 	);
 	
@@ -146,11 +174,13 @@ void BP_HumanMantle::Update() {
 }
 
 void BP_HumanMantle::PostUTRSUpdate() {
+	//移動量
+	CVector3 force = m_ptrCore->GetMove()*-1000.0f;
+	//方向変換(マントは向き変わらないため)
+	GetFinalRot().InverseMultiply(force);
 	//移動量をソフトボディに適用
-	m_cloth->addForce(m_ptrCore->GetMove()*-1000.0f);
-	//TODO　方向変換(マントは向き変わらないため)
-	//TODO  回転
-	
+	m_cloth->addForce(force);
+
 	//ソフトボディ移動制限
 	int nodenum = m_cloth->m_nodes.size();
 	constexpr int res = 9;//分割数
@@ -165,6 +195,7 @@ void BP_HumanMantle::PostUTRSUpdate() {
 void BP_HumanMantle::PostLoopUpdate() {
 	//頂点バッファ更新
 	{
+		//頂点位置更新
 		int i = 0;
 		for (auto& Varray : m_vertexPosArrays) {
 			int i2 = 0;
@@ -173,11 +204,46 @@ void BP_HumanMantle::PostLoopUpdate() {
 				vertex.position.x = (nodearray[i2].node->m_x.x() + nodearray[i2].offset.x)*-1.0f;
 				vertex.position.y = nodearray[i2].node->m_x.y() + nodearray[i2].offset.y;
 				vertex.position.z = nodearray[i2].node->m_x.z() + nodearray[i2].offset.z;
-				//TODO 再計算
-				//vertex.normal;
-				//vertex.tangent;
-				//vertex.textureCoordinate//uv座標?
 				i2++;
+			}
+			i++;
+		}
+
+		//法線更新
+		i = 0;
+		for (auto& Iarray : m_indexBufferArray) {
+			int i2 = 0;
+			int indexs[3];
+			for (auto& index : *Iarray) {
+				indexs[i2] = index;
+				i2++;
+				if (i2 == 3) {
+					//法線計算
+					CVector3 A = (*m_vertexPosArrays[i])[indexs[0]].position;
+					CVector3 B = (*m_vertexPosArrays[i])[indexs[1]].position;
+					CVector3 C = (*m_vertexPosArrays[i])[indexs[2]].position;
+					CVector3 AB(B - A);
+					CVector3 BC(C - B);
+					AB.Cross(BC);
+					AB.Normalize();
+					AB *= -1.0f;//反転
+					(*m_vertexPosArrays[i])[indexs[0]].normal = DirectX::XMFLOAT3(AB.x, AB.y, AB.z);
+					(*m_vertexPosArrays[i])[indexs[1]].normal = DirectX::XMFLOAT3(AB.x, AB.y, AB.z);
+					(*m_vertexPosArrays[i])[indexs[2]].normal = DirectX::XMFLOAT3(AB.x, AB.y, AB.z);
+
+					//tangent計算
+					if (abs(AB.y) > 0.5f) {
+						AB.Cross(CVector3::AxisZ());
+					}
+					else {
+						AB.Cross(CVector3::AxisY());
+					}
+					(*m_vertexPosArrays[i])[indexs[0]].tangent = DirectX::XMFLOAT4(AB.x, AB.y, AB.z, 1.0f);
+					(*m_vertexPosArrays[i])[indexs[1]].tangent = DirectX::XMFLOAT4(AB.x, AB.y, AB.z, 1.0f);
+					(*m_vertexPosArrays[i])[indexs[2]].tangent = DirectX::XMFLOAT4(AB.x, AB.y, AB.z, 1.0f);
+
+					i2 = 0;
+				}
 			}
 			i++;
 		}
@@ -212,6 +278,8 @@ void BP_HumanMantle::Jump() {
 }
 void BP_HumanMantle::Parachute() {}
 
+
+//コントローラー
 void HCon_HumanMantle::Update() {
 
 	//移動
