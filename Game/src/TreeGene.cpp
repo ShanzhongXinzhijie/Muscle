@@ -65,7 +65,7 @@ void Tree::Init(const CVector3& pos, const CVector3& normal){
 
 	//バリエーション
 	float sizeScale;// = 0.8f*1.5f*(CMath::RandomZeroToOne() > 0.5f ? 1.0f : 1.5f)*(1.0f + CMath::RandomZeroToOne()*0.3f);
-	sizeScale = 1.4f*(1.0f + CMath::RandomZeroToOne()*0.3f);
+	sizeScale = 1.0f*(1.0f + CMath::RandomZeroToOne()*0.3f);
 	float radY = -CMath::PI2 + CMath::PI2*2.0f*CMath::RandomZeroToOne();
 	m_rot.SetRotation(CVector3::AxisY(), radY);
 
@@ -127,7 +127,7 @@ void Tree::Init(const CVector3& pos, const CVector3& normal){
 		SkinModel model;
 		model.Init(L"Resource/modelData/tree_tall.cmo");		
 		model.FindMaterialSetting(setMaterial);//マテリアル設定
-		m_imposter.Init(L"tree_tall", model, { 2048 * 4 / 2, 2048 * 4 / 2 }, { 69,35 }, m_sInstancingMax);
+		m_imposter.Init(L"tree_tall", model, { 2048 * 2, 2048 * 2 }, { 35,35 }, m_sInstancingMax);
 	}
 	//}
 	m_imposter.SetPos(m_pos);

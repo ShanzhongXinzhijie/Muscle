@@ -18,7 +18,7 @@ bool CPlayer::Start() {
 
 	m_hotoke.SetBodyPart(CDeathHotoke::enHead, std::make_unique<BP_FishHead>(&m_hotoke));
 	m_hotoke.SetBodyPart(CDeathHotoke::enArm, std::make_unique<BP_KaniArm>(&m_hotoke));
-	m_hotoke.SetBodyPart(CDeathHotoke::enWing, std::make_unique<BP_HumanMantle>(&m_hotoke));
+	m_hotoke.SetBodyPart(CDeathHotoke::enWing, std::make_unique<BP_BirdWing>(&m_hotoke));
 	m_hotoke.SetBodyPart(CDeathHotoke::enLeg, std::make_unique<BP_HumanLeg>(&m_hotoke));
 
 	return true;

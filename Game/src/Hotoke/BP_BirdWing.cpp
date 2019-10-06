@@ -67,12 +67,14 @@ void BP_BirdWing::Draw2D() {
 }
 
 void BP_BirdWing::Accel() {
-	//if (m_accel < 20.0f) {
-		m_accel += 2.0f*0.08f;
-	//}
+	m_accel += 2.0f*0.08f;
+	//TODO 羽ばたきアニメーション
+	m_localRot.SetRotationDeg(CVector3::AxisX(), 15.0f);
 }
 void BP_BirdWing::Brake() {
 	m_accel -= 2.0f*0.10f;
+
+	m_localRot.SetRotationDeg(CVector3::AxisX(), -15.0f);
 }
 
 void BP_BirdWing::Pitch(float lerp) {

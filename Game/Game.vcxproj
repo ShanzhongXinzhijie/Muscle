@@ -135,6 +135,9 @@
   <ItemGroup>
     <ImageContentTask Include="Asset\spriteData\smoke.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="Note.txt" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{6EC7D143-E193-4785-BD3E-BF31C4E185D0}</ProjectGuid>

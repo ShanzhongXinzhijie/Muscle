@@ -6,7 +6,7 @@ using namespace GameObj;
 void BP_HumanMantle::InnerStart() {
 	//物理ワールド設定
 	//TODO　別の所テ゛
-	GetPhysicsWorld().SetGravity({0.0f,-20.0f,0.0f});	
+	GetPhysicsWorld().SetGravity({0.0f,-800.0f,0.0f});	
 	//GetPhysicsWorld().GetSoftBodyWorldInfo()->air_density = 1.2f*10.0f;
 
 	//布作る

@@ -14,5 +14,5 @@ void IBodyPart::UpdateTRS() {
 }
 
 CQuaternion IBodyPart::GetFinalRot()const {
-	return m_localRot * m_ptrCore->GetRot();
+	return m_ptrCore->GetRot() * m_localRot;
 }
