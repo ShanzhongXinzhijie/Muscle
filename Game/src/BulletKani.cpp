@@ -28,8 +28,14 @@ BulletGO::BulletGO(IBulletDecolator* ptrDecolator, const CVector3& pos, const CV
 					m_lifeTime = 0.0f;
 				}
 			}
+			if (!p.m_isCCollisionObj) {
+				//相手がCCollisionObjじゃなくても死
+				m_lifeTime = 0.0f;
+			}
 		}
 	);
+	m_col.m_collision.SetIsCollisionStaticObject(true);//静的オブジェクトとも衝突する
+	m_col.m_collision.SetIsHighSpeed(true);//これは高速です
 }
 
 void BulletGO::Update() {

@@ -25,13 +25,7 @@ bool Ari::Start() {
 	CreateSphere({}, {},50.0f);
 	SetCollisionFunc(
 		[&](ReferenceCollision* H, SuicideObj::CCollisionObj::SCallbackParam& p) {
-			CVector3 pos;
-			if (p.m_isA) {
-				pos = p.m_contactPoint->getPositionWorldOnB();
-			}
-			else {
-				pos = p.m_contactPoint->getPositionWorldOnA();
-			}
+			CVector3 pos = p.m_collisionPoint;
 			Damage(*H, pos);
 		}
 	);
@@ -53,7 +47,7 @@ void Ari::Update() {
 		//’e‚Ì”­ŽË
 		new BulletGO(
 			nullptr,
-			GetPos(),
+			GetPos()+ GetFront()*100.0f,
 			GetFront()*100.0f + m_velocity
 		);
 

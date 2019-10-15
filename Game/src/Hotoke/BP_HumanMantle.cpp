@@ -73,7 +73,7 @@ void BP_HumanMantle::InnerStart() {
 	//m_model->SetIsShadowCaster(false);//TODO オフセットにする(model.fxで
 	m_model->GetSkinModel().SetIsFrustumCulling(false);//視錐台カリングをオフ
 	//ポストドロー設定
-	m_model->InitPostDraw(PostDrawModelRender::enAlpha);
+	//m_model->InitPostDraw(PostDrawModelRender::enAlpha);
 
 	//頂点操作用情報を作成
 	ID3D11DeviceContext* deviceContext = GetGraphicsEngine().GetD3DDeviceContext();

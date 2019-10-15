@@ -119,7 +119,7 @@ Shibuya::Shibuya() : m_hotoke(nullptr,false, std::make_unique<TestAI>(&m_hotoke)
 	SetFogDistance(30000.0f);
 
 	//ñÿÅX
-	Tree::m_sInstancingMax = 4000;
+	Tree::m_sInstancingMax = 128;// 4000;
 	m_objGene.Generate<Tree>({ -70.0f*50.0f,-70.0f*50.0f,-70.0f*50.0f }, { 70.0f*50.0f,70.0f*50.0f,70.0f*50.0f }, Tree::m_sInstancingMax);
 	
 	//Stone::m_sInstancingMax = 4000;

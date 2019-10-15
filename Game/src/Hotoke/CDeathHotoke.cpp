@@ -37,13 +37,7 @@ bool CDeathHotoke::Start() {
 	CreateCapsule({}, {}, 60.0f*(m_scale.x / (0.0188f*2.0f)), 100.0f*(m_scale.y / (0.0188f*2.0f)));
 	SetCollisionFunc(
 		[&](ReferenceCollision* H, SuicideObj::CCollisionObj::SCallbackParam& p) {
-			CVector3 pos;
-			if (p.m_isA) {
-				pos = p.m_contactPoint->getPositionWorldOnB();
-			}
-			else {
-				pos = p.m_contactPoint->getPositionWorldOnA();
-			}
+			CVector3 pos = p.m_collisionPoint;
 			Damage(*H,pos);
 		}
 	);
