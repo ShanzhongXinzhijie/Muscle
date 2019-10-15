@@ -106,10 +106,11 @@ void BP_KaniArm::PostUTRSUpdate() {
 				//マズルエフェクト
 				m_muzzleTime[i] = 2;
 				//発射
+				CVector3 dirNorm = (m_ikSetting[i]->targetPos - m_model->GetBonePos(m_muzzleBoneID[i])).GetNorm();
 				new BulletGO(
 					nullptr,
 					m_model->GetBonePos(m_muzzleBoneID[i]),
-					(m_ikSetting[i]->targetPos - m_model->GetBonePos(m_muzzleBoneID[i])).GetNorm()*100.0f+m_ptrCore->GetVelocity()
+					dirNorm*(100.0f+dirNorm.Dot(m_ptrCore->GetVelocity()))
 				);
 			}
 		}

@@ -48,7 +48,7 @@ void Ari::Update() {
 		new BulletGO(
 			nullptr,
 			GetPos()+ GetFront()*100.0f,
-			GetFront()*100.0f + m_velocity
+			GetFront()*(100.0f + GetFront().Dot(m_velocity))
 		);
 
 		//ˆÚ“®—Ê
