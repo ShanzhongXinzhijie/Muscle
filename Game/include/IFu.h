@@ -44,12 +44,18 @@ public:
 	//右方向を取得
 	const CVector3& GetRight()const { return m_right; }
 
-protected:	
+//protected:	
 	/// <summary>
 	/// DHCollisionとの衝突時に実行する関数
 	/// </summary>
 	void SetCollisionFunc(std::function<void(ReferenceCollision*, SuicideObj::CCollisionObj::SCallbackParam&)> func) {
 		m_collisionFunc = func;
+	}
+
+	//この喰らい判定を静的オブジェクトとしても初期化するか設定
+	//※当たり判定形状を作成する前に設定してください
+	void SetIsStaticObject(bool isStatic) {
+		m_col.m_collision.SetIsStaticObject(isStatic);
 	}
 
 	//球形の喰らい判定を作成
@@ -61,6 +67,16 @@ protected:
 	void CreateCapsule(const CVector3& pos, const CQuaternion& rot, float radius, float height) {
 		m_colPos = pos; m_colRot = rot;
 		m_col.m_collision.CreateCapsule(m_pos + m_colPos, m_colRot * m_rot, radius, height);
+	}
+	//メッシュ形の喰らい判定を作成
+	void CreateMesh(const GameObj::CSkinModelRender& skinModelRender) {
+		m_colPos = skinModelRender.GetPos(); m_colRot = skinModelRender.GetRot();
+		m_col.m_collision.CreateMesh(skinModelRender);
+	}
+
+	//喰らい判定の属性ビットマスクを取得
+	std::bitset<enAttributesNum>& GetAttributes() {
+		return m_col.m_reference.attributes;
 	}
 
 	//喰らい判定の位置オフセットを設定

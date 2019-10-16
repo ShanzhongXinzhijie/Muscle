@@ -14,13 +14,15 @@ public:
 	void PostLoopUpdate()override;
 
 private:
+	IFu m_graund;
 	GameObj::CSkinModelRender m_model;
+	//SuicideObj::CCollisionObj m_graundCollision;
+	//PhysicsStaticObject m_phyStaticObject;
+
 	GameObj::CSkybox m_sky;
 	GameObj::CDirectionLight m_directionLight;
 	CascadeShadowHandler m_shadowmap;
-
-	PhysicsStaticObject m_phyStaticObject;
-
+	
 	StageObjectGenerator m_objGene;
 	GameObj::CSkinModelRender m_knight, m_dinosaur, m_skyModel, m_cloud[6], m_uni;
 	SkinModelEffectShader m_psCloud;

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Shibuya.h"
-#include "DemolisherWeapon/Graphic/FrustumCulling.h"
 #include "Ari.h"
+#include "CSmoke.h"
 
 Shibuya::Shibuya() : m_hotoke(nullptr,false, std::make_unique<TestAI>(&m_hotoke))
 {
@@ -13,21 +13,17 @@ Shibuya::Shibuya() : m_hotoke(nullptr,false, std::make_unique<TestAI>(&m_hotoke)
 	m_directionLight.SetColor(CVector3::One() * 0.5f);
 
 	//街モデル
-	m_model.Init(L"Resource/modelData/tikei.cmo");//city
-	//m_model.GetSkinModel().FindMaterialSetting([](MaterialSetting* mat) {
-		//mat->SetLightingEnable(false);
-	//});
+	m_model.Init(L"Resource/modelData/tikei.cmo");
 	m_model.SetScale(CVector3::One()*50.0f);
-	m_phyStaticObject.CreateMesh(m_model);
-
-	/*MeshCollider* p = m_phyStaticObject.GetMeshCollider();
-	std::vector<MeshCollider::VertexBufferPtr>& v = p->GetVertexBuffer();
-	for (auto& vec : v) {
-		for (auto& vector : *vec.get()) {
-			vector.y += 1000.0f;
+	//当たり判定
+	m_graund.SetIsStaticObject(true);
+	m_graund.CreateMesh(m_model);
+	m_graund.GetAttributes().set(enPhysical);
+	m_graund.SetCollisionFunc(
+		[&](ReferenceCollision* H, SuicideObj::CCollisionObj::SCallbackParam& p) {
+			new CSmoke(p.m_collisionPoint, 0.0f, {0.8f,0.8f ,0.5f,0.8f });
 		}
-	}
-	p->GetMeshShape()->buildOptimizedBvh();*/
+	);
 	
 	//ノーマルマップ
 	ID3D11ShaderResourceView* tex = nullptr, *normaltex = nullptr;
