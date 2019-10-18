@@ -66,7 +66,7 @@ void CPlayer::Update() {
 
 		if (!uih) {
 			constexpr int screenSize = 640;
-			constexpr int screenSize3D = 320;
+			constexpr int screenSize3D = 640;
 			constexpr int HUDSize = 100;
 			if (iscahsnge) {
 				GetEngine().ChangeWindowSize(screenSize, screenSize);

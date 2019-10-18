@@ -8,10 +8,10 @@ Shader CSmoke::m_ps;
 CSmoke::CSmoke(const CVector3& pos, const CVector3& move, const CVector4& color)
 {
 	if (!m_isStaticInited) {//未初期化
-		//シェーダ
-		D3D_SHADER_MACRO macros[] = { "TEXTURE", "1", NULL, NULL };
-		m_ps.Load("Preset/shader/modelDisolve.fx", "PSMain_DisolveSozaiNoAzi_ConvertToPMA", Shader::EnType::PS, "TEXTURE", macros);
-		//m_ps.Load("Preset/shader/modelDisolve.fx", "PSMain_DisolveGBuffer", Shader::EnType::PS);
+		//ディゾルブシェーダをロード
+		D3D_SHADER_MACRO macros[] = { "TEXTURE", "1", "SOFT_PARTICLE", "1", NULL, NULL };
+		m_ps.Load("Preset/shader/modelDisolve.fx", "PSMain_DisolveSozaiNoAzi_ConvertToPMA", Shader::EnType::PS, "TEXTURE+SOFT_PARTICLE", macros);
+		
 		//初期化完了
 		m_isStaticInited = true;
 	}
@@ -19,12 +19,12 @@ CSmoke::CSmoke(const CVector3& pos, const CVector3& move, const CVector4& color)
 	//ビルボード読み込み
 	std::unique_ptr<CBillboard> billboard = std::make_unique<CBillboard>();
 	billboard->Init(L"Resource/spriteData/smoke.png", MAX_NUM);
-	billboard->GetModel().InitPostDraw(PostDrawModelRender::enAlpha);
+	billboard->GetModel().InitPostDraw(PostDrawModelRender::enAlpha,false,true);//ポストドロー(ソフトパーティクル)
 	billboard->GetModel().SetIsShadowCaster(false);
 	billboard->GetModel().GetSkinModel().FindMaterialSetting(
 		[&](MaterialSetting* mat) {
 			mat->SetAlbedoScale(color);
-			mat->SetPS(&m_ps);
+			mat->SetPS(&m_ps);//シェーダ設定
 		}
 	);
 

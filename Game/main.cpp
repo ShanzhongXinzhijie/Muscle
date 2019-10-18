@@ -34,8 +34,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 			GetUserName(str, &len);
 			if (strcmp("GC1828", str) == 0) {
 				//低スペック設定
-				initparam.frameBufferWidth3D = 320;		//3D描画の解像度(幅)
-				initparam.frameBufferHeight3D = 320;	//3D描画の解像度(高さ)
+				initparam.frameBufferWidth3D = 640;		//3D描画の解像度(幅)
+				initparam.frameBufferHeight3D = 640;	//3D描画の解像度(高さ)
 			}
 		}
 	}
