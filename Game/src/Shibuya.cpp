@@ -70,6 +70,7 @@ Shibuya::Shibuya() : m_hotoke(nullptr,false, std::make_unique<TestAI>(&m_hotoke)
 			}
 		);
 		cloud.GetSkinModel().SetPreDrawFunction(
+			L"SetCLOUDTEX",
 			[&](SkinModel*) {
 				GetGraphicsEngine().GetD3DDeviceContext()->PSSetShaderResources(7, 1, m_cloudtex.GetAddressOf());
 			}

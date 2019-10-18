@@ -120,7 +120,6 @@ void CDeathHotoke::Damage(const ReferenceCollision& ref, const CVector3& pos) {
 	//IFu継承をパーティクル化
 	//判定あり
 	
-	//CColObjの地形判定
 
 	new CSmoke(pos, ref.direction*-1.0f, { 1.0f,0.0f,0.02f,1.0f });
 	new CBlood(pos + CVector3(60.0f - 120.0f*CMath::RandomZeroToOne(), 60.0f - 120.0f*CMath::RandomZeroToOne(), 60.0f - 120.0f*CMath::RandomZeroToOne()), (CVector3::Up() + ref.direction*-1.0f)*50.0f);
