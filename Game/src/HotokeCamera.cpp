@@ -42,9 +42,9 @@ void HotokeCameraController::Update() {
 	}
 
 	//ƒJƒƒ‰ˆÊ’uÝ’è
-	CVector3 offsetVec = { 120.0f*2.0f, 200.0f*2.0f, -370.0f*2.0f };
+	CVector3 offsetVec = { 0.0f, -205.0f, -100.0f };
 	float z = m_hotokeCam.GetRot().y / CMath::PI_HALF;
-	if (z > FLT_EPSILON) {
+	/*if (z > FLT_EPSILON) {
 		offsetVec.z += z * 470.0f;
 		offsetVec.x += z * -60.0f;
 		offsetVec.y += z * 50.0f;
@@ -52,9 +52,10 @@ void HotokeCameraController::Update() {
 	else {
 		offsetVec.z += z * -100.0f;
 		offsetVec.y += z * 270.0f;
-	}
+	}*/
 	m_ptrHotoke->GetRot().Multiply(offsetVec);
 	m_hotokeCam.SetPos(m_ptrHotoke->GetPos() + offsetVec);
+	m_hotokeCam.SetTargetPosOffset(offsetVec*-1.0f);
 
 	//ƒJƒƒ‰‰ñ“]Ý’è
 	m_hotokeCam.SetRot(m_ptrHotoke->GetRot());

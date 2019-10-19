@@ -10,7 +10,7 @@
 bool CPlayer::Start() {	
 	m_anim.Load(L"Resource/animation/human/stand.tka");
 	m_human.Init(L"Resource/modelData/human.cmo", &m_anim, 1);
-	m_human.SetPos(CVector3::AxisY()*900.0f + CVector3::AxisX()*50.0f + CVector3::AxisZ()*100.0f);
+	//m_human.SetPos(CVector3::AxisY()*900.0f + CVector3::AxisX()*50.0f + CVector3::AxisZ()*100.0f);
 	m_human.SetScale(10.0f);
 
 	//m_humanCam.SetViewAngleDeg(25.0f);

@@ -8,9 +8,10 @@ public:
 	HotokeCamera() {
 		//初期化
 		m_camera.SetFar(15000.0f);
-		//m_camera.SetViewAngleDeg();		
+		//m_camera.SetViewAngleDeg(30.0f);			
+		m_target = { 0.0f,0.5f,1.0f }; m_target.Normalize();//注視点初期化
 		//メインカメラに設定
-		SetMainCamera(&m_camera);
+		SetMainCamera(&m_camera);		
 	}
 
 	//モーションブラーをリセット
@@ -40,6 +41,10 @@ public:
 	//カメラ位置設定
 	void SetPos(const CVector3& vec) {
 		m_pos = vec;
+	}
+	//ターゲット座標オフセットを設定
+	void SetTargetPosOffset(const CVector3& vec) {
+		m_targetPosOffset = vec;
 	}
 	//カメラ回転設定
 	//※マウス回転とは別
@@ -71,7 +76,7 @@ public:
 	//カメラ更新
 	void Update() {
 		m_camera.SetPos(m_pos);
-		m_camera.SetTarget(m_pos + m_updatedTarget);
+		m_camera.SetTarget(m_pos + m_targetPosOffset + m_updatedTarget * m_camera.GetFar());
 		m_camera.SetUp(m_updatedUp);
 	}
 
@@ -96,7 +101,7 @@ private:
 private:
 	GameObj::PerspectiveCamera m_camera;
 
-	CVector3 m_pos, m_target = CVector3::AxisZ(), m_up = CVector3::Up();
+	CVector3 m_pos, m_targetPosOffset, m_target, m_up = CVector3::Up();
 	CQuaternion m_rotOffset;
 	CVector3 m_updatedTarget = CVector3::AxisZ(), m_updatedUp = CVector3::Up();
 	CVector2 m_rot;

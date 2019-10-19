@@ -94,6 +94,11 @@ void CDeathHotoke::PostLoopUpdate() {
 	for (auto& part : m_parts) {
 		if (part)part->PostLoopUpdate();
 	}
+
+	CVector3 origin = GetPos(); origin.y -= 205.0f;
+	DrawLine(origin - GetLeft()*100.0f, origin + GetLeft()*100.0f, { 1.0f,0.0f,0.0f,1.0f });
+	DrawLine(origin - GetUp()*100.0f, origin + GetUp()*100.0f, { 0.0f,1.0f,0.0f,1.0f });//è„ï˚å¸
+	DrawLine(origin - GetFront()*100.0f, origin + GetFront()*100.0f, { 0.0f,0.0f,1.0f,1.0f });
 }
 
 void CDeathHotoke::PostRender() {
