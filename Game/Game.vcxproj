@@ -102,6 +102,7 @@
     <MeshContentTask Include="Asset\modelData\cloud\sphere.fbx" />
     <MeshContentTask Include="Asset\modelData\dinosaur.FBX" />
     <MeshContentTask Include="Asset\modelData\hotoke\birdwing.FBX" />
+    <MeshContentTask Include="Asset\modelData\hotoke\birdwingOld.FBX" />
     <MeshContentTask Include="Asset\modelData\hotoke\core.FBX" />
     <MeshContentTask Include="Asset\modelData\hotoke\fishhead.FBX" />
     <MeshContentTask Include="Asset\modelData\hotoke\humanarms.FBX" />

@@ -9,7 +9,7 @@ public:
 		//初期化
 		m_camera.SetFar(15000.0f);
 		//m_camera.SetViewAngleDeg(30.0f);			
-		m_target = { 0.0f,0.5f,1.0f }; m_target.Normalize();//注視点初期化
+		m_target = { 0.0f,0.8f,1.0f }; m_target.Normalize();//注視点初期化
 		//メインカメラに設定
 		SetMainCamera(&m_camera);		
 	}
@@ -70,7 +70,7 @@ public:
 	}
 	//消失点を取得
 	CVector3 GetVanishingPoint() {
-		return m_pos + m_updatedTarget * m_camera.GetFar();
+		return m_pos + m_targetPosOffset + m_updatedFireTarget * m_camera.GetFar();
 	}
 
 	//カメラ更新
@@ -89,21 +89,23 @@ private:
 	//回転後の座標算出
 	void UpdateVector() {
 		m_updatedTarget = m_target, m_updatedUp = m_up;
+		m_updatedFireTarget = m_fireTarget;
 
 		CQuaternion cq;
 		cq.SetRotation(CVector3::AxisX(), m_rot.y);
 		cq.Concatenate(CQuaternion(CVector3::AxisY(), m_rot.x));
 		cq.Concatenate(m_rotOffset);
 		cq.Multiply(m_updatedTarget);
+		cq.Multiply(m_updatedFireTarget);
 		cq.Multiply(m_updatedUp);
 	}
 
 private:
 	GameObj::PerspectiveCamera m_camera;
 
-	CVector3 m_pos, m_targetPosOffset, m_target, m_up = CVector3::Up();
+	CVector3 m_pos, m_targetPosOffset, m_target, m_fireTarget = CVector3::Front(), m_up = CVector3::Up();
 	CQuaternion m_rotOffset;
-	CVector3 m_updatedTarget = CVector3::AxisZ(), m_updatedUp = CVector3::Up();
+	CVector3 m_updatedTarget = CVector3::AxisZ(), m_updatedFireTarget = CVector3::AxisZ(), m_updatedUp = CVector3::Up();
 	CVector2 m_rot;
 };
 

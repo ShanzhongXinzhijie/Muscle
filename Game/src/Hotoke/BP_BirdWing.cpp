@@ -4,14 +4,28 @@
 using namespace GameObj;
 
 void BP_BirdWing::InnerStart() {
+	//アニメ
+	m_anim[enFlying].Load(L"Resource/animation/birdWing_Flying.tka");
+	m_anim[enBraking].Load(L"Resource/animation/birdWing_brake.tka");
 	//モデル
 	m_model = std::make_unique<CSkinModelRender>();
-	m_model->Init(L"Resource/modelData/birdwing.cmo");
+	m_model->Init(L"Resource/modelData/birdwing.cmo", m_anim, enAnimNum, enFbxUpAxisY);
+	m_localScale = { 1927.77f / 48.97f, 2377.50f / 60.39f, 2377.50f / 60.39f };
 	m_model->GetSkinModel().FindMaterialSetting(
 		[&](MaterialSetting* me) {
 			me->SetTranslucent(0.3f);
 		}
 	);
+	m_model->GetAnimCon().AddAnimationEventListener(
+		[&](const wchar_t* clipName, const wchar_t* eventName) {
+			std::wstring_view nameView = eventName;
+			if (nameView.compare(L"End")==0) {
+				m_isAnimEnd = true;//アニメーション終了フラグ
+			}
+		}
+	);
+	//m_shoulderBone[L] = m_model->FindBone(L"Sholder_L");
+	//m_shoulderBone[R] = m_model->FindBone(L"Sholder_R");
 
 	//コントローラー
 	if (m_ptrCore->GetPad()) {
@@ -49,11 +63,11 @@ void BP_BirdWing::Update() {
 	m_ptrCore->AddMove(move);
 
 	//落下による加速
-	m_accel += min(move.y, 0.0f)*-0.01f;
+	m_accel += move.y*-0.003f;
 
-	//TODO 揚力発生	
+	//揚力発生	
 	move.y = 0.0f;
-	m_ptrCore->AddMove(CVector3::Up()*move.Length()*0.75f);	
+	m_ptrCore->AddMove(CVector3::Up()*move.Length()*0.5f);	
 }
 
 void BP_BirdWing::Draw2D() {
@@ -67,14 +81,16 @@ void BP_BirdWing::Draw2D() {
 }
 
 void BP_BirdWing::Accel() {
-	m_accel += 2.0f*0.08f;
-	//TODO 羽ばたきアニメーション
-	m_localRot.SetRotationDeg(CVector3::AxisX(), 15.0f);
+	if (m_isAnimEnd) {
+		m_accel += 20.0f;
+		m_isAnimEnd = false;
+		m_model->GetAnimCon().Play(enFlying, 0.0f, true);
+	}
 }
 void BP_BirdWing::Brake() {
-	m_accel -= 2.0f*0.10f;
-
-	m_localRot.SetRotationDeg(CVector3::AxisX(), -15.0f);
+	//m_accel -= 2.0f*0.10f;
+	//m_isAnimEnd = true;
+	//m_model->GetAnimCon().Play(enBraking, 0.175f);
 }
 
 void BP_BirdWing::Pitch(float lerp) {
@@ -83,6 +99,13 @@ void BP_BirdWing::Pitch(float lerp) {
 
 	//旋回
 	m_pitch.SetRotation(m_ptrCore->GetLeft(), lerp*CMath::PI_HALF*0.8f);
+
+	//ボーン回転	
+	/*CQuaternion rot;
+	if (m_isAnimEnd) { rot.SetRotation(CVector3::AxisX(), lerp*CMath::PI_HALF*0.8f); }
+	for (auto& bone : m_shoulderBone) {
+		bone->SetRotationOffset(rot);
+	}	*/
 }
 void BP_BirdWing::Yaw(float lerp) {
 	//減速
@@ -105,7 +128,7 @@ void BP_BirdWing::Yaw(float lerp) {
 void HCon_BirdWing::Update() {
 	//左スティック一回転以上で加減速
 	if (m_ptrCore->GetPad()->GetStickCircleInput(L) - m_beforeClrcleInputNum > 0) {
-		m_accelTime = 0.3f;		
+		m_accelTime = 0.35f;		
 	}
 	m_beforeClrcleInputNum = m_ptrCore->GetPad()->GetStickCircleInput(L);
 	//一定時間加速
@@ -125,7 +148,7 @@ void HCon_BirdWing::Update() {
 		m_ptrBody->Yaw(m_ptrCore->GetPad()->GetStick(L).x);
 	}
 	if (abs(m_ptrCore->GetPad()->GetStick(L).y) > FLT_EPSILON) {
-		m_ptrBody->Pitch(m_ptrCore->GetPad()->GetStick(L).y);		
+		m_ptrBody->Pitch(m_ptrCore->GetPad()->GetStick(L).y*-1.0f);		
 	}
 }
 

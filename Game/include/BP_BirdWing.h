@@ -22,6 +22,14 @@ private:
 	//コントローラー
 	IBodyController<BP_BirdWing>* m_controller = nullptr;
 
+	//アニメーシヲン
+	enum enAnim{
+		enFlying,enBraking,enAnimNum,
+	};
+	AnimationClip m_anim[enAnimNum];
+	bool m_isAnimEnd = true;
+	//Bone* m_shoulderBone[enLRNUM] = {};
+
 	float m_accel = 0.0f;//加速
 	float m_yawAccel = 0.0f;
 	CQuaternion m_pitch;//縦回転
