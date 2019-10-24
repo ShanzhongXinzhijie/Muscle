@@ -8,6 +8,9 @@ class CPlayer : public IGameObject
 public:
 	CPlayer(int padnum):m_pad(padnum),m_hotoke(&m_pad,true,nullptr),m_cam(&m_hotoke, &m_pad){
 		m_cam.SetToMainCamera(padnum);
+		if (padnum != 0) {
+			m_hotoke.SetIsDrawHUD(false);
+		}
 	};
 
 	bool Start()override;

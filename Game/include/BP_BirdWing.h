@@ -24,14 +24,16 @@ private:
 
 	//アニメーシヲン
 	enum enAnim{
-		enFlying,enBraking,enAnimNum,
+		enDefault,enFlying,enBraking,enAnimNum,
 	};
 	AnimationClip m_anim[enAnimNum];
 	bool m_isAnimEnd = true;
+	bool m_isBraking = false;
 	//Bone* m_shoulderBone[enLRNUM] = {};
 
 	float m_accel = 0.0f;//加速
-	float m_yawAccel = 0.0f;
+	float m_yawAccel = 0.0f; bool m_isYawInput = false;
+	float m_pitchAccel = 0.0f; bool m_isPitchInput = false;
 	CQuaternion m_pitch;//縦回転
 };
 

@@ -75,6 +75,14 @@ public:
 	}
 
 	/// <summary>
+	/// 翼入力を取得
+	/// </summary>
+	[[nodiscard]]
+	bool GetWingInput() const {
+		return m_usePad->GetButton(enButtonLSB);
+	}
+
+	/// <summary>
 	/// バックミラー入力を取得
 	/// </summary>
 	[[nodiscard]]

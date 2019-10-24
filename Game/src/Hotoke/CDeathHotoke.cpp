@@ -65,13 +65,13 @@ void CDeathHotoke::Update() {
 	if (m_ai) { m_ai->Update(); }
 
 	//移動適応
-	Move(m_move);
+	Move(m_veloxity);
 	SetRot(m_rotMove * GetRot());
 	//減速
-	m_move *= 0.5f;
+	m_veloxity *= 0.5f;
 	m_rotMove.Slerp(0.5f, m_rotMove, CQuaternion::Identity());
 	//重力
-	m_move.y -= 10.0f;
+	m_veloxity.y -= 10.0f;
 
 	//パーツのUpdate
 	for (auto& part : m_parts) {
@@ -112,6 +112,12 @@ void CDeathHotoke::PostRender() {
 		wchar_t output[256];
 		swprintf_s(output, L"%.1f", m_hp);
 		font.Draw(output, { 0.0f,0.25f });
+	}
+	else {
+		CFont font;
+		wchar_t output[256];
+		swprintf_s(output, L"(%.1f,%.1f,%.1f)", m_veloxity.x, m_veloxity.y, m_veloxity.z);
+		font.Draw(output, { 0.5f,0.25f });
 	}
 }
 

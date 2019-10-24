@@ -269,12 +269,12 @@ void BP_HumanMantle::Move(const CVector2& dir) {
 	//ˆÚ“®
 	CVector3 move = CVector3(dir.x, 0.0f, dir.y)*10.0f;
 	m_ptrCore->GetRot().Multiply(move);
-	m_ptrCore->AddMove(move);
+	m_ptrCore->AddVelocity(move);
 }
 void BP_HumanMantle::Step(const CVector2& dir) {}
 void BP_HumanMantle::Jump() {
 	//ƒWƒƒƒ“ƒv
-	m_ptrCore->AddMove(CVector3::AxisY()*1000.0f);
+	m_ptrCore->AddVelocity(CVector3::AxisY()*1000.0f);
 }
 void BP_HumanMantle::Parachute() {}
 

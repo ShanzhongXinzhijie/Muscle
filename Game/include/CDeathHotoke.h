@@ -28,7 +28,7 @@ public:
 	void PostRender()override;
 
 	//移動量を加える
-	void AddMove(const CVector3& vec) { m_move += vec; }
+	void AddVelocity(const CVector3& vec) { m_veloxity += vec; }
 	void AddRot(const CQuaternion& rot) { m_rotMove = rot * m_rotMove; }
 
 	//ダメージをあたえる
@@ -36,12 +36,15 @@ public:
 
 	//ターゲット位置を設定
 	void SetTargetPos(const CVector3& pos) { m_targetPos = pos; }
+
+	//HUDを表示するか設定
+	void SetIsDrawHUD(bool enable) { m_isDrawHUD = enable; }
 	
 	//ゲッター
 	[[nodiscard]] const CVector3& GetScale()const { return m_scale; }
 	[[nodiscard]] CVector3 GetMove() const { return GetPos() - m_posOld; }
 	//移動量を取得
-	[[nodiscard]] const CVector3& GetVelocity() const { return m_move; }
+	[[nodiscard]] const CVector3& GetVelocity() const { return m_veloxity; }
 	//ターゲット位置を取得
 	[[nodiscard]] const CVector3& GetTargetPos() const { return m_targetPos; }
 	
@@ -65,7 +68,7 @@ private:
 	CVector3 m_posOld;
 	
 	//移動量
-	CVector3 m_move;
+	CVector3 m_veloxity;
 	CQuaternion m_rotMove;
 
 	//ステータス

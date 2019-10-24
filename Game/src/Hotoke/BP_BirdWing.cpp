@@ -5,6 +5,7 @@ using namespace GameObj;
 
 void BP_BirdWing::InnerStart() {
 	//アニメ
+	m_anim[enDefault].Load(L"Resource/animation/birdWing_default.tka");
 	m_anim[enFlying].Load(L"Resource/animation/birdWing_Flying.tka");
 	m_anim[enBraking].Load(L"Resource/animation/birdWing_brake.tka");
 	//モデル
@@ -38,11 +39,11 @@ void BP_BirdWing::InnerStart() {
 
 void BP_BirdWing::Update() {
 	//毎フレームの初期化
+	m_isBraking = false;
+	m_isYawInput = false;
+	m_isPitchInput = false;
 	m_pitch = CQuaternion::Identity();
-
-	//減速
-	m_yawAccel -= 0.01f; m_yawAccel = max(m_yawAccel, 0.0f);
-
+	
 	//加速記録
 	float oldAccel = m_accel;
 
@@ -50,24 +51,37 @@ void BP_BirdWing::Update() {
 	m_controller->Update();
 
 	//加速してなかったら減速
-	if(oldAccel >= m_accel){
-		m_accel -= 2.0f*0.01f;
-	}
+	if (oldAccel >= m_accel) { m_accel -= 2.0f*0.01f; }
+	if (!m_isYawInput) { m_yawAccel = 0.0f; }
+	if (!m_isPitchInput) { m_pitchAccel = 0.0f; }
 
 	//速度制限
-	m_accel = CMath::Clamp(m_accel, 0.0f, 20.0f);
+	m_accel = max(m_accel, 0.0f);
+	if (m_accel > 20.0f) {
+		m_accel = max(20.0f, m_accel - 1.5f);
+	}
+
+	//落下による加速
+	if(m_ptrCore->GetMove().y < 0.0f) {
+		m_accel += m_ptrCore->GetMove().y * -0.006f;
+	}
 
 	//移動
 	CVector3 move = m_ptrCore->GetFront()*m_accel;
 	m_pitch.Multiply(move);
-	m_ptrCore->AddMove(move);
+	m_ptrCore->AddVelocity(move);	
 
-	//落下による加速
-	m_accel += move.y*-0.003f;
+	//上昇による減速
+	if (move.y > 0.0f) {
+		m_accel += move.y * -0.003f;
+	}
 
 	//揚力発生	
-	move.y = 0.0f;
-	m_ptrCore->AddMove(CVector3::Up()*move.Length()*0.5f);	
+	CVector3 youryok = m_ptrCore->GetMove(); youryok.y = 0.0f;
+	m_ptrCore->AddVelocity(CVector3::Up()*youryok.Length()*0.25f);
+
+	//アニメーション
+	if (m_isAnimEnd && !m_isBraking) { m_model->GetAnimCon().Play(enDefault, 0.175f); }
 }
 
 void BP_BirdWing::Draw2D() {
@@ -84,32 +98,53 @@ void BP_BirdWing::Accel() {
 	if (m_isAnimEnd) {
 		m_accel += 20.0f;
 		m_isAnimEnd = false;
-		m_model->GetAnimCon().Play(enFlying, 0.0f, true);
+		m_model->GetAnimCon().Play(enFlying, 0.175f, true);
 	}
 }
 void BP_BirdWing::Brake() {
-	//m_accel -= 2.0f*0.10f;
-	//m_isAnimEnd = true;
-	//m_model->GetAnimCon().Play(enBraking, 0.175f);
+	if (m_isAnimEnd) {
+		m_isBraking = true;
+		m_accel -= 2.0f*0.10f;
+		m_isAnimEnd = true;
+		m_model->GetAnimCon().Play(enBraking, 0.175f);
+	}
 }
 
 void BP_BirdWing::Pitch(float lerp) {
+	//if (!m_isAnimEnd) { return; }
+
+	m_isPitchInput = true;
+	
+	//加速
+	if (signbit(lerp) != signbit(m_pitchAccel)) { m_pitchAccel = 0.0f; }
+	m_pitchAccel = copysign(min(1.0f, abs(m_pitchAccel) + (1.0f / 20.0f)), lerp);
+	float accel = abs(m_pitchAccel*m_pitchAccel);
+	
 	//減速
-	m_accel -= 2.0f*0.01f*abs(lerp);
+	m_accel -= 2.0f*0.01f*abs(lerp)*accel*0.6f;
 
 	//旋回
-	m_pitch.SetRotation(m_ptrCore->GetLeft(), lerp*CMath::PI_HALF*0.8f);
+	m_pitch.SetRotation(m_ptrCore->GetLeft(), CMath::PI_HALF*lerp*accel*0.6f);
 
 	//ボーン回転	
 	/*CQuaternion rot;
-	if (m_isAnimEnd) { rot.SetRotation(CVector3::AxisX(), lerp*CMath::PI_HALF*0.8f); }
+	if (m_isAnimEnd) { rot.SetRotation(CVector3::AxisX(), ); }
 	for (auto& bone : m_shoulderBone) {
 		bone->SetRotationOffset(rot);
 	}	*/
 }
 void BP_BirdWing::Yaw(float lerp) {
+	//if (!m_isAnimEnd) { return; }
+
+	m_isYawInput = true;
+	
+	//加速
+	if (signbit(lerp) != signbit(m_yawAccel)) { m_yawAccel = 0.0f; }
+	m_yawAccel = copysign(min(1.0f, abs(m_yawAccel) + (1.0f / 20.0f)), lerp);
+	float accel = abs(m_yawAccel*m_yawAccel);
+
 	//減速
-	m_accel -= 2.0f*0.02f*abs(lerp);
+	m_accel -= 2.0f*0.02f*abs(lerp)*accel;
 
 	//旋回速度
 	float roll = 0.1f, speed = abs(m_accel);
@@ -119,37 +154,42 @@ void BP_BirdWing::Yaw(float lerp) {
 	else {
 		roll *= 5.0f / speed;
 	}
-	roll += 0.003f;
-	m_yawAccel += roll * 0.1f;
+	roll += 0.003f;//最低旋回力
+	roll *= 0.2f;
+	if (m_isBraking) { roll *= 2.5f; }//ブレーキ中は旋回性能上昇//TODO(本体の旋回性能パラメータでやる?)
+
 	//旋回
-	m_ptrCore->AddRot(CQuaternion(CVector3::AxisY(), lerp*m_yawAccel*2.0f));
+	m_ptrCore->AddRot(CQuaternion(CVector3::AxisY(), lerp*roll*accel));
 }
 
 void HCon_BirdWing::Update() {
-	//左スティック一回転以上で加減速
+	constexpr float ACCEL_TIME_MAX = 0.35f;
+	//左スティック一回転以上で加速
 	if (m_ptrCore->GetPad()->GetStickCircleInput(L) - m_beforeClrcleInputNum > 0) {
-		m_accelTime = 0.35f;		
+		m_accelTime = ACCEL_TIME_MAX;
 	}
+	//左スティック回転数記録
 	m_beforeClrcleInputNum = m_ptrCore->GetPad()->GetStickCircleInput(L);
 	//一定時間加速
 	if (m_accelTime > 0.0f) {
 		m_accelTime -= GetDeltaTimeSec();
-		//時計回りか?
-		if (m_ptrCore->GetPad()->GetStickCircleenSpinMode(L) == IGamePad::enClockwise) {
-			m_ptrBody->Accel();
-		}
-		else {
-			m_ptrBody->Brake();
-		}
+		m_ptrBody->Accel();
 	}
 
-	//旋回
-	if (abs(m_ptrCore->GetPad()->GetStick(L).x) > FLT_EPSILON) {
-		m_ptrBody->Yaw(m_ptrCore->GetPad()->GetStick(L).x);
+	//ブレーキ
+	if (m_ptrCore->GetPad()->GetWingInput()) {
+		m_ptrBody->Brake();
 	}
-	if (abs(m_ptrCore->GetPad()->GetStick(L).y) > FLT_EPSILON) {
-		m_ptrBody->Pitch(m_ptrCore->GetPad()->GetStick(L).y*-1.0f);		
-	}
+
+	//if (m_accelTime < FLT_EPSILON){// < ACCEL_TIME_MAX - 0.016f*20.0f) {
+		//旋回
+		if (abs(m_ptrCore->GetPad()->GetStick(L).x) > FLT_EPSILON) {
+			m_ptrBody->Yaw(m_ptrCore->GetPad()->GetStick(L).x);
+		}
+		if (abs(m_ptrCore->GetPad()->GetStick(L).y) > FLT_EPSILON) {
+			m_ptrBody->Pitch(m_ptrCore->GetPad()->GetStick(L).y*-1.0f);
+		}
+	//}
 }
 
 void AICon_BirdWing::Update() {
