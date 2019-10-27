@@ -2,6 +2,14 @@
 
 #include<bitset>
 
+//コリジョンのグループ
+enum enCollisionGroups {
+	enDefault,
+	enField,//地形
+
+	enGroupsNum,
+};
+
 //コリジョンの属性
 enum enCollisionAttributes {
 	enPhysical,
@@ -50,6 +58,11 @@ public:
 	//方向を設定
 	void SetDir(const CVector3& dir) {
 		m_reference.direction = dir;
+	}
+
+	//判定グループを設定
+	void On_OneGroup(unsigned int oneGroup) {
+		m_collision.On_OneGroup(oneGroup);
 	}
 
 	//有効無効の設定

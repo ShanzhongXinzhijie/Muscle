@@ -59,12 +59,7 @@ void BP_BirdWing::Update() {
 	m_accel = max(m_accel, 0.0f);
 	if (m_accel > 20.0f) {
 		m_accel = max(20.0f, m_accel - 1.5f);
-	}
-
-	//落下による加速
-	if(m_ptrCore->GetMove().y < 0.0f) {
-		m_accel += m_ptrCore->GetMove().y * -0.006f;
-	}
+	}	
 
 	//移動
 	CVector3 move = m_ptrCore->GetFront()*m_accel;
@@ -74,14 +69,20 @@ void BP_BirdWing::Update() {
 	//上昇による減速
 	if (move.y > 0.0f) {
 		m_accel += move.y * -0.003f;
-	}
-
-	//揚力発生	
-	CVector3 youryok = m_ptrCore->GetMove(); youryok.y = 0.0f;
-	m_ptrCore->AddVelocity(CVector3::Up()*youryok.Length()*0.25f);
+	}	
 
 	//アニメーション
 	if (m_isAnimEnd && !m_isBraking) { m_model->GetAnimCon().Play(enDefault, 0.175f); }
+}
+
+void BP_BirdWing::PostUTRSUpdate() {
+	//落下による加速
+	if (m_ptrCore->GetMove().y < 0.0f) {
+		m_accel += m_ptrCore->GetMove().y * -0.006f;
+	}
+	//揚力発生	
+	CVector3 youryok = m_ptrCore->GetMove(); youryok.y = 0.0f;
+	m_ptrCore->AddVelocity(CVector3::Up()*youryok.Length()*0.25f);
 }
 
 void BP_BirdWing::Draw2D() {
@@ -90,8 +91,13 @@ void BP_BirdWing::Draw2D() {
 	CFont font;
 	wchar_t output[256];
 
-	swprintf_s(output, L"%.1fkm/h", m_accel);
-	font.Draw(output, {0.0f,0.5f});
+	swprintf_s(output, L"ACL: %.1f", m_accel/ 20.0f*100.0f);
+	font.Draw(output, {0.0f,0.85f}, { 1.0f,0.5f,0.0f,1.0f });
+
+	if (m_isBraking) {
+		font.Draw(L"[BRAKING]", { 0.5f,0.85f }, { 1.0f,0.5f,0.0f,1.0f }, { 1.0f,1.0f }, {0.5f,0.0f});
+		//TODO フォントクラス作る
+	}
 }
 
 void BP_BirdWing::Accel() {
@@ -159,7 +165,7 @@ void BP_BirdWing::Yaw(float lerp) {
 	if (m_isBraking) { roll *= 2.5f; }//ブレーキ中は旋回性能上昇//TODO(本体の旋回性能パラメータでやる?)
 
 	//旋回
-	m_ptrCore->AddRot(CQuaternion(CVector3::AxisY(), lerp*roll*accel));
+	m_ptrCore->AddAngularVelocity(CVector3::AxisY(), lerp*roll*accel);
 }
 
 void HCon_BirdWing::Update() {

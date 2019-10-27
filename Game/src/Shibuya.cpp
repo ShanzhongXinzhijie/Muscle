@@ -18,6 +18,7 @@ Shibuya::Shibuya() : m_hotoke(nullptr,false, std::make_unique<TestAI>(&m_hotoke)
 	//“–‚½‚è”»’è
 	m_graund.SetIsStaticObject(true);
 	m_graund.CreateMesh(m_model);
+	m_graund.On_OneGroup(enField);
 	m_graund.GetAttributes().set(enPhysical);
 	m_graund.SetCollisionFunc(
 		[&](ReferenceCollision* H, SuicideObj::CCollisionObj::SCallbackParam& p) {

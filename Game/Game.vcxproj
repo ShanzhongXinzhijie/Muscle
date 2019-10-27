@@ -91,6 +91,7 @@
     <ClInclude Include="include\LoadingScreen.h" />
     <ClInclude Include="include\SceneAssemble.h" />
     <ClInclude Include="include\PartsList.h" />
+    <ClInclude Include="include\unit.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="include\TpsCamera.h" />
     <ClInclude Include="include\TreeGene.h" />

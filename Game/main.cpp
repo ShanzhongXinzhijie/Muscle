@@ -56,6 +56,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	SetIsDebugDraw(true);
 	SetIsDebugInput(true);
 
+	//フォント設定
+	CFont::LoadDefaultFont(L"Resource/font/x14y24pxHeadUpDaisy.spritefont");//eunomia_0200/Eunomia.spritefont");
+
 	//ゲームインスタンス作成
 	LoadingScreen game;
 

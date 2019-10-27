@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "HotokeCamera.h"
+#include "DemolisherWeapon/physics/CollisionAttr.h"
 
 void HotokeCameraController::Update() {
 	if (!m_lock) {
@@ -54,7 +55,28 @@ void HotokeCameraController::Update() {
 		offsetVec.y += z * 270.0f;
 	}*/
 	m_ptrHotoke->GetRot().Multiply(offsetVec);
-	m_hotokeCam.SetPos(m_ptrHotoke->GetPos() + offsetVec);
+
+	CVector3 start = m_ptrHotoke->GetPos() + offsetVec, end = m_ptrHotoke->GetPos() + offsetVec; 
+	start.y = m_ptrHotoke->GetPos().y; end.y -= m_cameraHeight + 1.0f;
+	btCollisionWorld::AllHitsRayResultCallback callback(start, end);
+	GetPhysicsWorld().RayTest(start, end, callback);
+	start = m_ptrHotoke->GetPos() + offsetVec; start.y -= m_cameraHeight;
+	bool isHit = false;
+	if (callback.hasHit()) {
+		for (int i = 0; i < callback.m_collisionObjects.size(); i++) {
+			if (callback.m_collisionObjects[i]->getUserIndex() == enCollisionAttr_CCollisionObj) {
+				SuicideObj::CCollisionObj* Obj = (SuicideObj::CCollisionObj*)(callback.m_collisionObjects[i]->getUserPointer());
+				if (Obj->GetGroupBitset().test(enField)) {
+					if (start.y < callback.m_hitPointWorld[i].y()) { isHit = true; start = callback.m_hitPointWorld[i]; }
+				}
+			}
+			else {
+				if (start.y < callback.m_hitPointWorld[i].y()) { isHit = true; start = callback.m_hitPointWorld[i]; }
+			}
+		}
+	}
+	start.y += m_cameraHeight; 
+	m_hotokeCam.SetPos(start);
 	m_hotokeCam.SetTargetPosOffset(offsetVec*-1.0f);
 
 	//ƒJƒƒ‰‰ñ“]Ý’è

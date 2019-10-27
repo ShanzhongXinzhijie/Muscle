@@ -79,6 +79,11 @@ public:
 		return m_col.m_reference.attributes;
 	}
 
+	//喰らい判定の判定グループを設定
+	void On_OneGroup(unsigned int oneGroup) {
+		m_col.On_OneGroup(oneGroup);
+	}
+
 	//喰らい判定の位置オフセットを設定
 	void SetCollisionPos(const CVector3& pos) {
 		m_colPos = pos;

@@ -60,6 +60,10 @@ public:
 		GetCameraList().at(num) = &m_camera;
 	}
 
+	//位置を取得
+	const CVector3& GetPos() {
+		return m_camera.GetPos();
+	}
 	//回転を取得
 	const CVector2& GetRot()const {
 		return m_rot;
@@ -68,15 +72,22 @@ public:
 	const CVector3& GetFront() {
 		return m_camera.GetFront();
 	}
+	//照準点を取得
+	CVector3 GetTargetPoint() {
+		return m_pos + m_targetPosOffset + m_updatedFireTarget * m_camera.GetFar();
+	}
 	//消失点を取得
 	CVector3 GetVanishingPoint() {
-		return m_pos + m_targetPosOffset + m_updatedFireTarget * m_camera.GetFar();
+		return m_pos + m_updatedTarget * m_camera.GetFar();
+	}
+	float GetFar()const {
+		return m_camera.GetFar();
 	}
 
 	//カメラ更新
 	void Update() {
 		m_camera.SetPos(m_pos);
-		m_camera.SetTarget(m_pos + m_targetPosOffset + m_updatedTarget * m_camera.GetFar());
+		m_camera.SetTarget(m_pos + m_updatedTarget * m_camera.GetFar());
 		m_camera.SetUp(m_updatedUp);
 	}
 
@@ -130,13 +141,23 @@ public:
 		m_hotokeCam.SetToMainCamera(num);
 	}
 
+	//位置を取得
+	const CVector3& GetPos() {
+		return m_hotokeCam.GetPos();
+	}
 	//前方向を取得
 	const CVector3& GetFront() {
 		return m_hotokeCam.GetFront();
 	}
-	//消失点を取得
+	//照準点を取得
+	CVector3 GetTargetPoint() {
+		return m_hotokeCam.GetTargetPoint();
+	}
 	CVector3 GetVanishingPoint() {
 		return m_hotokeCam.GetVanishingPoint();
+	}	
+	float GetFar()const {
+		return m_hotokeCam.GetFar();
 	}
 
 	//座標を2D上の座標に変換
@@ -152,6 +173,8 @@ private:
 	bool m_lock = false;//マウスカーソルの固定設定
 	CVector2 m_mouseSensi = { 4.0f*(1.0f / 1280.0f),4.0f*(1.0f / 1280.0f) };//視点感度(マウス
 	CVector2 m_padSensi = { 0.025f,-0.025f };//視点感度(パッド
+
+	float m_cameraHeight = 16.45f;//カメラの地面からの高さ
 	
 	CDeathHotoke* m_ptrHotoke = nullptr;
 	IGamePad* m_ptrPad = nullptr;

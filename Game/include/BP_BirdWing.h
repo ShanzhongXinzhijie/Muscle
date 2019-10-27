@@ -8,6 +8,7 @@ public:
 
 	void InnerStart()override;
 	void Update()override;
+	void PostUTRSUpdate()override;
 	void Draw2D()override;
 
 	//ƒAƒNƒVƒ‡ƒ“

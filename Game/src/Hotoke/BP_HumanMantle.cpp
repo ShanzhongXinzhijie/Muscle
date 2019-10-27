@@ -170,7 +170,7 @@ void BP_HumanMantle::Update() {
 	if (abs(sign) > 0.0f) { sign /= abs(sign); }
 	if (abs(rad) < CMath::DegToRad(20.5f)) { rad = 0.0f; }
 	//ù‰ñ
-	m_ptrCore->AddRot(CQuaternion(CVector3::AxisY(), sign*-1.0f*min(rad,0.01f)));
+	m_ptrCore->AddAngularVelocity(CVector3::AxisY(), sign*-1.0f*min(rad,0.01f));
 }
 
 void BP_HumanMantle::PostUTRSUpdate() {

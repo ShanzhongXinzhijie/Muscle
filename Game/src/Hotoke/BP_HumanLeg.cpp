@@ -49,14 +49,16 @@ void BP_HumanLeg::Update() {
 	//足と本体の位置が近ければ、本体位置を上へ
 	const float modelScale = m_ptrCore->GetScale().y / (0.0188f*2.0f);
 	const float minFootDistance = 20.0f*modelScale, maxFootDistance = 167.0f*modelScale;
+	//これ以上、足は縮まない
 	if (footDistance < minFootDistance) {
-		//これ以上、足は縮まない
+		//本体位置を上に
 		m_ptrCore->SetPos(m_ptrCore->GetPos() + CVector3(0.0f, minFootDistance - footDistance,0.0f));
 	}
+	//足が縮んでいる
 	if (footDistance < maxFootDistance) {
 		//徐々に足を伸ばす
 		float stretchMax = maxFootDistance - footDistance;
-		m_ptrCore->AddVelocity(CVector3(0.0f, min(stretchMax, 10.0f+1.0f), 0.0f));//TODO 10.0fは落下速度
+		m_ptrCore->AddVelocity(CVector3(0.0f, min(stretchMax, m_ptrCore->GetGravity() + 1.0f), 0.0f));		
 	}	
 }
 
@@ -64,5 +66,17 @@ void BP_HumanLeg::PostUTRSUpdate() {
 	//判定の更新
 	for (auto lr : { L,R }) {
 		m_col[lr].SetPos(m_model->GetBonePos(m_ikSetting[lr]->tipBone->GetNo()));
+	}
+
+	//足の位置取得
+	float footDistance;
+	footDistance = m_ptrCore->GetPos().y - m_model->GetBonePos(m_ikSetting[0]->tipBone->GetNo()).y;
+	footDistance = min(footDistance, m_ptrCore->GetPos().y - m_model->GetBonePos(m_ikSetting[1]->tipBone->GetNo()).y);
+	const float modelScale = m_ptrCore->GetScale().y / (0.0188f*2.0f);
+	const float minFootDistance = 20.0f*modelScale, maxFootDistance = 167.0f*modelScale;
+	//ある程度足が縮んでいるなら接地している扱い
+	if (footDistance < maxFootDistance - 1.0f) {
+		//接地しているなら抵抗UP
+		m_ptrCore->MulDrag(20.0f);
 	}
 }

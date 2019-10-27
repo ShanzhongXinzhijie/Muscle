@@ -29,5 +29,5 @@ void LoadingScreen::PostRender() {
 
 	//ロード画面
 	m_sprite.Draw({ 0.5f,0.5f }, CVector2::One(), { 0.5f,0.5f });
-	m_font.Draw(L"ﾌﾟﾘﾌﾟﾘﾌﾟﾘﾌﾟﾘ...",{ 0.5f,0.8f }, CVector4::Black(), CVector2::One(), { 0.5f,0.5f });
+	m_font.Draw(L"プリプリプリプリ...",{ 0.5f,0.85f }, CVector4::Black(), CVector2::One(), { 0.5f,0.5f });
 }
