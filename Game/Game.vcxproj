@@ -116,6 +116,10 @@
     <MeshContentTask Include="Asset\modelData\knight.FBX" />
     <MeshContentTask Include="Asset\modelData\miniTree\minitree.fbx" />
     <MeshContentTask Include="Asset\modelData\pmaTest.FBX" />
+    <MeshContentTask Include="Asset\modelData\realTree\realTree.FBX" />
+    <MeshContentTask Include="Asset\modelData\realTree\realTree2.FBX" />
+    <MeshContentTask Include="Asset\modelData\realTree\realTree2_S.FBX" />
+    <MeshContentTask Include="Asset\modelData\realTree\realTree_S.FBX" />
     <MeshContentTask Include="Asset\modelData\sigemi\sigemi.fbx" />
     <MeshContentTask Include="Asset\modelData\sky.FBX" />
     <MeshContentTask Include="Asset\modelData\stone\stone_pillar.fbx" />
