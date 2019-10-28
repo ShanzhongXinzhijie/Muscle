@@ -65,7 +65,7 @@ void Tree::Init(const CVector3& pos, const CVector3& normal){
 
 	//バリエーション
 	float sizeScale;// = 0.8f*1.5f*(CMath::RandomZeroToOne() > 0.5f ? 1.0f : 1.5f)*(1.0f + CMath::RandomZeroToOne()*0.3f);
-	sizeScale = 1.0f*(1.0f + CMath::RandomZeroToOne()*0.3f);
+	sizeScale = 0.5f*(1.0f + CMath::RandomZeroToOne()*0.3f);
 	float radY = -CMath::PI2 + CMath::PI2*2.0f*CMath::RandomZeroToOne();
 	m_rot.SetRotation(CVector3::AxisY(), radY);
 

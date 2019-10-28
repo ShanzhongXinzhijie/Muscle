@@ -28,7 +28,7 @@ public:
 	void PostRender()override;
 
 	//ˆÚ“®—Ê‚ğ‰Á‚¦‚é
-	void AddVelocity(const CVector3& vec) { m_veloxity += vec; }
+	void AddVelocity(const CVector3& vec) { m_veloxity += vec; }//TODO ‚‚³‚Åã¸—Ê‰º‚°‚é?
 	//‰ñ“]—Ê‚ğ‰Á‚¦‚é
 	void AddAngularVelocity(const CVector3& axis, float radAngle) { 
 		m_angularVelocity = CQuaternion(axis,radAngle*GetRotatability()) * m_angularVelocity;

@@ -2,11 +2,12 @@
 #include"IGamePad.h"
 #include"CDeathHotoke.h"
 #include"HotokeCamera.h"
+#include"HUDFont.h"
 
 class CPlayer : public IGameObject
 {
 public:
-	CPlayer(int padnum):m_pad(padnum),m_hotoke(&m_pad,true,nullptr),m_cam(&m_hotoke, &m_pad){
+	CPlayer(int padnum):m_pad(padnum),m_hotoke(&m_pad,true,nullptr),m_cam(&m_hotoke, &m_pad),m_HUDFont(m_HUDColor,0.5f) {
 		m_cam.SetToMainCamera(padnum);
 		if (padnum != 0) {
 			m_isDrawHUD = false;
@@ -34,5 +35,6 @@ private:
 	bool m_isLockon = false;
 	CVector4 m_HUDColor = { 0.0f,0.0f,0.0f,1.0f };
 	CSprite m_guncross, m_wMark, m_velocityVector;
+	HUDFont m_HUDFont;
 };
 
