@@ -71,7 +71,7 @@ void Tree::Init(const CVector3& pos, const CVector3& normal){
 
 	//TODO
 	//砂漠の縞　大きいものとブレンド
-	//木の色・地面の色ムラ
+	//木の色・地面の色ムラ　パーリンノイズ
 
 	//近景モデル
 	//if (CMath::RandomZeroToOne() > 0.8f) {
@@ -211,11 +211,23 @@ void Tree::PostLoopUpdate() {
 			m_model.SetRot(m_rotOffset*m_rot);
 		}
 	}
+
+	//TODO
+	//SetIsDrawを切り替えるLODクラス? 登録クラスにIhasisDraw継承
+
 	/*if (!GetKeyInput(VK_TAB)) {
 		m_model.SetIsDraw(false);
 		m_imposter.SetIsDraw(true);
 	}*/
 }
+
+//TODO
+//class LODSwitcher : public IGameObject{
+//public:
+//	void RenderStart()override;
+//private:
+//	std::list<std::pair<float, IHasIsDraw*>> m_lodObjectList;//float = 範囲
+//};
 
 /*
 /// <summary>
