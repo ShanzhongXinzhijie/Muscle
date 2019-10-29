@@ -51,7 +51,7 @@ void BP_BirdWing::Update() {
 	m_controller->Update();
 
 	//‰Á‘¬‚µ‚Ä‚È‚©‚Á‚½‚çŒ¸‘¬
-	if (oldAccel >= m_accel) { m_accel -= 2.0f*0.01f; } m_accel -= 2.0f*0.01f*max(0.0f,m_ptrCore->GetDrag()*0.1f-1.0f);
+	if (oldAccel >= m_accel) { m_accel -= 2.0f*0.01f; } m_accel -= 2.0f*0.01f*max(0.0f,m_ptrCore->GetDrag()*0.05f-1.0f);
 	if (!m_isYawInput) { m_yawAccel = 0.0f; }
 	if (!m_isPitchInput) { m_pitchAccel = 0.0f; }
 
