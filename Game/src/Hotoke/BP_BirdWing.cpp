@@ -51,7 +51,7 @@ void BP_BirdWing::Update() {
 	m_controller->Update();
 
 	//加速してなかったら減速
-	if (oldAccel >= m_accel) { m_accel -= 2.0f*0.01f; }
+	if (oldAccel >= m_accel) { m_accel -= 2.0f*0.01f; } m_accel -= 2.0f*0.01f*max(0.0f,m_ptrCore->GetDrag()*0.1f-1.0f);
 	if (!m_isYawInput) { m_yawAccel = 0.0f; }
 	if (!m_isPitchInput) { m_pitchAccel = 0.0f; }
 
@@ -88,15 +88,12 @@ void BP_BirdWing::PostUTRSUpdate() {
 void BP_BirdWing::Draw2D() {
 	if (!m_ptrCore->GetIsDrawHUD()) { return; }
 
-	CFont font;
-	wchar_t output[256];
+	//加速
+	m_ptrCore->GetFont()->DrawFormat(L"ACL(per): %.1f", { 0.0f,0.85f },0.0f, m_accel / 20.0f*100.0f);
 
-	swprintf_s(output, L"ACL: %.1f", m_accel/ 20.0f*100.0f);
-	font.Draw(output, {0.0f,0.85f}, { 1.0f,0.5f,0.0f,1.0f });
-
+	//ブレーキ表示
 	if (m_isBraking) {
-		font.Draw(L"[BRAKING]", { 0.5f,0.85f }, { 1.0f,0.5f,0.0f,1.0f }, { 1.0f,1.0f }, {0.5f,0.0f});
-		//TODO フォントクラス作る
+		m_ptrCore->GetFont()->Draw(L"[BRAKING]", { 0.5f,0.95f }, { 0.5f,0.0f });
 	}
 }
 

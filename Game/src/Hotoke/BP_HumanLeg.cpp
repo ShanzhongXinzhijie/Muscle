@@ -77,6 +77,7 @@ void BP_HumanLeg::PostUTRSUpdate() {
 	//‚ ‚é’ö“x‘«‚ªk‚ñ‚Å‚¢‚é‚È‚çÚ’n‚µ‚Ä‚¢‚éˆµ‚¢
 	if (footDistance < maxFootDistance - 1.0f) {
 		//Ú’n‚µ‚Ä‚¢‚é‚È‚ç’ïRUP
-		m_ptrCore->MulDrag(20.0f);
+		m_ptrCore->MulDrag(20.0f + 10.0f*max(0.0f,-m_ptrCore->GetVelocity().y));
+		m_ptrCore->MulRotatability(2.0f+ 1.0f*max(0.0f, -m_ptrCore->GetVelocity().y));//‰ñ“]—Í‚àUP
 	}
 }

@@ -3,13 +3,16 @@
 #include"AI.h"
 #include"BodyPartsHeader.h"
 #include"IFu.h"
+#include"HUDFont.h"
 
 class CDeathHotoke :
 	public ILifeObject
 {
 public:
 	//コンストラクタ
-	CDeathHotoke(IGamePad* ptrPad, bool isDrawHUD, std::unique_ptr<IAI> AI):m_ptrPad(ptrPad),m_isDrawHUD(isDrawHUD),m_ai(std::move(AI)){
+	CDeathHotoke(IGamePad* ptrPad, bool isDrawHUD, HUDFont* ptrFont, std::unique_ptr<IAI> AI)
+		:m_ptrPad(ptrPad),m_isDrawHUD(isDrawHUD), m_ptrHUDFont(ptrFont),m_ai(std::move(AI))
+	{
 		SetName(L"CDeathHotoke");
 	}
 
@@ -35,11 +38,11 @@ public:
 	}
 
 	//抵抗を乗算
-	void MulDrag(float mulDrag) { m_drag *= mulDrag; }
-	void MulAngularDrag(float mulDrag) { m_angularDrag *= mulDrag; }
+	void MulDrag(float mulDrag) { m_drag[enNext] *= mulDrag; }
+	void MulAngularDrag(float mulDrag) { m_angularDrag[enNext] *= mulDrag; }
 
 	//回転しやすさを乗算
-	void MulRotatability(float rotatability) { m_rotatability = rotatability; }
+	void MulRotatability(float rotatability) { m_rotatability[enNext] *= rotatability; }
 
 	//ダメージをあたえる
 	void Damage(const ReferenceCollision& ref, const CVector3& pos);
@@ -58,13 +61,18 @@ public:
 	[[nodiscard]] CVector3 GetMove() const { return GetPos() - m_posOld; }
 	//ベロシティを取得
 	[[nodiscard]] const CVector3& GetVelocity() const { return m_veloxity; }
+	//抵抗を取得
+	[[nodiscard]] float GetDrag()const { return m_drag[enNow]; }
 	//回転しやすさを取得
-	[[nodiscard]] float GetRotatability()const { return m_rotatability; }
+	[[nodiscard]] float GetRotatability()const { return m_rotatability[enNow]; }
 	//ターゲット位置を取得
 	[[nodiscard]] const CVector3& GetTargetPos() const { return m_targetPos; }
 	
 	//パッドの取得
-	[[nodiscard]] IGamePad* GetPad() { return m_ptrPad; }
+	[[nodiscard]] const IGamePad* GetPad()const { return m_ptrPad; }
+
+	//フォントの取得
+	[[nodiscard]] const HUDFont* GetFont()const { return m_ptrHUDFont; }
 
 	//HUDを表示するか取得
 	[[nodiscard]] bool GetIsDrawHUD()const { return m_isDrawHUD; }
@@ -78,7 +86,7 @@ public:
 
 private:
 	//重力定数
-	static constexpr float GRAVITY = 10.0f;
+	static constexpr float GRAVITY = OneG;
 
 	//コアのモデル
 	GameObj::CSkinModelRender m_coreModel;
@@ -95,18 +103,19 @@ private:
 
 	//ステータス
 	float m_hp = 100.0f;//ヘルス
-	float m_drag = 1.0f;//抵抗
-	float m_angularDrag = 1.0f;//回転抵抗
-	float m_rotatability = 1.0f;//回転しやすさ
+	enum{enNow,enNext};
+	float m_drag[2] = { 1.0f,1.0f };//抵抗
+	float m_angularDrag[2] = { 1.0f,1.0f };//回転抵抗
+	float m_rotatability[2] = { 1.0f,1.0f };//回転しやすさ
 
 	//パーツ
 	std::unique_ptr<IBodyPart> m_parts[4];
 
 	//ゲームパッド
 	IGamePad* m_ptrPad = nullptr;
-
-	//HUDを表示するか
-	bool m_isDrawHUD = false;
+		
+	bool m_isDrawHUD = false;//HUDを表示するか
+	HUDFont* m_ptrHUDFont = nullptr;//HUDフォント
 
 	//ターゲット位置
 	CVector3 m_targetPos;

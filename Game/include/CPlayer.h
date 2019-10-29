@@ -7,7 +7,9 @@
 class CPlayer : public IGameObject
 {
 public:
-	CPlayer(int padnum):m_pad(padnum),m_hotoke(&m_pad,true,nullptr),m_cam(&m_hotoke, &m_pad),m_HUDFont(m_HUDColor,0.5f) {
+	CPlayer(int padnum)
+		:m_pad(padnum),m_hotoke(&m_pad,true,&m_HUDFont,nullptr),m_cam(&m_hotoke, &m_pad),m_HUDFont(m_HUDColor,0.5f)
+	{
 		m_cam.SetToMainCamera(padnum);
 		if (padnum != 0) {
 			m_isDrawHUD = false;

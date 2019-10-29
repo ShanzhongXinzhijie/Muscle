@@ -58,6 +58,14 @@ bool CDeathHotoke::Start() {
 void CDeathHotoke::PreUpdate() {
 	//旧座標記録
 	m_posOld = GetPos();
+
+	//ステータス更新
+	m_drag[enNow] = m_drag[enNext];
+	m_angularDrag[enNow] = m_angularDrag[enNext];
+	m_rotatability[enNow] = m_rotatability[enNext];
+	m_drag[enNext] = 1.0f;
+	m_angularDrag[enNext] = 1.0f;
+	m_rotatability[enNext] = 1.0f;
 }
 
 void CDeathHotoke::Update() {
@@ -68,15 +76,10 @@ void CDeathHotoke::Update() {
 	Move(m_veloxity);
 	SetRot(m_angularVelocity * GetRot());
 	//減速
-	m_veloxity *= 0.5f*(1.0f/m_drag);
-	m_angularVelocity.Slerp(0.5f*(1.0f / m_drag)*(1.0f / m_angularDrag), CQuaternion::Identity(), m_angularVelocity);
+	m_veloxity *= 0.5f*(1.0f/m_drag[enNow]);
+	m_angularVelocity.Slerp(0.5f*(1.0f / m_drag[enNow])*(1.0f / m_angularDrag[enNow]), CQuaternion::Identity(), m_angularVelocity);
 	//重力
 	m_veloxity.y -= GRAVITY;
-
-	//ステータス初期化(移動終わったので)
-	//TODO
-	m_drag = 1.0f; m_angularDrag = 1.0f;
-	m_rotatability = 1.0f;
 
 	//パーツのUpdate
 	for (auto& part : m_parts) {
@@ -118,8 +121,8 @@ void CDeathHotoke::PostRender() {
 	else {
 		CFont font;
 		wchar_t output[256];
-		swprintf_s(output, L"(%.1f,%.1f,%.1f)\n%.1f Soft", m_veloxity.x, m_veloxity.y, m_veloxity.z, m_drag);
-		font.Draw(output, { 0.5f,0.25f });
+		swprintf_s(output, L"(%.1f,%.1f,%.1f)\n%.1f", m_veloxity.x, m_veloxity.y, m_veloxity.z, m_drag[enNow]);
+		font.Draw(output, { 0.5f,0.25f }, 1.0f, 0.5f);
 	}
 }
 

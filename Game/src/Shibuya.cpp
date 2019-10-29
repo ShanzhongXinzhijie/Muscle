@@ -3,7 +3,7 @@
 #include "Ari.h"
 #include "CSmoke.h"
 
-Shibuya::Shibuya() : m_hotoke(nullptr,false, std::make_unique<TestAI>(&m_hotoke))
+Shibuya::Shibuya() : m_hotoke(nullptr,false,nullptr,std::make_unique<TestAI>(&m_hotoke))
 {
 	Ari* ari = new Ari(CVector3::AxisY()*900.0f + CVector3::AxisX()*50.0f, {});
 	ari->SetTarget(&m_hotoke);
