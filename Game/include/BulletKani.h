@@ -5,45 +5,22 @@
 class BulletGO;
 
 /// <summary>
-/// バレットに
-/// ホーミング・特殊軌道
-/// 接触処理・爆発
-/// ↑この辺をデコるためのやつ
+/// バレットコンポーネント
 /// </summary>
 class IBulletComponent {
 public:
-	//IBulletDecolator(IBulletDecolator* ptrDecolator = nullptr) :m_decolator(ptrDecolator) {}
-	//virtual ~IBulletDecolator() { if (m_decolator) { delete m_decolator; m_decolator = nullptr; } }
+	virtual ~IBulletComponent() {}
 
-	/*void DecoUpdate() {
-		if (m_decolator)m_decolator->DecoUpdate();
-		InnerUpdate();
-	}
-	void DecoPostUpdate() {
-		if (m_decolator)m_decolator->DecoPostUpdate();
-		InnerPostUpdate();
-	}
-	void DecoContact(SuicideObj::CCollisionObj::SCallbackParam& p) {
-		if (m_decolator)m_decolator->DecoContact(p);
-		InnerContact(p);
-	}*/
-
+	virtual void Start() {}
 	virtual void Update() {}
 	virtual void PostUpdate()  {}
+	virtual void PostLoopUpdate() {}
 	virtual void Contact(SuicideObj::CCollisionObj::SCallbackParam& p) {}
 
+	//設定元を設定
 	void SetBullet(BulletGO* bullet) {
 		m_bullet = bullet;
-		//if (m_decolator) {
-		//	m_decolator->SetBullet(m_bullet);
-		//}
 	}
-	/*BulletGO* GetBullet() {
-		return m_bullet;		
-	}*/
-
-//private:
-	//IBulletDecolator* m_decolator = nullptr;
 protected:
 	BulletGO* m_bullet = nullptr;
 };
@@ -51,11 +28,11 @@ protected:
 /// <summary>
 /// バレットを動かすクラス
 /// </summary>
-class BulletGO : public IQSGameObject, public IFu {
+class BulletGO : public IGameObject, public IFu {
 public:
 	BulletGO(const CVector3& pos, const CVector3& move);
-	//~BulletGO() { if (m_decolator) { delete m_decolator; m_decolator = nullptr; } }
 
+	bool Start()override;
 	void Update()override;
 	void PostLoopUpdate()override;
 
@@ -67,33 +44,62 @@ public:
 		m_components.back()->SetBullet(this);
 	}
 
+	/// <summary>
+	/// 旧座標の取得
+	/// </summary>
+	const CVector3& GetOldPos()const { return m_posOld; }
+
 private:
-	//デコレーター
-	//IBulletDecolator* m_decolator = nullptr;
 	//コンポーネント
-	std::list<std::unique_ptr<IBulletComponent>> m_components;
-	
-	//モデル
-	BeamModel m_model;
-	bool m_isMoved = false;
-	CVector3 m_lastDrawPos;	
-
-	//座標とか
+	std::vector<std::unique_ptr<IBulletComponent>> m_components;	
+	//古座標
 	CVector3 m_posOld;
-	//CVector3 m_pos, m_posOld;
-
-	//コリジョン
-	DHCollision m_col;
-
 public:
 	//寿命
 	float m_lifeTime = 3.0f;
 	//進行ベクトル
 	CVector3 m_vector;
+	//攻撃コリジョン
+	DHCollision m_col;
 };
 
 /// <summary>
-/// ホーミングデコレーター
+/// ビームモデルコンポーネント
+/// </summary>
+class BD_BeamModel : public IBulletComponent {
+public:
+	BD_BeamModel(float radius = 3.0f, std::wstring_view beamName = L"BLUE") :m_radius(radius){
+		//モデル
+		m_model.Init(beamName.data());
+		m_model.SetRadius(radius);
+	}
+	void Start()override {
+		//座標初期化
+		m_model.SetPos(m_bullet->GetOldPos(), m_bullet->GetPos());
+		m_lastDrawPos = m_bullet->GetPos();
+		//攻撃判定作成
+		m_bullet->m_col.m_collision.CreateSphere(m_bullet->GetPos(), {}, m_radius);
+	}
+	void PostLoopUpdate()override {
+		//モデル更新
+		if (!m_isMoved) {
+			m_model.SetPos(m_bullet->GetOldPos(), m_bullet->GetPos()); m_isMoved = true;
+		}
+		else {
+			m_model.Move(m_bullet->GetPos() - m_lastDrawPos);
+		}
+		m_lastDrawPos = m_bullet->GetPos();
+	}
+private:
+	//モデル
+	BeamModel m_model;
+	float m_radius = 3.0f;
+	bool m_isMoved = false;
+	CVector3 m_lastDrawPos;
+};
+
+/// <summary>
+/// ホーミングコンポーネント
 /// </summary>
 class BD_Homing : public IBulletComponent {
 public:
@@ -110,7 +116,7 @@ private:
 };
 
 /// <summary>
-/// 衝突で消滅デコレーター
+/// 衝突で消滅コンポーネント
 /// </summary>
 class BD_Contact : public IBulletComponent {
 public:
@@ -130,7 +136,7 @@ public:
 	}
 };
 /// <summary>
-/// 衝突で爆発デコレーター
+/// 衝突で爆発コンポーネント
 /// </summary>
 class BD_ContactExplosion : public IBulletComponent {
 public:	
@@ -152,5 +158,4 @@ public:
 	}
 };
 
-//TODO 地形判定デコレーター
 //TODO ムラ(MHW) 地形ノイズ

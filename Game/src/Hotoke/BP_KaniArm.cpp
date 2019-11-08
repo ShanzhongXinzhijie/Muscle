@@ -111,6 +111,7 @@ void BP_KaniArm::PostUTRSUpdate() {
 					m_model->GetBonePos(m_muzzleBoneID[i]),
 					dirNorm*(100.0f+dirNorm.Dot(m_ptrCore->GetVelocity()))
 				);
+				bullet->AddComponent(std::make_unique<BD_BeamModel>(3.0f,L"Red"));
 				bullet->AddComponent(std::make_unique<BD_Contact>());
 				bullet->AddComponent(std::make_unique<BD_Homing>(m_ptrCore->GetTarget()));
 			}

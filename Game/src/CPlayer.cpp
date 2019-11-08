@@ -161,7 +161,7 @@ void CPlayer::PostRender() {
 	//ƒKƒ“ƒNƒƒX(Æ€)
 	if (m_isLockon) {
 		pos = m_cam.CalcScreenPosFromWorldPos(m_hotoke.GetTargetPos());
-		if (pos.z > 0.0f && pos.z < 1.0f) { m_guncross.Draw(pos, 1.0f, 0.5f, 0.0f, CVector4(1.0f, 0.0f ,1.0f ,0.75f)); }
+		if (pos.z > 0.0f && pos.z < 1.0f) { m_guncross.Draw(pos, 1.0f, 0.5f, 0.0f, m_HUDColor); }// CVector4(1.0f, 0.0f, 1.0f, 0.75f)); }
 	}
 	else {
 		/*CVector3 resultPos[2];
