@@ -49,6 +49,8 @@ public:
 
 	//ターゲット位置を設定
 	void SetTargetPos(const CVector3& pos) { m_targetPos = pos; }
+	//ターゲット対象設定
+	void SetTargetFu(const IFu* target) { m_target = target; }
 
 	//HUDを表示するか設定
 	void SetIsDrawHUD(bool enable) { m_isDrawHUD = enable; }
@@ -65,9 +67,12 @@ public:
 	[[nodiscard]] float GetDrag()const { return m_drag[enNow]; }
 	//回転しやすさを取得
 	[[nodiscard]] float GetRotatability()const { return m_rotatability[enNow]; }
+
 	//ターゲット位置を取得
 	[[nodiscard]] const CVector3& GetTargetPos() const { return m_targetPos; }
-	
+	//ターゲットを取得
+	[[nodiscard]] const IFu* GetTarget() const { return m_target; }
+
 	//パッドの取得
 	[[nodiscard]] const IGamePad* GetPad()const { return m_ptrPad; }
 
@@ -117,7 +122,8 @@ private:
 	bool m_isDrawHUD = false;//HUDを表示するか
 	HUDFont* m_ptrHUDFont = nullptr;//HUDフォント
 
-	//ターゲット位置
+	//ターゲット
+	const IFu* m_target = nullptr;
 	CVector3 m_targetPos;
 
 	//AI

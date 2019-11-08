@@ -107,11 +107,12 @@ void BP_KaniArm::PostUTRSUpdate() {
 				m_muzzleTime[i] = 2;
 				//”­ŽË
 				CVector3 dirNorm = (m_ikSetting[i]->targetPos - m_model->GetBonePos(m_muzzleBoneID[i])).GetNorm();
-				new BulletGO(
-					nullptr,
+				BulletGO* bullet = new BulletGO(
 					m_model->GetBonePos(m_muzzleBoneID[i]),
 					dirNorm*(100.0f+dirNorm.Dot(m_ptrCore->GetVelocity()))
 				);
+				bullet->AddComponent(std::make_unique<BD_Contact>());
+				bullet->AddComponent(std::make_unique<BD_Homing>(m_ptrCore->GetTarget()));
 			}
 		}
 
