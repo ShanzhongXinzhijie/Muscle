@@ -26,14 +26,16 @@ void BP_KaniArm::InnerStart() {
 	m_ikSetting[R]->tipBone = m_model->FindBone(L"Bone031");
 	m_ikSetting[R]->rootBone = m_model->FindBone(L"Bone026");
 	m_ikSetting[R]->iteration = 3;
-	//m_ikSetting[R]->footIKRayEndOffset = 
 
 	m_ikSetting[L] = m_model->GetSkinModel().GetSkeleton().CreateIK();
 	m_ikSetting[L]->tipBone = m_model->FindBone(L"Bone031(mirrored)");
 	m_ikSetting[L]->rootBone = m_model->FindBone(L"Bone026(mirrored)");
 	m_ikSetting[L]->iteration = 3;
 
-	//
+	m_ikTargetPos[L] = m_ptrCore->GetPos()+CVector3::Down()*GetMainCamera()->GetFar();
+	m_ikTargetPos[R] = m_ikTargetPos[L];
+
+	//発射口ボーン
 	m_muzzleBoneID[R] = m_model->FindBoneID(L"Bone031");
 	m_muzzleBoneID[L] = m_model->FindBoneID(L"Bone031(mirrored)");
 
@@ -80,10 +82,27 @@ void BP_KaniArm::Update() {
 	}
 }
 
-void BP_KaniArm::PostUTRSUpdate() {
+void BP_KaniArm::PostUTRSUpdate() {	
 	for (int i = 0; i < enLRNUM; i++) {
-		//IKの目標
-		m_ikSetting[i]->targetPos = m_ptrCore->GetTargetPos();
+		//IKターゲットの移動
+		CVector3 targetDir = m_ptrCore->GetTargetPos() - m_model->GetBonePos(m_muzzleBoneID[i]); targetDir.Normalize();
+		if (CVector3::AngleOf2NormalizeVector(targetDir, (i == L ? m_ptrCore->GetLeft() : m_ptrCore->GetRight())) < CMath::DegToRad(91.0f)) {//正面から91度以内
+			constexpr float armSpeed = 0.1f;
+			CVector3 armDir = m_ikTargetPos[i] - m_model->GetBonePos(m_muzzleBoneID[i]); armDir.Normalize();
+			
+			if ((targetDir - armDir).LengthSq() < CMath::Square(armSpeed)) {
+				m_ikTargetPos[i] = targetDir;
+			}
+			else {
+				m_ikTargetPos[i] = armDir + (targetDir - armDir).GetNorm()*armSpeed;
+			}
+			m_ikTargetPos[i] *= (m_ptrCore->GetTargetPos() - m_model->GetBonePos(m_muzzleBoneID[i])).Length();
+			m_ikTargetPos[i] += m_model->GetBonePos(m_muzzleBoneID[i]);
+		}
+		//TODO 片腕ごとに角度制限設定
+
+		//IKのターゲット
+		m_ikSetting[i]->targetPos = m_ikTargetPos[i];
 
 		//チャージ
 		if (m_isCharging[i] && !m_isMachineGunning[i]) {
@@ -113,7 +132,7 @@ void BP_KaniArm::PostUTRSUpdate() {
 				);
 				bullet->AddComponent(std::make_unique<BD_BeamModel>(3.0f,L"Red"));
 				bullet->AddComponent(std::make_unique<BD_Contact>());
-				bullet->AddComponent(std::make_unique<BD_Homing>(m_ptrCore->GetTarget()));
+				//bullet->AddComponent(std::make_unique<BD_Homing>(m_ptrCore->GetTarget()));
 			}
 		}
 

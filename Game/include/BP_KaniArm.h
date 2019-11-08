@@ -30,6 +30,7 @@ private:
 	//ボーン関係
 	AnimationClip m_initPose;
 	SkeletonIK::IKSetting* m_ikSetting[enLRNUM] = {};
+	CVector3 m_ikTargetPos[enLRNUM] = {};
 	int m_muzzleBoneID[enLRNUM] = {};
 
 	//エフェクト
