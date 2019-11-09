@@ -1,5 +1,6 @@
 #pragma once
 
+#include"LOD.h"
 #include"StageObjectGenerator.h"
 
 /// <summary>
@@ -30,16 +31,16 @@ public:
 	//初期化関数
 	void Init(const CVector3& pos, const CVector3& normal)override;
 
-	//
-	void PostLoopUpdate()override;
+	//void PostLoopUpdate()override;
 
 	//モデルを取得
-	GameObj::CInstancingModelRender& GetModel() { return m_model; }
+	GameObj::CInstancingModelRender& GetModel() { return m_model.Get(); }
 
 private:
 	//グラフィック
-	GameObj::CInstancingModelRender m_model;
-	CImposter m_imposter;
+	LODSwitcher m_lodSwitcher;
+	LODInstancingModel m_model;
+	LODImposter m_imposter;
 
 	//座標とか
 	CVector3 m_pos;

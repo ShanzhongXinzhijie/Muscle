@@ -63,6 +63,15 @@ int Tree::m_sInstancingMax = 512;
 void Tree::Init(const CVector3& pos, const CVector3& normal){
 	m_pos = pos;
 
+	//LOD初期化
+	CVector2 FrustumSize; GetMainCamera()->GetFrustumPlaneSize(2400.0f, FrustumSize);
+	m_lodSwitcher.AddDrawObject(&m_model, FrustumSize.y);
+	m_lodSwitcher.AddDrawObject(&m_imposter);
+	m_lodSwitcher.SetPos(m_pos);
+
+	GameObj::CInstancingModelRender& insModel = m_model.Get();
+	CImposter& imposter = m_imposter.Get();
+
 	//バリエーション
 	float sizeScale;// = 0.8f*1.5f*(CMath::RandomZeroToOne() > 0.5f ? 1.0f : 1.5f)*(1.0f + CMath::RandomZeroToOne()*0.3f);
 	sizeScale = 0.5f*(1.0f + CMath::RandomZeroToOne()*0.3f);
@@ -75,17 +84,17 @@ void Tree::Init(const CVector3& pos, const CVector3& normal){
 
 	//近景モデル
 	//if (CMath::RandomZeroToOne() > 0.8f) {
-	//	m_model.Init(m_sInstancingMax, L"Resource/modelData/tree_notall.cmo");
+	//	insModel.Init(m_sInstancingMax, L"Resource/modelData/tree_notall.cmo");
 	//}
 	//else {
-		m_model.Init(m_sInstancingMax, L"Resource/modelData/realTree.cmo");
+	insModel.Init(m_sInstancingMax, L"Resource/modelData/realTree.cmo");
 	//}
-	m_model.SetPos(m_pos);
-	m_model.SetRot(m_rot);
-	m_model.SetScale(sizeScale);
-	m_model.SetIsDraw(true);
-	m_model.GetInstancingModel()->GetModelRender().SetIsShadowCaster(false);	
-	//m_model.GetInstancingModel()->GetModelRender().GetSkinModel().SetCullMode(D3D11_CULL_NONE);
+	insModel.SetPos(m_pos);
+	insModel.SetRot(m_rot);
+	insModel.SetScale(sizeScale);
+	insModel.SetIsDraw(true);
+	insModel.GetInstancingModel()->GetModelRender().SetIsShadowCaster(false);
+	//insModel.GetInstancingModel()->GetModelRender().GetSkinModel().SetCullMode(D3D11_CULL_NONE);
 	//ファクトリでノーマルマップ読み込み
 	//Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> leafNormaltex, barkNormaltex, leafTranstex;
 	//TextureFactory::GetInstance().Load(L"Resource/normalMap/leaf fern_n.png", nullptr, &leafNormaltex, nullptr, true);
@@ -104,12 +113,12 @@ void Tree::Init(const CVector3& pos, const CVector3& normal){
 	//		me->SetNormalTexture(barkNormaltex.Get());
 	//	}
 	//};
-	//m_model.GetInstancingModel()->GetModelRender().GetSkinModel().FindMaterialSetting(setMaterial);
+	//insModel.GetInstancingModel()->GetModelRender().GetSkinModel().FindMaterialSetting(setMaterial);
 
 	//モデルの高さ取得
 	CVector3 min, max;
-	m_model.GetInstancingModel()->GetModelRender().GetSkinModel().GetBoundingBox(min, max);
-	if (m_model.GetInstancingModel()->GetModelRender().GetSkinModel().GetFBXUpAxis() == enFbxUpAxisZ) {
+	insModel.GetInstancingModel()->GetModelRender().GetSkinModel().GetBoundingBox(min, max);
+	if (insModel.GetInstancingModel()->GetModelRender().GetSkinModel().GetFBXUpAxis() == enFbxUpAxisZ) {
 		m_modelHeight = max.z;//Z-UP
 		m_modelRadius = (abs(max.x) + abs(max.y) + abs(min.x) + abs(min.y)) / 4.0f;
 	}
@@ -119,22 +128,22 @@ void Tree::Init(const CVector3& pos, const CVector3& normal){
 	}
 
 	//遠景モデル
-	//if (m_model.GetInstancingModel()->GetModelRender().GetSkinModel().EqualModelName(L"tree_notall")) {
-	//	m_imposter.Init(L"Resource/modelData/tree_notall.cmo", { 2048 * 4, 2048 * 4 }, { 69,35 }, m_sInstancingMax);
+	//if (insModel.GetInstancingModel()->GetModelRender().GetSkinModel().EqualModelName(L"tree_notall")) {
+	//	imposter.Init(L"Resource/modelData/tree_notall.cmo", { 2048 * 4, 2048 * 4 }, { 69,35 }, m_sInstancingMax);
 	//}
 	//else {
-	if (!m_imposter.Init(L"tree_tall", m_sInstancingMax)) {
+	if (!imposter.Init(L"tree_tall", m_sInstancingMax)) {
 		SkinModel model;
-		model.Init(L"Resource/modelData/realTree.cmo");		
+		model.Init(L"Resource/modelData/knight.cmo");		
 		//model.FindMaterialSetting(setMaterial);//マテリアル設定
-		m_imposter.Init(L"tree_tall", model, { 2048 * 2, 2048 * 2 }, { 35,35 }, m_sInstancingMax);
+		imposter.Init(L"tree_tall", model, { 2048 * 2, 2048 * 2 }, { 35,35 }, m_sInstancingMax);
 	}
 	//}
-	m_imposter.SetPos(m_pos);
-	m_imposter.SetRotY(radY);
-	m_imposter.SetScale(sizeScale);
-	m_imposter.SetIsDraw(false);
-	m_imposter.SetIsShadowCaster(false);
+	imposter.SetPos(m_pos);
+	imposter.SetRotY(radY);
+	imposter.SetScale(sizeScale);
+	imposter.SetIsDraw(false);
+	imposter.SetIsShadowCaster(false);
 
 	//当たり判定
 	constexpr float radius = 50.0f;
@@ -157,7 +166,7 @@ void Tree::Init(const CVector3& pos, const CVector3& normal){
 					m_rotOffset = CQuaternion(CVector3::AxisY(), sign*rad) * CQuaternion(CVector3::AxisX(), CMath::DegToRad(80.0f));
 					
 					//レイで判定
-					CVector3 topPos = m_pos+CVector3::AxisY()*(m_modelHeight * m_model.GetScale().y);
+					CVector3 topPos = m_pos+CVector3::AxisY()*(m_modelHeight * m_model.Get().GetScale().y);
 					btVector3 rayStart = topPos;
 					CVector3 topPosRotaed = topPos;
 					m_rotOffset.Multiply(topPosRotaed);
@@ -180,7 +189,7 @@ void Tree::Init(const CVector3& pos, const CVector3& normal){
 						}
 					}
 					//設定		
-					m_model.SetRot(m_rotOffset*m_rot);
+					m_model.Get().SetRot(m_rotOffset*m_rot);
 					m_isHited = true;
 				}
 			}
@@ -190,44 +199,26 @@ void Tree::Init(const CVector3& pos, const CVector3& normal){
 	//m_col.IGameObject::SetEnable(false);
 }
 
-void Tree::PostLoopUpdate() {
-	constexpr float nearDistance = CMath::Square(1200.0f*2.0f), farDistance = CMath::Square(2500.0f);
-	const float distance = (m_pos - GetMainCamera()->GetPos()).LengthSq();
-
-	if (GetKeyInput(VK_TAB) || distance < nearDistance) {
-		if (m_model.GetIsDraw() == false) {
-			m_model.SetIsDraw(true);
-			m_imposter.SetIsDraw(false);
-			m_col.m_collision.SetEnable(true);
-		}
-	}
-	else {
-		if (m_model.GetIsDraw() == true) {
-			m_model.SetIsDraw(false);
-			m_imposter.SetIsDraw(true);
-			m_col.m_collision.SetEnable(false);//遠いと判定も無効化
-			m_isHited = false;
-			m_rotOffset = CQuaternion::Identity();
-			m_model.SetRot(m_rotOffset*m_rot);
-		}
-	}
-
+//void Tree::PostLoopUpdate() {
+	
 	//TODO
-	//SetIsDrawを切り替えるLODクラス? 登録クラスにIhasisDraw継承
+	//if (m_model.Get().GetIsDraw()) {
+	//	m_col.m_collision.SetEnable(true);
+	//}
+	//else {
+	//	m_col.m_collision.SetEnable(false);//遠いと判定も無効化
+	//	if (m_isHited) {
+	//		m_isHited = false;
+	//		m_rotOffset = CQuaternion::Identity();
+	//		m_model.Get().SetRot(m_rotOffset*m_rot);
+	//	}
+	//}
 
 	/*if (!GetKeyInput(VK_TAB)) {
-		m_model.SetIsDraw(false);
-		m_imposter.SetIsDraw(true);
+		insModel.SetIsDraw(false);
+		imposter.SetIsDraw(true);
 	}*/
-}
-
-//TODO
-//class LODSwitcher : public IGameObject{
-//public:
-//	void RenderStart()override;
-//private:
-//	std::list<std::pair<float, IHasIsDraw*>> m_lodObjectList;//float = 範囲
-//};
+//}
 
 /*
 /// <summary>
