@@ -32,7 +32,7 @@ void BP_KaniArm::InnerStart() {
 	m_ikSetting[L]->rootBone = m_model->FindBone(L"Bone026(mirrored)");
 	m_ikSetting[L]->iteration = 3;
 
-	m_ikTargetPos[L] = m_ptrCore->GetPos()+CVector3::Down()*GetMainCamera()->GetFar();
+	m_ikTargetPos[L] = CVector3::Down()*GetMainCamera()->GetFar();//TODO メインカメラ使う?
 	m_ikTargetPos[R] = m_ikTargetPos[L];
 
 	//発射口ボーン
@@ -63,6 +63,9 @@ void BP_KaniArm::InnerStart() {
 	else {
 		m_controller = new AICon_KaniArm(this, m_ptrCore);
 	}
+
+	//HUD
+	m_guncross.Init(L"Resource/spriteData/gunCross.png");
 }
 
 void BP_KaniArm::Update() {
@@ -85,24 +88,76 @@ void BP_KaniArm::Update() {
 void BP_KaniArm::PostUTRSUpdate() {	
 	for (int i = 0; i < enLRNUM; i++) {
 		//IKターゲットの移動
+
+		//TODO 腕の回転軸ごとにやる?
+
 		CVector3 targetDir = m_ptrCore->GetTargetPos() - m_model->GetBonePos(m_muzzleBoneID[i]); targetDir.Normalize();
-		if (CVector3::AngleOf2NormalizeVector(targetDir, (i == L ? m_ptrCore->GetLeft() : m_ptrCore->GetRight())) < CMath::DegToRad(91.0f)) {//正面から91度以内
-			constexpr float armSpeed = 0.1f;
-			CVector3 armDir = m_ikTargetPos[i] - m_model->GetBonePos(m_muzzleBoneID[i]); armDir.Normalize();
+
+		//Z軸を基準方向へ向けるクォータニオンを作成
+		CQuaternion LorRrot; LorRrot.MakeLookToUseXYAxis(i != L ? m_ptrCore->GetLeft() : m_ptrCore->GetRight());
+		//基準方向のローカルターゲット方向を算出
+		CVector3 zLocalTargetDir = targetDir; LorRrot.InverseMultiply(zLocalTargetDir);
+		//Z軸をローカルターゲット方向へ向けるクォータニオンを作成
+		CQuaternion toTargetRot;
+		toTargetRot.MakeLookToUseXYAxis(zLocalTargetDir);
+		//回転軸と角度を取得
+		CVector3 axis; float angle;
+		axis = CVector3::AxisZ();
+		axis.Cross(zLocalTargetDir); axis.Normalize();
+		angle = CVector3::AngleOf2NormalizeVector(zLocalTargetDir.GetNorm(), CVector3::AxisZ());
+		//toTargetRot.ToAngleAxis(axis, angle);		
+		//角度制限
+		angle = CMath::Clamp(angle, -CMath::DegToRad(110.0f), CMath::DegToRad(110.0f));
+
+		//現在の腕の角度
+		//CVector3 zLocalArmDir = m_ptrCore->GetPos() + m_ptrCore->GetRot().GetMultiply(m_ikTargetPos[i]);//わーるどにしる
+		//LorRrot.InverseMultiply(zLocalArmDir);//ローカルに変換
+		//float armAngle = CVector3::AngleOf2NormalizeVector(zLocalArmDir.GetNorm(), CVector3::AxisZ());
+		//if (abs(armAngle - angle) < CMath::DegToRad(1.0f)) {
+		//	armAngle = angle;
+		//}
+		//else {
+		//	armAngle += std::copysign(CMath::DegToRad(1.0f),angle - armAngle);
+		//}
+		//m_angle[0] = angle;
+		//m_angle[1] = armAngle;
+
+		toTargetRot.SetRotation(axis, angle);// armAngle);
+
+		//ワールド空間のターゲット方向を算出
+		CVector3 outDir = CVector3::AxisZ();
+		toTargetRot.Multiply(outDir); 
+		LorRrot.Multiply(outDir);
+		//m_ikTargetPos[i] = outDir;
+
+			//ワールド座標系におけるターゲット座標求める
+			CVector3 worldTargetPos = m_ikTargetPos[i];
+			m_ptrCore->GetRot().Multiply(worldTargetPos);
+			worldTargetPos += m_ptrCore->GetPos();
+
+			constexpr float armSpeed = 0.2f;			
+			CVector3 armDir = worldTargetPos - m_model->GetBonePos(m_muzzleBoneID[i]); armDir.Normalize();
 			
-			if ((targetDir - armDir).LengthSq() < CMath::Square(armSpeed)) {
-				m_ikTargetPos[i] = targetDir;
+			if ((outDir - armDir).LengthSq() < CMath::Square(armSpeed)) {
+				m_ikTargetPos[i] = outDir;
 			}
 			else {
-				m_ikTargetPos[i] = armDir + (targetDir - armDir).GetNorm()*armSpeed;
+				m_ikTargetPos[i] = armDir + (outDir - armDir).GetNorm()*armSpeed;
 			}
-			m_ikTargetPos[i] *= (m_ptrCore->GetTargetPos() - m_model->GetBonePos(m_muzzleBoneID[i])).Length();
-			m_ikTargetPos[i] += m_model->GetBonePos(m_muzzleBoneID[i]);
-		}
-		//TODO 片腕ごとに角度制限設定
+
+		m_ikTargetPos[i] *= (m_ptrCore->GetTargetPos() - m_model->GetBonePos(m_muzzleBoneID[i])).Length();
+		m_ikTargetPos[i] += m_model->GetBonePos(m_muzzleBoneID[i]);
+
+		//ターゲット座標をローカル座標型に変換
+		m_ikTargetPos[i] -= m_ptrCore->GetPos();
+		CVector3 localTargetPos;
+		localTargetPos.x = m_ptrCore->GetRight().Dot(m_ikTargetPos[i]);
+		localTargetPos.y = m_ptrCore->GetUp().Dot(m_ikTargetPos[i]);
+		localTargetPos.z = m_ptrCore->GetFront().Dot(m_ikTargetPos[i]);
+		m_ikTargetPos[i] = localTargetPos;
 
 		//IKのターゲット
-		m_ikSetting[i]->targetPos = m_ikTargetPos[i];
+		m_ikSetting[i]->targetPos = m_ptrCore->GetPos() + m_ptrCore->GetRot().GetMultiply(m_ikTargetPos[i]);
 
 		//チャージ
 		if (m_isCharging[i] && !m_isMachineGunning[i]) {
@@ -145,6 +200,20 @@ void BP_KaniArm::PostUTRSUpdate() {
 			m_muzzleFlash[i].SetScaleHoldAspectRatio(100.0f);
 		}
 	}
+}
+
+void BP_KaniArm::Draw2D() {
+	if (!m_ptrCore->GetIsDrawHUD()) { return; }
+
+	for (auto lr : { L, R }) {
+		CVector3 pos = GetMainCamera()->CalcScreenPosFromWorldPos(m_ikSetting[lr]->targetPos);//TODO メインカメラ使う?
+		if (pos.z > 0.0f && pos.z < 1.0f) {
+			m_guncross.Draw(pos, 1.0f, 0.5f, 0.0f, CVector4(1.0f, 0.0f, 0.0f, 1.f));
+		}
+	}
+
+	//debug
+	m_ptrCore->GetFont()->DrawFormat(L"L:%.3f\nR:%.3f", { 0.0f,0.6f }, {}, m_angle[L], m_angle[R]);
 }
 
 void BP_KaniArm::ChargeAndMachinegun(enLR lr) {

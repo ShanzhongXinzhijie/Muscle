@@ -48,6 +48,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	GetGraphicsEngine().GetDOFRender().SetFocusArea(0.0f);
 	GetGraphicsEngine().GetDOFRender().SetNear(0.0f);
 	GetGraphicsEngine().GetDOFRender().SetFar(30000.0f);
+
+	//òcã»é˚ç∑ê›íË
+	SetLensDistortionScale(5.0f);
 	
 	//îªíËï\é¶
 	//SetPhysicsDebugDrawMode(btIDebugDraw::DBG_DrawWireframe);
