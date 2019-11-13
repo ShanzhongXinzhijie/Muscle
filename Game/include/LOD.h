@@ -2,6 +2,9 @@
 
 //LOD(Level of Detail)
 
+/// <summary>
+/// LOD表示切り替えオブジェクト
+/// </summary>
 class ILODObj {
 public:
 	virtual void SetIsDraw(bool isDraw) = 0;
@@ -29,6 +32,43 @@ private:
 	CImposter m_imposter;
 };
 
+/// <summary>
+/// インスタンシング描画のLOD処理実行クラス
+/// </summary>
+//class InstancingLOD : public GameObj::InstancingModel::IInstancesData {
+//private:
+//	//再確保
+//	void Reset(int instancingMaxNum) {
+//		m_instanceMax = instancingMaxNum;
+//		m_isDraw = std::make_unique<bool[]>(instancingMaxNum);
+//	}
+//public:
+//	bool PreCulling(int instanceIndex)override {
+//		return m_isDraw[instanceIndex];
+//	}
+//	void SetInstanceMax(int instanceMax)override {
+//		if (instanceMax > m_instanceMax) {
+//			Reset(instanceMax);
+//		}
+//	}
+//public:
+//	/// <summary>
+//	/// コンストラクタ
+//	/// </summary>
+//	/// <param name="instancingMaxNum">インスタンス最大数</param>
+//	InstancingLOD(int instancingMaxNum) {
+//		Reset(instancingMaxNum);
+//	}
+//private:
+//	//パラメータ
+//	std::unique_ptr<bool[]> m_isDraw;
+//	int m_instanceMax = 0;
+//};
+
+/// <summary>
+/// LOD切り替えクラス
+/// ※インスタンシングモデルにのみ対応
+/// </summary>
 class LODSwitcher : public IGameObject {
 public:
 	//位置座標を設定
@@ -44,11 +84,8 @@ public:
 
 	//処理
 	//TODO このタイミングでSetISDraw更新してもすでにレンダーに登録済み
-	//		レンダー登録より前にすべてのカメラでLOD判定　or 必ず登録
 	//		描画時にGetIsDraw判定
-	//		インスタン寝具とか無理じゃね
-	//		インスタン寝具モデルにisdraw配列もたせて設定　インスタンシングモデルのメンバにインデックスナンバー
-	//TODO 画面分割ないと呼ばれない
+	//インスタンシングモデルは対応済み
 	void Pre3DRender(int num)override {
 		bool isDecided = false;
 		for (auto i = m_lodObjectList.begin(); i != m_lodObjectList.end(); ++i) {
