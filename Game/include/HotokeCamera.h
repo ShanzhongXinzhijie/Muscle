@@ -7,9 +7,9 @@ class HotokeCamera
 public:
 	HotokeCamera() {
 		//初期化
-		m_camera.SetFar(15000.0f);
+		m_camera.SetFar(150000.0f);
 		//m_camera.SetViewAngleDeg(30.0f);			
-		m_target = { 0.0f,0.8f,1.0f }; m_target.Normalize();//注視点初期化
+		m_target = { 0.0f,0.7f,1.0f }; m_target.Normalize();//注視点初期化
 		//メインカメラに設定
 		SetMainCamera(&m_camera);		
 	}
@@ -159,6 +159,9 @@ public:
 	float GetFar()const {
 		return m_hotokeCam.GetFar();
 	}
+
+	//バックミラー常態か取得
+	bool GetIsBackMirror()const { return m_isBackMirror; }
 
 	//座標を2D上の座標に変換
 	CVector3 CalcScreenPosFromWorldPos(const CVector3& pos) {

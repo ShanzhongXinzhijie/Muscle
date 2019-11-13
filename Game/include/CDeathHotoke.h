@@ -49,9 +49,13 @@ public:
 
 	//ターゲット位置を設定
 	void SetTargetPos(const CVector3& pos) { m_targetPos = pos; }
+	//ターゲット対象設定
+	void SetTargetFu(const IFu* target) { m_target = target; }
 
 	//HUDを表示するか設定
 	void SetIsDrawHUD(bool enable) { m_isDrawHUD = enable; }
+	//バックミラー状態か設定
+	void SetIsBackMirror(bool isMirror) { m_isBackMirror = isMirror; }
 	
 	//ゲッター//
 
@@ -65,9 +69,12 @@ public:
 	[[nodiscard]] float GetDrag()const { return m_drag[enNow]; }
 	//回転しやすさを取得
 	[[nodiscard]] float GetRotatability()const { return m_rotatability[enNow]; }
+
 	//ターゲット位置を取得
 	[[nodiscard]] const CVector3& GetTargetPos() const { return m_targetPos; }
-	
+	//ターゲットを取得
+	[[nodiscard]] const IFu* GetTarget() const { return m_target; }
+
 	//パッドの取得
 	[[nodiscard]] const IGamePad* GetPad()const { return m_ptrPad; }
 
@@ -76,6 +83,8 @@ public:
 
 	//HUDを表示するか取得
 	[[nodiscard]] bool GetIsDrawHUD()const { return m_isDrawHUD; }
+	//バックミラー状態か設定
+	[[nodiscard]] bool GetIsBackMirror()const { return m_isBackMirror; }
 
 	//AIの生み出すステータスを取得
 	[[nodiscard]] const AIStatus* GetAIStatus()const { if (m_ai) { return &m_ai->GetOutputStatus(); } return nullptr; }
@@ -116,8 +125,10 @@ private:
 		
 	bool m_isDrawHUD = false;//HUDを表示するか
 	HUDFont* m_ptrHUDFont = nullptr;//HUDフォント
+	bool m_isBackMirror = false;//バックミラー状態
 
-	//ターゲット位置
+	//ターゲット
+	const IFu* m_target = nullptr;
 	CVector3 m_targetPos;
 
 	//AI

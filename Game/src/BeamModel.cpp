@@ -4,9 +4,9 @@
  const BeamModel::BeamType BeamModel::m_s_beamTypes[BEAM_TYPE_MAXNUM] = {
 	{L"White",{1.0f,1.0f,1.0f,1.0f},0.25f},
 	{L"BLUE",{0.0f,0.0f,1.0f,1.0f},16.0f},
-	{L"Red",{1.0f,0.0f,0.0f,1.0f},16.0f},
+	{L"Red",{1.0f,0.0f,0.0f,1.0f},8.0f},
 	{L"Yellow",{1.0f,1.0f,0.0f,1.0f},16.0f},
-	{L"BLOOD",{0.8f,0.0f,0.005f,1.0f},0.0f},//{L"BLOOD",{1.0f,0.0f,0.01f,1.0f},0.0f},
+	{L"BLOOD",{0.8f,0.0f,0.005f,1.0f},0.0f},
 };
 
  void BeamModel::Init(const wchar_t* beamName, bool isUseInside) {

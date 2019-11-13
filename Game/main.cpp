@@ -26,19 +26,19 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	//initparam.shadowMapSetting = enON;
 
 	//TODO:リリース版では消すこと
-	{
-		char str[256] = "";
-		DWORD len = sizeof(str);
-		GetComputerName(str, &len);
-		if(strcmp("LAPTOP-TNVKUPNN", str)==0){
-			GetUserName(str, &len);
-			if (strcmp("GC1828", str) == 0) {
-				//低スペック設定
-				initparam.frameBufferWidth3D = 640;		//3D描画の解像度(幅)
-				initparam.frameBufferHeight3D = 640;	//3D描画の解像度(高さ)
-			}
-		}
-	}
+	//{
+	//	char str[256] = "";
+	//	DWORD len = sizeof(str);
+	//	GetComputerName(str, &len);
+	//	if(strcmp("LAPTOP-TNVKUPNN", str)==0){
+	//		GetUserName(str, &len);
+	//		if (strcmp("GC1828", str) == 0) {
+	//			//低スペック設定
+	//			initparam.frameBufferWidth3D = 640;		//3D描画の解像度(幅)
+	//			initparam.frameBufferHeight3D = 640;	//3D描画の解像度(高さ)
+	//		}
+	//	}
+	//}
 	
 	//エンジン初期化
 	GetEngine().InitGame(hInstance, hPrevInstance, lpCmdLine, nCmdShow, "究極混成体デスホトケ", initparam);	
@@ -48,6 +48,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	GetGraphicsEngine().GetDOFRender().SetFocusArea(0.0f);
 	GetGraphicsEngine().GetDOFRender().SetNear(0.0f);
 	GetGraphicsEngine().GetDOFRender().SetFar(30000.0f);
+
+	//歪曲収差設定
+	SetLensDistortionScale(5.0f);
 	
 	//判定表示
 	//SetPhysicsDebugDrawMode(btIDebugDraw::DBG_DrawWireframe);

@@ -86,8 +86,8 @@ public:
 	/// ƒoƒbƒNƒ~ƒ‰[“ü—Í‚ğæ“¾
 	/// </summary>
 	[[nodiscard]]
-	bool GetBackMirror() const {
-		return m_usePad->GetButton(enButtonRSB);
+	bool GetBackMirrorDown() const {
+		return m_usePad->GetDown(enButtonRSB);
 	}
 
 	/// <summary>
@@ -109,7 +109,7 @@ private:
 	bool m_isDoubleTapFire[enLRNUM] = {};
 	int m_doubleTapFirePhase[enLRNUM] = {};
 	int m_doubleTapFireTimer[enLRNUM] = {};
-	static constexpr int FIRE_DOUBLE_TAP_TIME = 10;
+	static constexpr int FIRE_DOUBLE_TAP_TIME = 20;//“ü—Í—P—\
 
 	//‰ñ“]“ü—ÍŠÖŒW
 	struct CircleInputStatus {

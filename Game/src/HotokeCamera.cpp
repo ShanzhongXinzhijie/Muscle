@@ -15,12 +15,11 @@ void HotokeCameraController::Update() {
 
 	//バックミラー
 	bool oldIsBackMirror = m_isBackMirror;
-	if (m_ptrPad->GetBackMirror()) {
-		m_hotokeCam.SetRotationCamera(CVector2(m_ptrPad->GetStick(R).x, -m_ptrPad->GetStick(R).y)*CMath::PI_HALF + CVector2(CMath::PI,0.0f));
-		m_isBackMirror = true;
+	if (m_ptrPad->GetBackMirrorDown()) {
+		m_isBackMirror = !m_isBackMirror;
 	}
-	else {
-		m_isBackMirror = false;
+	if (m_isBackMirror) {
+		m_hotokeCam.SetRotationCamera(CVector2(m_ptrPad->GetStick(R).x, -m_ptrPad->GetStick(R).y)*CMath::PI_HALF + CVector2(CMath::PI, 0.0f));
 	}
 	if (oldIsBackMirror != m_isBackMirror) {
 		//モーションブラーをリセット

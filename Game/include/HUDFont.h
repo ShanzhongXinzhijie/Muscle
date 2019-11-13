@@ -16,6 +16,11 @@ public:
 	void SetAlpha(float alpha) { m_color.w = alpha; }
 
 	/// <summary>
+	/// F‚ğæ“¾
+	/// </summary>
+	const CVector4& GetColor()const { return m_color; }
+
+	/// <summary>
 	/// •¶š—ñ•`‰æ
 	/// </summary>
 	/// <param name="string">•¶š—ñ</param>

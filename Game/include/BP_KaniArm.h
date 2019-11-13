@@ -13,6 +13,7 @@ public:
 	void InnerStart()override;
 	void Update()override;
 	void PostUTRSUpdate()override;
+	void Draw2D()override;
 
 	//アクション
 	void ChargeAndMachinegun(enLR);
@@ -30,6 +31,7 @@ private:
 	//ボーン関係
 	AnimationClip m_initPose;
 	SkeletonIK::IKSetting* m_ikSetting[enLRNUM] = {};
+	CVector3 m_ikTargetPos[enLRNUM] = {};
 	int m_muzzleBoneID[enLRNUM] = {};
 
 	//エフェクト
@@ -40,6 +42,10 @@ private:
 	bool m_isCharging[enLRNUM] = {}, m_isMachineGunning[enLRNUM] = {};
 	int m_chargeTime[enLRNUM] = {};
 	static constexpr int MACHINE_GUN_CHARGE_TIME = 10, LAZER_CHARGE_TIME = MACHINE_GUN_CHARGE_TIME - 3;
+
+	//HUD
+	CSprite m_guncross;
+	float m_angle[enLRNUM];
 };
 
 /// <summary>

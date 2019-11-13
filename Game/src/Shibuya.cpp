@@ -14,7 +14,7 @@ Shibuya::Shibuya() : m_hotoke(nullptr,false,nullptr,std::make_unique<TestAI>(&m_
 
 	//ŠXƒ‚ƒfƒ‹
 	m_model.Init(L"Resource/modelData/tikei.cmo");
-	m_model.SetScale({ 50.0f,0.0f,50.0f });
+	m_model.SetScale({ 500.0f,0.01f,500.0f });
 	//“–‚½‚è”»’è
 	m_graund.SetIsStaticObject(true);
 	m_graund.CreateMesh(m_model);

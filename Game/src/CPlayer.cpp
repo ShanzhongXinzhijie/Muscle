@@ -96,7 +96,8 @@ void CPlayer::Update() {
 	}
 
 	//ロックオン
-	bool isLock = false; float minDistance = 0.0f; CVector3 outPos;
+	bool isLock = false; float minDistance = 0.0f; 
+	CVector3 outPos; IFu* outFu = nullptr;
 	QueryGOs<IFu>(L"LockableObject", [&](IFu* go) {
 		if (&m_hotoke == go) { return true; }//自分は除く
 
@@ -107,6 +108,7 @@ void CPlayer::Update() {
 			if (!isLock || minDistance > distance) {
 				isLock = true;
 				outPos = go->GetCollisionPos();
+				outFu = go;
 				screenPos.z = 0.0f; minDistance = distance;
 			}
 		}
@@ -115,11 +117,17 @@ void CPlayer::Update() {
 	//ホトケのターゲット位置設定
 	if (isLock) {
 		m_hotoke.SetTargetPos(outPos);
+		m_hotoke.SetTargetFu(outFu);
 	}
 	else {
 		m_hotoke.SetTargetPos(m_cam.GetTargetPoint());
+		m_hotoke.SetTargetFu(nullptr);
 	}
 	m_isLockon = isLock;
+}
+
+void CPlayer::PostUpdate() {
+	m_hotoke.SetIsBackMirror(m_cam.GetIsBackMirror());
 }
 
 void CPlayer::PostLoopUpdate() {
@@ -157,7 +165,7 @@ void CPlayer::PostRender() {
 	//ガンクロス(照準)
 	if (m_isLockon) {
 		pos = m_cam.CalcScreenPosFromWorldPos(m_hotoke.GetTargetPos());
-		if (pos.z > 0.0f && pos.z < 1.0f) { m_guncross.Draw(pos, 1.0f, 0.5f, 0.0f, CVector4(1.0f, 0.0f ,1.0f ,0.75f)); }
+		if (pos.z > 0.0f && pos.z < 1.0f) { m_guncross.Draw(pos, 1.0f, 0.5f, 0.0f, m_HUDColor); }// CVector4(1.0f, 0.0f, 1.0f, 0.75f)); }
 	}
 	else {
 		/*CVector3 resultPos[2];
@@ -179,5 +187,10 @@ void CPlayer::PostRender() {
 	if (m_hotoke.GetMove().LengthSq() > 1.0f) {
 		pos = m_cam.CalcScreenPosFromWorldPos(m_hotoke.GetPos() + m_hotoke.GetMove().GetNorm() * (m_cam.GetFar()*0.5f));
 		if (pos.z > 0.0f && pos.z < 1.0f) { m_velocityVector.Draw(pos, 0.75f, 0.5f, 0.0f, m_HUDColor); }
+	}
+
+	//バックミラー
+	if (m_cam.GetIsBackMirror()) {
+		m_HUDFont.Draw(L"((BACK VIEW))", { 0.5f,0.95f }, { 0.5f,0.0f });
 	}
 }

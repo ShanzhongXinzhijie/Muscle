@@ -93,7 +93,7 @@ void BP_BirdWing::Draw2D() {
 
 	//ブレーキ表示
 	if (m_isBraking) {
-		m_ptrCore->GetFont()->Draw(L"[BRAKING]", { 0.5f,0.95f }, { 0.5f,0.0f });
+		m_ptrCore->GetFont()->Draw(L"[BRAKING]", { 0.5f,0.90f }, { 0.5f,0.0f });
 	}
 }
 
