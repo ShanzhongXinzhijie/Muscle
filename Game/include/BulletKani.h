@@ -32,7 +32,6 @@ class BulletGO : public IGameObject, public IFu {
 public:
 	BulletGO(const CVector3& pos, const CVector3& move);
 
-	bool Start()override;
 	void Update()override;
 	void PostLoopUpdate()override;
 
@@ -42,6 +41,7 @@ public:
 	void AddComponent(std::unique_ptr<IBulletComponent> component) {
 		m_components.emplace_back(std::move(component));
 		m_components.back()->SetBullet(this);
+		m_components.back()->Start();
 	}
 
 	/// <summary>

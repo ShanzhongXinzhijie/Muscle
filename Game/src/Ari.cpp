@@ -29,6 +29,7 @@ bool Ari::Start() {
 			Damage(*H, pos);
 		}
 	);
+	GetAttributes().set(enPhysical);
 
 	return true;
 }

@@ -54,6 +54,8 @@ public:
 
 	//HUDを表示するか設定
 	void SetIsDrawHUD(bool enable) { m_isDrawHUD = enable; }
+	//バックミラー状態か設定
+	void SetIsBackMirror(bool isMirror) { m_isBackMirror = isMirror; }
 	
 	//ゲッター//
 
@@ -81,6 +83,8 @@ public:
 
 	//HUDを表示するか取得
 	[[nodiscard]] bool GetIsDrawHUD()const { return m_isDrawHUD; }
+	//バックミラー状態か設定
+	[[nodiscard]] bool GetIsBackMirror()const { return m_isBackMirror; }
 
 	//AIの生み出すステータスを取得
 	[[nodiscard]] const AIStatus* GetAIStatus()const { if (m_ai) { return &m_ai->GetOutputStatus(); } return nullptr; }
@@ -121,6 +125,7 @@ private:
 		
 	bool m_isDrawHUD = false;//HUDを表示するか
 	HUDFont* m_ptrHUDFont = nullptr;//HUDフォント
+	bool m_isBackMirror = false;//バックミラー状態
 
 	//ターゲット
 	const IFu* m_target = nullptr;

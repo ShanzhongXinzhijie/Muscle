@@ -126,6 +126,10 @@ void CPlayer::Update() {
 	m_isLockon = isLock;
 }
 
+void CPlayer::PostUpdate() {
+	m_hotoke.SetIsBackMirror(m_cam.GetIsBackMirror());
+}
+
 void CPlayer::PostLoopUpdate() {
 	if (!m_isDrawHUD)return;
 
@@ -183,5 +187,10 @@ void CPlayer::PostRender() {
 	if (m_hotoke.GetMove().LengthSq() > 1.0f) {
 		pos = m_cam.CalcScreenPosFromWorldPos(m_hotoke.GetPos() + m_hotoke.GetMove().GetNorm() * (m_cam.GetFar()*0.5f));
 		if (pos.z > 0.0f && pos.z < 1.0f) { m_velocityVector.Draw(pos, 0.75f, 0.5f, 0.0f, m_HUDColor); }
+	}
+
+	//バックミラー
+	if (m_cam.GetIsBackMirror()) {
+		m_HUDFont.Draw(L"((BACK VIEW))", { 0.5f,0.95f }, { 0.5f,0.0f });
 	}
 }

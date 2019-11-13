@@ -65,7 +65,7 @@ void BP_KaniArm::InnerStart() {
 	}
 
 	//HUD
-	m_guncross.Init(L"Resource/spriteData/gunCross.png");
+	m_guncross.Init(L"Resource/spriteData/kaniMark.png");
 }
 
 void BP_KaniArm::Update() {
@@ -185,9 +185,8 @@ void BP_KaniArm::PostUTRSUpdate() {
 					m_model->GetBonePos(m_muzzleBoneID[i]),
 					dirNorm*(100.0f+dirNorm.Dot(m_ptrCore->GetVelocity()))
 				);
-				bullet->AddComponent(std::make_unique<BD_BeamModel>(3.0f,L"Red"));
+				bullet->AddComponent(std::make_unique<BD_BeamModel>(3.0f,L"BLUE"));
 				bullet->AddComponent(std::make_unique<BD_Contact>());
-				//bullet->AddComponent(std::make_unique<BD_Homing>(m_ptrCore->GetTarget()));
 			}
 		}
 
@@ -205,15 +204,16 @@ void BP_KaniArm::PostUTRSUpdate() {
 void BP_KaniArm::Draw2D() {
 	if (!m_ptrCore->GetIsDrawHUD()) { return; }
 
+	//腕の照準
 	for (auto lr : { L, R }) {
 		CVector3 pos = GetMainCamera()->CalcScreenPosFromWorldPos(m_ikSetting[lr]->targetPos);//TODO メインカメラ使う?
 		if (pos.z > 0.0f && pos.z < 1.0f) {
-			m_guncross.Draw(pos, 1.0f, 0.5f, 0.0f, CVector4(1.0f, 0.0f, 0.0f, 1.f));
+			m_guncross.Draw(pos, 0.5f, { lr == R ? 0.0f : 1.0f,0.5f }, 0.0f, m_ptrCore->GetFont()->GetColor(), lr == L ? DirectX::SpriteEffects::SpriteEffects_None : DirectX::SpriteEffects::SpriteEffects_FlipHorizontally);
 		}
 	}
 
 	//debug
-	m_ptrCore->GetFont()->DrawFormat(L"L:%.3f\nR:%.3f", { 0.0f,0.6f }, {}, m_angle[L], m_angle[R]);
+	//m_ptrCore->GetFont()->DrawFormat(L"L:%.3f\nR:%.3f", { 0.0f,0.6f }, {}, m_angle[L], m_angle[R]);
 }
 
 void BP_KaniArm::ChargeAndMachinegun(enLR lr) {
@@ -227,12 +227,31 @@ void BP_KaniArm::ChargeAndMachinegun(enLR lr) {
 }
 void BP_KaniArm::Rocket(enLR lr) {
 	//ロケット出す
-
+	//マズルエフェクト
+	m_muzzleTime[lr] = 2;
+	//発射
+	CVector3 dirNorm = (m_ikSetting[lr]->targetPos - m_model->GetBonePos(m_muzzleBoneID[lr])).GetNorm();
+	BulletGO* bullet = new BulletGO(
+		m_model->GetBonePos(m_muzzleBoneID[lr]),
+		dirNorm*(100.0f + dirNorm.Dot(m_ptrCore->GetVelocity()))
+	);
+	bullet->AddComponent(std::make_unique<BD_BeamModel>(3.0f, L"Red"));
+	bullet->AddComponent(std::make_unique<BD_Contact>());
+	bullet->AddComponent(std::make_unique<BD_Homing>(m_ptrCore->GetTarget()));
 }
 void BP_KaniArm::Lazer(enLR lr) {
-	//レーザー出す
+	//グレネード出す
 	if (m_chargeTime[lr] >= LAZER_CHARGE_TIME && m_chargeTime[lr] < MACHINE_GUN_CHARGE_TIME) {
-
+		//マズルエフェクト
+		m_muzzleTime[lr] = 2;
+		//発射
+		CVector3 dirNorm = (m_ikSetting[lr]->targetPos - m_model->GetBonePos(m_muzzleBoneID[lr])).GetNorm();
+		BulletGO* bullet = new BulletGO(
+			m_model->GetBonePos(m_muzzleBoneID[lr]),
+			dirNorm*(100.0f + dirNorm.Dot(m_ptrCore->GetVelocity()))
+		);
+		bullet->AddComponent(std::make_unique<BD_BeamModel>(3.0f, L"Yellow"));
+		bullet->AddComponent(std::make_unique<BD_ContactExplosion>());
 	}
 }
 void BP_KaniArm::Stab() {

@@ -19,6 +19,7 @@ public:
 
 	bool Start()override;
 	void Update()override;
+	void PostUpdate()override;
 	void PostLoopUpdate()override;
 	void PostRender()override;
 

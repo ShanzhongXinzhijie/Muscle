@@ -42,7 +42,8 @@ bool CDeathHotoke::Start() {
 		}
 	);
 	SetCollisionPos({ 0.0f, 60.0f*(m_scale.y / (0.0188f*2.0f)), -15.0f*(m_scale.z / (0.0188f*2.0f)) });
-	
+	GetAttributes().set(enPhysical);
+
 	//位置初期化	
 	SetPos(CVector3::AxisY()*1000.0f + CVector3::AxisZ()*200.0f);
 	m_posOld = GetPos();
@@ -112,7 +113,7 @@ void CDeathHotoke::PostRender() {
 		if (part)part->Draw2D();
 	}
 	//ステータス描画
-	if (!m_isDrawHUD) {
+	/*if (!m_isDrawHUD) {
 		CFont font;
 		wchar_t output[256];
 		swprintf_s(output, L"%.1f", m_hp);
@@ -123,7 +124,7 @@ void CDeathHotoke::PostRender() {
 		wchar_t output[256];
 		swprintf_s(output, L"(%.1f,%.1f,%.1f)\n%.1f", m_veloxity.x, m_veloxity.y, m_veloxity.z, m_drag[enNow]);
 		font.Draw(output, { 0.5f,0.25f }, 1.0f, 0.5f);
-	}
+	}*/
 }
 
 void CDeathHotoke::Damage(const ReferenceCollision& ref, const CVector3& pos) {

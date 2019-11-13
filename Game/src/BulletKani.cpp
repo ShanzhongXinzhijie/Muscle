@@ -21,13 +21,10 @@ BulletGO::BulletGO(const CVector3& pos, const CVector3& move)
 	m_col.m_reference.damege = 1.0f;
 	m_col.m_reference.attributes.set(enPhysical);
 	m_col.m_reference.attributes.set(enFlame);
-}
 
-bool BulletGO::Start() {
 	for (auto& component : m_components) {
 		component->Start();
 	}
-	return true;
 }
 
 void BulletGO::Update() {
