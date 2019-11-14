@@ -21,7 +21,7 @@ public:
 	void Update()override;
 	void PostUpdate()override;
 	void PostLoopUpdate()override;
-	void PostRender()override;
+	void HUDRender(int HUDNum)override;
 
 private:
 	IGamePad m_pad;
