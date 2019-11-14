@@ -53,8 +53,20 @@ void BulletGO::Update() {
 	}
 }
 
+void BulletGO::PreLoopUpdate() {
+	for (auto& component : m_components) {
+		component->PreLoopUpdate();
+	}
+}
+
 void BulletGO::PostLoopUpdate() {
 	for (auto& component : m_components) {
 		component->PostLoopUpdate();
+	}
+}
+
+void BulletGO::Pre3DRender(int n) {
+	for (auto& component : m_components) {
+		component->Pre3DRender(n);
 	}
 }

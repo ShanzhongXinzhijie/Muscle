@@ -86,11 +86,8 @@
 
 	 //ê›íË
 	 int i2 = 0;
-	 for (int i = 0; i < enBeamModelNum; i++) {
-		 //ì‡ë§Çï`âÊÇµÇ»Ç¢
-		 if (!m_isUseInside && enInSide == i) {
-			 continue;
-		 }
+	 for (int i = 0; i < enBeamModelNum; i++) {		
+		 if (!m_isUseInside && enInSide == i) { continue; }//ì‡ë§Çï`âÊÇµÇ»Ç¢èÍçá
 
 		 if (i == enOutSide) {
 			 m_model[i2].SetScale({ m_radius*1.5f,m_radius*1.5f,m_radius*1.5f + moveLength * 0.5f });
@@ -100,24 +97,25 @@
 		 }
 		 m_model[i2].SetPos(m_rootPos + move * 0.5f);
 		 m_model[i2].SetRot(rot);
+
 		 i2++;
 	 }
  }
 
- void BeamModel::Move(const CVector3& moveVec) {
-	 CVector3 soutaiPos = m_tipPos;
-	 CMatrix viewMat = GetMainCamera()->GetViewMatrixOld();
-	 viewMat.Mul(soutaiPos);
-	 viewMat = GetMainCamera()->GetViewMatrix();
-	 viewMat.Inverse();
-	 viewMat.Mul(soutaiPos);
+ //void BeamModel::Move(const CVector3& moveVec) {
+	// CVector3 soutaiPos = m_tipPos;
+	// CMatrix viewMat = GetMainCamera()->GetViewMatrixOld();
+	// viewMat.Mul(soutaiPos);
+	// viewMat = GetMainCamera()->GetViewMatrix();
+	// viewMat.Inverse();
+	// viewMat.Mul(soutaiPos);
 
-	 m_rootPos = soutaiPos;
+	// m_rootPos = soutaiPos;
 
-	 m_tipPos += moveVec;
+	// m_tipPos += moveVec;
 
-	 constexpr float blurScale = 1.0f;// 0.9f;
-	 m_rootPos = m_tipPos + (m_rootPos - m_tipPos)*blurScale;// *MotionBlurScale;
+	// constexpr float blurScale = 1.0f;// 0.9f;
+	// m_rootPos = m_tipPos + (m_rootPos - m_tipPos)*blurScale;// *MotionBlurScale;
 
-	 UpdateModel();
- }
+	// UpdateModel();
+ //}

@@ -61,7 +61,18 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 	//フォント設定
 	CFont::LoadDefaultFont(L"Resource/font/x14y24pxHeadUpDaisy.spritefont");//eunomia_0200/Eunomia.spritefont");
-
+	
+	//画面分割
+	constexpr int screenSize = 640;
+	constexpr int screenSize3D = 640;
+	constexpr int HUDSize = 64;
+	GetEngine().ChangeWindowSize(screenSize * 2 + HUDSize, screenSize);
+	float screensSize[8] = {
+		0.0f,0.0f,(float)screenSize / (screenSize * 2 + HUDSize),1.0f,
+		1.0f - (float)screenSize / (screenSize * 2 + HUDSize),0.0f,1.0f,1.0f,
+	};
+	GetGraphicsEngine().ChangeFrameBufferSize(screenSize * 2 + HUDSize, screenSize, screenSize3D * 2 + HUDSize, screenSize3D, enSide_TwoSplit, screensSize);
+		
 	//ゲームインスタンス作成
 	LoadingScreen game;
 

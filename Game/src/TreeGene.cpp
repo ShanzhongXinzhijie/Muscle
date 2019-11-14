@@ -132,11 +132,11 @@ void Tree::Init(const CVector3& pos, const CVector3& normal){
 	//	imposter.Init(L"Resource/modelData/tree_notall.cmo", { 2048 * 4, 2048 * 4 }, { 69,35 }, m_sInstancingMax);
 	//}
 	//else {
-	if (!imposter.Init(L"tree_tall", m_sInstancingMax)) {
+	if (!imposter.Init(L"realTree", m_sInstancingMax)) {
 		SkinModel model;
-		model.Init(L"Resource/modelData/knight.cmo");		
+		model.Init(L"Resource/modelData/realTree.cmo");		
 		//model.FindMaterialSetting(setMaterial);//É}ÉeÉäÉAÉãê›íË
-		imposter.Init(L"tree_tall", model, { 2048 * 2, 2048 * 2 }, { 35,35 }, m_sInstancingMax);
+		imposter.Init(L"realTree", model, { 2048 * 2, 2048 * 2 }, { 35,35 }, m_sInstancingMax);
 	}
 	//}
 	imposter.SetPos(m_pos);

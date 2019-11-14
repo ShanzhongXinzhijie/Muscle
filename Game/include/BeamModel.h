@@ -46,7 +46,19 @@ public:
 	/// ˆÚ“®‚³‚¹‚é
 	/// </summary>
 	/// <param name="moveVec">ˆÚ“®—Ê</param>
-	void Move(const CVector3& moveVec);
+	//void Move(const CVector3& moveVec);
+
+	/// <summary>
+	/// •`‰æ‚·‚é‚©İ’è
+	/// </summary>
+	void SetIsDraw(bool isDraw) {
+		int i2 = 0;
+		for (int i = 0; i < enBeamModelNum; i++) {			
+			if (!m_isUseInside && enInSide == i) { continue; }//“à‘¤‚ğ•`‰æ‚µ‚È‚¢ê‡
+			m_model[i2].SetIsDraw(isDraw);
+			i2++;
+		}
+	}
 
 private:
 	/// <summary>
