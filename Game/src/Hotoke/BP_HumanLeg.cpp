@@ -64,7 +64,7 @@ void BP_HumanLeg::Update() {
 
 void BP_HumanLeg::PostUTRSUpdate() {
 	//”»’è‚ÌXV
-	for (auto lr : { L,R }) {
+	for (auto lr : LR) {
 		m_col[lr].SetPos(m_model->GetBonePos(m_ikSetting[lr]->tipBone->GetNo()));
 	}
 

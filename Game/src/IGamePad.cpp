@@ -13,7 +13,7 @@ namespace {
 
 void IGamePad::PreUpdate() {
 	//ダブルタップ判定
-	for (auto lr : { L,R }) {
+	for (auto lr : LR) {
 		m_isDoubleTapFire[lr] = false;
 		
 		if (GetFire(lr)) {
