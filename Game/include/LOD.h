@@ -83,9 +83,9 @@ public:
 	}
 
 	//処理
-	//TODO このタイミングでSetISDraw更新してもすでにレンダーに登録済み
-	//		描画時にGetIsDraw判定
-	//インスタンシングモデルは対応済み
+	//※このタイミングでSetISDraw更新してもすでにレンダーに登録済み
+	//	描画時にGetIsDraw判定
+	//　インスタンシングモデルは対応済み
 	void Pre3DRender(int num)override {
 		bool isDecided = false;
 		for (auto i = m_lodObjectList.begin(); i != m_lodObjectList.end(); ++i) {
@@ -98,6 +98,12 @@ public:
 			else {
 				i->second->SetIsDraw(false);
 			}
+		}
+	}
+	void PreLoopUpdate()override {
+		//表示初期化
+		for (auto i = m_lodObjectList.begin(); i != m_lodObjectList.end(); ++i) {
+			i->second->SetIsDraw(true);
 		}
 	}
 
