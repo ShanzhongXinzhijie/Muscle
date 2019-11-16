@@ -12,7 +12,7 @@ bool LoadingScreen::Start() {
 
 void LoadingScreen::PostLoopUpdate() {
 	//ÉçÅ[ÉhâÊñ îwåi
-	DrawQuad(0.0f, 1.0f, CVector4::White());
+	DrawQuad2D(0.0f, 1.0f, CVector4::White());
 }
 
 void LoadingScreen::PostRender() {

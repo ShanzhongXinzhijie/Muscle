@@ -10,8 +10,8 @@ class CDeathHotoke :
 {
 public:
 	//コンストラクタ
-	CDeathHotoke(IGamePad* ptrPad, bool isDrawHUD, HUDFont* ptrFont, std::unique_ptr<IAI> AI)
-		:m_ptrPad(ptrPad),m_isDrawHUD(isDrawHUD), m_ptrHUDFont(ptrFont),m_ai(std::move(AI))
+	CDeathHotoke(int playernum, IGamePad* ptrPad, bool isDrawHUD, HUDFont* ptrFont, std::unique_ptr<IAI> AI)
+		: m_playerNum(playernum),m_ptrPad(ptrPad),m_isDrawHUD(isDrawHUD), m_ptrHUDFont(ptrFont),m_ai(std::move(AI))
 	{
 		SetName(L"CDeathHotoke");
 	}
@@ -28,7 +28,7 @@ public:
 	void PreUpdate()override;
 	void Update()override;
 	void PostLoopUpdate()override;
-	void PostRender()override;
+	void HUDRender(int)override;
 
 	//移動量を加える
 	void AddVelocity(const CVector3& vec) { m_veloxity += vec; }//TODO 高さで上昇量下げる?
@@ -120,8 +120,12 @@ private:
 	//パーツ
 	std::unique_ptr<IBodyPart> m_parts[4];
 
+	//プレイヤー番号
+	int m_playerNum = -1;
 	//ゲームパッド
 	IGamePad* m_ptrPad = nullptr;
+	//AI
+	std::unique_ptr<IAI> m_ai;
 		
 	bool m_isDrawHUD = false;//HUDを表示するか
 	HUDFont* m_ptrHUDFont = nullptr;//HUDフォント
@@ -130,8 +134,5 @@ private:
 	//ターゲット
 	const IFu* m_target = nullptr;
 	CVector3 m_targetPos;
-
-	//AI
-	std::unique_ptr<IAI> m_ai;
 };
 

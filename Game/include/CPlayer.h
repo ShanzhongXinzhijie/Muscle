@@ -8,13 +8,13 @@ class CPlayer : public IGameObject
 {
 public:
 	CPlayer(int padnum)
-		:m_pad(padnum),m_hotoke(&m_pad,true,&m_HUDFont,nullptr),m_cam(&m_hotoke, &m_pad),m_HUDFont(m_HUDColor,0.5f)
+		:m_playerNum(padnum), m_pad(padnum),m_hotoke(padnum,&m_pad,true,&m_HUDFont,nullptr),m_cam(&m_hotoke, &m_pad),m_HUDFont(m_HUDColor,0.5f)
 	{
 		m_cam.SetToMainCamera(padnum);
-		if (padnum != 0) {
+		/*if (padnum != 0) {
 			m_isDrawHUD = false;
 			m_hotoke.SetIsDrawHUD(m_isDrawHUD);
-		}
+		}*/
 	};
 
 	bool Start()override;
@@ -24,6 +24,8 @@ public:
 	void HUDRender(int HUDNum)override;
 
 private:
+	int m_playerNum = -1;
+
 	IGamePad m_pad;
 	CDeathHotoke m_hotoke;
 	

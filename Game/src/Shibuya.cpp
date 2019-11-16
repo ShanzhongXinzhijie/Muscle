@@ -3,7 +3,7 @@
 #include "Ari.h"
 #include "CSmoke.h"
 
-Shibuya::Shibuya() : m_hotoke(nullptr,false,nullptr,std::make_unique<TestAI>(&m_hotoke))
+Shibuya::Shibuya() : m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI>(&m_hotoke))
 {
 	Ari* ari = new Ari(CVector3::AxisY()*900.0f + CVector3::AxisX()*50.0f, {});
 	ari->SetTarget(&m_hotoke);
@@ -14,7 +14,7 @@ Shibuya::Shibuya() : m_hotoke(nullptr,false,nullptr,std::make_unique<TestAI>(&m_
 
 	//街モデル
 	m_model.Init(L"Resource/modelData/tikei.cmo");
-	m_model.SetScale({ 500.0f,0.01f,500.0f });
+	m_model.SetScale({ 500.0f,50.0f,500.0f });
 	//当たり判定
 	m_graund.SetIsStaticObject(true);
 	m_graund.CreateMesh(m_model);
@@ -208,9 +208,9 @@ void Shibuya::Update() {
 void Shibuya::PostLoopUpdate() {
 	//軸
 	CVector3 right; right.Cross(CVector3::AxisY(), CVector3::AxisZ());//右方向
-	DrawLine(CVector3::Zero(), right*100.0f, { 1.0f,0.0f,0.0f,1.0f });
-	DrawLine(CVector3::Zero(), CVector3::AxisZ().GetCross(right)*100.0f, { 0.0f,1.0f,0.0f,1.0f });//上方向
-	DrawLine(CVector3::Zero(), CVector3::AxisZ()*100.0f, { 0.0f,0.0f,1.0f,1.0f });
+	DrawLine3D(CVector3::Zero(), right*100.0f, { 1.0f,0.0f,0.0f,1.0f });
+	DrawLine3D(CVector3::Zero(), CVector3::AxisZ().GetCross(right)*100.0f, { 0.0f,1.0f,0.0f,1.0f });//上方向
+	DrawLine3D(CVector3::Zero(), CVector3::AxisZ()*100.0f, { 0.0f,0.0f,1.0f,1.0f });
 
 	//ビュー軸0
 	/*

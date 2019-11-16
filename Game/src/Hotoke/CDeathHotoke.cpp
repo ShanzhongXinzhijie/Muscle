@@ -107,7 +107,9 @@ void CDeathHotoke::PostLoopUpdate() {
 	}	
 }
 
-void CDeathHotoke::PostRender() {
+void CDeathHotoke::HUDRender(int HUDNum) {
+	if (!m_isDrawHUD || m_playerNum != HUDNum)return;
+
 	//ƒp[ƒc‚Ì2D•`‰æ
 	for (auto& part : m_parts) {
 		if (part)part->Draw2D();

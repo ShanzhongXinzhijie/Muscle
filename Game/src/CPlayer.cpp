@@ -135,15 +135,15 @@ void CPlayer::PostLoopUpdate() {
 
 	//ÉOÉäÉbÉh
 	CVector3 origin = m_cam.GetPos(); origin += m_hotoke.GetFront()*380.0f;
-	DrawLine(origin - m_hotoke.GetLeft()*m_cam.GetFar(), origin + m_hotoke.GetLeft()*m_cam.GetFar(), m_HUDColor);
-	DrawLine(origin - m_hotoke.GetUp()*m_cam.GetFar(), origin + m_hotoke.GetUp()*m_cam.GetFar(), m_HUDColor);//è„ï˚å¸
+	DrawLine3D(origin - m_hotoke.GetLeft()*m_cam.GetFar(), origin + m_hotoke.GetLeft()*m_cam.GetFar(), m_HUDColor, m_playerNum);
+	DrawLine3D(origin - m_hotoke.GetUp()*m_cam.GetFar(), origin + m_hotoke.GetUp()*m_cam.GetFar(), m_HUDColor, m_playerNum);//è„ï˚å¸
 	//origin = m_cam.GetPos(); origin -= m_hotoke.GetFront()*1000.0f;
 	//DrawLine(origin - m_hotoke.GetLeft()*m_cam.GetFar()*2.0f, origin + m_hotoke.GetLeft()*m_cam.GetFar()*2.0f, m_HUDColor);
 	//DrawLine(origin - m_hotoke.GetUp()*m_cam.GetFar()*2.0f, origin + m_hotoke.GetUp()*m_cam.GetFar()*2.0f, m_HUDColor);//è„ï˚å¸
 }
 
 void CPlayer::HUDRender(int HUDNum) {
-	if (!m_isDrawHUD)return;
+	if (!m_isDrawHUD || m_playerNum != HUDNum)return;
 
 	CVector3 tdFrontPos = m_cam.CalcScreenPosFromWorldPos(m_cam.GetPos() + m_hotoke.GetFront()*380.0f);
 
