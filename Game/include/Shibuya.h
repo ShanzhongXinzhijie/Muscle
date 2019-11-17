@@ -21,7 +21,7 @@ private:
 
 	GameObj::CSkybox m_sky;
 	GameObj::CDirectionLight m_directionLight;
-	CascadeShadowHandler m_shadowmap;
+	//CascadeShadowHandler m_shadowmap;
 	
 	StageObjectGenerator m_objGene;
 	GameObj::CSkinModelRender m_knight, m_dinosaur, m_skyModel, m_cloud[6], m_uni;
@@ -32,7 +32,7 @@ private:
 	CBillboard m_billboard, m_billboard2;
 	CImposter m_imp, m_imp2;
 
-	ShadowMapBaker m_shadowMapBaker[4];
+	//ShadowMapBaker m_shadowMapBaker[4];
 
 	CDeathHotoke m_hotoke;
 };

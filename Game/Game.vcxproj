@@ -132,6 +132,7 @@
     <MeshContentTask Include="Asset\modelData\tall\tree_tall.fbx" />
     <MeshContentTask Include="Asset\modelData\tettou.FBX" />
     <MeshContentTask Include="Asset\modelData\tikei.fbx" />
+    <MeshContentTask Include="Asset\modelData\tikei_flat.fbx" />
     <MeshContentTask Include="Asset\modelData\tower.FBX" />
   </ItemGroup>
   <ItemGroup>

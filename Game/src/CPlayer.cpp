@@ -10,11 +10,20 @@
 bool CPlayer::Start() {	
 	m_anim.Load(L"Resource/animation/human/stand.tka");
 	m_human.Init(L"Resource/modelData/human.cmo", &m_anim, 1);
-	//m_human.SetPos(CVector3::AxisY()*900.0f + CVector3::AxisX()*50.0f + CVector3::AxisZ()*100.0f);
 	m_human.SetScale(10.0f);
+	//m_human.SetPos(CVector3::AxisY()*900.0f + CVector3::AxisX()*50.0f + CVector3::AxisZ()*100.0f);
+	//レイで判定
+	btVector3 rayStart = btVector3(0.0f, 100000.0f, 0.0f);
+	btVector3 rayEnd = btVector3(0.0f, -100000.0f, 0.0f);
+	btCollisionWorld::ClosestRayResultCallback gnd_ray(rayStart, rayEnd);
+	GetEngine().GetPhysicsWorld().RayTest(rayStart, rayEnd, gnd_ray);
+	if (gnd_ray.hasHit()) {
+		//接触点を座標に
+		m_human.SetPos(gnd_ray.m_hitPointWorld);
+	}
 
 	//m_humanCam.SetViewAngleDeg(25.0f);
-	m_humanCam.SetFar(15000.0f);
+	m_humanCam.SetFar(150000.0f);
 
 	m_hotoke.SetBodyPart(CDeathHotoke::enHead, std::make_unique<BP_FishHead>(&m_hotoke));
 	m_hotoke.SetBodyPart(CDeathHotoke::enArm, std::make_unique<BP_KaniArm>(&m_hotoke));
@@ -68,6 +77,7 @@ void CPlayer::Update() {
 		m_humanCam.SetPos(m_human.GetBonePos(m_human.FindBoneID(L"Head"))+CVector3::AxisY()*0);
 		m_humanCam.SetTarget(m_hotoke.GetPos());
 		SetMainCamera(&m_humanCam);
+		m_human.SetIsDraw(false);
 
 		if (!uih) {
 			constexpr int screenSize = 640;
@@ -92,6 +102,7 @@ void CPlayer::Update() {
 	}
 	else {
 		m_cam.SetToMainCamera();
+		m_human.SetIsDraw(true);
 		uih = false;
 	}
 
@@ -120,7 +131,7 @@ void CPlayer::Update() {
 		m_hotoke.SetTargetFu(outFu);
 	}
 	else {
-		m_hotoke.SetTargetPos(m_cam.GetTargetPoint());
+		m_hotoke.SetTargetPos(m_hotoke.GetPos() + (m_cam.GetTargetPoint() - m_hotoke.GetPos()).GetNorm()*15000.0f*0.125f);
 		m_hotoke.SetTargetFu(nullptr);
 	}
 	m_isLockon = isLock;
@@ -132,6 +143,7 @@ void CPlayer::PostUpdate() {
 
 void CPlayer::PostLoopUpdate() {
 	if (!m_isDrawHUD)return;
+	if (GetKeyInput('F')) { return; }
 
 	//グリッド
 	CVector3 origin = m_cam.GetPos(); origin += m_hotoke.GetFront()*380.0f;
@@ -144,6 +156,7 @@ void CPlayer::PostLoopUpdate() {
 
 void CPlayer::HUDRender(int HUDNum) {
 	if (!m_isDrawHUD || m_playerNum != HUDNum)return;
+	if (GetKeyInput('F')) { return; }
 
 	CVector3 tdFrontPos = m_cam.CalcScreenPosFromWorldPos(m_cam.GetPos() + m_hotoke.GetFront()*380.0f);
 
@@ -165,24 +178,9 @@ void CPlayer::HUDRender(int HUDNum) {
 	CVector3 pos;
 
 	//ガンクロス(照準)
-	if (m_isLockon) {
-		pos = m_cam.CalcScreenPosFromWorldPos(m_hotoke.GetTargetPos());
-		if (pos.z > 0.0f && pos.z < 1.0f) { 
-			m_guncross.Draw(pos, 1.0f, 0.5f, 0.0f, m_HUDColor); 
-		}// CVector4(1.0f, 0.0f, 1.0f, 0.75f)); }
-	}
-	else {
-		/*CVector3 resultPos[2];
-		int result = CMath::IntersectLines(resultPos, m_hotoke.GetPos(), m_hotoke.GetTargetPos(), m_cam.GetPos(), m_cam.GetVanishingPoint());
-		if (result == 1) {
-			CVector3 point = (resultPos[0] + resultPos[1]) / 2.0f;
-			pos = m_cam.CalcScreenPosFromWorldPos(point);
-			if (pos.z > 0.0f && pos.z < 1.0f) { m_guncross.Draw(pos, 1.0f, 0.5f, 0.0f, m_HUDColor); }
-		}*/
-		pos = m_cam.CalcScreenPosFromWorldPos(m_hotoke.GetPos() + (m_hotoke.GetTargetPos()- m_hotoke.GetPos())*0.125f*0.5f);
-		if (pos.z > 0.0f && pos.z < 1.0f) {
-			m_guncross.Draw(pos, 1.0f, 0.5f, CMath::PI_QUARTER, m_HUDColor); 
-		}
+	pos = m_cam.CalcScreenPosFromWorldPos(m_hotoke.GetTargetPos());
+	if (pos.z > 0.0f && pos.z < 1.0f) { 
+		m_guncross.Draw(pos, 1.0f, 0.5f, m_isLockon ? 0.0f : CMath::PI_QUARTER, m_HUDColor);
 	}
 	
 	//ウイスキーマーク(機体の向き)

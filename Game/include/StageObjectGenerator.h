@@ -39,13 +39,16 @@ public:
 	/// </summary>
 	/// <param name="minArea">生成範囲(最小値)</param>
 	/// <param name="maxArea">生成範囲(最大値)</param>
-	/// <param name="num">生成するオブジェクトの数</param>
+	/// <param name="maxnum">生成するオブジェクトの最大数</param>
 	template <typename T>
-	void Generate(const CVector3& minArea, const CVector3& maxArea, int num) {
+	void Generate(const CVector3& minArea, const CVector3& maxArea, int maxnum, float radius = 80.0f) {
+		//生成点作る
+		std::vector<CVector2> genPoints;
+		CMath::GenerateBlueNoise(maxnum, { minArea.x,minArea.z }, { maxArea.x,maxArea.z }, radius, genPoints);
 		//ステージオブジェクトを作る
-		for (int i = 0; i < num; i++) {
+		for (int i = 0; i < genPoints.size(); i++) {
 			//座標生成
-			CVector3 pos = { minArea.x + (maxArea.x - minArea.x)*CMath::RandomZeroToOne(), maxArea.y, minArea.z + (maxArea.z - minArea.z)*CMath::RandomZeroToOne() };
+			CVector3 pos = { genPoints[i].x, maxArea.y, genPoints[i].y };//{ minArea.x + (maxArea.x - minArea.x)*CMath::RandomZeroToOne(), maxArea.y, minArea.z + (maxArea.z - minArea.z)*CMath::RandomZeroToOne() };
 			//レイで判定
 			btVector3 rayStart = pos;
 			btVector3 rayEnd = btVector3(pos.x, minArea.y, pos.z);

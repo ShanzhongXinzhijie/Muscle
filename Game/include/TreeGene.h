@@ -24,17 +24,12 @@ public:
 /// <summary>
 /// 木でーす
 /// </summary>
-class Tree : public IGameObject, public IStageObject{
+class Tree : public IStageObject{
 public:
 	using IStageObject::IStageObject;
 
 	//初期化関数
 	void Init(const CVector3& pos, const CVector3& normal)override;
-
-	//void PostLoopUpdate()override;
-
-	//モデルを取得
-	GameObj::CInstancingModelRender& GetModel() { return m_model.Get(); }
 
 private:
 	//グラフィック

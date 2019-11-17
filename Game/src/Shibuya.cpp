@@ -13,8 +13,8 @@ Shibuya::Shibuya() : m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI>(
 	m_directionLight.SetColor(CVector3::One() * 0.5f);
 
 	//街モデル
-	m_model.Init(L"Resource/modelData/tikei.cmo");
-	m_model.SetScale({ 500.0f,50.0f,500.0f });
+	m_model.Init(L"Resource/modelData/tikei_flat.cmo");
+	m_model.SetScale({ 500.0f,500.0f,500.0f });
 	//当たり判定
 	m_graund.SetIsStaticObject(true);
 	m_graund.CreateMesh(m_model);
@@ -29,17 +29,19 @@ Shibuya::Shibuya() : m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI>(
 	//ノーマルマップ
 	ID3D11ShaderResourceView* tex = nullptr, *normaltex = nullptr;
 	HRESULT hr = DirectX::CreateDDSTextureFromFile(GetGraphicsEngine().GetD3DDevice(), L"Resource/spriteData/n_land.dds", nullptr, &normaltex);
-	hr = DirectX::CreateDDSTextureFromFile(GetGraphicsEngine().GetD3DDevice(), L"Resource/spriteData/land.dds", nullptr, &tex);
+	//hr = DirectX::CreateDDSTextureFromFile(GetGraphicsEngine().GetD3DDevice(), L"Resource/spriteData/land.dds", nullptr, &tex);
 	DW_ERRORBOX(FAILED(hr), "地形のノーマルマップ読み込みに失敗");
 	
+	TextureFactory::GetInstance().Load(L"Resource/texture/moss3.png", nullptr, &tex,nullptr,true);
+
 	//モデルにシェーダとノーマルマップ設定
 	m_model.GetSkinModel().FindMaterialSetting(
 		[&](MaterialSetting* mat) {
-			mat->SetNormalTexture(normaltex);
+			//mat->SetNormalTexture(normaltex);
 			mat->SetAlbedoTexture(tex);
 			mat->SetTriPlanarMappingPS();
-			mat->SetTriPlanarMappingUVScale(0.02f);
-			//mat->SetShininess(0.9f);
+			mat->SetTriPlanarMappingUVScale(0.002f);
+			mat->SetShininess(0.2f);
 		}
 	);
 
@@ -117,7 +119,8 @@ Shibuya::Shibuya() : m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI>(
 	SetFogDistance(30000.0f);
 
 	//木々
-	Tree::m_sInstancingMax = 128;// 4000;
+	//TODO 木のモデルの描画負荷が高い 判定が重い 画面分割時は判定削除とか
+	Tree::m_sInstancingMax = 4000;
 	m_objGene.Generate<Tree>({ -70.0f*50.0f,-70.0f*50.0f,-70.0f*50.0f }, { 70.0f*50.0f,70.0f*50.0f,70.0f*50.0f }, Tree::m_sInstancingMax);
 	
 	//Stone::m_sInstancingMax = 4000;
@@ -169,12 +172,12 @@ Shibuya::Shibuya() : m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI>(
 		}
 	}*/
 	//シャドウマップ
-	m_shadowmap.Init(2,//分割数
-		m_directionLight.GetDirection(),//ライトの方向
-		1.0f//シャドウマップの範囲(メインカメラのFarにかかる係数です)
-	);
-	m_shadowmap.SetNear(50.0f);
-	m_shadowmap.SetFar(20000.0f);
+	//m_shadowmap.Init(2,//分割数
+	//	m_directionLight.GetDirection(),//ライトの方向
+	//	1.0f//シャドウマップの範囲(メインカメラのFarにかかる係数です)
+	//);
+	//m_shadowmap.SetNear(50.0f);
+	//m_shadowmap.SetFar(20000.0f);
 
 	//btSoftBody* rope = btSoftBodyHelpers::CreateRope(*GetPhysicsWorld().GetSoftBodyWorldInfo(),
 	//	btVector3(-100, 1200, 0), // ロープの端点1

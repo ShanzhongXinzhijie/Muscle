@@ -64,7 +64,7 @@ void Tree::Init(const CVector3& pos, const CVector3& normal){
 	m_pos = pos;
 
 	//LOD初期化
-	CVector2 FrustumSize; GetMainCamera()->GetFrustumPlaneSize(2400.0f, FrustumSize);
+	CVector2 FrustumSize; GetMainCamera()->GetFrustumPlaneSize(2400.0f/3.0f, FrustumSize);
 	m_lodSwitcher.AddDrawObject(&m_model, FrustumSize.y);
 	m_lodSwitcher.AddDrawObject(&m_imposter);
 	m_lodSwitcher.SetPos(m_pos);
@@ -92,14 +92,29 @@ void Tree::Init(const CVector3& pos, const CVector3& normal){
 	insModel.SetPos(m_pos);
 	insModel.SetRot(m_rot);
 	insModel.SetScale(sizeScale);
-	insModel.SetIsDraw(true);
+	insModel.SetIsDraw(false);
 	insModel.GetInstancingModel()->GetModelRender().SetIsShadowCaster(false);
-	//insModel.GetInstancingModel()->GetModelRender().GetSkinModel().SetCullMode(D3D11_CULL_NONE);
 	//ファクトリでノーマルマップ読み込み
 	//Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> leafNormaltex, barkNormaltex, leafTranstex;
 	//TextureFactory::GetInstance().Load(L"Resource/normalMap/leaf fern_n.png", nullptr, &leafNormaltex, nullptr, true);
 	//TextureFactory::GetInstance().Load(L"Resource/normalMap/bark03_n.png", nullptr, &barkNormaltex, nullptr, true);
 	//TextureFactory::GetInstance().Load(L"Resource/translucentMap/leaf fern_t.png", nullptr, &leafTranstex, nullptr, true);
+	
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> barktex, leaftex;
+	TextureFactory::GetInstance().Load(L"Resource/texture/nadeln4.dds", nullptr, &leaftex);
+	TextureFactory::GetInstance().Load(L"Asset/modelData/realTree/stamm2.jpg", nullptr, &barktex, nullptr, true);
+	std::function setMaterial = [&](MaterialSetting* me) {
+		me->SetShininess(0.1f);
+		if (me->EqualMaterialName(L"leaves")) {
+			me->SetIsUseTexZShader(true);
+			me->SetAlbedoTexture(leaftex.Get());
+		}
+		else {
+			me->SetAlbedoTexture(barktex.Get());
+		}
+	};
+	insModel.GetInstancingModel()->GetModelRender().GetSkinModel().FindMaterialSetting(setMaterial);
+
 	////マテリアル設定
 	//std::function setMaterial
 	//= [&](MaterialSetting* me) {
@@ -135,19 +150,19 @@ void Tree::Init(const CVector3& pos, const CVector3& normal){
 	if (!imposter.Init(L"realTree", m_sInstancingMax)) {
 		SkinModel model;
 		model.Init(L"Resource/modelData/realTree.cmo");		
-		//model.FindMaterialSetting(setMaterial);//マテリアル設定
+		model.FindMaterialSetting(setMaterial);//マテリアル設定
 		imposter.Init(L"realTree", model, { 2048 * 2, 2048 * 2 }, { 35,35 }, m_sInstancingMax);
 	}
 	//}
 	imposter.SetPos(m_pos);
 	imposter.SetRotY(radY);
 	imposter.SetScale(sizeScale);
-	imposter.SetIsDraw(false);
+	imposter.SetIsDraw(true);
 	imposter.SetIsShadowCaster(false);
 
 	//当たり判定
 	constexpr float radius = 50.0f;
-	m_col.m_collision.CreateSphere(m_pos + CVector3::AxisY()*radius*sizeScale, {}, radius*sizeScale);
+	//m_col.m_collision.CreateSphere(m_pos + CVector3::AxisY()*radius*sizeScale, {}, radius*sizeScale);
 	m_col.m_reference.position = m_pos + CVector3::AxisY()*radius*sizeScale;
 	m_col.m_collision.SetIsHurtCollision(true);
 	m_col.m_collision.SetCallback(
@@ -201,7 +216,7 @@ void Tree::Init(const CVector3& pos, const CVector3& normal){
 
 //void Tree::PostLoopUpdate() {
 	
-	//TODO
+	//TODO 判定の無効化　各カメラとの距離で
 	//if (m_model.Get().GetIsDraw()) {
 	//	m_col.m_collision.SetEnable(true);
 	//}
