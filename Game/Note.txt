@@ -6,8 +6,6 @@
 マント
 ・回転で旋回
 
-蛇
-木ブルーノイズ生成
 地面変化
 対戦
 煙
@@ -25,6 +23,16 @@ TODO 画面外のやつロックオンできる・HUD　バグ
 ・ミサイル
 ・グレネード
 ・近接めんどい
+
+ホットリロード
+・Shaderクラスが一定間隔でファイル監視
+
+シェーダファイル化
+・D3DCompileでできたblobをバイナリファイルとして保存する
+・そのファイルを読み取りblobにコピー
+http://www-fps.nifs.ac.jp/ito/memo/d3dx11_01.html
+https://cpprefjp.github.io/reference/filesystem/file_size.html
+.cso
 
 effective c++11/14
 staticcast
