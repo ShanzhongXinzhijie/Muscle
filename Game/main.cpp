@@ -3,6 +3,8 @@
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
 {
+	//_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF | _CRTDBG_CHECK_ALWAYS_DF);
+
 	//エンジンの初期化設定
 	InitEngineParameter initparam;
 	
@@ -58,6 +60,10 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	//デバッグ表示・入力、常時有効化
 	SetIsDebugDraw(true);
 	SetIsDebugInput(true);
+
+	//シェーダー
+	//※デバッグ用
+	ShaderResources::GetInstance().SetIsReplaceForEngineFilePath(true);
 
 	//フォント設定
 	CFont::LoadDefaultFont(L"Resource/font/x14y24pxHeadUpDaisy.spritefont");//eunomia_0200/Eunomia.spritefont");

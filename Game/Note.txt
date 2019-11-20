@@ -24,8 +24,6 @@ TODO 画面外のやつロックオンできる・HUD　バグ
 ・グレネード
 ・近接めんどい
 
-ホットリロード
-・Shaderクラスが一定間隔でファイル監視
 
 シェーダファイル化
 ・D3DCompileでできたblobをバイナリファイルとして保存する
@@ -33,6 +31,7 @@ TODO 画面外のやつロックオンできる・HUD　バグ
 http://www-fps.nifs.ac.jp/ito/memo/d3dx11_01.html
 https://cpprefjp.github.io/reference/filesystem/file_size.html
 .cso
+//コンパイル済みやん→//・ファイルから読み込んだシェーダにはD3DCOMPILE_SKIP_VALIDATION適応
 
 effective c++11/14
 staticcast
