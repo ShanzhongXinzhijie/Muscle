@@ -26,37 +26,28 @@ Shibuya::Shibuya() : m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI>(
 		}
 	);
 	
-	//ノーマルマップ
-	ID3D11ShaderResourceView* tex = nullptr, *normaltex = nullptr;
-	HRESULT hr = DirectX::CreateDDSTextureFromFile(GetGraphicsEngine().GetD3DDevice(), L"Resource/spriteData/n_land.dds", nullptr, &normaltex);
-	//hr = DirectX::CreateDDSTextureFromFile(GetGraphicsEngine().GetD3DDevice(), L"Resource/spriteData/land.dds", nullptr, &tex);
-	DW_ERRORBOX(FAILED(hr), "地形のノーマルマップ読み込みに失敗");
-	
-	TextureFactory::GetInstance().Load(L"Resource/texture/moss3.png", nullptr, &tex,nullptr,true);
+	//テクスチャ
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> tex, normaltex;	
+	TextureFactory::GetInstance().Load(L"Resource/texture/moss3.png", nullptr, tex.ReleaseAndGetAddressOf(), nullptr, true);
+	TextureFactory::GetInstance().Load(L"Resource/normalMap/moss3_n.bmp", nullptr, normaltex.ReleaseAndGetAddressOf(), nullptr, true);
 
 	//モデルにシェーダとノーマルマップ設定
 	m_model.GetSkinModel().FindMaterialSetting(
 		[&](MaterialSetting* mat) {
-			//mat->SetNormalTexture(normaltex);
-			mat->SetAlbedoTexture(tex);
+			mat->SetNormalTexture(normaltex.Get());
+			mat->SetAlbedoTexture(tex.Get());
 			mat->SetTriPlanarMappingPS();
 			mat->SetTriPlanarMappingUVScale(0.002f);
-			mat->SetShininess(0.2f);
+			mat->SetShininess(0.05f);
 		}
 	);
-
-	//ノーマルマップ、リリース
-	if (tex) {
-		tex->Release();
-	}
-	normaltex->Release();
 
 	//雲
 	DirectX::CreateWICTextureFromFile(GetGraphicsEngine().GetD3DDevice(), L"Resource/texture/colud2.png", nullptr, &m_cloudtex);
 	int cloud_i = 0;
 	for (auto& cloud : m_cloud) {
 		cloud.Init(L"Resource/modelData/sphere.cmo");
-		DirectX::CreateWICTextureFromFile(GetGraphicsEngine().GetD3DDevice(), L"Resource/texture/colud.png", nullptr, &tex);
+		DirectX::CreateWICTextureFromFile(GetGraphicsEngine().GetD3DDevice(), L"Resource/texture/colud.png", nullptr, tex.ReleaseAndGetAddressOf());
 
 		D3D_SHADER_MACRO macros[] = {
 			//	"USE_LOCALPOS", "1",
@@ -67,7 +58,7 @@ Shibuya::Shibuya() : m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI>(
 
 		cloud.GetSkinModel().FindMaterialSetting(
 			[&](MaterialSetting* mat) {
-				mat->SetAlbedoTexture(tex);
+				mat->SetAlbedoTexture(tex.Get());
 				mat->SetPS(&m_psCloud);
 				mat->SetTriPlanarMappingUVScale(0.0025f);
 			}
@@ -78,7 +69,6 @@ Shibuya::Shibuya() : m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI>(
 				GetGraphicsEngine().GetD3DDeviceContext()->PSSetShaderResources(7, 1, m_cloudtex.GetAddressOf());
 			}
 		);
-		if (tex) { tex->Release(); }
 
 		cloud.SetPos(CVector3::AxisY()*(5200.0f+1000.0f*CMath::RandomZeroToOne()) +CVector3::AxisZ()*700.0f*(float)cloud_i + CVector3::AxisX()*1000.0f*CMath::RandomZeroToOne());
 		cloud.SetScale(28.0f+20.0f*CMath::RandomZeroToOne());
