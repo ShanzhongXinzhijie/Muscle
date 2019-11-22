@@ -14,7 +14,6 @@
 TODO 画面外のやつロックオンできる・HUD　バグ
 
 画面分割
-・HUD
 ・シャドウマップ
 ・木の再生
 
@@ -30,8 +29,11 @@ TODO 画面外のやつロックオンできる・HUD　バグ
 ・そのファイルを読み取りblobにコピー
 http://www-fps.nifs.ac.jp/ito/memo/d3dx11_01.html
 https://cpprefjp.github.io/reference/filesystem/file_size.html
-.cso
-//コンパイル済みやん→//・ファイルから読み込んだシェーダにはD3DCOMPILE_SKIP_VALIDATION適応
+・.cso
+・メタファイル　更新日時の一致
+・MASTERと以外でフォルダ分ける
+・メタファイル開く→ないor日時違う→ロード→コンパイル→メタファイル・cso保存
+				　→ある		　→csoからロード
 
 effective c++11/14
 staticcast
