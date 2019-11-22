@@ -66,7 +66,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	ShaderResources::GetInstance().SetIsReplaceForEngineFilePath(true);
 
 	//ƒtƒHƒ“ƒgİ’è
-	CFont::LoadDefaultFont(L"Resource/font/x14y24pxHeadUpDaisy.spritefont");//eunomia_0200/Eunomia.spritefont");
+	CFont::LoadDefaultFont(L"Resource/font/x14y24pxHeadUpDaisy.spritefont");
 	
 	//‰æ–Ê•ªŠ„
 	constexpr int screenSize = 640;
