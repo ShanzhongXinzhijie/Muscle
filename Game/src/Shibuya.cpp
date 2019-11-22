@@ -28,11 +28,8 @@ Shibuya::Shibuya() : m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI>(
 	
 	//ノーマルマップ
 	ID3D11ShaderResourceView* tex = nullptr, *normaltex = nullptr;
-	HRESULT hr = DirectX::CreateDDSTextureFromFile(GetGraphicsEngine().GetD3DDevice(), L"Resource/spriteData/n_land.dds", nullptr, &normaltex);
-	//hr = DirectX::CreateDDSTextureFromFile(GetGraphicsEngine().GetD3DDevice(), L"Resource/spriteData/land.dds", nullptr, &tex);
-	DW_ERRORBOX(FAILED(hr), "地形のノーマルマップ読み込みに失敗");
-	
-	TextureFactory::GetInstance().Load(L"Resource/texture/moss3.png", nullptr, &tex,nullptr,true);
+	TextureFactory::GetInstance().Load(L"Resource/normalMap/moss3_n.bmp", nullptr, &normaltex, nullptr, true);
+	TextureFactory::GetInstance().Load(L"Resource/texture/moss3.png", nullptr, &tex, nullptr, true);
 
 	//モデルにシェーダとノーマルマップ設定
 	m_model.GetSkinModel().FindMaterialSetting(
@@ -40,7 +37,7 @@ Shibuya::Shibuya() : m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI>(
 			//mat->SetNormalTexture(normaltex);
 			mat->SetAlbedoTexture(tex);
 			mat->SetTriPlanarMappingPS();
-			mat->SetTriPlanarMappingUVScale(0.002f);
+			mat->SetTriPlanarMappingUVScale(0.02f);
 			mat->SetShininess(0.2f);
 		}
 	);

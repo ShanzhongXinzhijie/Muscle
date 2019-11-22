@@ -79,7 +79,6 @@ void Tree::Init(const CVector3& pos, const CVector3& normal){
 	m_rot.SetRotation(CVector3::AxisY(), radY);
 
 	//TODO
-	//砂漠の縞　大きいものとブレンド
 	//木の色・地面の色ムラ　パーリンノイズ
 
 	//近景モデル
@@ -87,7 +86,7 @@ void Tree::Init(const CVector3& pos, const CVector3& normal){
 	//	insModel.Init(m_sInstancingMax, L"Resource/modelData/tree_notall.cmo");
 	//}
 	//else {
-	insModel.Init(m_sInstancingMax, L"Resource/modelData/realTree.cmo");
+	insModel.Init(m_sInstancingMax, L"Resource/modelData/Grass.cmo");
 	//}
 	insModel.SetPos(m_pos);
 	insModel.SetRot(m_rot);
@@ -113,7 +112,7 @@ void Tree::Init(const CVector3& pos, const CVector3& normal){
 			me->SetAlbedoTexture(barktex.Get());
 		}
 	};
-	insModel.GetInstancingModel()->GetModelRender().GetSkinModel().FindMaterialSetting(setMaterial);
+	//insModel.GetInstancingModel()->GetModelRender().GetSkinModel().FindMaterialSetting(setMaterial);
 
 	////マテリアル設定
 	//std::function setMaterial
@@ -149,8 +148,8 @@ void Tree::Init(const CVector3& pos, const CVector3& normal){
 	//else {
 	if (!imposter.Init(L"realTree", m_sInstancingMax)) {
 		SkinModel model;
-		model.Init(L"Resource/modelData/realTree.cmo");		
-		model.FindMaterialSetting(setMaterial);//マテリアル設定
+		model.Init(L"Resource/modelData/Grass.cmo");		
+		//model.FindMaterialSetting(setMaterial);//マテリアル設定
 		imposter.Init(L"realTree", model, { 2048 * 2, 2048 * 2 }, { 35,35 }, m_sInstancingMax);
 	}
 	//}
