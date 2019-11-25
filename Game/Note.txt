@@ -42,7 +42,7 @@ https://cpprefjp.github.io/reference/filesystem/file_size.html
 地面に落ちる血　跳ねる　跡
 ビーム　ポストドローでローカルのXY座標の距離で不透明度下げる 下向くと自分に当たる
 
-鉄塔・野生のヘリ
+鉄塔・野生のヘリ・別種類の木
 
 
 effective c++11/14
