@@ -85,7 +85,7 @@ void CPlayer::Update() {
 			constexpr int HUDSize = 64;
 			if (iscahsnge) {
 				GetEngine().ChangeWindowSize(screenSize, screenSize);
-				GetGraphicsEngine().ChangeFrameBufferSize(screenSize, screenSize, screenSize3D, screenSize3D, enNoSplit);
+				GetGraphicsEngine().ChangeFrameBufferSize(screenSize, screenSize, screenSize3D, screenSize3D, screenSize, screenSize, enNoSplit);
 				iscahsnge = false;
 			}
 			else {
@@ -94,7 +94,7 @@ void CPlayer::Update() {
 					0.0f,0.0f,(float)screenSize / (screenSize * 2 + HUDSize),1.0f,
 					1.0f - (float)screenSize / (screenSize * 2 + HUDSize),0.0f,1.0f,1.0f,
 				};
-				GetGraphicsEngine().ChangeFrameBufferSize(screenSize*2+ HUDSize, screenSize, screenSize3D *2+ HUDSize, screenSize3D, enSide_TwoSplit, screensSize);
+				GetGraphicsEngine().ChangeFrameBufferSize(screenSize*2+ HUDSize, screenSize, screenSize3D, screenSize3D, screenSize, screenSize, enSide_TwoSplit, screensSize);
 				iscahsnge = true;
 			}
 		}

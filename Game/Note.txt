@@ -35,6 +35,16 @@ https://cpprefjp.github.io/reference/filesystem/file_size.html
 ・メタファイル開く→ないor日時違う→ロード→コンパイル→メタファイル・cso保存
 				　→ある		　→csoからロード
 
+太陽ファグ、影側は?  フォグライト方向逆じゃね?　影側とか関係なく?
+木の幹の色　
+ノーマルマップ
+
+地面に落ちる血　跳ねる　跡
+ビーム　ポストドローでローカルのXY座標の距離で不透明度下げる 下向くと自分に当たる
+
+鉄塔・野生のヘリ
+
+
 effective c++11/14
 staticcast
 {

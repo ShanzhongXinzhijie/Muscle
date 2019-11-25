@@ -56,6 +56,36 @@ void Stone::Init(const CVector3& pos, const CVector3& normal) {
 }
 
 /// <summary>
+/// 草
+/// </summary>
+int Grass::m_sInstancingMax = 512;
+
+void Grass::Init(const CVector3& pos, const CVector3& normal) {
+	//LOD初期化
+	CVector2 FrustumSize; GetMainCamera()->GetFrustumPlaneSize(2400.0f / 6.0f, FrustumSize);
+	m_lodSwitcher.AddDrawObject(&m_model, FrustumSize.y);
+	m_lodSwitcher.AddDrawObject(&m_nothing);
+	m_lodSwitcher.SetPos(pos);
+	
+	//モデル初期化
+	GameObj::CInstancingModelRender& insModel = m_model.Get();
+	insModel.Init(m_sInstancingMax, L"Resource/modelData/free grass by adam127.cmo", nullptr, 0, enFbxUpAxisY);
+	insModel.SetPos(pos);
+	CQuaternion rot(CVector3::AxisY(), -CMath::PI2 + CMath::PI2*2.0f*CMath::RandomZeroToOne());
+	insModel.SetRot(rot);
+	insModel.SetScale(CMath::RandomZeroToOne() > 0.5f ? 0.04f : 0.04f);
+	insModel.SetIsDraw(false);
+	insModel.GetInstancingModel()->GetModelRender().SetIsShadowCaster(false);
+	//insModel.GetInstancingModel()->GetModelRender().InitPostDraw(PostDrawModelRender::enAlpha);// , false, true);//ポストドロー(ソフトパーティクル)
+	//insModel.GetInstancingModel()->GetModelRender().GetSkinModel().SetCullMode(D3D11_CULL_NONE);//バックカリングしない	
+	/*insModel.GetInstancingModel()->GetModelRender().GetSkinModel().FindMaterialSetting(
+		[&](MaterialSetting* me) {
+			me->SetAlbedoScale({ 1.0f,1.0f,1.0f,0.2f });
+		}
+	);*/
+}
+
+/// <summary>
 /// 木
 /// </summary>
 int Tree::m_sInstancingMax = 512;
@@ -86,7 +116,7 @@ void Tree::Init(const CVector3& pos, const CVector3& normal){
 	//	insModel.Init(m_sInstancingMax, L"Resource/modelData/tree_notall.cmo");
 	//}
 	//else {
-	insModel.Init(m_sInstancingMax, L"Resource/modelData/Grass.cmo");
+	insModel.Init(m_sInstancingMax, L"Resource/modelData/realTree.cmo");
 	//}
 	insModel.SetPos(m_pos);
 	insModel.SetRot(m_rot);
@@ -101,7 +131,7 @@ void Tree::Init(const CVector3& pos, const CVector3& normal){
 	
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> barktex, leaftex;
 	TextureFactory::GetInstance().Load(L"Resource/texture/nadeln4.dds", nullptr, &leaftex);
-	TextureFactory::GetInstance().Load(L"Asset/modelData/realTree/stamm2.jpg", nullptr, &barktex, nullptr, true);
+	TextureFactory::GetInstance().Load(L"Asset/modelData/realTree/stamm2.jpg", nullptr, &barktex, nullptr, true);//TODO Resourceにする
 	std::function setMaterial = [&](MaterialSetting* me) {
 		me->SetShininess(0.1f);
 		if (me->EqualMaterialName(L"leaves")) {
@@ -112,7 +142,7 @@ void Tree::Init(const CVector3& pos, const CVector3& normal){
 			me->SetAlbedoTexture(barktex.Get());
 		}
 	};
-	//insModel.GetInstancingModel()->GetModelRender().GetSkinModel().FindMaterialSetting(setMaterial);
+	insModel.GetInstancingModel()->GetModelRender().GetSkinModel().FindMaterialSetting(setMaterial);
 
 	////マテリアル設定
 	//std::function setMaterial
@@ -148,8 +178,8 @@ void Tree::Init(const CVector3& pos, const CVector3& normal){
 	//else {
 	if (!imposter.Init(L"realTree", m_sInstancingMax)) {
 		SkinModel model;
-		model.Init(L"Resource/modelData/Grass.cmo");		
-		//model.FindMaterialSetting(setMaterial);//マテリアル設定
+		model.Init(L"Resource/modelData/realTree.cmo");		
+		model.FindMaterialSetting(setMaterial);//マテリアル設定
 		imposter.Init(L"realTree", model, { 2048 * 2, 2048 * 2 }, { 35,35 }, m_sInstancingMax);
 	}
 	//}

@@ -113,6 +113,15 @@ Shibuya::Shibuya() : m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI>(
 	Tree::m_sInstancingMax = 4000;
 	m_objGene.Generate<Tree>({ -70.0f*50.0f,-70.0f*50.0f,-70.0f*50.0f }, { 70.0f*50.0f,70.0f*50.0f,70.0f*50.0f }, Tree::m_sInstancingMax);
 	
+	//草
+	//Grass::m_sInstancingMax = 512*4;
+	//m_objGene.Generate<Grass>({ -70.0f,-70.0f*50.0f,-70.0f }, { 70.0f,70.0f*50.0f,70.0f }, Grass::m_sInstancingMax, 10.0f);
+
+	//GetGraphicsEngine().GetAmbientOcclusionRender().SetEnable(false);
+
+	//TODO とりあえず草木一緒に生成 医師はいらないかも
+	//草の大きさ二段階　ソフトパーティクル
+
 	//Stone::m_sInstancingMax = 4000;
 	//m_objGene.Generate<Stone>({ -70.0f*50.0f,-70.0f*50.0f,-70.0f*50.0f }, { 70.0f*50.0f,70.0f*50.0f,70.0f*50.0f }, Stone::m_sInstancingMax);
 

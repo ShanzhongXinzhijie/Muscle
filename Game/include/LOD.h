@@ -9,6 +9,10 @@ class ILODObj {
 public:
 	virtual void SetIsDraw(bool isDraw) = 0;
 };
+class LODNothing : public ILODObj {
+public:
+	void SetIsDraw(bool isDraw)override {}
+};
 class LODInstancingModel : public ILODObj {
 public:
 	GameObj::CInstancingModelRender& Get() {

@@ -22,6 +22,26 @@ public:
 };
 
 /// <summary>
+/// 草
+/// </summary>
+class Grass : public IStageObject {
+public:
+	using IStageObject::IStageObject;
+
+	//初期化関数
+	void Init(const CVector3& pos, const CVector3& normal)override;
+
+private:
+	//グラフィック
+	LODSwitcher m_lodSwitcher;
+	LODInstancingModel m_model;
+	LODNothing m_nothing;
+
+public:
+	static int m_sInstancingMax; //このクラスの最大インスタンス数
+};
+
+/// <summary>
 /// 木でーす
 /// </summary>
 class Tree : public IStageObject{

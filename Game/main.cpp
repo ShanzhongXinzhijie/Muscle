@@ -15,8 +15,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	initparam.frameBufferWidth = 640;		//フレームバッファの幅。これが内部解像度。
 	initparam.frameBufferHeight = 640;		//フレームバッファの高さ。これが内部解像度。
 	
-	initparam.frameBufferWidth3D = 1080;	//3D描画の解像度(幅)
-	initparam.frameBufferHeight3D = 1080;	//3D描画の解像度(高さ)
+	initparam.frameBufferWidth3D = 640;// 1080;	//3D描画の解像度(幅)
+	initparam.frameBufferHeight3D = 640;//1080;	//3D描画の解像度(高さ)
 	//initparam.isAntiAliasing = false;		//アンチエイリアス無効
 
 	initparam.SDUnityChanScale = 3.5f;		//距離スケール設定
@@ -26,6 +26,11 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	//initparam.standardFps = 25;
 	//initparam.limitFps = 25;
 	//initparam.shadowMapSetting = enON;
+
+	//シェーダー
+	//※デバッグ用
+	initparam.isShaderPathReplaceForEngineFilePath = true;
+	//initparam.SSAOBufferScale = 1.0f;
 
 	//TODO:リリース版では消すこと
 	//{
@@ -61,10 +66,6 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	SetIsDebugDraw(true);
 	SetIsDebugInput(true);
 
-	//シェーダー
-	//※デバッグ用
-	ShaderResources::GetInstance().SetIsReplaceForEngineFilePath(true);
-
 	//フォント設定
 	CFont::LoadDefaultFont(L"Resource/font/x14y24pxHeadUpDaisy.spritefont");
 	
@@ -77,7 +78,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		0.0f,0.0f,(float)screenSize / (screenSize * 2 + HUDSize),1.0f,
 		1.0f - (float)screenSize / (screenSize * 2 + HUDSize),0.0f,1.0f,1.0f,
 	};
-	GetGraphicsEngine().ChangeFrameBufferSize(screenSize * 2 + HUDSize, screenSize, screenSize3D * 2 + HUDSize, screenSize3D, enSide_TwoSplit, screensSize);
+	GetGraphicsEngine().ChangeFrameBufferSize(screenSize * 2 + HUDSize, screenSize, screenSize3D, screenSize3D, screenSize, screenSize, enSide_TwoSplit, screensSize);
 		
 	//ゲームインスタンス作成
 	LoadingScreen game;
