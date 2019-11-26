@@ -38,7 +38,7 @@ Shibuya::Shibuya() : m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI>(
 			mat->SetAlbedoTexture(tex.Get());
 			mat->SetTriPlanarMappingPS();
 			mat->SetTriPlanarMappingUVScale(0.002f);
-			mat->SetShininess(0.05f);
+			mat->SetShininess(0.60f);//TODO
 		}
 	);
 
