@@ -12,6 +12,7 @@ public:
 
 	void Update()override;
 	void PostLoopUpdate()override;
+	void PostRender()override;
 
 private:
 	IFu m_graund;
@@ -32,8 +33,11 @@ private:
 	CBillboard m_billboard, m_billboard2;
 	CImposter m_imp, m_imp2;
 
+	HUDFont m_font;
+	float m_shinnes = 0.2f;
+
 	//ShadowMapBaker m_shadowMapBaker[4];
 
-	CDeathHotoke m_hotoke;
+	//CDeathHotoke m_hotoke;
 };
 

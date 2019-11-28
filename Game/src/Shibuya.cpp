@@ -3,10 +3,10 @@
 #include "Ari.h"
 #include "CSmoke.h"
 
-Shibuya::Shibuya() : m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI>(&m_hotoke))
+Shibuya::Shibuya() //: m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI>(&m_hotoke))
 {
-	Ari* ari = new Ari(CVector3::AxisY()*900.0f + CVector3::AxisX()*50.0f, {});
-	ari->SetTarget(&m_hotoke);
+	//Ari* ari = new Ari(CVector3::AxisY()*900.0f + CVector3::AxisX()*50.0f, {});
+	//ari->SetTarget(&m_hotoke);
 
 	//ライト作成
 	m_directionLight.SetDirection(CVector3::AxisZ()*-1.0f);
@@ -38,7 +38,7 @@ Shibuya::Shibuya() : m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI>(
 			mat->SetAlbedoTexture(tex.Get());
 			mat->SetTriPlanarMappingPS();
 			mat->SetTriPlanarMappingUVScale(0.002f);
-			mat->SetShininess(0.60f);//TODO
+			mat->SetShininess(m_shinnes);
 		}
 	);
 
@@ -205,6 +205,23 @@ void Shibuya::Update() {
 
 	//TODO 地面を分割して変化あったもののみ更新とか
 	//m_phyStaticObject.GetMeshCollider()->GetMeshShape()->buildOptimizedBvh();
+
+	if (GetKeyDown(VK_UP)) { m_shinnes += 0.01f; }
+	if (GetKeyDown(VK_DOWN)) { m_shinnes -= 0.01f; }
+}
+
+void Shibuya::PostRender() {
+	m_font.DrawFormat(L"%.2f", {0.f,0.3f}, {}, m_shinnes);
+	m_model.GetSkinModel().FindMaterialSetting(
+		[&](MaterialSetting* mat) {
+			if (GetKeyInput(VK_LEFT)) {
+				mat->SetShininess(0.0f);
+			}
+			else {
+				mat->SetShininess(m_shinnes);
+			}
+		}
+	);
 }
 
 void Shibuya::PostLoopUpdate() {
