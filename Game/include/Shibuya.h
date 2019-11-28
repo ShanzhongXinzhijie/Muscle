@@ -34,7 +34,7 @@ private:
 	CImposter m_imp, m_imp2;
 
 	HUDFont m_font;
-	float m_shinnes = 0.2f;
+	float m_shinnes = 0.3f;
 
 	//ShadowMapBaker m_shadowMapBaker[4];
 
