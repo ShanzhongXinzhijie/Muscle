@@ -23,18 +23,6 @@ TODO 画面外のやつロックオンできる・HUD　バグ
 ・グレネード
 ・近接めんどい
 
-
-シェーダファイル化
-・D3DCompileでできたblobをバイナリファイルとして保存する
-・そのファイルを読み取りblobにコピー
-http://www-fps.nifs.ac.jp/ito/memo/d3dx11_01.html
-https://cpprefjp.github.io/reference/filesystem/file_size.html
-・.cso
-・メタファイル　更新日時の一致
-・MASTERと以外でフォルダ分ける
-・メタファイル開く→ないor日時違う→ロード→コンパイル→メタファイル・cso保存
-				　→ある		　→csoからロード
-
 太陽ファグ、影側は?  フォグライト方向逆じゃね?　影側とか関係なく?
 木の幹の色　
 ノーマルマップ
@@ -43,6 +31,8 @@ https://cpprefjp.github.io/reference/filesystem/file_size.html
 ビーム　ポストドローでローカルのXY座標の距離で不透明度下げる 下向くと自分に当たる
 
 鉄塔・野生のヘリ・別種類の木
+
+ロード画面ぐるぐる
 
 
 effective c++11/14
