@@ -111,11 +111,11 @@ Shibuya::Shibuya() //: m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI
 	//ñÿÅX
 	//TODO ñÿÇÃÉÇÉfÉãÇÃï`âÊïââ◊Ç™çÇÇ¢ îªíËÇ™èdÇ¢ âÊñ ï™äÑéûÇÕîªíËçÌèúÇ∆Ç©
 	Tree::m_sInstancingMax = 4000;
-	m_objGene.Generate<Tree>({ -70.0f*50.0f,-70.0f*50.0f,-70.0f*50.0f }, { 70.0f*50.0f,70.0f*50.0f,70.0f*50.0f }, Tree::m_sInstancingMax);
+	m_objGene.Generate<Tree>({ -70.0f*50.0f,-70.0f*50.0f,-70.0f*50.0f }, { 70.0f*50.0f,70.0f*50.0f,70.0f*50.0f }, Tree::m_sInstancingMax, 120.0f);
 	
 	//ëê
-	//Grass::m_sInstancingMax = 512*4;
-	//m_objGene.Generate<Grass>({ -70.0f,-70.0f*50.0f,-70.0f }, { 70.0f,70.0f*50.0f,70.0f }, Grass::m_sInstancingMax, 10.0f);
+	Grass::m_sInstancingMax = 512*4;
+	m_objGene.Generate<Grass>({ -70.0f,-70.0f*50.0f,-70.0f }, { 70.0f,70.0f*50.0f,70.0f }, Grass::m_sInstancingMax, 0.0f);
 
 	//GetGraphicsEngine().GetAmbientOcclusionRender().SetEnable(false);
 

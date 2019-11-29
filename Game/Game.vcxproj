@@ -120,6 +120,8 @@
     <MeshContentTask Include="Asset\modelData\human\human.fbx" />
     <MeshContentTask Include="Asset\modelData\knight.FBX" />
     <MeshContentTask Include="Asset\modelData\miniTree\minitree.fbx" />
+    <MeshContentTask Include="Asset\modelData\pinGrass\pinGrass.fbx" />
+    <MeshContentTask Include="Asset\modelData\pinGrass\pinGrass2.fbx" />
     <MeshContentTask Include="Asset\modelData\pmaTest.FBX" />
     <MeshContentTask Include="Asset\modelData\realTree\realTree.FBX" />
     <MeshContentTask Include="Asset\modelData\realTree\realTree2.FBX" />

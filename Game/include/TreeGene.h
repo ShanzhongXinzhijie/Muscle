@@ -24,18 +24,23 @@ public:
 /// <summary>
 /// 草
 /// </summary>
-class Grass : public IStageObject {
+class Grass : public IStageObject, public IGameObject {
 public:
 	using IStageObject::IStageObject;
 
 	//初期化関数
 	void Init(const CVector3& pos, const CVector3& normal)override;
+	
+	//描画前処理
+	void Pre3DRender(int)override;
 
 private:
 	//グラフィック
-	LODSwitcher m_lodSwitcher;
+	//LODSwitcher m_lodSwitcher;
+	//LODNothing m_nothing;
 	LODInstancingModel m_model;
-	LODNothing m_nothing;
+
+	int m_cameraNum = 0;//どのカメラに表示するか
 
 public:
 	static int m_sInstancingMax; //このクラスの最大インスタンス数

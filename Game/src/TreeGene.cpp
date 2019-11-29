@@ -62,27 +62,55 @@ int Grass::m_sInstancingMax = 512;
 
 void Grass::Init(const CVector3& pos, const CVector3& normal) {
 	//LOD初期化
-	CVector2 FrustumSize; GetMainCamera()->GetFrustumPlaneSize(2400.0f / 6.0f, FrustumSize);
+	/*CVector2 FrustumSize; GetMainCamera()->GetFrustumPlaneSize(100.0f, FrustumSize);
 	m_lodSwitcher.AddDrawObject(&m_model, FrustumSize.y);
 	m_lodSwitcher.AddDrawObject(&m_nothing);
-	m_lodSwitcher.SetPos(pos);
+	m_lodSwitcher.SetPos(pos);*/
+
+	//TODO
+	//LODやめて　カメラごとにカメラの周囲(円形)に生成、距離範囲外のものを生成し直し続ける。(beforeMatrix無効
 	
 	//モデル初期化
 	GameObj::CInstancingModelRender& insModel = m_model.Get();
-	insModel.Init(m_sInstancingMax, L"Resource/modelData/free grass by adam127.cmo", nullptr, 0, enFbxUpAxisY);
+	bool isType2 = CMath::RandomZeroToOne() > 0.5f;
+	if (isType2) {
+		insModel.Init(m_sInstancingMax, L"Resource/modelData/pinGrass2.cmo", nullptr, 0, enFbxUpAxisY);
+	}
+	else {
+		insModel.Init(m_sInstancingMax, L"Resource/modelData/pinGrass.cmo", nullptr, 0, enFbxUpAxisY);
+	}
 	insModel.SetPos(pos);
-	CQuaternion rot(CVector3::AxisY(), -CMath::PI2 + CMath::PI2*2.0f*CMath::RandomZeroToOne());
+	CQuaternion rot(CVector3::AxisX(), -CMath::PI_HALF*0.9f + CMath::PI_HALF*0.9f*2.0f*CMath::RandomZeroToOne());
+	rot.Concatenate(CQuaternion(CVector3::AxisY(), -CMath::PI2 + CMath::PI2*2.0f*CMath::RandomZeroToOne()));
 	insModel.SetRot(rot);
-	insModel.SetScale(CMath::RandomZeroToOne() > 0.5f ? 0.04f : 0.04f);
-	insModel.SetIsDraw(false);
+	//insModel.SetScale((CMath::RandomZeroToOne()*0.0015f + 0.003f)*(isType2 ? 1.5f : 1.0f));
+	//insModel.SetIsDraw(false);
 	insModel.GetInstancingModel()->GetModelRender().SetIsShadowCaster(false);
 	//insModel.GetInstancingModel()->GetModelRender().InitPostDraw(PostDrawModelRender::enAlpha);// , false, true);//ポストドロー(ソフトパーティクル)
 	//insModel.GetInstancingModel()->GetModelRender().GetSkinModel().SetCullMode(D3D11_CULL_NONE);//バックカリングしない	
-	/*insModel.GetInstancingModel()->GetModelRender().GetSkinModel().FindMaterialSetting(
+	insModel.GetInstancingModel()->GetModelRender().GetSkinModel().FindMaterialSetting(
 		[&](MaterialSetting* me) {
-			me->SetAlbedoScale({ 1.0f,1.0f,1.0f,0.2f });
+			me->SetShininess(0.4f);
 		}
-	);*/
+	);
+}
+void Grass::Pre3DRender(int screenNum) {
+	GameObj::CInstancingModelRender& insModel = m_model.Get();
+	//指定のカメラ以外には描画しない
+	if (screenNum != m_cameraNum) {
+		insModel.SetIsDraw(false);
+		return;
+	}
+	else {
+		insModel.SetIsDraw(true);
+	}
+	//カメラとの距離が遠いものは近くに生成し直し
+	constexpr float VIEW_DISTANCE_SQ = CMath::Square(100.0f);
+	if ((insModel.GetPos() - GetMainCamera()->GetPos()).LengthSq() > VIEW_DISTANCE_SQ) {
+		CVector3 pos = CVector3::AxisX()*(100.0f * CMath::RandomZeroToOne());
+		CQuaternion(CVector3::AxisY(), CMath::PI2*CMath::RandomZeroToOne()).Multiply(pos);
+		insModel.SetPos(pos);
+	}
 }
 
 /// <summary>
@@ -102,22 +130,24 @@ void Tree::Init(const CVector3& pos, const CVector3& normal){
 	GameObj::CInstancingModelRender& insModel = m_model.Get();
 	CImposter& imposter = m_imposter.Get();
 
-	//バリエーション
-	float sizeScale;// = 0.8f*1.5f*(CMath::RandomZeroToOne() > 0.5f ? 1.0f : 1.5f)*(1.0f + CMath::RandomZeroToOne()*0.3f);
-	sizeScale = 0.5f*(1.0f + CMath::RandomZeroToOne()*0.3f);
-	float radY = -CMath::PI2 + CMath::PI2*2.0f*CMath::RandomZeroToOne();
-	m_rot.SetRotation(CVector3::AxisY(), radY);
+	//木の種類
+	constexpr wchar_t treeModelFilePath[2][64] = {
+		L"Resource/modelData/realTree.cmo",
+		L"Resource/modelData/realTree2_S.cmo"
+	};
 
+	//バリエーション
+	float sizeScale = 0.5f*(1.0f + CMath::RandomZeroToOne()*1.2f);		//スケール
+	//0.5f*(1.0f + CMath::RandomZeroToOne()*0.3f);
+	float radY = -CMath::PI2 + CMath::PI2*2.0f*CMath::RandomZeroToOne();//回転
+	m_rot.SetRotation(CVector3::AxisY(), radY);
+	int treeTypeInd = CMath::RandomZeroToOne() > 1.0f ? 1 : 0;			//モデル種類
+	
 	//TODO
 	//木の色・地面の色ムラ　パーリンノイズ
 
 	//近景モデル
-	//if (CMath::RandomZeroToOne() > 0.8f) {
-	//	insModel.Init(m_sInstancingMax, L"Resource/modelData/tree_notall.cmo");
-	//}
-	//else {
-	insModel.Init(m_sInstancingMax, L"Resource/modelData/realTree.cmo");
-	//}
+	insModel.Init(m_sInstancingMax, treeModelFilePath[treeTypeInd]);
 	insModel.SetPos(m_pos);
 	insModel.SetRot(m_rot);
 	insModel.SetScale(sizeScale);
@@ -176,11 +206,11 @@ void Tree::Init(const CVector3& pos, const CVector3& normal){
 	//	imposter.Init(L"Resource/modelData/tree_notall.cmo", { 2048 * 4, 2048 * 4 }, { 69,35 }, m_sInstancingMax);
 	//}
 	//else {
-	if (!imposter.Init(L"realTree", m_sInstancingMax)) {
+	if (!imposter.Init(treeModelFilePath[treeTypeInd], m_sInstancingMax)) {
 		SkinModel model;
-		model.Init(L"Resource/modelData/realTree.cmo");		
+		model.Init(treeModelFilePath[treeTypeInd]);
 		model.FindMaterialSetting(setMaterial);//マテリアル設定
-		imposter.Init(L"realTree", model, { 2048 * 2, 2048 * 2 }, { 35,35 }, m_sInstancingMax);
+		imposter.Init(treeModelFilePath[treeTypeInd], model, { 2048 * 2, 2048 * 2 }, { 35,35 }, m_sInstancingMax);
 	}
 	//}
 	imposter.SetPos(m_pos);
