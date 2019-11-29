@@ -117,10 +117,10 @@ Shibuya::Shibuya() //: m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI
 	Grass::m_sInstancingMax = 512*4;
 	m_objGene.Generate<Grass>({ -70.0f,-70.0f*50.0f,-70.0f }, { 70.0f,70.0f*50.0f,70.0f }, Grass::m_sInstancingMax, 0.0f);
 
+	//鉄塔
+	m_objGene.Generate<TransmissionTower>({ -70.0f*500.0f,-70.0f*50.0f,-70.0f*500.0f }, { 70.0f*500.0f,70.0f*50.0f,70.0f*500.0f }, TransmissionTower::m_sInstancingMax, 300.0f);
+	
 	//GetGraphicsEngine().GetAmbientOcclusionRender().SetEnable(false);
-
-	//TODO とりあえず草木一緒に生成 医師はいらないかも
-	//草の大きさ二段階　ソフトパーティクル
 
 	//Stone::m_sInstancingMax = 4000;
 	//m_objGene.Generate<Stone>({ -70.0f*50.0f,-70.0f*50.0f,-70.0f*50.0f }, { 70.0f*50.0f,70.0f*50.0f,70.0f*50.0f }, Stone::m_sInstancingMax);

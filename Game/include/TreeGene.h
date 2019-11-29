@@ -22,6 +22,24 @@ public:
 };
 
 /// <summary>
+/// 鉄塔
+/// </summary>
+class TransmissionTower : public IStageObject {
+public:
+	using IStageObject::IStageObject;
+
+	//初期化関数
+	void Init(const CVector3& pos, const CVector3& normal)override;
+
+private:
+	//グラフィック
+	GameObj::CInstancingModelRender m_model;
+
+public:
+	static int m_sInstancingMax; //このクラスの最大インスタンス数
+};
+
+/// <summary>
 /// 草
 /// </summary>
 class Grass : public IStageObject, public IGameObject {
@@ -31,6 +49,8 @@ public:
 	//初期化関数
 	void Init(const CVector3& pos, const CVector3& normal)override;
 	
+	//動作ループ後処理
+	void PostLoopUpdate()override;
 	//描画前処理
 	void Pre3DRender(int)override;
 

@@ -56,6 +56,26 @@ void Stone::Init(const CVector3& pos, const CVector3& normal) {
 }
 
 /// <summary>
+/// 鉄塔
+/// </summary>
+int TransmissionTower::m_sInstancingMax = 10;
+
+void TransmissionTower::Init(const CVector3& pos, const CVector3& normal) {
+	m_model.Init(m_sInstancingMax, L"Resource/modelData/tettou.cmo");
+	m_model.GetInstancingModel()->GetModelRender().GetSkinModel().FindMaterialSetting(
+		[&](MaterialSetting* me) {
+			me->SetMetallic(0.5f);
+		}
+	);
+	m_model.SetPos(pos);//TODO 鉄塔は4つの足で高さ判定
+	//CQuaternion rot(CVector3::AxisX(), CMath::RandomZeroToOne()*CMath::PI2);
+	//rot.Concatenate(CQuaternion(CVector3::AxisY(), CMath::RandomZeroToOne()*CMath::PI2));
+	//rot.Concatenate(CQuaternion(CVector3::AxisZ(), CMath::RandomZeroToOne()*CMath::PI2));
+	m_model.SetRot(CQuaternion(CVector3::AxisY(), CMath::RandomZeroToOne()*CMath::PI2));
+	m_model.SetScale(1.4f);
+}
+
+/// <summary>
 /// 草
 /// </summary>
 int Grass::m_sInstancingMax = 512;
@@ -68,7 +88,7 @@ void Grass::Init(const CVector3& pos, const CVector3& normal) {
 	m_lodSwitcher.SetPos(pos);*/
 
 	//TODO
-	//LODやめて　カメラごとにカメラの周囲(円形)に生成、距離範囲外のものを生成し直し続ける。(beforeMatrix無効
+	//LODやめて　カメラごとにカメラの周囲(円形)に生成、距離範囲外のものを生成し直し続ける
 	
 	//モデル初期化
 	GameObj::CInstancingModelRender& insModel = m_model.Get();
@@ -83,7 +103,7 @@ void Grass::Init(const CVector3& pos, const CVector3& normal) {
 	CQuaternion rot(CVector3::AxisX(), -CMath::PI_HALF*0.9f + CMath::PI_HALF*0.9f*2.0f*CMath::RandomZeroToOne());
 	rot.Concatenate(CQuaternion(CVector3::AxisY(), -CMath::PI2 + CMath::PI2*2.0f*CMath::RandomZeroToOne()));
 	insModel.SetRot(rot);
-	//insModel.SetScale((CMath::RandomZeroToOne()*0.0015f + 0.003f)*(isType2 ? 1.5f : 1.0f));
+	insModel.SetScale((CMath::RandomZeroToOne()*0.0015f + 0.003f)*(isType2 ? 1.5f : 1.0f));
 	//insModel.SetIsDraw(false);
 	insModel.GetInstancingModel()->GetModelRender().SetIsShadowCaster(false);
 	//insModel.GetInstancingModel()->GetModelRender().InitPostDraw(PostDrawModelRender::enAlpha);// , false, true);//ポストドロー(ソフトパーティクル)
@@ -91,26 +111,41 @@ void Grass::Init(const CVector3& pos, const CVector3& normal) {
 	insModel.GetInstancingModel()->GetModelRender().GetSkinModel().FindMaterialSetting(
 		[&](MaterialSetting* me) {
 			me->SetShininess(0.4f);
+			me->SetAlbedoScale({40.0f, 0.0f, 40.0f, 1.0f});
 		}
 	);
 }
-void Grass::Pre3DRender(int screenNum) {
+void Grass::PostLoopUpdate() {
 	GameObj::CInstancingModelRender& insModel = m_model.Get();
+	//カメラとの距離が遠いものは近くに生成し直し
+	//TODO 予め座標マッピング作っておく　あるいはフラクタル or　進行方向に生成
+	constexpr float VIEW_DISTANCE_SQ = CMath::Square(100.0f);
+	if (((insModel.GetPos() - GetMainCamera()->GetPos())*CVector3(1.0f,0.0f,1.0f)).LengthSq() > VIEW_DISTANCE_SQ) {
+		CVector3 pos = CVector3::AxisX()*(100.0f * CMath::RandomZeroToOne());
+		CQuaternion(CVector3::AxisY(), CMath::PI2*CMath::RandomZeroToOne()).Multiply(pos);
+		pos += GetMainCamera()->GetPos();
+		//レイで判定
+		btVector3 rayStart = btVector3(pos.x, 70.0f*50.0f, pos.z);
+		btVector3 rayEnd = btVector3(pos.x, -70.0f*50.0f, pos.z);
+		btCollisionWorld::ClosestRayResultCallback gnd_ray(rayStart, rayEnd);
+		GetEngine().GetPhysicsWorld().RayTest(rayStart, rayEnd, gnd_ray);
+		if (gnd_ray.hasHit()) {
+			//接触点を座標に
+			pos = gnd_ray.m_hitPointWorld;
+		}
+		insModel.SetPos(pos);//再設置
+		insModel.ResetWorldMatrixOld();//旧ワールド行列のリセット
+	}
+}
+void Grass::Pre3DRender(int screenNum) {
 	//指定のカメラ以外には描画しない
 	if (screenNum != m_cameraNum) {
-		insModel.SetIsDraw(false);
+		m_model.Get().SetIsDraw(false);
 		return;
 	}
 	else {
-		insModel.SetIsDraw(true);
-	}
-	//カメラとの距離が遠いものは近くに生成し直し
-	constexpr float VIEW_DISTANCE_SQ = CMath::Square(100.0f);
-	if ((insModel.GetPos() - GetMainCamera()->GetPos()).LengthSq() > VIEW_DISTANCE_SQ) {
-		CVector3 pos = CVector3::AxisX()*(100.0f * CMath::RandomZeroToOne());
-		CQuaternion(CVector3::AxisY(), CMath::PI2*CMath::RandomZeroToOne()).Multiply(pos);
-		insModel.SetPos(pos);
-	}
+		m_model.Get().SetIsDraw(true);
+	}	
 }
 
 /// <summary>
@@ -122,7 +157,7 @@ void Tree::Init(const CVector3& pos, const CVector3& normal){
 	m_pos = pos;
 
 	//LOD初期化
-	CVector2 FrustumSize; GetMainCamera()->GetFrustumPlaneSize(2400.0f/3.0f, FrustumSize);
+	CVector2 FrustumSize; GetMainCamera()->GetFrustumPlaneSize(2400.0f/3.0f, FrustumSize);//TODO Scaleに連動
 	m_lodSwitcher.AddDrawObject(&m_model, FrustumSize.y);
 	m_lodSwitcher.AddDrawObject(&m_imposter);
 	m_lodSwitcher.SetPos(m_pos);
