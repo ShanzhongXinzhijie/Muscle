@@ -60,6 +60,12 @@ void Stone::Init(const CVector3& pos, const CVector3& normal) {
 /// </summary>
 int TransmissionTower::m_sInstancingMax = 10;
 
+namespace {
+	constexpr float GRASS_VIEW_DISTANCE_XZ = 400.0f;
+	constexpr float GRASS_VIEW_DISTANCE_XZ_SQ = CMath::Square(GRASS_VIEW_DISTANCE_XZ);
+	constexpr float GRASS_VIEW_HEIGHT = 200.0f;
+}
+
 void TransmissionTower::Init(const CVector3& pos, const CVector3& normal) {
 	m_model.Init(m_sInstancingMax, L"Resource/modelData/tettou.cmo");
 	m_model.GetInstancingModel()->GetModelRender().GetSkinModel().FindMaterialSetting(
@@ -117,13 +123,13 @@ void Grass::Init(const CVector3& pos, const CVector3& normal) {
 }
 void Grass::PostLoopUpdate() {
 	GameObj::CInstancingModelRender& insModel = m_model.Get();
+	GameObj::ICamera* mainCamera = GetCameraList().at(m_cameraNum);
 	//カメラとの距離が遠いものは近くに生成し直し
 	//TODO 予め座標マッピング作っておく　あるいはフラクタル or　進行方向に生成
-	constexpr float VIEW_DISTANCE_SQ = CMath::Square(100.0f);
-	if (((insModel.GetPos() - GetMainCamera()->GetPos())*CVector3(1.0f,0.0f,1.0f)).LengthSq() > VIEW_DISTANCE_SQ) {
-		CVector3 pos = CVector3::AxisX()*(100.0f * CMath::RandomZeroToOne());
+	if (((insModel.GetPos() - mainCamera->GetPos())*CVector3(1.0f,0.0f,1.0f)).LengthSq() > GRASS_VIEW_DISTANCE_XZ_SQ) {
+		CVector3 pos = CVector3::AxisX()*(GRASS_VIEW_DISTANCE_XZ * CMath::RandomZeroToOne());
 		CQuaternion(CVector3::AxisY(), CMath::PI2*CMath::RandomZeroToOne()).Multiply(pos);
-		pos += GetMainCamera()->GetPos();
+		pos += mainCamera->GetPos();
 		//レイで判定
 		btVector3 rayStart = btVector3(pos.x, 70.0f*50.0f, pos.z);
 		btVector3 rayEnd = btVector3(pos.x, -70.0f*50.0f, pos.z);
@@ -139,7 +145,7 @@ void Grass::PostLoopUpdate() {
 }
 void Grass::Pre3DRender(int screenNum) {
 	//指定のカメラ以外には描画しない
-	if (screenNum != m_cameraNum) {
+	if (screenNum != m_cameraNum || abs(m_model.Get().GetPos().y - GetMainCamera()->GetPos().y) > GRASS_VIEW_HEIGHT) {
 		m_model.Get().SetIsDraw(false);
 		return;
 	}
