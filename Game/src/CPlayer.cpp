@@ -166,12 +166,16 @@ void CPlayer::HUDRender(int HUDNum) {
 		//時速
 		kmh = m_hotoke.GetMove().Length()*GetEngine().GetStandardFrameRate()*60.0f*60.0f / METER / 1000.0f;
 		m_HUDFont.DrawFormat(L"%.1f", tdFrontPos - CVector3(0.06f,  0.025f, 0.0f), { 1.0f,1.0f }, kmh);
+		
 		//落下速度
 		kmh = -m_hotoke.GetMove().y*GetEngine().GetStandardFrameRate()*60.0f*60.0f / METER / 1000.0f;
 		if (abs(kmh) < 0.1f) { 
 			kmh = 0.0f; 
 		}
 		m_HUDFont.DrawFormat(L"%.1f", tdFrontPos - CVector3(0.06f, 0.0f, 0.0f), { 1.0f,0.0f }, kmh);
+
+		//高度
+		m_HUDFont.DrawFormat(L"%.1f", tdFrontPos - CVector3(-0.06f, 0.025f, 0.0f), { 0.0f,1.0f }, m_hotoke.GetHeightMeter());
 	}
 	//目標の名前・距離・接近速度・接触秒数
 

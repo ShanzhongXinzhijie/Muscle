@@ -10,6 +10,12 @@
 #include "CSmoke.h"
 #include "CBlood.h"
 
+//namespace {
+//	float CalcAirScale(float heightMeter) {
+//		return max(0.0f, 1.0f - max(0.0f, heightMeter / 1000.0f));//高度1000mに近づくに連れ空気が薄くなる
+//	}
+//}
+
 void CDeathHotoke::SetBodyPart(enBodyParts partsType, std::unique_ptr<IBodyPart> part) {
 	m_parts[partsType] = std::move(part);
 	if (GetIsStart()) { m_parts[partsType]->Start(); }
@@ -41,7 +47,13 @@ bool CDeathHotoke::Start() {
 			Damage(*H,pos);
 		}
 	);
-	SetCollisionPos({ 0.0f, 60.0f*(m_scale.y / (0.0188f*2.0f)), -15.0f*(m_scale.z / (0.0188f*2.0f)) });
+	SetPreCollisionFunc(
+		[&](ReferenceCollision* H) {
+			//体当たりダメージ			
+			SetDamegePower(DHUtil::CalcRamDamege(GetReferenceCollision().velocity, H->velocity));
+		}
+	);
+	SetCollisionPosOffset({ 0.0f, 60.0f*(m_scale.y / (0.0188f*2.0f)), -15.0f*(m_scale.z / (0.0188f*2.0f)) });
 	GetAttributes().set(enPhysical);
 
 	//位置初期化	
@@ -93,7 +105,8 @@ void CDeathHotoke::Update() {
 	}
 	//コアのTRS更新
 	m_coreModel.SetPRS(GetPos(), GetRot(), m_scale);
-	SetCollisionPos({ 0.0f, 60.0f*(m_scale.y / (0.0188f*2.0f)), -15.0f*(m_scale.z / (0.0188f*2.0f)) });	
+	SetCollisionPosOffset({ 0.0f, 60.0f*(m_scale.y / (0.0188f*2.0f)), -15.0f*(m_scale.z / (0.0188f*2.0f)) });	
+	SetCollisionVelocity(GetMove());
 
 	//パーツのワールド行列更新後Update
 	for (auto& part : m_parts) {

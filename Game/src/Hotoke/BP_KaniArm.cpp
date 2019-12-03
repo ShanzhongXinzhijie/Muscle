@@ -97,6 +97,7 @@ void BP_KaniArm::PostUTRSUpdate() {
 		CQuaternion LorRrot; LorRrot.MakeLookToUseXYAxis(i != L ? m_ptrCore->GetLeft() : m_ptrCore->GetRight());
 		//基準方向のローカルターゲット方向を算出
 		CVector3 zLocalTargetDir = targetDir; LorRrot.InverseMultiply(zLocalTargetDir);
+		CVector3 zLocalTargetDirNorm = zLocalTargetDir; zLocalTargetDirNorm.Normalize();
 		//Z軸をローカルターゲット方向へ向けるクォータニオンを作成
 		CQuaternion toTargetRot;
 		toTargetRot.MakeLookToUseXYAxis(zLocalTargetDir);
@@ -104,10 +105,15 @@ void BP_KaniArm::PostUTRSUpdate() {
 		CVector3 axis; float angle;
 		axis = CVector3::AxisZ();
 		axis.Cross(zLocalTargetDir); axis.Normalize();
-		angle = CVector3::AngleOf2NormalizeVector(zLocalTargetDir.GetNorm(), CVector3::AxisZ());
+		angle = CVector3::AngleOf2NormalizeVector(zLocalTargetDirNorm, CVector3::AxisZ());
 		//toTargetRot.ToAngleAxis(axis, angle);		
 		//角度制限
-		angle = CMath::Clamp(angle, -CMath::DegToRad(110.0f), CMath::DegToRad(110.0f));
+		if (m_ptrCore->GetFront().Dot(targetDir) > 0.0f) {
+			angle = min(angle, CMath::DegToRad(110.0f));//前方方向
+		}
+		else {
+			angle = min(angle, CMath::DegToRad(10.0f));//後方方向
+		}
 
 		//現在の腕の角度
 		//CVector3 zLocalArmDir = m_ptrCore->GetPos() + m_ptrCore->GetRot().GetMultiply(m_ikTargetPos[i]);//わーるどにしる
@@ -235,9 +241,10 @@ void BP_KaniArm::Rocket(enLR lr) {
 		m_model->GetBonePos(m_muzzleBoneID[lr]),
 		dirNorm*(100.0f + dirNorm.Dot(m_ptrCore->GetVelocity()))
 	);
-	bullet->AddComponent(std::make_unique<BD_BeamModel>(3.0f, L"Red"));
+	bullet->AddComponent(std::make_unique<BD_BeamModel>(30.0f, L"Red"));
 	bullet->AddComponent(std::make_unique<BD_Contact>());
-	bullet->AddComponent(std::make_unique<BD_Homing>(m_ptrCore->GetTarget()));
+	bullet->AddComponent(std::make_unique<BD_Homing>(m_ptrCore->GetTarget(), 20.0f, 0.0f, 30.0f));
+	bullet->AddComponent(std::make_unique<BD_Brake>(1.0f));
 }
 void BP_KaniArm::Lazer(enLR lr) {
 	//グレネード出す
@@ -260,16 +267,16 @@ void BP_KaniArm::Stab() {
 
 //ヒューマンコントローラー
 void HCon_KaniArm::Update() {
-	{
+	/*{
 		m_ptrBody->Stab();
-	}
+	}*/
 	for (auto lr : { L, R }) {
 		if (m_ptrCore->GetPad()->GetFire(lr)) {
 			m_ptrBody->ChargeAndMachinegun(lr);
 		}
-		else {
+		/*else {
 			m_ptrBody->Lazer(lr);
-		}
+		}*/
 		if (m_ptrCore->GetPad()->GetDoubleTapFire(lr)) {
 			m_ptrBody->Rocket(lr);
 		}

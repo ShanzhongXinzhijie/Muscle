@@ -141,16 +141,59 @@ private:
 /// </summary>
 class BD_Homing : public IBulletComponent {
 public:
-	//TODO IFuの参照切れ
-	BD_Homing(const IFu* target = nullptr) :m_target(target) {};
+	BD_Homing(IFu* target = nullptr, float thrust = 0.0f, float noAccelRad = 0.0f, float timer = 0.0f)
+		: m_target(target), m_thrust(thrust), m_nonAccelRad(noAccelRad), m_timerf(timer)
+	{
+		if (target) { target->SetDeleteFlag(isTargetDeath); }
+	};
 
 	void Update()override {
-		if (!m_target) { return; }
-		m_bullet->m_vector = (m_target->GetPos() - m_bullet->GetPos()).GetNorm()*m_bullet->m_vector.Length();
+		//タイマー処理
+		m_timerf = max(0.0f, m_timerf - 1.0f);
+		if (m_timerf > 0.0f) { return; }
+
+		CVector3 targetDir(m_bullet->m_vector);
+		
+		//目標あり ＆ 目標のインスタンスが消滅していない
+		if (m_target && !isTargetDeath) {
+			targetDir = m_target->GetPos() - m_bullet->GetPos();
+		}
+
+		targetDir.Normalize();
+
+		//常に加速設定 or 目標方向との角度が開いている
+		if (m_nonAccelRad < FLT_EPSILON || CVector3::AngleOf2NormalizeVector(targetDir,m_bullet->m_vector.GetNorm()) > m_nonAccelRad) {
+			m_bullet->m_vector += targetDir * m_thrust;
+		}
+	}
+
+	//推力を設定
+	void SetThrust(float f) {
+		m_thrust = f;
 	}
 
 private:
-	const IFu* m_target = nullptr;
+	const IFu* m_target = nullptr;//目標
+	std::shared_ptr<bool> isTargetDeath = false;//ターゲットのインスタンスが存在するか?
+	float m_thrust = 0.0f;//推力
+	float m_nonAccelRad = 0.0f;//加速しない角度範囲
+	float m_timerf = 0.0f;//ホーミング開始までのフレーム数
+};
+
+
+/// <summary>
+/// 減速コンポーネント
+/// </summary>
+class BD_Brake : public IBulletComponent {
+public:
+	BD_Brake(float brakePow):m_brakePawer(max(0.0f,brakePow)){}
+
+	void Update()override {
+		m_bullet->m_vector = m_bullet->m_vector.GetNorm()*max(0.0f, m_bullet->m_vector.Length() - m_brakePawer);
+	}
+
+private:
+	float m_brakePawer = 0.0f;//1フレームに減速する速度
 };
 
 /// <summary>
@@ -195,5 +238,3 @@ public:
 		}
 	}
 };
-
-//TODO ムラ(MHW) 地形ノイズ

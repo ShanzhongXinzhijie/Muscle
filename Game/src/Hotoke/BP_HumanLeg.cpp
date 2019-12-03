@@ -37,6 +37,9 @@ void BP_HumanLeg::InnerStart() {
 		m_col[lr].m_collision.CreateSphere(m_model->GetBonePos(m_ikSetting[lr]->tipBone->GetNo()), {}, radius * modelScale);
 		m_col[lr].m_reference.position = m_model->GetBonePos(m_ikSetting[lr]->tipBone->GetNo());
 		m_col[lr].m_reference.attributes.set(enPhysical);
+		m_col[lr].m_reference.m_preCollisionFunc = [&,lr](ReferenceCollision* H) { 
+			m_col[lr].m_reference.damege = DHUtil::CalcRamDamege(m_col[lr].m_reference.velocity, H->velocity);
+		};
 	}
 }
 
@@ -66,6 +69,7 @@ void BP_HumanLeg::PostUTRSUpdate() {
 	//”»’è‚ÌXV
 	for (auto lr : LR) {
 		m_col[lr].SetPos(m_model->GetBonePos(m_ikSetting[lr]->tipBone->GetNo()));
+		m_col[lr].SetVelocity(m_ptrCore->GetMove());
 	}
 
 	//‘«‚ÌˆÊ’uŽæ“¾

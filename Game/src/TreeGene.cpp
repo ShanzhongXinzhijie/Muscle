@@ -5,8 +5,6 @@
 /// <summary>
 /// 石
 /// </summary>
-int Stone::m_sInstancingMax = 512;
-
 void Stone::Init(const CVector3& pos, const CVector3& normal) {
 	float scale = 1.0f;
 	scale = (CMath::RandomZeroToOne() > 0.5f ? 0.05f : 0.1f)*(0.5f + CMath::RandomZeroToOne());
@@ -58,14 +56,6 @@ void Stone::Init(const CVector3& pos, const CVector3& normal) {
 /// <summary>
 /// 鉄塔
 /// </summary>
-int TransmissionTower::m_sInstancingMax = 10;
-
-namespace {
-	constexpr float GRASS_VIEW_DISTANCE_XZ = 400.0f;
-	constexpr float GRASS_VIEW_DISTANCE_XZ_SQ = CMath::Square(GRASS_VIEW_DISTANCE_XZ);
-	constexpr float GRASS_VIEW_HEIGHT = 200.0f;
-}
-
 void TransmissionTower::Init(const CVector3& pos, const CVector3& normal) {
 	m_model.Init(m_sInstancingMax, L"Resource/modelData/tettou.cmo");
 	m_model.GetInstancingModel()->GetModelRender().GetSkinModel().FindMaterialSetting(
@@ -84,8 +74,11 @@ void TransmissionTower::Init(const CVector3& pos, const CVector3& normal) {
 /// <summary>
 /// 草
 /// </summary>
-int Grass::m_sInstancingMax = 512;
-
+namespace {
+	constexpr float GRASS_VIEW_DISTANCE_XZ = 400.0f;
+	constexpr float GRASS_VIEW_DISTANCE_XZ_SQ = CMath::Square(GRASS_VIEW_DISTANCE_XZ);
+	constexpr float GRASS_VIEW_HEIGHT = 200.0f;
+}
 void Grass::Init(const CVector3& pos, const CVector3& normal) {
 	//LOD初期化
 	/*CVector2 FrustumSize; GetMainCamera()->GetFrustumPlaneSize(100.0f, FrustumSize);
@@ -157,8 +150,6 @@ void Grass::Pre3DRender(int screenNum) {
 /// <summary>
 /// 木
 /// </summary>
-int Tree::m_sInstancingMax = 512;
-
 void Tree::Init(const CVector3& pos, const CVector3& normal){
 	m_pos = pos;
 
@@ -334,39 +325,3 @@ void Tree::Init(const CVector3& pos, const CVector3& normal){
 		imposter.SetIsDraw(true);
 	}*/
 //}
-
-/*
-/// <summary>
-/// ツリージェネレーター
-/// </summary>
-void TreeGene::Generate(const CVector3& minArea, const CVector3& maxArea, int num) {
-
-	//インスタンシングの数設定
-	if (Tree::m_sInstancingMax < num) {
-		Tree::m_sInstancingMax = num;
-	}
-
-	//木々を作る
-	for (int i = 0; i < num; i++) {
-		//座標生成
-		CVector3 pos = { minArea.x + (maxArea.x - minArea.x)*CMath::RandomZeroToOne(), maxArea.y, minArea.z + (maxArea.z - minArea.z)*CMath::RandomZeroToOne() };
-		//回転生成
-		CQuaternion rot(CVector3::AxisY(), CMath::PI2*CMath::RandomZeroToOne());
-		//レイで判定
-		btVector3 rayStart = pos;
-		btVector3 rayEnd = btVector3(pos.x, minArea.y, pos.z);
-		btCollisionWorld::ClosestRayResultCallback gnd_ray(rayStart, rayEnd);
-		GetEngine().GetPhysicsWorld().RayTest(rayStart, rayEnd, gnd_ray);
-		if (gnd_ray.hasHit()) {
-			//接触点を座標に
-			pos = gnd_ray.m_hitPointWorld;
-		}		
-		//生まれろ!
-		m_trees.emplace_back(std::make_unique<Tree>(i,pos));
-	}
-}
-
-void TreeGene::Clear() {
-	m_trees.clear();
-}
-*/

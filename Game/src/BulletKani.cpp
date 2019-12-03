@@ -46,7 +46,10 @@ void BulletGO::Update() {
 
 	//コリジョン更新
 	m_col.SetPos(GetPos());
-	m_col.SetDir(m_vector.GetNorm());
+	m_col.SetVelocity(m_vector);
+
+	//落下加速
+	m_vector = m_vector.GetNorm() * (m_vector.Length() + min(m_vector.y*0.25f, 0.0f));
 
 	for (auto& component : m_components) {
 		component->PostUpdate();

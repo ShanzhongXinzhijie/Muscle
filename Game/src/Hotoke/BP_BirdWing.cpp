@@ -3,6 +3,12 @@
 
 using namespace GameObj;
 
+namespace {
+	float CalcAirScale(float heightMeter) {
+		return max(0.0f, 1.0f - max(0.0f, heightMeter / 1000.0f));//高度1000mに近づくに連れ空気が薄くなる
+	}
+}
+
 void BP_BirdWing::InnerStart() {
 	//アニメ
 	m_anim[enDefault].Load(L"Resource/animation/birdWing_default.tka");
@@ -51,7 +57,8 @@ void BP_BirdWing::Update() {
 	m_controller->Update();
 
 	//加速してなかったら減速
-	if (oldAccel >= m_accel) { m_accel -= 2.0f*0.01f; } m_accel -= 2.0f*0.01f*max(0.0f,m_ptrCore->GetDrag()*0.05f-1.0f);
+	if (oldAccel >= m_accel) { m_accel -= 2.0f*0.01f*CalcAirScale(m_ptrCore->GetHeightMeter()); }
+	m_accel -= 2.0f*0.01f*max(0.0f,m_ptrCore->GetDrag()*0.05f-1.0f);
 	if (!m_isYawInput) { m_yawAccel = 0.0f; }
 	if (!m_isPitchInput) { m_pitchAccel = 0.0f; }
 
@@ -99,7 +106,7 @@ void BP_BirdWing::Draw2D() {
 
 void BP_BirdWing::Accel() {
 	if (m_isAnimEnd) {
-		m_accel += 20.0f;
+		m_accel += 20.0f*CalcAirScale(m_ptrCore->GetHeightMeter());
 		m_isAnimEnd = false;
 		m_model->GetAnimCon().Play(enFlying, 0.175f, true);
 	}
@@ -107,7 +114,7 @@ void BP_BirdWing::Accel() {
 void BP_BirdWing::Brake() {
 	if (m_isAnimEnd) {
 		m_isBraking = true;
-		m_accel -= 2.0f*0.10f;
+		m_accel -= 2.0f*0.10f*CalcAirScale(m_ptrCore->GetHeightMeter());
 		m_isAnimEnd = true;
 		m_model->GetAnimCon().Play(enBraking, 0.175f);
 	}
@@ -124,7 +131,7 @@ void BP_BirdWing::Pitch(float lerp) {
 	float accel = abs(m_pitchAccel*m_pitchAccel);
 	
 	//減速
-	m_accel -= 2.0f*0.01f*abs(lerp)*accel*0.6f;
+	m_accel -= 2.0f*0.01f*abs(lerp)*accel*0.6f*CalcAirScale(m_ptrCore->GetHeightMeter());
 
 	//旋回
 	m_pitch.SetRotation(m_ptrCore->GetLeft(), CMath::PI_HALF*lerp*accel*0.6f);
@@ -147,7 +154,7 @@ void BP_BirdWing::Yaw(float lerp) {
 	float accel = abs(m_yawAccel*m_yawAccel);
 
 	//減速
-	m_accel -= 2.0f*0.02f*abs(lerp)*accel;
+	m_accel -= 2.0f*0.02f*abs(lerp)*accel*CalcAirScale(m_ptrCore->GetHeightMeter());
 
 	//旋回速度
 	float roll = 0.1f, speed = abs(m_accel);
@@ -159,7 +166,7 @@ void BP_BirdWing::Yaw(float lerp) {
 	}
 	roll += 0.003f;//最低旋回力
 	roll *= 0.2f;
-	if (m_isBraking) { roll *= 2.5f; }//ブレーキ中は旋回性能上昇//TODO(本体の旋回性能パラメータでやる?)
+	//if (m_isBraking) { roll *= 2.5f; }//ブレーキ中は旋回性能上昇//TODO(本体の旋回性能パラメータでやる?)
 
 	//旋回
 	m_ptrCore->AddAngularVelocity(CVector3::AxisY(), lerp*roll*accel);
@@ -196,9 +203,9 @@ void HCon_BirdWing::Update() {
 }
 
 void AICon_BirdWing::Update() {
-	if (m_ptrBody->GetAccel() < 5.0f){
+	//if (m_ptrBody->GetAccel() < 5.0f){
 		m_ptrBody->Accel();
-	}
+	//}
 
 	//目的地へ移動
 	if (m_ptrCore->GetAIStatus()->isMovingToTarget) {
