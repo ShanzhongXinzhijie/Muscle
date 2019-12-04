@@ -189,7 +189,7 @@ void BP_KaniArm::PostUTRSUpdate() {
 				CVector3 dirNorm = (m_ikSetting[i]->targetPos - m_model->GetBonePos(m_muzzleBoneID[i])).GetNorm();
 				BulletGO* bullet = new BulletGO(
 					m_model->GetBonePos(m_muzzleBoneID[i]),
-					dirNorm*(100.0f+dirNorm.Dot(m_ptrCore->GetVelocity()))
+					(dirNorm*100.0f)+m_ptrCore->GetVelocity()
 				);
 				bullet->AddComponent(std::make_unique<BD_BeamModel>(3.0f,L"BLUE"));
 				bullet->AddComponent(std::make_unique<BD_Contact>());
@@ -239,11 +239,11 @@ void BP_KaniArm::Rocket(enLR lr) {
 	CVector3 dirNorm = (m_ikSetting[lr]->targetPos - m_model->GetBonePos(m_muzzleBoneID[lr])).GetNorm();
 	BulletGO* bullet = new BulletGO(
 		m_model->GetBonePos(m_muzzleBoneID[lr]),
-		dirNorm*(100.0f + dirNorm.Dot(m_ptrCore->GetVelocity()))
+		(dirNorm*100.0f) + m_ptrCore->GetVelocity()
 	);
 	bullet->AddComponent(std::make_unique<BD_BeamModel>(30.0f, L"Red"));
 	bullet->AddComponent(std::make_unique<BD_Contact>());
-	bullet->AddComponent(std::make_unique<BD_Homing>(m_ptrCore->GetTarget(), 20.0f, 0.0f, 30.0f));
+	bullet->AddComponent(std::make_unique<BD_Homing>(m_ptrCore->GetTarget(), 10.0f, 0.0f, 30.0f));
 	bullet->AddComponent(std::make_unique<BD_Brake>(1.0f));
 }
 void BP_KaniArm::Lazer(enLR lr) {

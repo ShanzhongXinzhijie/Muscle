@@ -23,7 +23,17 @@ public:
 	void SetBullet(BulletGO* bullet) {
 		m_bullet = bullet;
 	}
+
+	//コンポーネントが有効か設定
+	void SetEnable(bool b) {
+		m_enable = b;
+	}
+	bool GetEnable()const {
+		return m_enable;
+	}
+
 protected:
+	bool m_enable = true;
 	BulletGO* m_bullet = nullptr;
 };
 
@@ -65,6 +75,46 @@ public:
 	CVector3 m_vector;
 	//攻撃コリジョン
 	DHCollision m_col;
+};
+
+
+/// <summary>
+/// タイマーコンポーネント
+/// 一定時間後にコンポーネントを有効化・無効化する
+/// </summary>
+/// <param name="timer">設定時間。実行までのフレーム数</param>
+/// <param name="willEnable">trueで設定時間後コンポーネントを有効化。falseなら無効化</param>
+class BD_Timer : public IBulletComponent {
+public:
+	BD_Timer(float timer = 0.0f, bool willEnable = true)
+		: m_timerf(timer), m_willEnable(willEnable)
+	{};
+
+	void Update()override {
+		if (m_timerf < FLT_EPSILON) { return; }
+		//タイマー処理
+		m_timerf = max(0.0f, m_timerf - 1.0f);
+		if (m_timerf < FLT_EPSILON) {
+			for (auto& com : m_components) {
+				com->SetEnable(m_willEnable);
+			}
+		}
+	}
+
+	/// <summary>
+	/// コンポーネントを追加
+	/// </summary>
+	void AddComponent(IBulletComponent* comp) {
+		if (comp) {
+			comp->SetEnable(!m_willEnable);//有効・無効の設定変更
+			m_components.emplace_back(comp);
+		}
+	}
+
+private:
+	float m_timerf = 0.0f;
+	bool m_willEnable = true;
+	std::list<IBulletComponent*> m_components;
 };
 
 /// <summary>

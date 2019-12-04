@@ -48,8 +48,14 @@ void BulletGO::Update() {
 	m_col.SetPos(GetPos());
 	m_col.SetVelocity(m_vector);
 
-	//—Ž‰º‰Á‘¬
-	m_vector = m_vector.GetNorm() * (m_vector.Length() + min(m_vector.y*0.25f, 0.0f));
+	if (m_vector.y > 0.0f) {
+		//ã¸Œ¸‘¬
+		m_vector = m_vector.GetNorm() * (m_vector.Length() + min(-m_vector.y*0.025f, 0.0f));
+	}
+	else {
+		//—Ž‰º‰Á‘¬
+		m_vector = m_vector.GetNorm() * (m_vector.Length() + max(-m_vector.y*0.25f, 0.0f));
+	}
 
 	for (auto& component : m_components) {
 		component->PostUpdate();
