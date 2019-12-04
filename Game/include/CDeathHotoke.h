@@ -50,7 +50,7 @@ public:
 	//ターゲット位置を設定
 	void SetTargetPos(const CVector3& pos) { m_targetPos = pos; }
 	//ターゲット対象設定
-	void SetTargetFu(const IFu* target) { m_target = target; }
+	void SetTargetFu(IFu* target) { m_target = target; }
 
 	//HUDを表示するか設定
 	void SetIsDrawHUD(bool enable) { m_isDrawHUD = enable; }
@@ -58,6 +58,11 @@ public:
 	void SetIsBackMirror(bool isMirror) { m_isBackMirror = isMirror; }
 	
 	//ゲッター//
+
+	//高度を取得(メートル)
+	float GetHeightMeter()const {
+		return GetPos().y / METER;
+	}
 
 	//スケールを取得
 	[[nodiscard]] const CVector3& GetScale()const { return m_scale; }
@@ -74,6 +79,7 @@ public:
 	[[nodiscard]] const CVector3& GetTargetPos() const { return m_targetPos; }
 	//ターゲットを取得
 	[[nodiscard]] const IFu* GetTarget() const { return m_target; }
+	[[nodiscard]] IFu* GetTarget() { return m_target; }
 
 	//パッドの取得
 	[[nodiscard]] const IGamePad* GetPad()const { return m_ptrPad; }
@@ -91,7 +97,7 @@ public:
 
 
 	//落下速度を取得
-	[[nodiscard]] float GetGravity()const { return GRAVITY; }
+	[[nodiscard]] constexpr float GetGravity()const { return GRAVITY; }
 
 private:
 	//重力定数
@@ -132,7 +138,7 @@ private:
 	bool m_isBackMirror = false;//バックミラー状態
 
 	//ターゲット
-	const IFu* m_target = nullptr;
+	IFu* m_target = nullptr;
 	CVector3 m_targetPos;
 };
 

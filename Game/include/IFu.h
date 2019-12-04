@@ -8,6 +8,20 @@ class IFu
 public:
 	//コンストラクタ
 	IFu();
+	//デストラクタ
+	virtual ~IFu() {
+		//死亡フラグを立てて削除を通知する
+		for (auto& flag : m_deleteFlagList) {
+			if (!flag.expired()) {//削除されてなければ
+				*flag.lock() = true;
+			}
+		}
+	}
+
+	//通知用死亡フラグを設定
+	void SetDeleteFlag(std::weak_ptr<bool> flagPtr) {
+		m_deleteFlagList.push_back(flagPtr);
+	}
 
 	//位置を設定
 	void SetPos(const CVector3& pos) { m_pos = pos; UpdateCollisionPos(); }
@@ -51,6 +65,12 @@ public:
 	void SetCollisionFunc(std::function<void(ReferenceCollision*, SuicideObj::CCollisionObj::SCallbackParam&)> func) {
 		m_collisionFunc = func;
 	}
+	/// <summary>
+	/// CollisionFunc(↑)の前に実行する関数
+	/// </summary>
+	void SetPreCollisionFunc(std::function<void(ReferenceCollision*)> func) {
+		m_col.m_reference.m_preCollisionFunc = func;
+	}
 
 	//この喰らい判定を静的オブジェクトとしても初期化するか設定
 	//※当たり判定形状を作成する前に設定してください
@@ -78,6 +98,18 @@ public:
 	std::bitset<enAttributesNum>& GetAttributes() {
 		return m_col.m_reference.attributes;
 	}
+	//喰らい判定の攻撃力を設定
+	void SetDamegePower(float dame) {
+		m_col.m_reference.damege = dame;
+	}
+	//喰らい判定のベロシティパラメータを設定
+	void SetCollisionVelocity(const CVector3& velocity) {
+		m_col.SetVelocity(velocity);
+	}
+	//喰らい判定のパラメータを取得
+	const ReferenceCollision& GetReferenceCollision()const {
+		return m_col.m_reference;
+	}
 
 	//喰らい判定の判定グループを設定
 	void On_OneGroup(unsigned int oneGroup) {
@@ -85,7 +117,7 @@ public:
 	}
 
 	//喰らい判定の位置オフセットを設定
-	void SetCollisionPos(const CVector3& pos) {
+	void SetCollisionPosOffset(const CVector3& pos) {
 		m_colPos = pos;
 		UpdateCollisionPos();
 	}
@@ -117,6 +149,9 @@ private:
 	CVector3 m_colPos;
 	CQuaternion m_colRot;
 	std::function<void(ReferenceCollision*, SuicideObj::CCollisionObj::SCallbackParam&)> m_collisionFunc;
+
+	//通知
+	std::list<std::weak_ptr<bool>> m_deleteFlagList;
 };
 
 /// <summary>

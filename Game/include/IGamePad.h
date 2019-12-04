@@ -95,11 +95,11 @@ public:
 	/// </summary>
 	[[nodiscard]]
 	bool GetLegInput() const {
-		return m_usePad->GetButton(enButtonLT);
+		return m_usePad->GetButton(enButtonLT) || m_usePad->GetButton(enButtonRT);
 	}
 	[[nodiscard]]
 	bool GetLegDown() const {
-		return m_usePad->GetDown(enButtonLT);
+		return m_usePad->GetDown(enButtonLT) || m_usePad->GetDown(enButtonRT);
 	}
 
 private:

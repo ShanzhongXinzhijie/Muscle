@@ -27,9 +27,12 @@ struct ReferenceCollision : public IDW_Class {
 public:	
 	std::bitset<enAttributesNum> attributes;//属性ビットマスク
 	CVector3 position;//位置
+	CVector3 velocity;//ベロシティ
 	CVector3 direction;//方向
 
 	float damege = 0.0f;//ダメージ
+
+	std::function<void(ReferenceCollision*)> m_preCollisionFunc;
 };
 
 /// <summary>
@@ -56,8 +59,9 @@ public:
 	}
 
 	//方向を設定
-	void SetDir(const CVector3& dir) {
-		m_reference.direction = dir;
+	void SetVelocity(const CVector3& vec) {
+		m_reference.velocity = vec;
+		m_reference.direction = vec; m_reference.direction.Normalize();
 	}
 
 	//判定グループを設定
@@ -76,3 +80,13 @@ public:
 	ReferenceCollision m_reference;
 };
 
+namespace DHUtil {
+	/// <summary>
+	/// 体当たりダメージを計算
+	/// </summary>
+	/// <param name="mineVelocity">ダメージを与える側のベロシティ</param>
+	/// <param name="enemyVelocity">くらう側のベロシティ</param>
+	static inline float CalcRamDamege(const CVector3& mineVelocity, const CVector3& enemyVelocity) {
+		return max(0.0f, mineVelocity.GetNorm().Dot(mineVelocity - enemyVelocity));
+	}
+}

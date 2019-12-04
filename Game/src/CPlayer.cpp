@@ -166,12 +166,16 @@ void CPlayer::HUDRender(int HUDNum) {
 		//Žž‘¬
 		kmh = m_hotoke.GetMove().Length()*GetEngine().GetStandardFrameRate()*60.0f*60.0f / METER / 1000.0f;
 		m_HUDFont.DrawFormat(L"%.1f", tdFrontPos - CVector3(0.06f,  0.025f, 0.0f), { 1.0f,1.0f }, kmh);
+		
 		//—Ž‰º‘¬“x
 		kmh = -m_hotoke.GetMove().y*GetEngine().GetStandardFrameRate()*60.0f*60.0f / METER / 1000.0f;
 		if (abs(kmh) < 0.1f) { 
 			kmh = 0.0f; 
 		}
 		m_HUDFont.DrawFormat(L"%.1f", tdFrontPos - CVector3(0.06f, 0.0f, 0.0f), { 1.0f,0.0f }, kmh);
+
+		//‚“x
+		m_HUDFont.DrawFormat(L"%.1f", tdFrontPos - CVector3(-0.06f, 0.025f, 0.0f), { 0.0f,1.0f }, m_hotoke.GetHeightMeter());
 	}
 	
 	CVector3 pos;
