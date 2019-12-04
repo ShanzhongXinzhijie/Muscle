@@ -3,9 +3,11 @@
 #include "CDeathHotoke.h"
 
 void TestAI::Update() {
+	int i = 0;
 	QueryGOs<CDeathHotoke>(L"CDeathHotoke",
 		[&](auto* P) {
 			if (P == m_ptrCore) { return true; }//Ž©•ª
+			if (i == 0) { i++; return true; }
 			//“G‚ÌˆÊ’u‚ð–ÚŽw‚µ‚ÄˆÚ“®
 			m_outputStatus.moveTargetPosition = P->GetPos();
 			m_outputStatus.isMovingToTarget = true;

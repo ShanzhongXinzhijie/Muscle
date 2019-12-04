@@ -196,9 +196,9 @@ void HCon_BirdWing::Update() {
 }
 
 void AICon_BirdWing::Update() {
-	if (m_ptrBody->GetAccel() < 5.0f){
+	//if (m_ptrBody->GetAccel() < 5.0f){
 		m_ptrBody->Accel();
-	}
+	//}
 
 	//–Ú“I’n‚ÖˆÚ“®
 	if (m_ptrCore->GetAIStatus()->isMovingToTarget) {
