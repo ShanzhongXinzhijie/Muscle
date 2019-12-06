@@ -64,6 +64,11 @@ public:
 		return GetPos().y / METER;
 	}
 
+	//スタンしているか?
+	bool GetIsStun()const {
+		return m_stunTimeSec > 0.0f;
+	}
+
 	//スケールを取得
 	[[nodiscard]] const CVector3& GetScale()const { return m_scale; }
 	//移動したベクトルを取得
@@ -100,6 +105,10 @@ public:
 	[[nodiscard]] constexpr float GetGravity()const { return GRAVITY; }
 
 private:
+	//スタン処理
+	void Stun();
+
+private:
 	//重力定数
 	static constexpr float GRAVITY = OneG;
 
@@ -118,6 +127,7 @@ private:
 
 	//ステータス
 	float m_hp = 100.0f;//ヘルス
+	float m_stunTimeSec = 0.0f;//スタン時間
 	enum{enNow,enNext};
 	float m_drag[2] = { 1.0f,1.0f };//抵抗
 	float m_angularDrag[2] = { 1.0f,1.0f };//回転抵抗

@@ -4,7 +4,11 @@
 class CSmoke : private SuicideObj::CParticle<CBillboard>
 {
 public:
-	CSmoke(const CVector3& pos, const CVector3& move, const CVector4& color = CVector4::White());
+	CSmoke(const CVector3& pos, const CVector3& move, 
+		   const CVector4& color = CVector4::White(), 
+		   const CVector3& scale = 200.0f,
+		   const CVector3& scaling = 1.2f
+	);
 
 	void Update()override;
 

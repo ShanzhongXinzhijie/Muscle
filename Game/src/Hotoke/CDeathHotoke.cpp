@@ -79,11 +79,18 @@ void CDeathHotoke::PreUpdate() {
 	m_drag[enNext] = 1.0f;
 	m_angularDrag[enNext] = 1.0f;
 	m_rotatability[enNext] = 1.0f;
+
+	if (GetKeyInput('H')) {
+		m_stunTimeSec = 1.0f;
+	}
 }
 
 void CDeathHotoke::Update() {
 	//AI実行
 	if (m_ai) { m_ai->Update(); }
+
+	//スタン処理
+	Stun();
 
 	//移動適応
 	Move(m_veloxity);
@@ -153,7 +160,19 @@ void CDeathHotoke::Damage(const ReferenceCollision& ref, const CVector3& pos) {
 	//判定あり
 	//逆ソフトパーティクルの血痕
 
-	new CSmoke(pos, ref.direction*-1.0f, { 1.0f,0.0f,0.02f,1.0f });
+	new CSmoke(pos, ref.direction*-1.0f* 40.0f, { 1.0f,0.0f,0.02f,1.0f });
 	new CBlood(pos + CVector3(60.0f - 120.0f*CMath::RandomZeroToOne(), 60.0f - 120.0f*CMath::RandomZeroToOne(), 60.0f - 120.0f*CMath::RandomZeroToOne()), (CVector3::Up() + ref.direction*-1.0f)*50.0f);
 	new CBlood(pos + CVector3(60.0f - 120.0f*CMath::RandomZeroToOne(), 60.0f - 120.0f*CMath::RandomZeroToOne(), 60.0f - 120.0f*CMath::RandomZeroToOne()), (CVector3::Up() + ref.direction*-1.0f)*50.0f);
+}
+
+void CDeathHotoke::Stun() {
+	if (m_stunTimeSec < FLT_EPSILON) {
+		return;
+	}
+	m_stunTimeSec -= GetDeltaTimeSec();
+
+	//錐揉み回転
+	AddAngularVelocity(CVector3::AxisY(), CMath::DegToRad(10.0f));
+	//落下
+	AddVelocity(CVector3::Down()*50.0f);
 }

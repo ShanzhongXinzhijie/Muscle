@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "BP_KaniArm.h"
 #include "BulletKani.h"
+#include"CSmoke.h"
 
 using namespace GameObj;
 
@@ -167,17 +168,37 @@ void BP_KaniArm::PostUTRSUpdate() {
 
 		//チャージ
 		if (m_isCharging[i] && !m_isMachineGunning[i]) {
+			CVector3 offset = CVector3::AxisX()*-40.0f;
+			m_model->GetBoneRot(m_muzzleBoneID[i]).Multiply(offset);
+
 			//ビルボード読み込み
 			std::unique_ptr<CBillboard> billboard = std::make_unique<CBillboard>();
 			billboard->Init(L"Resource/spriteData/smoke.png");
 			billboard->GetModel().InitPostDraw(PostDrawModelRender::enAlpha);
-			billboard->SetPos(m_model->GetBonePos(m_muzzleBoneID[i]));
+			billboard->SetPos(
+				m_model->GetBonePos(m_muzzleBoneID[i])
+				+ CVector3(CMath::RandomZeroToOne(), CMath::RandomZeroToOne(), CMath::RandomZeroToOne())*5.0f
+				+ offset
+			);
+			billboard->SetRot({CVector3::AxisZ(),CMath::PI2*CMath::RandomZeroToOne()});
 			billboard->SetScale(20.0f);
 			//パーティクル化
 			SuicideObj::CParticle<CBillboard>* particle = new SuicideObj::CParticle<CBillboard>(std::move(billboard), MACHINE_GUN_CHARGE_TIME);
-			CVector3 move = CVector3::AxisX()*-40.0f; m_model->GetBoneRot(m_muzzleBoneID[i]).Multiply(move);
+			CVector3 move = offset + m_ptrCore->GetVelocity();
 			particle->SetMove(move);
+			particle->SetRotation({ CVector3::AxisZ(), 0.1f + 0.1f * CMath::RandomZeroToOne() });
 			particle->SetScaling(1.2f);
+			
+			/*CVector3 move = offset + m_ptrCore->GetVelocity();
+			new CSmoke(
+				m_model->GetBonePos(m_muzzleBoneID[i])
+				+ CVector3(CMath::RandomZeroToOne(), CMath::RandomZeroToOne(), CMath::RandomZeroToOne())*5.0f
+				+ offset,
+				move,
+				{ 1.0f,1.0f,1.0f,1.0f },
+				20.0f,
+				2.0f
+			);*/
 		}
 
 		//マシンガン
