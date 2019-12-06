@@ -160,7 +160,7 @@ void CPlayer::HUDRender(int HUDNum) {
 	if (GetKeyInput('F')) { return; }
 
 	CVector3 tdFrontPos = m_cam.CalcScreenPosFromWorldPos(m_cam.GetPos() + m_hotoke.GetFront()*380.0f);
-
+	
 	//速度
 	if (tdFrontPos.z > 0.0f && tdFrontPos.z < 1.0f) {
 		float kmh;
@@ -178,27 +178,37 @@ void CPlayer::HUDRender(int HUDNum) {
 		//高度
 		m_HUDFont.DrawFormat(L"%.1f", tdFrontPos - CVector3(-0.06f, 0.025f, 0.0f), { 0.0f,1.0f }, m_hotoke.GetHeightMeter());
 	}
-	//目標の名前・距離・接近速度・接触秒数
-
+	
 	CVector3 pos;
 
+	//ウイスキーマーク(機体の向き)
+	pos = tdFrontPos;
+	if (pos.z > 0.0f && pos.z < 1.0f) {
+		m_wMark.Draw(pos, 1.0f, 0.5f, 0.0f, m_HUDColor);
+	}
+	
 	//ガンクロス(照準)
 	pos = m_cam.CalcScreenPosFromWorldPos(m_hotoke.GetTargetPos());
 	if (pos.z > 0.0f && pos.z < 1.0f) { 
+		/*if (m_guncrossPosOld.z > 0.0f && m_guncrossPosOld.z < 1.0f) {
+			constexpr int loopmax = 8;
+			for (int i = 0; i < loopmax; i++) {
+				m_guncross.Draw(pos + (m_guncrossPosOld - pos) / loopmax * (i+1), 1.0f, 0.5f, m_isLockon ? 0.0f : CMath::PI_QUARTER, m_HUDColor*CVector4(1.0f, 1.0f, 1.0f, 1.0f));
+			}
+		}*/
 		m_guncross.Draw(pos, 1.0f, 0.5f, m_isLockon ? 0.0f : CMath::PI_QUARTER, m_HUDColor);
 	}
-	
-	//ウイスキーマーク(機体の向き)
-	pos = tdFrontPos;
-	if (pos.z > 0.0f && pos.z < 1.0f) { 
-		m_wMark.Draw(pos, 1.0f, 0.5f, 0.0f, m_HUDColor); 
-	}
+	//m_guncrossPosOld = pos;
+
+	//目標の距離・接近速度・HP・スタミナ
+	//TODO HUDにブラー	
 
 	//ベロシティベクトル(進行方向)
 	if (m_hotoke.GetMove().LengthSq() > 1.0f) {
 		pos = m_cam.CalcScreenPosFromWorldPos(m_hotoke.GetPos() + m_hotoke.GetMove().GetNorm() * (m_cam.GetFar()*0.5f));
 		if (pos.z > 0.0f && pos.z < 1.0f) { m_velocityVector.Draw(pos, 0.75f, 0.5f, 0.0f, m_HUDColor); }
 	}
+	//m_velocityPosOld = pos;
 
 	//バックミラー
 	if (m_cam.GetIsBackMirror()) {

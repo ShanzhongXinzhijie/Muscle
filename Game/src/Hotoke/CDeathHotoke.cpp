@@ -161,8 +161,9 @@ void CDeathHotoke::Damage(const ReferenceCollision& ref, const CVector3& pos) {
 	//逆ソフトパーティクルの血痕
 
 	new CSmoke(pos, ref.direction*-1.0f* 40.0f, { 1.0f,0.0f,0.02f,1.0f });
-	new CBlood(pos + CVector3(60.0f - 120.0f*CMath::RandomZeroToOne(), 60.0f - 120.0f*CMath::RandomZeroToOne(), 60.0f - 120.0f*CMath::RandomZeroToOne()), (CVector3::Up() + ref.direction*-1.0f)*50.0f);
-	new CBlood(pos + CVector3(60.0f - 120.0f*CMath::RandomZeroToOne(), 60.0f - 120.0f*CMath::RandomZeroToOne(), 60.0f - 120.0f*CMath::RandomZeroToOne()), (CVector3::Up() + ref.direction*-1.0f)*50.0f);
+	for (int i = 0; i < 8; i++) {
+		new CBlood(pos + CVector3(60.0f - 120.0f*CMath::RandomZeroToOne(), 60.0f - 120.0f*CMath::RandomZeroToOne(), 60.0f - 120.0f*CMath::RandomZeroToOne()), (CVector3::Up() + ref.direction*-1.0f)*50.0f);
+	}
 }
 
 void CDeathHotoke::Stun() {

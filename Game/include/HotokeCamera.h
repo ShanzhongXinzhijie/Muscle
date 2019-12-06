@@ -199,7 +199,7 @@ private:
 
 	bool m_lock = false;//マウスカーソルの固定設定
 	CVector2 m_mouseSensi = { 4.0f*(1.0f / 1280.0f),4.0f*(1.0f / 1280.0f) };//視点感度(マウス
-	CVector2 m_padSensi = { 0.025f,-0.025f };//視点感度(パッド
+	CVector2 m_padSensi = { 0.05f,-0.05f };//視点感度(パッド
 
 	float m_cameraHeight = 16.45f;//カメラの地面からの高さ
 	
