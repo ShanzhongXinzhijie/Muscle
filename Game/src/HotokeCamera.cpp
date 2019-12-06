@@ -3,6 +3,11 @@
 #include "DemolisherWeapon/physics/CollisionAttr.h"
 
 void HotokeCameraController::Update() {
+
+	//ズームアウト処理
+	m_zoomPercent += m_isZoomOut ? 0.1f : -0.1f;
+	m_zoomPercent = CMath::Clamp(m_zoomPercent, 0.0f, 1.0f);
+
 	if (!m_lock) {
 		//マウスカーソルの動きに連動してカメラ回転
 		m_hotokeCam.RotationCamera(MouseCursor().GetMouseMove()*m_mouseSensi);
@@ -55,6 +60,11 @@ void HotokeCameraController::Update() {
 	}*/
 	m_ptrHotoke->GetRot().Multiply(offsetVec);
 
+	//ズームアウト
+	if (m_zoomPercent > 0.0f) {
+		offsetVec = CVector3(0.f, 400.f, 800.f)*m_zoomPercent;
+	}
+
 	CVector3 start = m_ptrHotoke->GetPos() + offsetVec, end = m_ptrHotoke->GetPos() + offsetVec; 
 	start.y = m_ptrHotoke->GetPos().y; end.y -= m_cameraHeight + 1.0f;
 	btCollisionWorld::AllHitsRayResultCallback callback(start, end);
@@ -75,11 +85,22 @@ void HotokeCameraController::Update() {
 		}
 	}
 	start.y += m_cameraHeight; 
+
+	//位置設定
 	m_hotokeCam.SetPos(start);
 	m_hotokeCam.SetTargetPosOffset(offsetVec*-1.0f);
 
 	//カメラ回転設定
-	m_hotokeCam.SetRot(m_ptrHotoke->GetRot());
+	if (m_zoomPercent > 0.0f) {
+		//ズームアウト時
+		CQuaternion zoomoutRot(CVector3::AxisX(), CMath::PI_HALF/2.0f);
+		zoomoutRot.Concatenate({ CVector3::AxisY(), CMath::PI });
+		m_hotokeCam.SetRot(m_ptrHotoke->GetRot().GetSlerp(m_zoomPercent, m_ptrHotoke->GetRot(), zoomoutRot));
+	}
+	else {
+		//通常
+		m_hotokeCam.SetRot(m_ptrHotoke->GetRot());
+	}
 
 	//カメラ更新
 	m_hotokeCam.Update();

@@ -106,6 +106,10 @@ void CPlayer::Update() {
 		uih = false;
 	}
 
+	//引きカメラ演出
+	m_cam.SetIsZoomout(m_hotoke.GetIsStun());
+	//m_zoomoutCam.Init(m_cam.GetCamera(), m_hotoke.GetIsStun());
+
 	//ロックオン
 	bool isLock = false; float minDistance = 0.0f; 
 	CVector3 outPos; IFu* outFu = nullptr;
@@ -138,7 +142,7 @@ void CPlayer::Update() {
 }
 
 void CPlayer::PostUpdate() {
-	m_hotoke.SetIsBackMirror(m_cam.GetIsBackMirror());
+	m_hotoke.SetIsBackMirror(m_cam.GetIsBackMirror());//ホトケにバックミラー状態を通知
 }
 
 void CPlayer::PostLoopUpdate() {
@@ -149,9 +153,6 @@ void CPlayer::PostLoopUpdate() {
 	CVector3 origin = m_cam.GetPos(); origin += m_hotoke.GetFront()*380.0f;
 	DrawLine3D(origin - m_hotoke.GetLeft()*m_cam.GetFar(), origin + m_hotoke.GetLeft()*m_cam.GetFar(), m_HUDColor, m_playerNum);
 	DrawLine3D(origin - m_hotoke.GetUp()*m_cam.GetFar(), origin + m_hotoke.GetUp()*m_cam.GetFar(), m_HUDColor, m_playerNum);//上方向
-	//origin = m_cam.GetPos(); origin -= m_hotoke.GetFront()*1000.0f;
-	//DrawLine(origin - m_hotoke.GetLeft()*m_cam.GetFar()*2.0f, origin + m_hotoke.GetLeft()*m_cam.GetFar()*2.0f, m_HUDColor);
-	//DrawLine(origin - m_hotoke.GetUp()*m_cam.GetFar()*2.0f, origin + m_hotoke.GetUp()*m_cam.GetFar()*2.0f, m_HUDColor);//上方向
 }
 
 void CPlayer::HUDRender(int HUDNum) {
