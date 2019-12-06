@@ -141,9 +141,20 @@ void CPlayer::PostUpdate() {
 	m_hotoke.SetIsBackMirror(m_cam.GetIsBackMirror());
 }
 
+namespace {
+	const CVector3 outlineOffset = { 0.001f,0.001f,0.0f };
+	constexpr float HPBarLength = 0.4f;
+	const CVector3 HPBarMin = { 0.3f, 0.95f, 0.0f };
+	const CVector3 HPBarMax = { 0.3f + HPBarLength, 0.95f + 0.01f,0.0f };
+}
+
 void CPlayer::PostLoopUpdate() {
 	if (!m_isDrawHUD)return;
 	if (GetKeyInput('F')) { return; }
+
+	//HealthBar
+	DrawQuad2D(HPBarMin - outlineOffset, HPBarMax + outlineOffset, { 1.0f - m_HUDColor.x, 1.0f - m_HUDColor.y, 1.0f - m_HUDColor.z, m_HUDColor.w*0.5f }, m_playerNum);
+	DrawQuad2D(HPBarMin, HPBarMax - CVector3::AxisX()*HPBarLength*(1.0f-m_hotoke.GetHPPer()), m_HUDColor, m_playerNum);
 
 	//グリッド
 	CVector3 origin = m_cam.GetPos(); origin += m_hotoke.GetFront()*380.0f;
@@ -158,6 +169,10 @@ void CPlayer::HUDRender(int HUDNum) {
 	if (!m_isDrawHUD || m_playerNum != HUDNum)return;
 	if (GetKeyInput('F')) { return; }
 
+	//Health
+	m_HUDFont.DrawFormat(L"%.0f/%.0f", HPBarMax + outlineOffset, { 1.0f,0.0f }, m_hotoke.GetHP(), m_hotoke.GetHPMax());
+
+	//期待の向いている方の位置
 	CVector3 tdFrontPos = m_cam.CalcScreenPosFromWorldPos(m_cam.GetPos() + m_hotoke.GetFront()*380.0f);
 	
 	//速度

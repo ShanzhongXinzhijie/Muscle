@@ -64,6 +64,18 @@ public:
 		return GetPos().y / METER;
 	}
 
+	//HPを取得
+	float GetHP()const {
+		return m_hp;
+	}
+	float GetHPMax()const {
+		return HP_MAX;
+	}
+	//HPを取得(％で)
+	float GetHPPer()const {
+		return m_hp / HP_MAX;
+	}
+
 	//スケールを取得
 	[[nodiscard]] const CVector3& GetScale()const { return m_scale; }
 	//移動したベクトルを取得
@@ -117,7 +129,8 @@ private:
 	CQuaternion m_angularVelocity;
 
 	//ステータス
-	float m_hp = 100.0f;//ヘルス
+	static constexpr float HP_MAX = 100.0f;
+	float m_hp = HP_MAX;//ヘルス
 	enum{enNow,enNext};
 	float m_drag[2] = { 1.0f,1.0f };//抵抗
 	float m_angularDrag[2] = { 1.0f,1.0f };//回転抵抗
