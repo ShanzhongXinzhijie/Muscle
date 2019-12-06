@@ -60,6 +60,11 @@ public:
 		GetCameraList().at(num) = &m_camera;
 	}
 
+	//カメラを取得
+	const GameObj::PerspectiveCamera& GetCamera()const {
+		return m_camera;
+	}
+
 	//位置を取得
 	const CVector3& GetPos() {
 		return m_camera.GetPos();
@@ -127,9 +132,10 @@ public:
 		//MouseCursor().SetLockMouseCursor(true);
 		m_lock = true;
 		//マウスカーソルを非表示
-		//MouseCursor().SetShowMouseCursor(false);
+		MouseCursor().SetShowMouseCursor(false);
 	}
 
+	//毎フレームの処理
 	void Update()override;
 
 	//メインカメラに設定
@@ -139,6 +145,22 @@ public:
 	void SetToMainCamera(int num) {
 		GetCameraList().resize(2);
 		m_hotokeCam.SetToMainCamera(num);
+	}
+
+	//ズームアウトモードかどうか設定
+	void SetIsZoomout(bool b) {
+		m_isZoomOut = b;
+		if (m_isZoomOut) {
+			GetEngine().SetStandardFrameRate(5);//TODO
+		}
+		else {
+			GetEngine().SetStandardFrameRate(60);
+		}
+	}
+
+	//カメラを取得
+	const GameObj::PerspectiveCamera& GetCamera()const {
+		return m_hotokeCam.GetCamera();
 	}
 
 	//位置を取得
@@ -171,6 +193,8 @@ public:
 private:
 	HotokeCamera m_hotokeCam;
 
+	bool m_isZoomOut = false;
+	float m_zoomPercent = 0.0f;
 	bool m_isBackMirror = false;//バックミラー状態か？
 
 	bool m_lock = false;//マウスカーソルの固定設定

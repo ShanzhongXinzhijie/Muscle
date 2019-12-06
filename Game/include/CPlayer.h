@@ -2,6 +2,7 @@
 #include"IGamePad.h"
 #include"CDeathHotoke.h"
 #include"HotokeCamera.h"
+#include"ZoomOutCamera.h"
 #include"HUDFont.h"
 
 class CPlayer : public IGameObject
@@ -30,6 +31,7 @@ private:
 	CDeathHotoke m_hotoke;
 	
 	HotokeCameraController m_cam;
+	//ZoomOutCamera m_zoomoutCam;
 	GameObj::PerspectiveCamera m_humanCam;
 
 	AnimationClip m_anim;

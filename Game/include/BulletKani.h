@@ -213,7 +213,11 @@ public:
 
 		//í‚É‰Á‘¬İ’è or –Ú•W•ûŒü‚Æ‚ÌŠp“x‚ªŠJ‚¢‚Ä‚¢‚é
 		if (m_nonAccelRad < FLT_EPSILON || CVector3::AngleOf2NormalizeVector(targetDir,m_bullet->m_vector.GetNorm()) > m_nonAccelRad) {
+			CVector3 beforeVec = m_bullet->m_vector;
 			m_bullet->m_vector += targetDir * m_thrust;
+			if (m_bullet->m_vector.LengthSq() < FLT_EPSILON) {//’â~‚Í‚µ‚È‚¢
+				m_bullet->m_vector = beforeVec;
+			}
 		}
 	}
 

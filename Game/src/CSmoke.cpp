@@ -5,7 +5,7 @@
 bool CSmoke::m_isStaticInited = false;
 Shader CSmoke::m_ps;
 
-CSmoke::CSmoke(const CVector3& pos, const CVector3& move, const CVector4& color)
+CSmoke::CSmoke(const CVector3& pos, const CVector3& move, const CVector4& color, const CVector3& scale, const CVector3& scaling)
 {
 	if (!m_isStaticInited) {//未初期化
 		//ディゾルブシェーダをロード
@@ -39,10 +39,10 @@ CSmoke::CSmoke(const CVector3& pos, const CVector3& move, const CVector4& color)
 	//ステータス
 	//TODO 設定できるように
 	billboard->SetPos(pos);
-	billboard->SetScale(200.0f);
+	billboard->SetScale(scale);
 	billboard->SetRot({ CVector3::AxisZ(),CMath::PI2*CMath::RandomZeroToOne() });
-	SetMove(move*40);
-	SetScaling(1.2f);
+	SetMove(move);
+	SetScaling(scaling);
 
 	//パーティクル再生
 	Play(std::move(billboard), m_maxLifeTime);
