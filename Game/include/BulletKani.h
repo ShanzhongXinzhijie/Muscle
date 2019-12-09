@@ -118,6 +118,15 @@ private:
 };
 
 /// <summary>
+/// ロックオン可能化コンポーネント
+/// </summary>
+class BD_Lockable :public IBulletComponent {
+	void Start()override {
+		m_bullet->SetName(L"LockableObject");		
+	}
+};
+
+/// <summary>
 /// ビームモデルコンポーネント
 /// ※画面分割数を変更した場合作り直す必要がある
 /// </summary>
@@ -184,6 +193,35 @@ private:
 	std::unique_ptr<BeamModel[]> m_model;//モデル
 	float m_radius = 3.0f;//半径
 	CVector3 m_lastDrawPos;//最後に描画した座標
+};
+
+
+/// <summary>
+/// 脚モデルコンポーネント
+/// </summary>
+class BD_LegModel : public IBulletComponent {
+public:
+	//scaleにはホトケのスケールを入れればいいと思うよ
+	BD_LegModel(const CQuaternion& rot, const CVector3& scale) : m_rot(rot), m_scale(scale*5.0f) {}
+
+	void Start()override {
+		//モデル作成
+		m_model.Init(L"Resource/modelData/leg.cmo");
+		m_model.SetPos(m_bullet->GetPos());
+		m_model.SetRot(m_rot);
+		m_model.SetScale(m_scale);
+		//攻撃判定作成
+		m_bullet->m_col.m_collision.CreateSphere(m_bullet->GetPos(), {}, 50.0f*((m_scale.GetMin()+ m_scale.GetMax())*0.5f));
+	}
+	void PostLoopUpdate()override {
+		//モデルの更新
+		m_model.SetPos(m_bullet->GetPos());
+	}
+
+private:
+	CQuaternion m_rot;
+	CVector3 m_scale = 1.0f;
+	GameObj::CSkinModelRender m_model;//モデル
 };
 
 /// <summary>

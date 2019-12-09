@@ -16,11 +16,22 @@ public:
 	//踏みつけ
 	void Stomp();
 	//うんち
-	void Unchi();
+	//void Unchi();
 
 private:
+	//コントローラー
+	IBodyController<BP_HumanLeg>* m_controller = nullptr;
+
 	AnimationClip m_initPose;							//初期ポーズ
 	SkeletonIK::IKSetting* m_ikSetting[enLRNUM] = {};	//IK設定
 	DHCollision m_col[enLRNUM];							//コリジョン
 };
 
+/// <summary>
+/// 人足 #人コントローラー
+/// </summary>
+class HCon_HumanLeg : public IBodyController<BP_HumanLeg> {
+public:
+	using IBodyController::IBodyController;
+	void Update()override;
+};

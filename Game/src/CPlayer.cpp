@@ -162,8 +162,14 @@ void CPlayer::PostLoopUpdate() {
 
 	//グリッド
 	CVector3 origin = m_cam.GetPos(); origin += m_hotoke.GetFront()*380.0f;
-	DrawLine3D(origin - m_hotoke.GetLeft()*m_cam.GetFar(), origin + m_hotoke.GetLeft()*m_cam.GetFar(), m_HUDColor, m_playerNum);
-	DrawLine3D(origin - m_hotoke.GetUp()*m_cam.GetFar(), origin + m_hotoke.GetUp()*m_cam.GetFar(), m_HUDColor, m_playerNum);//上方向
+	//DrawLine3D(origin - m_hotoke.GetLeft()*100.f, origin + m_hotoke.GetLeft()*100.f, m_HUDColor, m_playerNum);
+	//DrawLine3D(origin - m_hotoke.GetUp()*100.f, origin + m_hotoke.GetUp()*100.f, m_HUDColor, m_playerNum);//上方向
+	
+	origin = m_cam.CalcScreenPosFromWorldPos(origin);
+	if (origin.z > 0.0f && origin.z < 1.0f) {
+		DrawLine2D(origin + CVector3(-0.2f, 0.0f, 0.0f), origin + CVector3(0.2f, 0.0f, 0.0f), m_HUDColor, m_playerNum);
+		DrawLine2D(origin + CVector3(0.0f, -0.2f, 0.0f), origin + CVector3(0.0f, 0.2f, 0.0f), m_HUDColor, m_playerNum);
+	}
 }
 
 void CPlayer::HUDRender(int HUDNum) {
@@ -227,6 +233,6 @@ void CPlayer::HUDRender(int HUDNum) {
 
 	//バックミラー
 	if (m_cam.GetIsBackMirror()) {
-		m_HUDFont.Draw(L"((BACK VIEW))", { 0.5f,0.95f }, { 0.5f,0.0f });
+		m_HUDFont.Draw(L"((BACK VIEW))", { 0.5f,0.961f }, { 0.5f,0.0f });
 	}
 }

@@ -27,6 +27,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\CountDown.cpp" />
     <ClCompile Include="src\HUDFont.cpp" />
     <ClCompile Include="src\CBlood.cpp" />
     <ClCompile Include="src\CSmoke.cpp" />
@@ -64,6 +65,7 @@
     <ClCompile Include="src\ZoomOutCamera.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\CountDown.h" />
     <ClInclude Include="include\HUDFont.h" />
     <ClInclude Include="include\CBlood.h" />
     <ClInclude Include="include\CSmoke.h" />
@@ -121,6 +123,7 @@
     <MeshContentTask Include="Asset\modelData\hotoke\manto_test.FBX" />
     <MeshContentTask Include="Asset\modelData\human\human.fbx" />
     <MeshContentTask Include="Asset\modelData\knight.FBX" />
+    <MeshContentTask Include="Asset\modelData\leg.FBX" />
     <MeshContentTask Include="Asset\modelData\miniTree\minitree.fbx" />
     <MeshContentTask Include="Asset\modelData\pinGrass\pinGrass.fbx" />
     <MeshContentTask Include="Asset\modelData\pinGrass\pinGrass2.fbx" />

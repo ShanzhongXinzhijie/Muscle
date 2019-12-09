@@ -266,6 +266,7 @@ void BP_KaniArm::Rocket(enLR lr) {
 	bullet->AddComponent(std::make_unique<BD_Contact>());
 	bullet->AddComponent(std::make_unique<BD_Homing>(m_ptrCore->GetTarget(), 10.0f, 0.0f, 30.0f));
 	bullet->AddComponent(std::make_unique<BD_Brake>(1.0f));
+	bullet->AddComponent(std::make_unique<BD_Lockable>());
 }
 void BP_KaniArm::Lazer(enLR lr) {
 	//グレネード出す

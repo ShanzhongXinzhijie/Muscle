@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "BP_HumanLeg.h"
+#include "BulletKani.h"
 
 using namespace GameObj;
 
@@ -41,9 +42,17 @@ void BP_HumanLeg::InnerStart() {
 			m_col[lr].m_reference.damege = DHUtil::CalcRamDamege(m_col[lr].m_reference.velocity, H->velocity);
 		};
 	}
+
+	//コントローラー
+	if (m_ptrCore->GetPad()) {
+		m_controller = new HCon_HumanLeg(this, m_ptrCore);
+	}
 }
 
 void BP_HumanLeg::Update() {
+	//コントローラーに操作させる
+	if(m_controller)m_controller->Update();
+
 	//足の位置取得
 	float footDistance;
 	footDistance = m_ptrCore->GetPos().y - m_model->GetBonePos(m_ikSetting[0]->tipBone->GetNo()).y;
@@ -83,5 +92,19 @@ void BP_HumanLeg::PostUTRSUpdate() {
 		//接地しているなら抵抗UP
 		m_ptrCore->MulDrag(20.0f + 10.0f*max(0.0f,-m_ptrCore->GetVelocity().y));
 		m_ptrCore->MulRotatability(2.0f+ 1.0f*max(0.0f, -m_ptrCore->GetVelocity().y));//回転力もUP
+	}
+}
+
+void BP_HumanLeg::Stomp() {
+	BulletGO* bullet = new BulletGO(
+		m_ptrCore->GetTargetPos()+ CVector3::Up()*150.0f,
+		CVector3::Down()*5.0f
+	);
+	bullet->AddComponent(std::make_unique<BD_LegModel>(m_ptrCore->GetRot(), m_ptrCore->GetScale()));
+}
+
+void HCon_HumanLeg::Update() {
+	if (m_ptrCore->GetPad()->GetLegDown()) {
+		m_ptrBody->Stomp();
 	}
 }

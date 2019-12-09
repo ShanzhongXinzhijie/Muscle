@@ -151,10 +151,10 @@ public:
 	void SetIsZoomout(bool b) {
 		m_isZoomOut = b;
 		if (m_isZoomOut) {
-			GetEngine().SetStandardFrameRate(5);//TODO
+			//GetEngine().SetStandardFrameRate(5);//TODO
 		}
 		else {
-			GetEngine().SetStandardFrameRate(60);
+			//GetEngine().SetStandardFrameRate(60);
 		}
 	}
 
