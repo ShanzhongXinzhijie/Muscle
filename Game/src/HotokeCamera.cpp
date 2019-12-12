@@ -87,7 +87,7 @@ void HotokeCameraController::Update() {
 	start.y += m_cameraHeight; 
 
 	//ˆÊ’uİ’è
-	m_hotokeCam.SetPos(start);
+	m_hotokeCam.SetPos(start); //m_ptrHotoke->GetPos() + CVector3(400,0,0));
 	m_hotokeCam.SetTargetPosOffset(offsetVec*-1.0f);
 
 	//ƒJƒƒ‰‰ñ“]İ’è

@@ -25,6 +25,7 @@ private:
 	AnimationClip m_initPose;							//初期ポーズ
 	SkeletonIK::IKSetting* m_ikSetting[enLRNUM] = {};	//IK設定
 	DHCollision m_col[enLRNUM];							//コリジョン
+	bool m_isJump = false;
 };
 
 /// <summary>

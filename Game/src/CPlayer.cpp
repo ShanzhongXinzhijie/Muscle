@@ -135,7 +135,7 @@ void CPlayer::Update() {
 		m_hotoke.SetTargetFu(outFu);
 	}
 	else {
-		m_hotoke.SetTargetPos(m_hotoke.GetPos() + (m_cam.GetTargetPoint() - m_hotoke.GetPos()).GetNorm()*15000.0f*0.125f);
+		m_hotoke.SetTargetPos(m_hotoke.GetPos() + m_hotoke.GetTotalVelocity() + (m_cam.GetTargetPoint() - m_hotoke.GetPos()).GetNorm()*15000.0f*0.125f);
 		m_hotoke.SetTargetFu(nullptr);
 	}
 	m_isLockon = isLock;

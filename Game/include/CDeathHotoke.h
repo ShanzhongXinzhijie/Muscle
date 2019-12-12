@@ -31,7 +31,14 @@ public:
 	void HUDRender(int)override;
 
 	//移動量を加える
-	void AddVelocity(const CVector3& vec) { m_veloxity += vec; }//TODO 高さで上昇量下げる?
+	void AddVelocity(const CVector3& vec) { m_veloxity += vec; }
+	void AddLinearVelocity(const CVector3& vec) { m_linearVelocity += vec; }
+	//各要素の絶対値が大きい方をセット
+	void SetMaxLinearVelocity(const CVector3& vec){
+		m_linearVelocity.x = abs(m_linearVelocity.x) > abs(vec.x) ? m_linearVelocity.x : vec.x;
+		m_linearVelocity.y = abs(m_linearVelocity.y) > abs(vec.y) ? m_linearVelocity.y : vec.y;
+		m_linearVelocity.z = abs(m_linearVelocity.z) > abs(vec.z) ? m_linearVelocity.z : vec.z;
+	}
 	//回転量を加える
 	void AddAngularVelocity(const CVector3& axis, float radAngle) { 
 		m_angularVelocity = CQuaternion(axis,radAngle*GetRotatability()) * m_angularVelocity;
@@ -86,7 +93,7 @@ public:
 	//移動したベクトルを取得
 	[[nodiscard]] CVector3 GetMove() const { return GetPos() - m_posOld; }
 	//ベロシティを取得
-	[[nodiscard]] const CVector3& GetVelocity() const { return m_veloxity; }
+	[[nodiscard]] CVector3 GetTotalVelocity() const { return m_veloxity + m_linearVelocity; }
 	//抵抗を取得
 	[[nodiscard]] float GetDrag()const { return m_drag[enNow]; }
 	//回転しやすさを取得
@@ -134,7 +141,7 @@ private:
 	CVector3 m_posOld;
 	
 	//移動量
-	CVector3 m_veloxity;
+	CVector3 m_veloxity, m_linearVelocity;
 	CQuaternion m_angularVelocity;
 
 	//ステータス

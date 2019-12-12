@@ -85,14 +85,26 @@ void BP_HumanLeg::PostUTRSUpdate() {
 	float footDistance;
 	footDistance = m_ptrCore->GetPos().y - m_model->GetBonePos(m_ikSetting[0]->tipBone->GetNo()).y;
 	footDistance = min(footDistance, m_ptrCore->GetPos().y - m_model->GetBonePos(m_ikSetting[1]->tipBone->GetNo()).y);
+	
 	const float modelScale = m_ptrCore->GetScale().y / (0.0188f*2.0f);
 	const float minFootDistance = 20.0f*modelScale, maxFootDistance = 167.0f*modelScale;
 	//ある程度足が縮んでいるなら接地している扱い
 	if (footDistance < maxFootDistance - 1.0f) {
 		//接地しているなら抵抗UP
-		m_ptrCore->MulDrag(20.0f + 10.0f*max(0.0f,-m_ptrCore->GetVelocity().y));
-		m_ptrCore->MulRotatability(2.0f+ 1.0f*max(0.0f, -m_ptrCore->GetVelocity().y));//回転力もUP
+		m_ptrCore->MulDrag(20.0f + 10.0f*max(0.0f,-m_ptrCore->GetTotalVelocity().y));
+		m_ptrCore->MulRotatability(2.0f+ 1.0f*max(0.0f, -m_ptrCore->GetTotalVelocity().y));//回転力もUP
+		//ジャンプ
+		if (m_isJump) {
+			float power = 25.0f + 38.0f*(1.0f - abs((minFootDistance - footDistance) / (minFootDistance - maxFootDistance)));
+			m_ptrCore->SetMaxLinearVelocity(CVector3::Up()*power);
+		}
 	}
+	
+	m_isJump = false;
+}
+
+void BP_HumanLeg::Jump() {
+	m_isJump = true;
 }
 
 void BP_HumanLeg::Stomp() {
@@ -105,6 +117,7 @@ void BP_HumanLeg::Stomp() {
 
 void HCon_HumanLeg::Update() {
 	if (m_ptrCore->GetPad()->GetLegDown()) {
+		m_ptrBody->Jump();
 		m_ptrBody->Stomp();
 	}
 }

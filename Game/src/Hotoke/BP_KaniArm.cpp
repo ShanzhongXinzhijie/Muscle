@@ -184,12 +184,12 @@ void BP_KaniArm::PostUTRSUpdate() {
 			billboard->SetScale(20.0f);
 			//パーティクル化
 			SuicideObj::CParticle<CBillboard>* particle = new SuicideObj::CParticle<CBillboard>(std::move(billboard), MACHINE_GUN_CHARGE_TIME);
-			CVector3 move = offset + m_ptrCore->GetVelocity();
+			CVector3 move = offset + m_ptrCore->GetTotalVelocity();
 			particle->SetMove(move);
 			particle->SetRotation({ CVector3::AxisZ(), 0.1f + 0.1f * CMath::RandomZeroToOne() });
 			particle->SetScaling(1.2f);
 			
-			/*CVector3 move = offset + m_ptrCore->GetVelocity();
+			/*CVector3 move = offset + m_ptrCore->GetTotalVelocity();
 			new CSmoke(
 				m_model->GetBonePos(m_muzzleBoneID[i])
 				+ CVector3(CMath::RandomZeroToOne(), CMath::RandomZeroToOne(), CMath::RandomZeroToOne())*5.0f
@@ -210,7 +210,7 @@ void BP_KaniArm::PostUTRSUpdate() {
 				CVector3 dirNorm = (m_ikSetting[i]->targetPos - m_model->GetBonePos(m_muzzleBoneID[i])).GetNorm();
 				BulletGO* bullet = new BulletGO(
 					m_model->GetBonePos(m_muzzleBoneID[i]),
-					(dirNorm*100.0f)+m_ptrCore->GetVelocity()
+					(dirNorm*100.0f)+m_ptrCore->GetTotalVelocity()
 				);
 				bullet->AddComponent(std::make_unique<BD_BeamModel>(3.0f,L"BLUE"));
 				bullet->AddComponent(std::make_unique<BD_Contact>());
@@ -260,7 +260,7 @@ void BP_KaniArm::Rocket(enLR lr) {
 	CVector3 dirNorm = (m_ikSetting[lr]->targetPos - m_model->GetBonePos(m_muzzleBoneID[lr])).GetNorm();
 	BulletGO* bullet = new BulletGO(
 		m_model->GetBonePos(m_muzzleBoneID[lr]),
-		(dirNorm*100.0f) + m_ptrCore->GetVelocity()
+		(dirNorm*100.0f) + m_ptrCore->GetTotalVelocity()
 	);
 	bullet->AddComponent(std::make_unique<BD_BeamModel>(30.0f, L"Red"));
 	bullet->AddComponent(std::make_unique<BD_Contact>());
@@ -277,7 +277,7 @@ void BP_KaniArm::Lazer(enLR lr) {
 		CVector3 dirNorm = (m_ikSetting[lr]->targetPos - m_model->GetBonePos(m_muzzleBoneID[lr])).GetNorm();
 		BulletGO* bullet = new BulletGO(
 			m_model->GetBonePos(m_muzzleBoneID[lr]),
-			dirNorm*(100.0f + dirNorm.Dot(m_ptrCore->GetVelocity()))
+			dirNorm*(100.0f + dirNorm.Dot(m_ptrCore->GetTotalVelocity()))
 		);
 		bullet->AddComponent(std::make_unique<BD_BeamModel>(3.0f, L"Yellow"));
 		bullet->AddComponent(std::make_unique<BD_ContactExplosion>());

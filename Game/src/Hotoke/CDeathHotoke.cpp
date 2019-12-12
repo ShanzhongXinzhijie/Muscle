@@ -10,11 +10,15 @@
 #include "CSmoke.h"
 #include "CBlood.h"
 
-//namespace {
+namespace {
 //	float CalcAirScale(float heightMeter) {
 //		return max(0.0f, 1.0f - max(0.0f, heightMeter / 1000.0f));//高度1000mに近づくに連れ空気が薄くなる
 //	}
-//}
+
+	CVector3 CalcCollisionPosOffset(const CVector3& scale) {
+		return { 0.0f, 90.0f*(scale.y / (0.0188f*2.0f)), -15.0f*(scale.z / (0.0188f*2.0f)) };
+	}
+}
 
 void CDeathHotoke::SetBodyPart(enBodyParts partsType, std::unique_ptr<IBodyPart> part) {
 	m_parts[partsType] = std::move(part);
@@ -40,7 +44,7 @@ bool CDeathHotoke::Start() {
 	);
 
 	//当たり判定
-	CreateCapsule({}, {}, 60.0f*(m_scale.x / (0.0188f*2.0f)), 100.0f*(m_scale.y / (0.0188f*2.0f)));
+	CreateCapsule({}, {}, 60.0f*(m_scale.x / (0.0188f*2.0f)), 30.0f*(m_scale.y / (0.0188f*2.0f)));
 	SetCollisionFunc(
 		[&](ReferenceCollision* H, SuicideObj::CCollisionObj::SCallbackParam& p) {
 			CVector3 pos = p.m_collisionPoint;
@@ -53,8 +57,9 @@ bool CDeathHotoke::Start() {
 			SetDamegePower(DHUtil::CalcRamDamege(GetReferenceCollision().velocity, H->velocity));
 		}
 	);
-	SetCollisionPosOffset({ 0.0f, 60.0f*(m_scale.y / (0.0188f*2.0f)), -15.0f*(m_scale.z / (0.0188f*2.0f)) });
+	SetCollisionPosOffset(CalcCollisionPosOffset(m_scale));
 	GetAttributes().set(enPhysical);
+	//m_col.m_collision.SetIsHighSpeed(true);//これは高速です	
 
 	//位置初期化	
 	SetPos(CVector3::AxisY()*1000.0f + CVector3::AxisZ()*200.0f);
@@ -93,10 +98,14 @@ void CDeathHotoke::Update() {
 	Stun();
 
 	//移動適応
-	Move(m_veloxity);
+	Move(GetTotalVelocity());
 	SetRot(m_angularVelocity * GetRot());
 	//減速
 	m_veloxity *= 0.5f*(1.0f/m_drag[enNow]);
+	float linearLength = m_linearVelocity.Length();
+	if (linearLength > FLT_EPSILON) {
+		m_linearVelocity *= max(0.0f, linearLength - (1.0f + m_drag[enNow]*0.1f)) / linearLength;
+	}
 	m_angularVelocity.Slerp(0.5f*(1.0f / m_drag[enNow])*(1.0f / m_angularDrag[enNow]), CQuaternion::Identity(), m_angularVelocity);
 	//重力
 	m_veloxity.y -= GRAVITY;
@@ -112,7 +121,7 @@ void CDeathHotoke::Update() {
 	}
 	//コアのTRS更新
 	m_coreModel.SetPRS(GetPos(), GetRot(), m_scale);
-	SetCollisionPosOffset({ 0.0f, 60.0f*(m_scale.y / (0.0188f*2.0f)), -15.0f*(m_scale.z / (0.0188f*2.0f)) });	
+	SetCollisionPosOffset(CalcCollisionPosOffset(m_scale));
 	SetCollisionVelocity(GetMove());
 
 	//パーツのワールド行列更新後Update
