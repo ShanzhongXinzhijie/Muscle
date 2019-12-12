@@ -31,6 +31,7 @@ Shibuya::Shibuya() : m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI>(
 	m_graund.CreateMesh(m_model);
 	m_graund.On_OneGroup(enField);
 	m_graund.GetAttributes().set(enPhysical);
+	m_graund.GetAttributes().set(enGraund);
 	m_graund.SetCollisionFunc(
 		[&](ReferenceCollision* H, SuicideObj::CCollisionObj::SCallbackParam& p) {
 			new CSmoke(p.m_collisionPoint, 0.0f, {0.8f,0.8f ,0.5f,0.8f });

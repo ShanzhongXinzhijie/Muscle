@@ -75,6 +75,10 @@ public:
 	CVector3 m_vector;
 	//攻撃コリジョン
 	DHCollision m_col;
+	//半径
+	float m_radius = 0.0f;
+	//重力
+	float m_gravity = 0.0f;
 };
 
 
@@ -147,6 +151,7 @@ public:
 		m_lastDrawPos = m_bullet->GetPos();
 		//攻撃判定作成
 		m_bullet->m_col.m_collision.CreateSphere(m_bullet->GetPos(), {}, m_radius);
+		m_bullet->m_radius = m_radius;
 	}
 	void PreLoopUpdate()override {
 		//最後に描画した座標更新
@@ -211,7 +216,9 @@ public:
 		m_model.SetRot(m_rot);
 		m_model.SetScale(m_scale);
 		//攻撃判定作成
-		m_bullet->m_col.m_collision.CreateSphere(m_bullet->GetPos(), {}, 50.0f*((m_scale.GetMin()+ m_scale.GetMax())*0.5f));
+		float radius = 50.0f*((m_scale.GetMin() + m_scale.GetMax())*0.5f);
+		m_bullet->m_col.m_collision.CreateSphere(m_bullet->GetPos(), {}, radius);
+		m_bullet->m_radius = radius;
 	}
 	void PostLoopUpdate()override {
 		//モデルの更新
@@ -293,11 +300,17 @@ private:
 /// </summary>
 class BD_Contact : public IBulletComponent {
 public:
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="isContactField">地面と衝突するか?</param>
+	BD_Contact(bool isContactField = true) : m_isContactField (isContactField){}
+
 	void Contact(SuicideObj::CCollisionObj::SCallbackParam& p)override {
 		if (p.EqualName(L"ReferenceCollision")) {
 			//クラス取り出す
 			ReferenceCollision* H = p.GetClass<ReferenceCollision>();
-			if (H->attributes[enPhysical]) {
+			if (H->attributes[enPhysical] && (m_isContactField || !H->attributes[enGraund])) {
 				//物理属性なら死
 				m_bullet->m_lifeTime = 0.0f;
 			}
@@ -305,6 +318,32 @@ public:
 		if (!p.m_isCCollisionObj) {
 			//相手がCCollisionObjじゃなくても死
 			m_bullet->m_lifeTime = 0.0f;
+		}
+	}
+private:
+	bool m_isContactField = true;
+};
+/// <summary>
+/// 跳弾コンポーネント
+/// </summary>
+class BD_Reflect : public IBulletComponent {
+public:
+	void PostUpdate()override {
+		//レイで判定
+		btVector3 rayStart = m_bullet->GetOldPos();
+		btVector3 rayEnd = m_bullet->GetPos();
+		btCollisionWorld::ClosestRayResultCallback gnd_ray(rayStart, rayEnd);
+		GetEngine().GetPhysicsWorld().RayTest(rayStart, rayEnd, gnd_ray);
+		if (gnd_ray.hasHit()) {
+			CVector3 Nvec = m_bullet->m_vector.GetNorm();
+			//入射ベクトル多少ランダムに
+			CVector3 randamAxis = { CMath::RandomZeroToOne() - 0.5f,CMath::RandomZeroToOne() - 0.5f ,CMath::RandomZeroToOne() - 0.5f };
+			randamAxis.Normalize();
+			CQuaternion randamRot(randamAxis, CMath::RandomZeroToOne()*0.5f);
+			randamRot.Multiply(Nvec);
+			//反射ベクトル
+			m_bullet->m_vector = CMath::CalcReflectVector(Nvec, gnd_ray.m_hitNormalWorld) * m_bullet->m_vector.Length();
+			m_bullet->SetPos(gnd_ray.m_hitPointWorld + gnd_ray.m_hitNormalWorld * (m_bullet->m_radius+1.0f));
 		}
 	}
 };

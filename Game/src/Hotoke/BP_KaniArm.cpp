@@ -213,7 +213,9 @@ void BP_KaniArm::PostUTRSUpdate() {
 					(dirNorm*100.0f)+m_ptrCore->GetTotalVelocity()
 				);
 				bullet->AddComponent(std::make_unique<BD_BeamModel>(3.0f,L"BLUE"));
-				bullet->AddComponent(std::make_unique<BD_Contact>());
+				bullet->AddComponent(std::make_unique<BD_Reflect>());
+				bullet->AddComponent(std::make_unique<BD_Contact>(false));
+				//bullet->m_gravity = 0.2f;
 			}
 		}
 

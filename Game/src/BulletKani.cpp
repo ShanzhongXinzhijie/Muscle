@@ -48,6 +48,9 @@ void BulletGO::Update() {
 	m_col.SetPos(GetPos());
 	m_col.SetVelocity(m_vector);
 
+	//èdóÕ
+	m_vector.y -= m_gravity;
+
 	if (m_vector.y > 0.0f) {
 		//è„è∏å∏ë¨
 		m_vector = m_vector.GetNorm() * (m_vector.Length() + min(-m_vector.y*0.025f, 0.0f));
