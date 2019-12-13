@@ -40,9 +40,9 @@ protected:
 /// <summary>
 /// バレットを動かすクラス
 /// </summary>
-class BulletGO : public IGameObject, public IFu {
+class BulletGO : public ILifeObject {
 public:
-	BulletGO(const CVector3& pos, const CVector3& move);
+	BulletGO(const CVector3& pos, const CVector3& move, bool isLockable = false);
 
 	void PreLoopUpdate()override;
 	void Update()override;
@@ -62,6 +62,11 @@ public:
 	/// 旧座標の取得
 	/// </summary>
 	const CVector3& GetOldPos()const { return m_posOld; }
+
+	/// <summary>
+	/// 毎フレームのベロシティの変化を計算
+	/// </summary>
+	static void CalcVelocityUpdate(CVector3& velocity, float gravity);
 
 private:
 	//コンポーネント
@@ -126,7 +131,7 @@ private:
 /// </summary>
 class BD_Lockable :public IBulletComponent {
 	void Start()override {
-		m_bullet->SetName(L"LockableObject");		
+		m_bullet->SetLockable(true);
 	}
 };
 
@@ -313,11 +318,13 @@ public:
 			if (H->attributes[enPhysical] && (m_isContactField || !H->attributes[enGraund])) {
 				//物理属性なら死
 				m_bullet->m_lifeTime = 0.0f;
+				m_bullet->SetPos(p.m_collisionPoint);
 			}
 		}
 		if (!p.m_isCCollisionObj) {
 			//相手がCCollisionObjじゃなくても死
 			m_bullet->m_lifeTime = 0.0f;
+			m_bullet->SetPos(p.m_collisionPoint);
 		}
 	}
 private:
@@ -359,12 +366,14 @@ public:
 			if (H->attributes[enPhysical]) {
 				//物理属性なら死
 				m_bullet->m_lifeTime = 0.0f;
+				m_bullet->SetPos(p.m_collisionPoint);
 				//TODO 爆発生成
 			}
 		}
 		if (!p.m_isCCollisionObj) {
 			//相手がCCollisionObjじゃなくても死
 			m_bullet->m_lifeTime = 0.0f;
+			m_bullet->SetPos(p.m_collisionPoint);
 			//TODO 爆発生成
 		}
 	}

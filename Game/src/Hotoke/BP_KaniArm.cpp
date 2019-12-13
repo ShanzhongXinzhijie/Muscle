@@ -207,10 +207,66 @@ void BP_KaniArm::PostUTRSUpdate() {
 				//マズルエフェクト
 				m_muzzleTime[i] = 2;
 				//発射
-				CVector3 dirNorm = (m_ikSetting[i]->targetPos - m_model->GetBonePos(m_muzzleBoneID[i])).GetNorm();
+				constexpr float bulletSpeed = 100.0f;//弾速
+
+				//偏差射撃
+				float aimPow = 1.0f;
+				CVector3 aimOffset;
+				if (m_ptrCore->GetTarget()) {
+					for (int i = 0; i < 10; i++) {
+						//m_ikSetting[i]->targetPosでいいのか
+						CVector3 vector = (m_ptrCore->GetTargetPos() + aimOffset) - m_model->GetBonePos(m_muzzleBoneID[i]);
+						if (vector.LengthSq() > FLT_EPSILON) {
+							float distance = vector.Length();
+							vector.Normalize();
+							CVector3 toTarget = vector;
+							vector *= bulletSpeed;
+							vector += toTarget * toTarget.Dot(m_ptrCore->GetTotalVelocity());
+
+							distance /= bulletSpeed +toTarget.Dot(m_ptrCore->GetTotalVelocity());
+
+							aimOffset = m_ptrCore->GetTarget()->GetMove()*distance;
+						}
+					}
+				}
+
+				/*
+				//自分の感性を考慮した偏差
+				CVector3 vector = (m_ikSetting[i]->targetPos + aimOffset) - m_model->GetBonePos(m_muzzleBoneID[i]);
+				if (vector.LengthSq() > FLT_EPSILON) {
+					float distance = vector.Length();
+					vector.Normalize(); 
+					CVector3 toTarget = vector;
+					vector *= bulletSpeed;
+					vector += m_ptrCore->GetTotalVelocity();
+
+					//float cnt2 = distance / (bulletSpeed+ toTarget.Dot(m_ptrCore->GetTotalVelocity()));
+
+					int cnt = 0;
+					while (true)
+					{
+						float moveLength = max(0.0f, toTarget.Dot(vector));
+						distance -= moveLength;
+						if (moveLength < 1.0f || distance < 1.0f) {
+							break;
+						}
+						cnt++;
+						BulletGO::CalcVelocityUpdate(vector, 0.0f);
+					}			
+										
+					aimOffset -= (m_ptrCore->GetTotalVelocity() - toTarget * toTarget.Dot(m_ptrCore->GetTotalVelocity()))*cnt;
+				}
+				*/
+
+				aimOffset *= aimPow;
+
+				CVector3 dirNorm = ((m_ikSetting[i]->targetPos + aimOffset) - m_model->GetBonePos(m_muzzleBoneID[i])).GetNorm();
+				CVector3 kansei = m_ptrCore->GetTotalVelocity();
+				kansei = dirNorm * dirNorm.Dot(kansei);
+				kansei.Lerp(aimPow, m_ptrCore->GetTotalVelocity(), kansei);
 				BulletGO* bullet = new BulletGO(
 					m_model->GetBonePos(m_muzzleBoneID[i]),
-					(dirNorm*100.0f)+m_ptrCore->GetTotalVelocity()
+					(dirNorm*bulletSpeed)+kansei
 				);
 				bullet->AddComponent(std::make_unique<BD_BeamModel>(3.0f,L"BLUE"));
 				bullet->AddComponent(std::make_unique<BD_Reflect>());
@@ -266,7 +322,7 @@ void BP_KaniArm::Rocket(enLR lr) {
 	);
 	bullet->AddComponent(std::make_unique<BD_BeamModel>(30.0f, L"Red"));
 	bullet->AddComponent(std::make_unique<BD_Contact>());
-	bullet->AddComponent(std::make_unique<BD_Homing>(m_ptrCore->GetTarget(), 10.0f, 0.0f, 30.0f));
+	bullet->AddComponent(std::make_unique<BD_Homing>(m_ptrCore->GetTargetFu(), 10.0f, 0.0f, 30.0f));
 	bullet->AddComponent(std::make_unique<BD_Brake>(1.0f));
 	bullet->AddComponent(std::make_unique<BD_Lockable>());
 }

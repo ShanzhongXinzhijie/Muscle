@@ -154,13 +154,84 @@ private:
 	std::list<std::weak_ptr<bool>> m_deleteFlagList;
 };
 
+//ロックできるオブジェクトラッパー
+class LockableWrapper : public IQSGameObject {
+public:
+	LockableWrapper(IFu* fu, float* hpPtr = nullptr) : m_fu(fu),m_hpPtr(hpPtr) {
+		SetName(L"LockableObject");
+	}
+
+	//HPを設定
+	void SetHPRef(float* hpPtr) {
+		m_hpPtr = hpPtr;
+	}
+
+	void PreUpdate()override {
+		if (m_isFirstUpdate) {
+			m_isFirstUpdate = false;
+			m_oldPos = m_fu->GetPos();
+			return;
+		}
+		m_move = m_fu->GetPos() - m_oldPos;
+		m_oldPos = m_fu->GetPos();
+	}
+
+	//本体を取得
+	IFu* GetFu() {
+		return m_fu;
+	}
+
+	//移動量を取得
+	const CVector3& GetMove()const {
+		return m_move;
+	}
+
+	//HPを取得
+	float GetHP()const {
+		if (m_hpPtr) {
+			return *m_hpPtr;
+		}
+		return -1.0f;
+	}
+
+private:
+	IFu* m_fu = nullptr;
+
+	bool m_isFirstUpdate = true;
+	CVector3 m_move;//移動量(偏差射撃に使う)
+	CVector3 m_oldPos;
+
+	float* m_hpPtr = nullptr;
+};
+
 /// <summary>
 /// 生命体オブジェクト
 /// </summary>
 class ILifeObject : public IGameObject, public IFu {
 public:
-	ILifeObject() {
-		SetName(L"LockableObject");
+	ILifeObject(bool isLockable = true) {
+		if (isLockable) {
+			m_lockableWrapper = std::make_unique<LockableWrapper>(this);
+		}
+	}
+
+	//HPを設定
+	void SetHPRef(float* hpPtr) {
+		if (m_lockableWrapper) {
+			m_lockableWrapper->SetHPRef(hpPtr);
+		}
+	}
+
+	//ロックオン可能か設定
+	void SetLockable(bool isLockable) {
+		if (isLockable) {
+			if (!m_lockableWrapper) {
+				m_lockableWrapper = std::make_unique<LockableWrapper>(this);
+			}
+		}
+		else {
+			m_lockableWrapper.reset();
+		}
 	}
 
 	//死ぬ
@@ -168,7 +239,7 @@ public:
 		if (m_deathFunc) { m_deathFunc(); }
 		SetEnable(false);//ゲームオブジェクト無効化
 		SetCollisionEnable(false);//当たり判定無効
-		if (m_isAutoDelete) { delete this; }//自殺
+		if (m_isAutoDelete) { delete this; return; }//自殺
 	}
 
 	//死亡時にインスタンスを削除するか設定
@@ -184,4 +255,5 @@ public:
 private:
 	bool m_isAutoDelete = true;
 	std::function<void()> m_deathFunc;
+	std::unique_ptr<LockableWrapper> m_lockableWrapper;
 };

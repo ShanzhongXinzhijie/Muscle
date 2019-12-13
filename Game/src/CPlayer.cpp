@@ -112,18 +112,18 @@ void CPlayer::Update() {
 
 	//ロックオン
 	bool isLock = false; float minDistance = 0.0f; 
-	CVector3 outPos; IFu* outFu = nullptr;
-	QueryGOs<IFu>(L"LockableObject", [&](IFu* go) {
-		if (&m_hotoke == go) { return true; }//自分は除く
+	CVector3 outPos; LockableWrapper* outObj = nullptr;
+	QueryGOs<LockableWrapper>(L"LockableObject", [&](LockableWrapper* go) {
+		if (&m_hotoke == go->GetFu()) { return true; }//自分は除く
 
-		CVector3 screenPos = m_cam.CalcScreenPosFromWorldPos(go->GetCollisionPos());
+		CVector3 screenPos = m_cam.CalcScreenPosFromWorldPos(go->GetFu()->GetCollisionPos());
 		float distance = CVector3(screenPos.x - 0.5f, screenPos.y - 0.5f, 0.0f).LengthSq();
 		//位置が画面内か?
 		if (screenPos.x > 0.0f && screenPos.x < 1.0f && screenPos.y > 0.0f && screenPos.y < 1.0f && screenPos.z > 0.0f && screenPos.z < 1.0f) {
 			if (!isLock || minDistance > distance) {
 				isLock = true;
-				outPos = go->GetCollisionPos();
-				outFu = go;
+				outPos = go->GetFu()->GetCollisionPos();
+				outObj = go;
 				screenPos.z = 0.0f; minDistance = distance;
 			}
 		}
@@ -132,11 +132,11 @@ void CPlayer::Update() {
 	//ホトケのターゲット位置設定
 	if (isLock) {
 		m_hotoke.SetTargetPos(outPos);
-		m_hotoke.SetTargetFu(outFu);
+		m_hotoke.SetTarget(outObj);
 	}
 	else {
 		m_hotoke.SetTargetPos(m_hotoke.GetPos() + m_hotoke.GetTotalVelocity() + (m_cam.GetTargetPoint() - m_hotoke.GetPos()).GetNorm()*15000.0f*0.125f);
-		m_hotoke.SetTargetFu(nullptr);
+		m_hotoke.SetTarget(nullptr);
 	}
 	m_isLockon = isLock;
 }
@@ -149,7 +149,7 @@ namespace {
 	const CVector3 outlineOffset = { 0.001f,0.001f,0.0f };
 	constexpr float HPBarLength = 0.4f;
 	const CVector3 HPBarMin = { 0.3f, 0.95f, 0.0f };
-	const CVector3 HPBarMax = { 0.3f + HPBarLength, 0.95f + 0.01f,0.0f };
+	const CVector3 HPBarMax = { 0.3f + HPBarLength, 0.95f + 0.005f,0.0f };
 }
 
 void CPlayer::PostLoopUpdate() {
@@ -160,6 +160,19 @@ void CPlayer::PostLoopUpdate() {
 	DrawQuad2D(HPBarMin - outlineOffset, HPBarMax + outlineOffset, { 1.0f - m_HUDColor.x, 1.0f - m_HUDColor.y, 1.0f - m_HUDColor.z, m_HUDColor.w*0.5f }, m_playerNum);
 	DrawQuad2D(HPBarMin, HPBarMax - CVector3::AxisX()*HPBarLength*(1.0f-m_hotoke.GetHPPer()), m_HUDColor, m_playerNum);
 
+	//エネミーへのライン
+	QueryGOs<LockableWrapper>(L"LockableObject", [&](LockableWrapper* go) {
+		if (&m_hotoke == go->GetFu()) { return true; }//自分は除く
+
+		CVector3 screenPos = m_cam.CalcScreenPosFromWorldPos(go->GetFu()->GetCollisionPos());
+		
+		//位置が画面内か?
+		if (screenPos.x > 0.0f && screenPos.x < 1.0f && screenPos.y > 0.0f && screenPos.y < 1.0f && screenPos.z > 0.0f && screenPos.z < 1.0f) {
+			DrawLine2D({0.5f}, screenPos, m_HUDColor*CVector4(1.0f, 1.0f, 1.0f, 0.5f), m_playerNum);
+		}
+		return true;
+	});
+	
 	//グリッド
 	CVector3 origin = m_cam.GetPos(); origin += m_hotoke.GetFront()*380.0f;
 	//DrawLine3D(origin - m_hotoke.GetLeft()*100.f, origin + m_hotoke.GetLeft()*100.f, m_HUDColor, m_playerNum);
@@ -167,8 +180,8 @@ void CPlayer::PostLoopUpdate() {
 	
 	origin = m_cam.CalcScreenPosFromWorldPos(origin);
 	if (origin.z > 0.0f && origin.z < 1.0f) {
-		DrawLine2D(origin + CVector3(-0.2f, 0.0f, 0.0f), origin + CVector3(0.2f, 0.0f, 0.0f), m_HUDColor, m_playerNum);
-		DrawLine2D(origin + CVector3(0.0f, -0.2f, 0.0f), origin + CVector3(0.0f, 0.2f, 0.0f), m_HUDColor, m_playerNum);
+		DrawLine2D(origin + CVector3(-0.2f, 0.0f, 0.0f), origin + CVector3(0.2f, 0.0f, 0.0f), m_HUDColor*CVector4(1.0f, 1.0f, 1.0f, 0.5f), m_playerNum);
+		DrawLine2D(origin + CVector3(0.0f, -0.2f, 0.0f), origin + CVector3(0.0f, 0.2f, 0.0f), m_HUDColor*CVector4(1.0f, 1.0f, 1.0f, 0.5f), m_playerNum);
 	}
 }
 
@@ -187,17 +200,17 @@ void CPlayer::HUDRender(int HUDNum) {
 		float kmh;
 		//時速
 		kmh = m_hotoke.GetMove().Length()*GetEngine().GetStandardFrameRate()*60.0f*60.0f / METER / 1000.0f;
-		m_HUDFont.DrawFormat(L"%.1f", tdFrontPos - CVector3(0.06f,  0.025f, 0.0f), { 1.0f,1.0f }, kmh);
+		m_HUDFont.DrawFormat(L"%.0f", tdFrontPos - CVector3(0.06f,  0.025f, 0.0f), { 1.0f,1.0f }, kmh);
 		
 		//落下速度
 		kmh = -m_hotoke.GetMove().y*GetEngine().GetStandardFrameRate()*60.0f*60.0f / METER / 1000.0f;
 		if (abs(kmh) < 0.1f) { 
 			kmh = 0.0f; 
 		}
-		m_HUDFont.DrawFormat(L"%.1f", tdFrontPos - CVector3(0.06f, 0.0f, 0.0f), { 1.0f,0.0f }, kmh);
+		m_HUDFont.DrawFormat(L"%.0f", tdFrontPos - CVector3(0.06f, 0.0f, 0.0f), { 1.0f,0.0f }, kmh);
 
 		//高度
-		m_HUDFont.DrawFormat(L"%.1f", tdFrontPos - CVector3(-0.06f, 0.025f, 0.0f), { 0.0f,1.0f }, m_hotoke.GetHeightMeter());
+		m_HUDFont.DrawFormat(L"%.0f", tdFrontPos - CVector3(-0.06f, 0.025f, 0.0f), { 0.0f,1.0f }, m_hotoke.GetHeightMeter());
 	}
 	
 	CVector3 pos;
@@ -218,6 +231,18 @@ void CPlayer::HUDRender(int HUDNum) {
 			}
 		}*/
 		m_guncross.Draw(pos, 1.0f, 0.5f, m_isLockon ? 0.0f : CMath::PI_QUARTER, m_HUDColor);
+		if (m_isLockon) {
+			//ステータス
+			//HP
+			if (m_hotoke.GetTarget()->GetHP() > 0.0f) {
+				m_HUDFont.DrawFormat(L"%.0f", pos - CVector3(0.0f, 0.025f, 0.0f), { 0.5f,1.5f }, m_hotoke.GetTarget()->GetHP());
+			}
+			//距離(m)
+			CVector2 motoScale = m_HUDFont.GetScale();
+			m_HUDFont.SetScale(motoScale*0.75f);
+			m_HUDFont.DrawFormat(L"%.0f", pos - CVector3(0.0f, -0.025f, 0.0f), { 0.5f,0.0f }, (m_hotoke.GetTargetFu()->GetPos() - m_hotoke.GetPos()).Length() / METER);
+			m_HUDFont.SetScale(motoScale);
+		}
 	}
 	//m_guncrossPosOld = pos;
 

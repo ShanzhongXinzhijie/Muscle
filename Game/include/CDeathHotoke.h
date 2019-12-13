@@ -14,6 +14,7 @@ public:
 		: m_playerNum(playernum),m_ptrPad(ptrPad),m_isDrawHUD(isDrawHUD), m_ptrHUDFont(ptrFont),m_ai(std::move(AI))
 	{
 		SetName(L"CDeathHotoke");
+		SetHPRef(&m_hp);
 	}
 
 	//ボディパーツの種類
@@ -57,7 +58,7 @@ public:
 	//ターゲット位置を設定
 	void SetTargetPos(const CVector3& pos) { m_targetPos = pos; }
 	//ターゲット対象設定
-	void SetTargetFu(IFu* target) { m_target = target; }
+	void SetTarget(LockableWrapper* target) { m_target = target; }
 
 	//HUDを表示するか設定
 	void SetIsDrawHUD(bool enable) { m_isDrawHUD = enable; }
@@ -102,8 +103,25 @@ public:
 	//ターゲット位置を取得
 	[[nodiscard]] const CVector3& GetTargetPos() const { return m_targetPos; }
 	//ターゲットを取得
-	[[nodiscard]] const IFu* GetTarget() const { return m_target; }
-	[[nodiscard]] IFu* GetTarget() { return m_target; }
+	[[nodiscard]] const LockableWrapper* GetTarget() const {
+		return m_target;
+	}
+	[[nodiscard]] const IFu* GetTargetFu() const { 
+		if (m_target) {
+			return m_target->GetFu();
+		}
+		else {
+			return nullptr;
+		}
+	}
+	[[nodiscard]] IFu* GetTargetFu() { 
+		if (m_target) {
+			return m_target->GetFu();
+		}
+		else {
+			return nullptr;
+		}
+	}
 
 	//パッドの取得
 	[[nodiscard]] const IGamePad* GetPad()const { return m_ptrPad; }
@@ -168,7 +186,7 @@ private:
 	bool m_isBackMirror = false;//バックミラー状態
 
 	//ターゲット
-	IFu* m_target = nullptr;
+	LockableWrapper* m_target = nullptr;
 	CVector3 m_targetPos;
 };
 
