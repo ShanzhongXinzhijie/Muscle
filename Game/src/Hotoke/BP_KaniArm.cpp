@@ -213,7 +213,7 @@ void BP_KaniArm::PostUTRSUpdate() {
 				float aimPow = 1.0f;
 				CVector3 aimOffset;
 				if (m_ptrCore->GetTarget()) {
-					for (int i = 0; i < 10; i++) {
+					for (int i2 = 0; i2 < 10; i2++) {
 						//m_ikSetting[i]->targetPos‚Å‚¢‚¢‚Ì‚©
 						CVector3 vector = (m_ptrCore->GetTargetPos() + aimOffset) - m_model->GetBonePos(m_muzzleBoneID[i]);
 						if (vector.LengthSq() > FLT_EPSILON) {
