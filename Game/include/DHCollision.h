@@ -13,6 +13,7 @@ enum enCollisionGroups {
 //ƒRƒŠƒWƒ‡ƒ“‚Ì‘®«
 enum enCollisionAttributes {
 	enPhysical,
+	enGraund,
 	enFlame,
 	enWind,
 	enWater,

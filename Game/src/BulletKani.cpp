@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "BulletKani.h"
 
-BulletGO::BulletGO(const CVector3& pos, const CVector3& move)
-	: m_vector(move)
+BulletGO::BulletGO(const CVector3& pos, const CVector3& move, bool isLockable)
+	: m_vector(move), ILifeObject(isLockable)
 {
 	SetPos(pos), m_posOld = GetPos();
 	
@@ -41,24 +41,32 @@ void BulletGO::Update() {
 	//寿命処理
 	m_lifeTime -= FRAME_PER_SECOND;
 	if (m_lifeTime < FLT_EPSILON) {
-		delete this; return;
+		Death(); return;
 	}
 
 	//コリジョン更新
 	m_col.SetPos(GetPos());
 	m_col.SetVelocity(m_vector);
 
-	if (m_vector.y > 0.0f) {
-		//上昇減速
-		m_vector = m_vector.GetNorm() * (m_vector.Length() + min(-m_vector.y*0.025f, 0.0f));
-	}
-	else {
-		//落下加速
-		m_vector = m_vector.GetNorm() * (m_vector.Length() + max(-m_vector.y*0.25f, 0.0f));
-	}
+	//ベロシティ変更
+	CalcVelocityUpdate(m_vector, m_gravity);
 
 	for (auto& component : m_components) {
 		component->PostUpdate();
+	}
+}
+
+void BulletGO::CalcVelocityUpdate(CVector3& velocity, float gravity) {
+	//重力
+	velocity.y -= gravity;
+
+	if (velocity.y > 0.0f) {
+		//上昇減速
+		velocity = velocity.GetNorm() * (velocity.Length() + min(-velocity.y*0.025f, 0.0f));
+	}
+	else {
+		//落下加速
+		velocity = velocity.GetNorm() * (velocity.Length() + max(-velocity.y*0.25f, 0.0f));
 	}
 }
 

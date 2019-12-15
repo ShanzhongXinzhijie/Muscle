@@ -30,6 +30,7 @@ bool Ari::Start() {
 		}
 	);
 	GetAttributes().set(enPhysical);
+	//m_col.m_collision.SetIsHighSpeed(true);//Ç±ÇÍÇÕçÇë¨Ç≈Ç∑	
 
 	return true;
 }

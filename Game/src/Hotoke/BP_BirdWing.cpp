@@ -96,7 +96,7 @@ void BP_BirdWing::Draw2D() {
 	if (!m_ptrCore->GetIsDrawHUD()) { return; }
 
 	//加速
-	m_ptrCore->GetFont()->DrawFormat(L"ACL(per): %.1f", { 0.0f,0.85f },0.0f, m_accel / 20.0f*100.0f);
+	//m_ptrCore->GetFont()->DrawFormat(L"ACL(per): %.1f", { 0.0f,0.85f },0.0f, m_accel / 20.0f*100.0f);
 
 	//ブレーキ表示
 	if (m_isBraking) {

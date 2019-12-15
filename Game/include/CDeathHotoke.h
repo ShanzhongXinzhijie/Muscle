@@ -14,6 +14,7 @@ public:
 		: m_playerNum(playernum),m_ptrPad(ptrPad),m_isDrawHUD(isDrawHUD), m_ptrHUDFont(ptrFont),m_ai(std::move(AI))
 	{
 		SetName(L"CDeathHotoke");
+		SetHPRef(&m_hp);
 	}
 
 	//ボディパーツの種類
@@ -31,7 +32,14 @@ public:
 	void HUDRender(int)override;
 
 	//移動量を加える
-	void AddVelocity(const CVector3& vec) { m_veloxity += vec; }//TODO 高さで上昇量下げる?
+	void AddVelocity(const CVector3& vec) { m_veloxity += vec; }
+	void AddLinearVelocity(const CVector3& vec) { m_linearVelocity += vec; }
+	//各要素の絶対値が大きい方をセット
+	void SetMaxLinearVelocity(const CVector3& vec){
+		m_linearVelocity.x = abs(m_linearVelocity.x) > abs(vec.x) ? m_linearVelocity.x : vec.x;
+		m_linearVelocity.y = abs(m_linearVelocity.y) > abs(vec.y) ? m_linearVelocity.y : vec.y;
+		m_linearVelocity.z = abs(m_linearVelocity.z) > abs(vec.z) ? m_linearVelocity.z : vec.z;
+	}
 	//回転量を加える
 	void AddAngularVelocity(const CVector3& axis, float radAngle) { 
 		m_angularVelocity = CQuaternion(axis,radAngle*GetRotatability()) * m_angularVelocity;
@@ -50,7 +58,7 @@ public:
 	//ターゲット位置を設定
 	void SetTargetPos(const CVector3& pos) { m_targetPos = pos; }
 	//ターゲット対象設定
-	void SetTargetFu(IFu* target) { m_target = target; }
+	void SetTarget(LockableWrapper* target) { m_target = target; }
 
 	//HUDを表示するか設定
 	void SetIsDrawHUD(bool enable) { m_isDrawHUD = enable; }
@@ -87,7 +95,7 @@ public:
 	//移動したベクトルを取得
 	[[nodiscard]] CVector3 GetMove() const { return GetPos() - m_posOld; }
 	//ベロシティを取得
-	[[nodiscard]] const CVector3& GetVelocity() const { return m_veloxity; }
+	[[nodiscard]] CVector3 GetTotalVelocity() const { return m_veloxity + m_linearVelocity; }
 	//抵抗を取得
 	[[nodiscard]] float GetDrag()const { return m_drag[enNow]; }
 	//回転しやすさを取得
@@ -96,8 +104,25 @@ public:
 	//ターゲット位置を取得
 	[[nodiscard]] const CVector3& GetTargetPos() const { return m_targetPos; }
 	//ターゲットを取得
-	[[nodiscard]] const IFu* GetTarget() const { return m_target; }
-	[[nodiscard]] IFu* GetTarget() { return m_target; }
+	[[nodiscard]] const LockableWrapper* GetTarget() const {
+		return m_target;
+	}
+	[[nodiscard]] const IFu* GetTargetFu() const { 
+		if (m_target) {
+			return m_target->GetFu();
+		}
+		else {
+			return nullptr;
+		}
+	}
+	[[nodiscard]] IFu* GetTargetFu() { 
+		if (m_target) {
+			return m_target->GetFu();
+		}
+		else {
+			return nullptr;
+		}
+	}
 
 	//パッドの取得
 	[[nodiscard]] const IGamePad* GetPad()const { return m_ptrPad; }
@@ -135,7 +160,7 @@ private:
 	CVector3 m_posOld;
 	
 	//移動量
-	CVector3 m_veloxity;
+	CVector3 m_veloxity, m_linearVelocity;
 	CQuaternion m_angularVelocity;
 
 	//ステータス
@@ -162,7 +187,7 @@ private:
 	bool m_isBackMirror = false;//バックミラー状態
 
 	//ターゲット
-	IFu* m_target = nullptr;
+	LockableWrapper* m_target = nullptr;
 	CVector3 m_targetPos;
 };
 

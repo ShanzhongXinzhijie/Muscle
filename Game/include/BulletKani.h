@@ -40,9 +40,9 @@ protected:
 /// <summary>
 /// バレットを動かすクラス
 /// </summary>
-class BulletGO : public IGameObject, public IFu {
+class BulletGO : public ILifeObject {
 public:
-	BulletGO(const CVector3& pos, const CVector3& move);
+	BulletGO(const CVector3& pos, const CVector3& move, bool isLockable = false);
 
 	void PreLoopUpdate()override;
 	void Update()override;
@@ -63,6 +63,11 @@ public:
 	/// </summary>
 	const CVector3& GetOldPos()const { return m_posOld; }
 
+	/// <summary>
+	/// 毎フレームのベロシティの変化を計算
+	/// </summary>
+	static void CalcVelocityUpdate(CVector3& velocity, float gravity);
+
 private:
 	//コンポーネント
 	std::vector<std::unique_ptr<IBulletComponent>> m_components;	
@@ -75,6 +80,10 @@ public:
 	CVector3 m_vector;
 	//攻撃コリジョン
 	DHCollision m_col;
+	//半径
+	float m_radius = 0.0f;
+	//重力
+	float m_gravity = 0.0f;
 };
 
 
@@ -118,6 +127,15 @@ private:
 };
 
 /// <summary>
+/// ロックオン可能化コンポーネント
+/// </summary>
+class BD_Lockable :public IBulletComponent {
+	void Start()override {
+		m_bullet->SetLockable(true);
+	}
+};
+
+/// <summary>
 /// ビームモデルコンポーネント
 /// ※画面分割数を変更した場合作り直す必要がある
 /// </summary>
@@ -138,6 +156,7 @@ public:
 		m_lastDrawPos = m_bullet->GetPos();
 		//攻撃判定作成
 		m_bullet->m_col.m_collision.CreateSphere(m_bullet->GetPos(), {}, m_radius);
+		m_bullet->m_radius = m_radius;
 	}
 	void PreLoopUpdate()override {
 		//最後に描画した座標更新
@@ -184,6 +203,37 @@ private:
 	std::unique_ptr<BeamModel[]> m_model;//モデル
 	float m_radius = 3.0f;//半径
 	CVector3 m_lastDrawPos;//最後に描画した座標
+};
+
+
+/// <summary>
+/// 脚モデルコンポーネント
+/// </summary>
+class BD_LegModel : public IBulletComponent {
+public:
+	//scaleにはホトケのスケールを入れればいいと思うよ
+	BD_LegModel(const CQuaternion& rot, const CVector3& scale) : m_rot(rot), m_scale(scale*5.0f) {}
+
+	void Start()override {
+		//モデル作成
+		m_model.Init(L"Resource/modelData/leg.cmo");
+		m_model.SetPos(m_bullet->GetPos());
+		m_model.SetRot(m_rot);
+		m_model.SetScale(m_scale);
+		//攻撃判定作成
+		float radius = 50.0f*((m_scale.GetMin() + m_scale.GetMax())*0.5f);
+		m_bullet->m_col.m_collision.CreateSphere(m_bullet->GetPos(), {}, radius);
+		m_bullet->m_radius = radius;
+	}
+	void PostLoopUpdate()override {
+		//モデルの更新
+		m_model.SetPos(m_bullet->GetPos());
+	}
+
+private:
+	CQuaternion m_rot;
+	CVector3 m_scale = 1.0f;
+	GameObj::CSkinModelRender m_model;//モデル
 };
 
 /// <summary>
@@ -255,18 +305,52 @@ private:
 /// </summary>
 class BD_Contact : public IBulletComponent {
 public:
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="isContactField">地面と衝突するか?</param>
+	BD_Contact(bool isContactField = true) : m_isContactField (isContactField){}
+
 	void Contact(SuicideObj::CCollisionObj::SCallbackParam& p)override {
 		if (p.EqualName(L"ReferenceCollision")) {
 			//クラス取り出す
 			ReferenceCollision* H = p.GetClass<ReferenceCollision>();
-			if (H->attributes[enPhysical]) {
+			if (H->attributes[enPhysical] && (m_isContactField || !H->attributes[enGraund])) {
 				//物理属性なら死
 				m_bullet->m_lifeTime = 0.0f;
+				m_bullet->SetPos(p.m_collisionPoint);
 			}
 		}
 		if (!p.m_isCCollisionObj) {
 			//相手がCCollisionObjじゃなくても死
 			m_bullet->m_lifeTime = 0.0f;
+			m_bullet->SetPos(p.m_collisionPoint);
+		}
+	}
+private:
+	bool m_isContactField = true;
+};
+/// <summary>
+/// 跳弾コンポーネント
+/// </summary>
+class BD_Reflect : public IBulletComponent {
+public:
+	void PostUpdate()override {
+		//レイで判定
+		btVector3 rayStart = m_bullet->GetOldPos();
+		btVector3 rayEnd = m_bullet->GetPos();
+		btCollisionWorld::ClosestRayResultCallback gnd_ray(rayStart, rayEnd);
+		GetEngine().GetPhysicsWorld().RayTest(rayStart, rayEnd, gnd_ray);
+		if (gnd_ray.hasHit()) {
+			CVector3 Nvec = m_bullet->m_vector.GetNorm();
+			//入射ベクトル多少ランダムに
+			CVector3 randamAxis = { CMath::RandomZeroToOne() - 0.5f,CMath::RandomZeroToOne() - 0.5f ,CMath::RandomZeroToOne() - 0.5f };
+			randamAxis.Normalize();
+			CQuaternion randamRot(randamAxis, CMath::RandomZeroToOne()*0.5f);
+			randamRot.Multiply(Nvec);
+			//反射ベクトル
+			m_bullet->m_vector = CMath::CalcReflectVector(Nvec, gnd_ray.m_hitNormalWorld) * m_bullet->m_vector.Length();
+			m_bullet->SetPos(gnd_ray.m_hitPointWorld + gnd_ray.m_hitNormalWorld * (m_bullet->m_radius+1.0f));
 		}
 	}
 };
@@ -282,12 +366,14 @@ public:
 			if (H->attributes[enPhysical]) {
 				//物理属性なら死
 				m_bullet->m_lifeTime = 0.0f;
+				m_bullet->SetPos(p.m_collisionPoint);
 				//TODO 爆発生成
 			}
 		}
 		if (!p.m_isCCollisionObj) {
 			//相手がCCollisionObjじゃなくても死
 			m_bullet->m_lifeTime = 0.0f;
+			m_bullet->SetPos(p.m_collisionPoint);
 			//TODO 爆発生成
 		}
 	}

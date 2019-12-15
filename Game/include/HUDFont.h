@@ -16,6 +16,12 @@ public:
 	void SetAlpha(float alpha) { m_color.w = alpha; }
 
 	/// <summary>
+	/// スケールを設定
+	/// </summary>
+	void SetScale(const CVector2& scale) { m_scale = scale; }
+	const CVector2& GetScale() { return m_scale; }
+
+	/// <summary>
 	/// 色を取得
 	/// </summary>
 	const CVector4& GetColor()const { return m_color; }
