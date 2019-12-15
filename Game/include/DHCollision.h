@@ -31,6 +31,7 @@ public:
 	CVector3 direction;//方向
 
 	float damege = 0.0f;//ダメージ
+	float stunTimeSec = 0.0f;//スタン秒数
 
 	std::function<void(ReferenceCollision*)> m_preCollisionFunc;
 };
@@ -81,12 +82,20 @@ public:
 };
 
 namespace DHUtil {
+	struct RamReturn {
+		RamReturn() = default;
+		RamReturn(float p_damege, float p_stunSec) : damege(p_damege), stunSec(p_stunSec) {};
+		float damege = 0.0f;
+		float stunSec = 0.0f;
+	};
 	/// <summary>
 	/// 体当たりダメージを計算
 	/// </summary>
 	/// <param name="mineVelocity">ダメージを与える側のベロシティ</param>
 	/// <param name="enemyVelocity">くらう側のベロシティ</param>
-	static inline float CalcRamDamege(const CVector3& mineVelocity, const CVector3& enemyVelocity) {
-		return max(0.0f, mineVelocity.GetNorm().Dot(mineVelocity - enemyVelocity));
+	/// <returns>ダメージとスタン値</returns>
+	static inline RamReturn CalcRamDamege(const CVector3& mineVelocity, const CVector3& enemyVelocity) {
+		float damege = max(0.0f, mineVelocity.GetNorm().Dot(mineVelocity - enemyVelocity));
+		return damege > 10.0f ? RamReturn(damege, 1.0f) : RamReturn(0.0f, 0.0f);
 	}
 }

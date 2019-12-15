@@ -49,7 +49,7 @@ Shibuya::Shibuya() : m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI>(
 			mat->SetAlbedoTexture(tex.Get());
 			mat->SetTriPlanarMappingPS();
 			mat->SetTriPlanarMappingUVScale(0.002f);
-			mat->SetShininess(m_shinnes);
+			mat->SetShininess(0.3f);// m_shinnes);
 		}
 	);
 
@@ -217,23 +217,23 @@ void Shibuya::Update() {
 	//TODO ’n–Ê‚ð•ªŠ„‚µ‚Ä•Ï‰»‚ ‚Á‚½‚à‚Ì‚Ì‚ÝXV‚Æ‚©
 	//m_phyStaticObject.GetMeshCollider()->GetMeshShape()->buildOptimizedBvh();
 
-	if (GetKeyDown(VK_UP)) { m_shinnes += 0.01f; }
-	if (GetKeyDown(VK_DOWN)) { m_shinnes -= 0.01f; }
+	//if (GetKeyDown(VK_UP)) { m_shinnes += 0.01f; }
+	//if (GetKeyDown(VK_DOWN)) { m_shinnes -= 0.01f; }
 }
 
-void Shibuya::PostRender() {
-	m_font.DrawFormat(L"%.2f", {0.f,0.3f}, {}, m_shinnes);
-	m_model.GetSkinModel().FindMaterialSetting(
-		[&](MaterialSetting* mat) {
-			if (GetKeyInput(VK_LEFT)) {
-				mat->SetShininess(0.0f);
-			}
-			else {
-				mat->SetShininess(m_shinnes);
-			}
-		}
-	);
-}
+//void Shibuya::PostRender() {
+//	m_font.DrawFormat(L"%.2f", {0.f,0.3f}, {}, m_shinnes);
+//	m_model.GetSkinModel().FindMaterialSetting(
+//		[&](MaterialSetting* mat) {
+//			if (GetKeyInput(VK_LEFT)) {
+//				mat->SetShininess(0.0f);
+//			}
+//			else {
+//				mat->SetShininess(m_shinnes);
+//			}
+//		}
+//	);
+//}
 
 void Shibuya::PostLoopUpdate() {
 	//Ž²

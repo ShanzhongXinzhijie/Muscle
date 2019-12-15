@@ -102,6 +102,10 @@ public:
 	void SetDamegePower(float dame) {
 		m_col.m_reference.damege = dame;
 	}
+	//喰らい判定のスタン秒数を設定
+	void SetStunSec(float sec) {
+		m_col.m_reference.stunTimeSec = sec;
+	}
 	//喰らい判定のベロシティパラメータを設定
 	void SetCollisionVelocity(const CVector3& velocity) {
 		m_col.SetVelocity(velocity);

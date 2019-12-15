@@ -42,15 +42,20 @@ bool CDeathHotoke::Start() {
 	//当たり判定
 	CreateCapsule({}, {}, 60.0f*(m_scale.x / (0.0188f*2.0f)), 100.0f*(m_scale.y / (0.0188f*2.0f)));
 	SetCollisionFunc(
-		[&](ReferenceCollision* H, SuicideObj::CCollisionObj::SCallbackParam& p) {
-			CVector3 pos = p.m_collisionPoint;
-			Damage(*H,pos);
+		[&](ReferenceCollision* H, SuicideObj::CCollisionObj::SCallbackParam& p) {			
+			//ダメージ
+			Damage(*H, p.m_collisionPoint);
+			//スタン
+			m_stunTimeSec = max(m_stunTimeSec,H->stunTimeSec);
 		}
 	);
 	SetPreCollisionFunc(
 		[&](ReferenceCollision* H) {
-			//体当たりダメージ			
-			SetDamegePower(DHUtil::CalcRamDamege(GetReferenceCollision().velocity, H->velocity));
+			//体当たり
+			auto[damege,stunSec] = DHUtil::CalcRamDamege(GetReferenceCollision().velocity, H->velocity);
+			SetDamegePower(damege);//ダメージ	
+			SetStunSec(stunSec);//スタン秒数			
+			//TODO 体当たりの跳ね返り 多段ヒット
 		}
 	);
 	SetCollisionPosOffset({ 0.0f, 60.0f*(m_scale.y / (0.0188f*2.0f)), -15.0f*(m_scale.z / (0.0188f*2.0f)) });
@@ -79,10 +84,6 @@ void CDeathHotoke::PreUpdate() {
 	m_drag[enNext] = 1.0f;
 	m_angularDrag[enNext] = 1.0f;
 	m_rotatability[enNext] = 1.0f;
-
-	if (GetKeyInput('H')) {
-		m_stunTimeSec = 1.0f;
-	}
 }
 
 void CDeathHotoke::Update() {
@@ -153,24 +154,35 @@ void CDeathHotoke::Damage(const ReferenceCollision& ref, const CVector3& pos) {
 	if (ref.damege < FLT_EPSILON) { return; }//ノーダメージ
 
 	m_hp -= ref.damege;
-
-	//TODO
-	//出血エフェクト
-	//IFu継承をパーティクル化
-	//判定あり
-	//逆ソフトパーティクルの血痕
-
+	
+	//血煙
 	new CSmoke(pos, ref.direction*-1.0f* 40.0f, { 1.0f,0.0f,0.02f,1.0f });
+	//血飛沫
+	int reverseBloodNum = CMath::RandomInt() % 3;//逆方向飛沫の数(0~2)
 	for (int i = 0; i < 8; i++) {
-		new CBlood(pos + CVector3(60.0f - 120.0f*CMath::RandomZeroToOne(), 60.0f - 120.0f*CMath::RandomZeroToOne(), 60.0f - 120.0f*CMath::RandomZeroToOne()), (CVector3::Up() + ref.direction*-1.0f)*50.0f);
+		CVector3 move;
+		if (i < reverseBloodNum) {
+			//逆向き出血
+			move = (CVector3::Up() + ref.direction)*(50.0f + 50.0f*CMath::RandomZeroToOne());
+		}
+		else {
+			//通常方向
+			move = (CVector3::Up() + ref.direction*-1.0f)*(50.0f + 50.0f*CMath::RandomZeroToOne());
+		}
+		new CBlood(
+			//位置
+			pos + CVector3(60.0f - 120.0f*CMath::RandomZeroToOne(), 60.0f - 120.0f*CMath::RandomZeroToOne(), 60.0f - 120.0f*CMath::RandomZeroToOne()),
+			//移動
+			move
+		);
 	}
 }
 
 void CDeathHotoke::Stun() {
-	if (m_stunTimeSec < FLT_EPSILON) {
+	if (!GetIsStun()) {//スタンしてない
 		return;
 	}
-	m_stunTimeSec -= GetDeltaTimeSec();
+	m_stunTimeSec -= FRAME_PER_SECOND;
 
 	//錐揉み回転
 	AddAngularVelocity(CVector3::AxisY(), CMath::DegToRad(10.0f));

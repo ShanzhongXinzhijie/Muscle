@@ -100,6 +100,7 @@
     <ClInclude Include="include\TpsCamera.h" />
     <ClInclude Include="include\TreeGene.h" />
     <ClInclude Include="include\ZoomOutCamera.h" />
+    <ClInclude Include="include\TimeManager.h" />
   </ItemGroup>
   <ItemGroup>
     <MeshContentTask Include="Asset\modelData\ari.FBX" />

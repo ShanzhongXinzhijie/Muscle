@@ -78,8 +78,9 @@ public:
 
 	//スタンしているか?
 	bool GetIsStun()const {
-		return m_stunTimeSec > 0.0f;
+		return !(m_stunTimeSec < FLT_EPSILON);
 	}
+	//
 
 	//スケールを取得
 	[[nodiscard]] const CVector3& GetScale()const { return m_scale; }
@@ -122,7 +123,7 @@ private:
 
 private:
 	//重力定数
-	static constexpr float GRAVITY = OneG;
+	static constexpr float GRAVITY = ONE_G;
 
 	//コアのモデル
 	GameObj::CSkinModelRender m_coreModel;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include"CDeathHotoke.h"
+#include"TimeManager.h"
 
 class HotokeCamera
 {
@@ -15,7 +16,9 @@ public:
 	}
 
 	//モーションブラーをリセット
-	void ResetMotionBlur() { m_camera.ResetIsFirstMatrixUpdate(); }
+	void ResetMotionBlur() { 
+		m_camera.ResetIsFirstMatrixUpdate(); 
+	}
 
 	//カメラを回転させる
 	void RotationCamera(const CVector2& rot) {
@@ -50,6 +53,8 @@ public:
 	//※マウス回転とは別
 	void SetRot(const CQuaternion& rot) {
 		m_rotOffset = rot;
+		//座標アップデート
+		//UpdateVector();
 	}
 
 	//メインカメラに設定
@@ -61,12 +66,19 @@ public:
 	}
 
 	//カメラを取得
-	const GameObj::PerspectiveCamera& GetCamera()const {
+	GameObj::PerspectiveCamera& GetCamera() {
 		return m_camera;
+	}
+	//設定類を取得
+	const CVector3& GetTargetSetting()const {
+		return m_target;
+	}
+	const CVector3& GetUpSetting()const {
+		return m_up;
 	}
 
 	//位置を取得
-	const CVector3& GetPos() {
+	const CVector3& GetPos()const {
 		return m_camera.GetPos();
 	}
 	//回転を取得
@@ -78,15 +90,21 @@ public:
 		return m_camera.GetFront();
 	}
 	//照準点を取得
-	CVector3 GetTargetPoint() {
+	CVector3 GetTargetPoint() const {
 		return m_pos + m_targetPosOffset + m_updatedFireTarget * m_camera.GetFar();
 	}
 	//消失点を取得
-	CVector3 GetVanishingPoint() {
+	CVector3 GetVanishingPoint()const {
 		return m_pos + m_updatedTarget * m_camera.GetFar();
 	}
+	//Farを取得
 	float GetFar()const {
 		return m_camera.GetFar();
+	}
+	
+	//座標を2D上の座標に変換
+	CVector3 CalcScreenPosFromWorldPos(const CVector3& pos) {
+		return m_camera.CalcScreenPosFromWorldPos(pos);
 	}
 
 	//カメラ更新
@@ -94,11 +112,6 @@ public:
 		m_camera.SetPos(m_pos);
 		m_camera.SetTarget(m_pos + m_updatedTarget * m_camera.GetFar());
 		m_camera.SetUp(m_updatedUp);
-	}
-
-	//座標を2D上の座標に変換
-	CVector3 CalcScreenPosFromWorldPos(const CVector3& pos) {
-		return m_camera.CalcScreenPosFromWorldPos(pos);
 	}
 
 private:
@@ -119,7 +132,8 @@ private:
 private:
 	GameObj::PerspectiveCamera m_camera;
 
-	CVector3 m_pos, m_targetPosOffset, m_target, m_fireTarget = CVector3::Front(), m_up = CVector3::Up();
+	CVector3 m_pos, m_targetPosOffset;
+	CVector3 m_target, m_fireTarget = CVector3::Front(), m_up = CVector3::Up();//設定
 	CQuaternion m_rotOffset;
 	CVector3 m_updatedTarget = CVector3::AxisZ(), m_updatedFireTarget = CVector3::AxisZ(), m_updatedUp = CVector3::Up();
 	CVector2 m_rot;
@@ -140,31 +154,56 @@ public:
 
 	//メインカメラに設定
 	void SetToMainCamera() {
-		m_hotokeCam.SetToMainCamera();
+		if (m_isZoomOut) {
+			SetMainCamera(&m_zoomOutCam);
+		}
+		else {
+			m_hotokeCam.SetToMainCamera();
+		}
 	}
 	void SetToMainCamera(int num) {
 		GetCameraList().resize(2);
-		m_hotokeCam.SetToMainCamera(num);
+		if (m_isZoomOut) {
+			GetCameraList().at(num) = &m_zoomOutCam;
+		}
+		else {
+			m_hotokeCam.SetToMainCamera(num);
+		}
 	}
 
 	//ズームアウトモードかどうか設定
-	void SetIsZoomout(bool b) {
-		m_isZoomOut = b;
-		if (m_isZoomOut) {
-			GetEngine().SetStandardFrameRate(5);//TODO
+	void SetIsZoomout(bool b, const CVector3& zoomoutDir = { 0.f, 400.f, 800.f }, const IFu* target = nullptr) {
+		m_zoomOutDir = zoomoutDir;
+		m_zoomOutTarget = target;
+
+		//カメラ変更
+		bool isChangeCam = false;
+		if (m_isZoomOut != b && b) {
+			isChangeCam = true;
 		}
-		else {
-			GetEngine().SetStandardFrameRate(60);
+
+		if (!m_isZoomOut && b) {
+			//スローモーション
+			TimeManager::GetInstance().SetFrameRate(1.4f, 6, 1.0f);
+			//カメラ更新(初期化)
+			UpdateZoomOutCamera(true);
+		}
+
+		//設定
+		m_isZoomOut = b;		
+		//カメラ変更
+		if (isChangeCam) {
+			ChangeCamera();
 		}
 	}
 
 	//カメラを取得
-	const GameObj::PerspectiveCamera& GetCamera()const {
+	/*const GameObj::PerspectiveCamera& GetCamera()const {
 		return m_hotokeCam.GetCamera();
-	}
+	}*/
 
 	//位置を取得
-	const CVector3& GetPos() {
+	const CVector3& GetPos()const {
 		return m_hotokeCam.GetPos();
 	}
 	//前方向を取得
@@ -172,10 +211,10 @@ public:
 		return m_hotokeCam.GetFront();
 	}
 	//照準点を取得
-	CVector3 GetTargetPoint() {
+	CVector3 GetTargetPoint()const {
 		return m_hotokeCam.GetTargetPoint();
 	}
-	CVector3 GetVanishingPoint() {
+	CVector3 GetVanishingPoint()const {
 		return m_hotokeCam.GetVanishingPoint();
 	}	
 	float GetFar()const {
@@ -191,18 +230,32 @@ public:
 	}
 
 private:
-	HotokeCamera m_hotokeCam;
+	void ChangeCamera();
+	void UpdateZoomOutCamera(bool isInit);
 
+private:
+	//カメラ
+	HotokeCamera m_hotokeCam;//ホトケ視点
+	GameObj::PerspectiveCamera m_zoomOutCam;//ズームアウト用カメラ
+
+	//ズームアウト
 	bool m_isZoomOut = false;
+	CVector3 m_zoomOutDir;
+	const IFu* m_zoomOutTarget = nullptr;
 	float m_zoomPercent = 0.0f;
-	bool m_isBackMirror = false;//バックミラー状態か？
+	CVector3 m_originalPos;
+	CQuaternion m_originalRot;
 
+	//操作
+	bool m_isBackMirror = false;//バックミラー状態か？
 	bool m_lock = false;//マウスカーソルの固定設定
 	CVector2 m_mouseSensi = { 4.0f*(1.0f / 1280.0f),4.0f*(1.0f / 1280.0f) };//視点感度(マウス
 	CVector2 m_padSensi = { 0.05f,-0.05f };//視点感度(パッド
 
+	//パラメータ
 	float m_cameraHeight = 16.45f;//カメラの地面からの高さ
 	
+	//参照
 	CDeathHotoke* m_ptrHotoke = nullptr;
 	IGamePad* m_ptrPad = nullptr;
 };

@@ -38,7 +38,10 @@ void BP_HumanLeg::InnerStart() {
 		m_col[lr].m_reference.position = m_model->GetBonePos(m_ikSetting[lr]->tipBone->GetNo());
 		m_col[lr].m_reference.attributes.set(enPhysical);
 		m_col[lr].m_reference.m_preCollisionFunc = [&,lr](ReferenceCollision* H) { 
-			m_col[lr].m_reference.damege = DHUtil::CalcRamDamege(m_col[lr].m_reference.velocity, H->velocity);
+			//‘Ì“–‚½‚è
+			auto[damege,stunSec] = DHUtil::CalcRamDamege(m_col[lr].m_reference.velocity, H->velocity);
+			m_col[lr].m_reference.damege = damege;
+			m_col[lr].m_reference.stunTimeSec = stunSec;
 		};
 	}
 }

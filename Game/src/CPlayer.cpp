@@ -108,7 +108,6 @@ void CPlayer::Update() {
 
 	//引きカメラ演出
 	m_cam.SetIsZoomout(m_hotoke.GetIsStun());
-	//m_zoomoutCam.Init(m_cam.GetCamera(), m_hotoke.GetIsStun());
 
 	//ロックオン
 	bool isLock = false; float minDistance = 0.0f; 
@@ -180,11 +179,11 @@ void CPlayer::HUDRender(int HUDNum) {
 	if (tdFrontPos.z > 0.0f && tdFrontPos.z < 1.0f) {
 		float kmh;
 		//時速
-		kmh = m_hotoke.GetMove().Length()*GetEngine().GetStandardFrameRate()*60.0f*60.0f / METER / 1000.0f;
+		kmh = m_hotoke.GetMove().Length()*FRAME_RATE*60.0f*60.0f / METER / 1000.0f;
 		m_HUDFont.DrawFormat(L"%.1f", tdFrontPos - CVector3(0.06f,  0.025f, 0.0f), { 1.0f,1.0f }, kmh);
 		
 		//落下速度
-		kmh = -m_hotoke.GetMove().y*GetEngine().GetStandardFrameRate()*60.0f*60.0f / METER / 1000.0f;
+		kmh = -m_hotoke.GetMove().y*FRAME_RATE*60.0f*60.0f / METER / 1000.0f;
 		if (abs(kmh) < 0.1f) { 
 			kmh = 0.0f; 
 		}

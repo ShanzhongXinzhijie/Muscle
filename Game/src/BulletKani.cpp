@@ -39,7 +39,7 @@ void BulletGO::Update() {
 	Move(m_vector);
 
 	//õ–½ˆ—
-	m_lifeTime -= GetDeltaTimeSec();
+	m_lifeTime -= FRAME_PER_SECOND;
 	if (m_lifeTime < FLT_EPSILON) {
 		delete this; return;
 	}

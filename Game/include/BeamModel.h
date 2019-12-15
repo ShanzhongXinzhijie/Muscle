@@ -42,6 +42,9 @@ public:
 		m_radius = radius; 
 		UpdateModel();
 	}
+	float GetRadius()const {
+		return m_radius;
+	}
 	/// <summary>
 	/// ˆÚ“®‚³‚¹‚é
 	/// </summary>

@@ -182,7 +182,7 @@ void HCon_BirdWing::Update() {
 	m_beforeClrcleInputNum = m_ptrCore->GetPad()->GetStickCircleInput(L);
 	//ˆê’èŽžŠÔ‰Á‘¬
 	if (m_accelTime > 0.0f) {
-		m_accelTime -= GetDeltaTimeSec();
+		m_accelTime -= FRAME_PER_SECOND;
 		m_ptrBody->Accel();
 	}
 
