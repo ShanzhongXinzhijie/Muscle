@@ -213,20 +213,20 @@ void BP_KaniArm::PostUTRSUpdate() {
 				float aimPow = 1.0f;
 				CVector3 aimOffset;
 				if (m_ptrCore->GetTarget()) {
-					for (int i2 = 0; i2 < 10; i2++) {
-						//m_ikSetting[i]->targetPos‚Å‚¢‚¢‚Ì‚©
-						CVector3 vector = (m_ptrCore->GetTargetPos() + aimOffset) - m_model->GetBonePos(m_muzzleBoneID[i]);
-						if (vector.LengthSq() > FLT_EPSILON) {
-							float distance = vector.Length();
-							vector.Normalize();
-							CVector3 toTarget = vector;
-							vector *= bulletSpeed;
-							vector += toTarget * toTarget.Dot(m_ptrCore->GetTotalVelocity());
+					CVector3 dirNorm = ((m_ikSetting[i]->targetPos + aimOffset) - m_model->GetBonePos(m_muzzleBoneID[i])).GetNorm();
+					CVector3 kansei = m_ptrCore->GetTotalVelocity();
+					float plusspeed = dirNorm.Dot(kansei);
+					float totalSpeed = bulletSpeed + plusspeed;
 
-							distance /= bulletSpeed +toTarget.Dot(m_ptrCore->GetTotalVelocity());
-
-							aimOffset = m_ptrCore->GetTarget()->GetMove()*distance;
-						}
+					CVector3 OL = m_ptrCore->GetTargetPos() - m_model->GetBonePos(m_muzzleBoneID[i]);
+					CVector3 v = m_ptrCore->GetTarget()->GetMove();
+					float sita = CVector3::AngleOf2NormalizeVector(OL.GetNorm(), v.GetNorm());
+					float vLength = v.Length();
+					float t1 = OL.Length() / (totalSpeed * sqrt(1.0f - CMath::Square(vLength / totalSpeed * sin(sita))) - vLength * cos(sita));
+					float t2 = OL.Length() / (-totalSpeed * sqrt(1.0f - CMath::Square(vLength / totalSpeed * sin(sita))) - vLength * cos(sita));
+					t1 = max(t1, t2);
+					if (t1 > 0.0f) {
+						aimOffset = v*t1;
 					}
 				}
 
@@ -269,6 +269,7 @@ void BP_KaniArm::PostUTRSUpdate() {
 					(dirNorm*bulletSpeed)+kansei
 				);
 				bullet->AddComponent(std::make_unique<BD_BeamModel>(3.0f,L"BLUE"));
+				bullet->AddComponent(std::make_unique<BD_Tracking>(m_ptrCore->GetTarget()));
 				bullet->AddComponent(std::make_unique<BD_Reflect>());
 				bullet->AddComponent(std::make_unique<BD_Contact>(false));
 				//bullet->m_gravity = 0.2f;
@@ -322,7 +323,7 @@ void BP_KaniArm::Rocket(enLR lr) {
 	);
 	bullet->AddComponent(std::make_unique<BD_BeamModel>(30.0f, L"Red"));
 	bullet->AddComponent(std::make_unique<BD_Contact>());
-	bullet->AddComponent(std::make_unique<BD_Homing>(m_ptrCore->GetTargetFu(), 10.0f, 0.0f, 30.0f));
+	bullet->AddComponent(std::make_unique<BD_Homing>(m_ptrCore->GetTarget(), 10.0f, 0.0f, 30.0f));
 	bullet->AddComponent(std::make_unique<BD_Brake>(1.0f));
 	bullet->AddComponent(std::make_unique<BD_Lockable>());
 }

@@ -51,6 +51,13 @@ bool CDeathHotoke::Start() {
 			Damage(*H, p.m_collisionPoint);
 			//スタン
 			m_stunTimeSec = max(m_stunTimeSec,H->stunTimeSec);
+			//ズームアウト
+			if (H->stunTimeSec > 0.0f) {
+				CVector3 dir = H->velocity; dir.y = 0.0f; dir.Normalize();
+				//CQuaternion(CVector3::AxisY(), CMath::PI_HALF / 2.0f).Multiply(dir);
+				m_zoomoutDir = dir * -800.f;
+				m_zoomoutDir.y += 400.0f;
+			}
 		}
 	);
 	SetPreCollisionFunc(

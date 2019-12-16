@@ -243,8 +243,7 @@ private:
 	CVector3 m_zoomOutDir;
 	const IFu* m_zoomOutTarget = nullptr;
 	float m_zoomPercent = 0.0f;
-	CVector3 m_originalPos;
-	CQuaternion m_originalRot;
+	CVector3 m_originalPos, m_originalTarget;
 
 	//操作
 	bool m_isBackMirror = false;//バックミラー状態か？
@@ -259,3 +258,35 @@ private:
 	CDeathHotoke* m_ptrHotoke = nullptr;
 	IGamePad* m_ptrPad = nullptr;
 };
+
+/*
+class ForcusPoint {
+	//シングルトン
+private:
+	ForcusPoint() = default;
+	~ForcusPoint() = default;
+public:
+	ForcusPoint(const ForcusPoint&) = delete;
+	ForcusPoint& operator=(const ForcusPoint&) = delete;
+	ForcusPoint(ForcusPoint&&) = delete;
+	ForcusPoint& operator=(ForcusPoint&&) = delete;
+
+public:
+	static inline ForcusPoint& GetInstance() {
+		static ForcusPoint instance;
+		return instance;
+	}
+
+	void Enable(const CVector3& zoomoutDir = { 0.f, 400.f, 800.f }, const IFu* target = nullptr) {
+
+	}
+	void Disable() {
+		m_isEnable = false;
+	}
+
+private:
+	bool m_isEnable = false;
+	CVector3 m_zoomOutDir;
+	const IFu* m_zoomOutTarget = nullptr;
+};
+*/

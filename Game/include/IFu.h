@@ -181,6 +181,9 @@ public:
 	}
 
 	//–{‘Ì‚ðŽæ“¾
+	const IFu* GetFu()const {
+		return m_fu;
+	}
 	IFu* GetFu() {
 		return m_fu;
 	}

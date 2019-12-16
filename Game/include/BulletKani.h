@@ -237,14 +237,47 @@ private:
 };
 
 /// <summary>
+/// 追尾コンポーネント
+/// </summary>
+class BD_Tracking : public IBulletComponent {
+public:
+	BD_Tracking(LockableWrapper* target = nullptr)
+		: m_target(target)
+	{
+		if (target) { target->GetFu()->SetDeleteFlag(isTargetDeath); }
+	};
+
+	void Update()override {
+		CVector3 targetDir(m_bullet->m_vector);
+
+		//目標あり ＆ 目標のインスタンスが消滅していない
+		if (m_target && !isTargetDeath) {
+			targetDir = m_target->GetFu()->GetCollisionPos() - m_bullet->GetPos() + m_target->GetMove();
+		}
+
+		targetDir.Normalize();
+
+		if (CVector3::AngleOf2NormalizeVector(targetDir, m_bullet->m_vector.GetNorm()) < CMath::DegToRad(25.0f)) {
+			//targetDir.Lerp(0.5f, m_bullet->m_vector.GetNorm(), targetDir);
+			//targetDir.Normalize();
+			m_bullet->m_vector = targetDir * m_bullet->m_vector.Length();
+		}
+	}
+
+private:
+	const LockableWrapper* m_target = nullptr;//目標
+	std::shared_ptr<bool> isTargetDeath = false;//ターゲットのインスタンスが存在するか?
+};
+
+/// <summary>
 /// ホーミングコンポーネント
 /// </summary>
 class BD_Homing : public IBulletComponent {
 public:
-	BD_Homing(IFu* target = nullptr, float thrust = 0.0f, float noAccelRad = 0.0f, float timer = 0.0f)
+	BD_Homing(LockableWrapper* target = nullptr, float thrust = 0.0f, float noAccelRad = 0.0f, float timer = 0.0f)
 		: m_target(target), m_thrust(thrust), m_nonAccelRad(noAccelRad), m_timerf(timer)
 	{
-		if (target) { target->SetDeleteFlag(isTargetDeath); }
+		if (target) { target->GetFu()->SetDeleteFlag(isTargetDeath); }
 	};
 
 	void Update()override {
@@ -256,7 +289,7 @@ public:
 		
 		//目標あり ＆ 目標のインスタンスが消滅していない
 		if (m_target && !isTargetDeath) {
-			targetDir = m_target->GetPos() - m_bullet->GetPos();
+			targetDir = m_target->GetFu()->GetCollisionPos() - m_bullet->GetPos() + m_target->GetMove();
 		}
 
 		targetDir.Normalize();
@@ -277,7 +310,7 @@ public:
 	}
 
 private:
-	const IFu* m_target = nullptr;//目標
+	const LockableWrapper* m_target = nullptr;//目標
 	std::shared_ptr<bool> isTargetDeath = false;//ターゲットのインスタンスが存在するか?
 	float m_thrust = 0.0f;//推力
 	float m_nonAccelRad = 0.0f;//加速しない角度範囲

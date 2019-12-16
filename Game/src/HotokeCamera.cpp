@@ -29,11 +29,11 @@ void HotokeCameraController::UpdateZoomOutCamera(bool isInit) {
 		m_zoomOutCam.SetFar(m_hotokeCam.GetCamera().GetFar());
 		m_zoomOutCam.SetViewAngle(m_hotokeCam.GetCamera().GetFOV());
 		m_originalPos = m_hotokeCam.GetPos();
-		m_originalRot.MakeLookTo(m_hotokeCam.GetVanishingPoint() - m_hotokeCam.GetPos());
+		m_originalTarget = (m_hotokeCam.GetVanishingPoint() - m_hotokeCam.GetPos()).GetNorm() * m_zoomOutDir.Length();
 	}
 	else {
 		float beforePer = m_zoomPercent;
-		m_zoomPercent += (m_isZoomOut ? 0.008f : -0.0008f) * (GetDeltaTimeSec() / FRAME_PER_SECOND);
+		m_zoomPercent += (m_isZoomOut ? 0.04f : -0.04f) * (GetDeltaTimeSec() / FRAME_PER_SECOND);
 		m_zoomPercent = CMath::Clamp(m_zoomPercent, 0.0f, 1.0f);
 		if (beforePer > 0.0f && !(m_zoomPercent > 0.0f)) {
 			ChangeCamera();
@@ -43,8 +43,7 @@ void HotokeCameraController::UpdateZoomOutCamera(bool isInit) {
 	if (m_zoomPercent > 0.0f) {
 		if (!m_isZoomOut) {
 			m_originalPos = m_hotokeCam.GetPos();
-			m_originalRot = CQuaternion::Identity();
-			m_originalRot.MakeLookTo(m_hotokeCam.GetVanishingPoint() - m_hotokeCam.GetPos());
+			m_originalTarget = (m_hotokeCam.GetVanishingPoint() - m_hotokeCam.GetPos()).GetNorm() * m_zoomOutDir.Length();
 		}
 
 		//à íuê›íË
@@ -54,21 +53,10 @@ void HotokeCameraController::UpdateZoomOutCamera(bool isInit) {
 		pos.Lerp(m_zoomPercent, m_originalPos, targetFuPos);
 		m_zoomOutCam.SetPos(pos);
 
-		//m_hotokeCam.GetVanishingPoint() - m_hotokeCam.GetPos().norm *m_zoomOutDir.size
-
 		//âÒì]
-		CQuaternion zoomoutRot, offsetRot;
-		zoomoutRot.MakeLookTo(m_zoomOutDir*-1.0f);
-		offsetRot.MakeLookTo(m_hotokeCam.GetTargetSetting()*1.0f);
-		zoomoutRot.Multiply(offsetRot);
-		CQuaternion rot;
-		rot.Slerp(m_zoomPercent, m_originalRot, zoomoutRot);
-		CVector3 target = m_hotokeCam.GetTargetSetting();
-		CVector3 up = m_hotokeCam.GetUpSetting();
-		rot.Multiply(target);
-		rot.Multiply(up);
+		CVector3 target;
+		target.Lerp(m_zoomPercent, m_originalTarget, m_zoomOutDir*-1.0f);
 		m_zoomOutCam.SetTarget(pos + target * m_zoomOutCam.GetFar());
-		m_zoomOutCam.SetUp(up);
 	}
 }
 

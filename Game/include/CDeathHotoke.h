@@ -107,6 +107,9 @@ public:
 	[[nodiscard]] const LockableWrapper* GetTarget() const {
 		return m_target;
 	}
+	[[nodiscard]] LockableWrapper* GetTarget() {
+		return m_target;
+	}
 	[[nodiscard]] const IFu* GetTargetFu() const { 
 		if (m_target) {
 			return m_target->GetFu();
@@ -138,6 +141,10 @@ public:
 	//AIの生み出すステータスを取得
 	[[nodiscard]] const AIStatus* GetAIStatus()const { if (m_ai) { return &m_ai->GetOutputStatus(); } return nullptr; }
 
+	//ズームアウト方向を取得
+	const CVector3& GetZoomoutDirection()const {
+		return m_zoomoutDir;
+	}
 
 	//落下速度を取得
 	[[nodiscard]] constexpr float GetGravity()const { return GRAVITY; }
@@ -182,6 +189,7 @@ private:
 	//AI
 	std::unique_ptr<IAI> m_ai;
 		
+	//HUD
 	bool m_isDrawHUD = false;//HUDを表示するか
 	HUDFont* m_ptrHUDFont = nullptr;//HUDフォント
 	bool m_isBackMirror = false;//バックミラー状態
@@ -189,5 +197,8 @@ private:
 	//ターゲット
 	LockableWrapper* m_target = nullptr;
 	CVector3 m_targetPos;
+
+	//ズームアウト方向
+	CVector3 m_zoomoutDir = { 0.f, 400.f, 800.f };
 };
 

@@ -107,7 +107,7 @@ void CPlayer::Update() {
 	}
 
 	//引きカメラ演出
-	m_cam.SetIsZoomout(m_hotoke.GetIsStun());
+	m_cam.SetIsZoomout(m_hotoke.GetIsStun(), m_hotoke.GetZoomoutDirection());
 
 	//ロックオン
 	bool isLock = false; float minDistance = 0.0f; 
