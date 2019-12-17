@@ -6,7 +6,12 @@
 bool CSmoke::m_isStaticInited = false;
 Shader CSmoke::m_ps;
 
-CSmoke::CSmoke(const CVector3& pos, const CVector3& move, const CVector4& color, const CVector3& scale, const CVector3& scaling)
+CSmoke::CSmoke(
+	const CVector3& pos, const CVector3& move,
+	const CVector4& color,
+	const CVector3& scale, const CVector3& scaling,
+	int time
+): m_maxLifeTime(time)
 {
 	if (!m_isStaticInited) {//未初期化
 		//ディゾルブシェーダをロード

@@ -1,5 +1,6 @@
 #pragma once
 #include"BeamModel.h"
+#include"CSmoke.h"
 #include"IFu.h"
 
 class BulletGO;
@@ -250,6 +251,22 @@ private:
 };
 
 /// <summary>
+/// 煙軌跡コンポーネント
+/// </summary>
+class BD_SmokeTrail : public IBulletComponent {
+public:
+	void PostUpdate()override {
+		new CSmoke(m_bullet->GetPos(), CVector3::Zero(), 
+			{ 1.0f,1.0f,1.0f,1.0f },
+			100.0f, 1.0f,//1.05f + 0.05f*(0.5f + CMath::RandomZeroToOne()),
+			180
+		);
+	}
+
+private:
+};
+
+/// <summary>
 /// 追尾コンポーネント
 /// </summary>
 class BD_Tracking : public IBulletComponent {
@@ -317,7 +334,7 @@ public:
 		if (m_nonAccelRad < FLT_EPSILON || CVector3::AngleOf2NormalizeVector(targetDir,m_bullet->m_vector.GetNorm()) > m_nonAccelRad) {
 			CVector3 beforeVec = m_bullet->m_vector;
 			//ブレーキング
-			m_bullet->m_vector = m_bullet->m_vector.GetNorm()*max(0.0f, m_bullet->m_vector.Length() - m_thrust);
+			//m_bullet->m_vector = m_bullet->m_vector.GetNorm()*max(0.0f, m_bullet->m_vector.Length() - m_thrust);
 			//目標へ加速
 			m_bullet->m_vector += targetDir * m_thrust;
 			if (m_bullet->m_vector.LengthSq() < FLT_EPSILON) {//停止はしない

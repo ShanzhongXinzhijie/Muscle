@@ -11,8 +11,8 @@ class CSmoke : private SuicideObj::CParticle<CBillboard>
 public:
 	CSmoke(const CVector3& pos, const CVector3& move, 
 		   const CVector4& color = CVector4::White(), 
-		   const CVector3& scale = 200.0f,
-		   const CVector3& scaling = 1.2f
+		   const CVector3& scale = 200.0f, const CVector3& scaling = 1.2f,
+		   int time = 8
 	);
 
 	void Update()override;
@@ -20,7 +20,7 @@ public:
 private:
 	static constexpr int MAX_NUM = 2048;//表示できる煙の最大数
 
-	int m_maxLifeTime = 8;
+	int m_maxLifeTime = 8;//消滅までの時間
 	SmokeParam m_param;
 
 	//共通リソース
