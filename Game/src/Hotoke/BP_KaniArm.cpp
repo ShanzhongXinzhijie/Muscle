@@ -266,7 +266,8 @@ void BP_KaniArm::PostUTRSUpdate() {
 				kansei.Lerp(aimPow, m_ptrCore->GetTotalVelocity(), kansei);
 				BulletGO* bullet = new BulletGO(
 					m_model->GetBonePos(m_muzzleBoneID[i]),
-					(dirNorm*bulletSpeed)+kansei
+					(dirNorm*bulletSpeed)+kansei,
+					m_ptrCore
 				);
 				bullet->AddComponent(std::make_unique<BD_BeamModel>(3.0f,L"BLUE"));
 				bullet->AddComponent(std::make_unique<BD_Tracking>(m_ptrCore->GetTarget()));
@@ -319,7 +320,8 @@ void BP_KaniArm::Rocket(enLR lr) {
 	CVector3 dirNorm = (m_ikSetting[lr]->targetPos - m_model->GetBonePos(m_muzzleBoneID[lr])).GetNorm();
 	BulletGO* bullet = new BulletGO(
 		m_model->GetBonePos(m_muzzleBoneID[lr]),
-		(dirNorm*100.0f) + m_ptrCore->GetTotalVelocity()
+		(dirNorm*100.0f) + m_ptrCore->GetTotalVelocity(),
+		m_ptrCore
 	);
 	bullet->AddComponent(std::make_unique<BD_BeamModel>(30.0f, L"Red"));
 	bullet->AddComponent(std::make_unique<BD_Contact>());
@@ -336,7 +338,8 @@ void BP_KaniArm::Lazer(enLR lr) {
 		CVector3 dirNorm = (m_ikSetting[lr]->targetPos - m_model->GetBonePos(m_muzzleBoneID[lr])).GetNorm();
 		BulletGO* bullet = new BulletGO(
 			m_model->GetBonePos(m_muzzleBoneID[lr]),
-			dirNorm*(100.0f + dirNorm.Dot(m_ptrCore->GetTotalVelocity()))
+			dirNorm*(100.0f + dirNorm.Dot(m_ptrCore->GetTotalVelocity())),
+			m_ptrCore
 		);
 		bullet->AddComponent(std::make_unique<BD_BeamModel>(3.0f, L"Yellow"));
 		bullet->AddComponent(std::make_unique<BD_ContactExplosion>());

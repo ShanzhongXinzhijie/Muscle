@@ -113,7 +113,7 @@ void CPlayer::Update() {
 	bool isLock = false; float minDistance = 0.0f; 
 	CVector3 outPos; LockableWrapper* outObj = nullptr;
 	QueryGOs<LockableWrapper>(L"LockableObject", [&](LockableWrapper* go) {
-		if (&m_hotoke == go->GetFu()) { return true; }//Ž©•ª‚Íœ‚­
+		if (&m_hotoke == go->GetFu() || &m_hotoke == go->GetOwner()) { return true; }//Ž©•ª‚Íœ‚­
 
 		CVector3 screenPos = m_cam.CalcScreenPosFromWorldPos(go->GetFu()->GetCollisionPos());
 		float distance = CVector3(screenPos.x - 0.5f, screenPos.y - 0.5f, 0.0f).LengthSq();

@@ -42,7 +42,7 @@ protected:
 /// </summary>
 class BulletGO : public ILifeObject {
 public:
-	BulletGO(const CVector3& pos, const CVector3& move, bool isLockable = false);
+	BulletGO(const CVector3& pos, const CVector3& move, IFu* owner, bool isLockable = false);
 
 	void PreLoopUpdate()override;
 	void Update()override;
@@ -59,6 +59,13 @@ public:
 	}
 
 	/// <summary>
+	/// オーナーの取得
+	/// </summary>
+	IFu* GetOwner() {
+		return m_owner;
+	}
+
+	/// <summary>
 	/// 旧座標の取得
 	/// </summary>
 	const CVector3& GetOldPos()const { return m_posOld; }
@@ -69,6 +76,8 @@ public:
 	static void CalcVelocityUpdate(CVector3& velocity, float gravity);
 
 private:
+	//この弾のオーナー
+	IFu* m_owner = nullptr;
 	//コンポーネント
 	std::vector<std::unique_ptr<IBulletComponent>> m_components;	
 	//古座標
@@ -131,7 +140,7 @@ private:
 /// </summary>
 class BD_Lockable :public IBulletComponent {
 	void Start()override {
-		m_bullet->SetLockable(true);
+		m_bullet->SetLockable(true, m_bullet->GetOwner());
 	}
 };
 

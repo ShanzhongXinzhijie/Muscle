@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "BulletKani.h"
 
-BulletGO::BulletGO(const CVector3& pos, const CVector3& move, bool isLockable)
-	: m_vector(move), ILifeObject(isLockable)
+BulletGO::BulletGO(const CVector3& pos, const CVector3& move, IFu* owner, bool isLockable)
+	: m_vector(move), m_owner(owner), ILifeObject(isLockable, owner)
 {
 	SetPos(pos), m_posOld = GetPos();
 	

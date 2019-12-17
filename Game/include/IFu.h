@@ -161,7 +161,15 @@ private:
 //ロックできるオブジェクトラッパー
 class LockableWrapper : public IQSGameObject {
 public:
-	LockableWrapper(IFu* fu, float* hpPtr = nullptr) : m_fu(fu),m_hpPtr(hpPtr) {
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="fu">ロック対象</param>
+	/// <param name="hpPtr">HPのポインタ</param>
+	/// <param name="owner">ロック対象のオーナー</param>
+	LockableWrapper(IFu* fu, float* hpPtr = nullptr, IFu* owner = nullptr)
+		: m_fu(fu),m_hpPtr(hpPtr),m_owner(owner)
+	{
 		SetName(L"LockableObject");
 	}
 
@@ -170,6 +178,7 @@ public:
 		m_hpPtr = hpPtr;
 	}
 
+	//毎フレームの処理
 	void PreUpdate()override {
 		if (m_isFirstUpdate) {
 			m_isFirstUpdate = false;
@@ -201,8 +210,14 @@ public:
 		return -1.0f;
 	}
 
+	//ロック対象のオーナーを取得
+	const IFu* GetOwner()const {
+		return m_owner;
+	}
+
 private:
 	IFu* m_fu = nullptr;
+	IFu* m_owner = nullptr;
 
 	bool m_isFirstUpdate = true;
 	CVector3 m_move;//移動量(偏差射撃に使う)
@@ -216,9 +231,14 @@ private:
 /// </summary>
 class ILifeObject : public IGameObject, public IFu {
 public:
-	ILifeObject(bool isLockable = true) {
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="isLockable">ロックオン可能か?</param>
+	/// <param name="owner">このオブジェクトのオーナー</param>
+	ILifeObject(bool isLockable = true, IFu* owner = nullptr) {
 		if (isLockable) {
-			m_lockableWrapper = std::make_unique<LockableWrapper>(this);
+			m_lockableWrapper = std::make_unique<LockableWrapper>(this, nullptr, owner);
 		}
 	}
 
@@ -235,10 +255,10 @@ public:
 	}
 
 	//ロックオン可能か設定
-	void SetLockable(bool isLockable) {
+	void SetLockable(bool isLockable, IFu* owner) {
 		if (isLockable) {
 			if (!m_lockableWrapper) {
-				m_lockableWrapper = std::make_unique<LockableWrapper>(this);
+				m_lockableWrapper = std::make_unique<LockableWrapper>(this, nullptr, owner);
 			}
 		}
 		else {
