@@ -243,15 +243,18 @@ class BD_Tracking : public IBulletComponent {
 public:
 	BD_Tracking(LockableWrapper* target = nullptr)
 		: m_target(target)
-	{
-		if (target) { target->GetFu()->SetDeleteFlag(isTargetDeath); }
+	{		
+		if (target) { 
+			isTargetDeath = std::make_shared<bool>(false);
+			target->GetFu()->SetDeleteFlag(isTargetDeath);
+		}
 	};
 
 	void Update()override {
 		CVector3 targetDir(m_bullet->m_vector);
 
 		//目標あり ＆ 目標のインスタンスが消滅していない
-		if (m_target && !isTargetDeath) {
+		if (m_target && !(*isTargetDeath.get())) {
 			targetDir = m_target->GetFu()->GetCollisionPos() - m_bullet->GetPos() + m_target->GetMove();
 		}
 
@@ -266,7 +269,7 @@ public:
 
 private:
 	const LockableWrapper* m_target = nullptr;//目標
-	std::shared_ptr<bool> isTargetDeath = false;//ターゲットのインスタンスが存在するか?
+	std::shared_ptr<bool> isTargetDeath;//ターゲットのインスタンスが存在するか?
 };
 
 /// <summary>
@@ -277,7 +280,10 @@ public:
 	BD_Homing(LockableWrapper* target = nullptr, float thrust = 0.0f, float noAccelRad = 0.0f, float timer = 0.0f)
 		: m_target(target), m_thrust(thrust), m_nonAccelRad(noAccelRad), m_timerf(timer)
 	{
-		if (target) { target->GetFu()->SetDeleteFlag(isTargetDeath); }
+		if (target) {
+			isTargetDeath = std::make_shared<bool>(false);
+			target->GetFu()->SetDeleteFlag(isTargetDeath);
+		}
 	};
 
 	void Update()override {
@@ -288,7 +294,7 @@ public:
 		CVector3 targetDir(m_bullet->m_vector);
 		
 		//目標あり ＆ 目標のインスタンスが消滅していない
-		if (m_target && !isTargetDeath) {
+		if (m_target && !(*isTargetDeath.get())) {
 			targetDir = m_target->GetFu()->GetCollisionPos() - m_bullet->GetPos() + m_target->GetMove();
 		}
 
@@ -311,7 +317,7 @@ public:
 
 private:
 	const LockableWrapper* m_target = nullptr;//目標
-	std::shared_ptr<bool> isTargetDeath = false;//ターゲットのインスタンスが存在するか?
+	std::shared_ptr<bool> isTargetDeath;//ターゲットのインスタンスが存在するか?
 	float m_thrust = 0.0f;//推力
 	float m_nonAccelRad = 0.0f;//加速しない角度範囲
 	float m_timerf = 0.0f;//ホーミング開始までのフレーム数

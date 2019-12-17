@@ -222,6 +222,11 @@ public:
 		}
 	}
 
+	//ロックオン用クラス取得
+	LockableWrapper* GetLockableWrapper() {
+		return m_lockableWrapper ? m_lockableWrapper.get() : nullptr;
+	}
+
 	//HPを設定
 	void SetHPRef(float* hpPtr) {
 		if (m_lockableWrapper) {

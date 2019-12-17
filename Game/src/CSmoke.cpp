@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "CSmoke.h"
 #include "DemolisherWeapon/Graphic/Model/SkinModelShaderConst.h"
+#include "shaderDefine.h"
 
 bool CSmoke::m_isStaticInited = false;
 Shader CSmoke::m_ps;
@@ -10,8 +11,7 @@ CSmoke::CSmoke(const CVector3& pos, const CVector3& move, const CVector4& color,
 	if (!m_isStaticInited) {//未初期化
 		//ディゾルブシェーダをロード
 		D3D_SHADER_MACRO macros[] = { "TEXTURE", "1", "SOFT_PARTICLE", "1", NULL, NULL };
-		m_ps.Load("Preset/shader/modelDisolve.fx", "PSMain_DisolveSozaiNoAzi_ConvertToPMA", Shader::EnType::PS, "TEXTURE+SOFT_PARTICLE", macros);
-		
+		m_ps.Load("Preset/shader/smoke_u_.fx", "PSMain_Smoke", Shader::EnType::PS, "TEXTURE+SOFT_PARTICLE", macros);		
 		//初期化完了
 		m_isStaticInited = true;
 	}
@@ -23,10 +23,10 @@ CSmoke::CSmoke(const CVector3& pos, const CVector3& move, const CVector4& color,
 	billboard->GetModel().SetIsShadowCaster(false);
 	billboard->GetModel().GetSkinModel().FindMaterialSetting(
 		[&](MaterialSetting* mat) {
-			mat->SetAlbedoScale(color);
 			mat->SetPS(&m_ps);//シェーダ設定
 		}
 	);
+	m_param.color = color;
 
 	//IInstanceDataを設定
 	if (!billboard->GetInstancingModel().GetInstancingModel()->GetIInstanceData(L"InstancingSmokeParamManager")) {
@@ -34,7 +34,7 @@ CSmoke::CSmoke(const CVector3& pos, const CVector3& move, const CVector4& color,
 		billboard->GetInstancingModel().GetInstancingModel()->AddIInstanceData(L"InstancingSmokeParamManager", std::make_unique<InstancingSmokeParamManager>(MAX_NUM));
 	}
 	//ポインタを設定
-	billboard->GetInstancingModel().SetParamPtr(&m_t);
+	billboard->GetInstancingModel().SetParamPtr(&m_param);
 
 	//ステータス
 	//TODO 設定できるように
@@ -48,15 +48,19 @@ CSmoke::CSmoke(const CVector3& pos, const CVector3& move, const CVector4& color,
 	Play(std::move(billboard), m_maxLifeTime);
 }
 void CSmoke::Update() {
-	m_t = 1.0f - (float)GetLifeTime() / m_maxLifeTime;
+	m_param.t = 1.0f - (float)GetLifeTime() / m_maxLifeTime;
 	SuicideObj::CParticle<CBillboard>::Update();
 }
 
 
 void InstancingSmokeParamManager::Reset(int instancingMaxNum) {
 	m_instanceMax = instancingMaxNum;	
-	m_cashe = std::make_unique<float[]>(m_instanceMax);
-	m_dissolve_t.Init(m_instanceMax);//ストラクチャーバッファ
+	//キャッシュ
+	m_cashe_t = std::make_unique<float[]>(m_instanceMax);
+	m_cashe_color = std::make_unique<CVector4[]>(m_instanceMax);
+	//ストラクチャーバッファ
+	m_dissolve_t.Init(m_instanceMax);
+	m_color.Init(m_instanceMax);
 
 }
 InstancingSmokeParamManager::InstancingSmokeParamManager(int instancingMaxNum) {
@@ -67,25 +71,33 @@ InstancingSmokeParamManager::InstancingSmokeParamManager(int instancingMaxNum) {
 void InstancingSmokeParamManager::PreDraw(int instanceNum, int drawInstanceNum, const std::unique_ptr<bool[]>& drawInstanceMask) {
 	//カリングされてないもののみコピー
 	int drawNum = 0;
-	std::unique_ptr<float[]>& data = m_dissolve_t.GetData();
+	std::unique_ptr<float[]>& data_t = m_dissolve_t.GetData();
+	std::unique_ptr<CVector4[]>& data_color = m_color.GetData();
 	for (int i = 0; i < instanceNum; i++) {
 		if (drawInstanceMask[i]) {
-			data[drawNum] = m_cashe[i];
+			data_t[drawNum] = m_cashe_t[i];
+			data_color[drawNum] = m_cashe_color[i];
 			drawNum++;
 		}
 	}
 	//StructuredBufferを更新
 	m_dissolve_t.UpdateSubresource();
+	m_color.UpdateSubresource();
 	//シェーダーリソースにセット
 	GetGraphicsEngine().GetD3DDeviceContext()->PSSetShaderResources(
 		enSkinModelSRVReg_Disolve_t, 1, m_dissolve_t.GetAddressOfSRV()
+	);
+	GetGraphicsEngine().GetD3DDeviceContext()->PSSetShaderResources(
+		enSmokeColor, 1, m_color.GetAddressOfSRV()
 	);
 	GetGraphicsEngine().GetD3DDeviceContext()->PSSetShaderResources(
 		enSkinModelSRVReg_DisolveTexture, 1, m_dissolveTextureView.GetAddressOf()
 	);
 }
 void InstancingSmokeParamManager::AddDrawInstance(int instanceIndex, const CMatrix& SRTMatrix, const CVector3& scale, void *param) {
-	m_cashe[instanceIndex] = *(float*)param;
+	SmokeParam* ptr = (SmokeParam*)param;
+	m_cashe_t[instanceIndex] = ptr->t;
+	m_cashe_color[instanceIndex] = ptr->color;
 }
 void InstancingSmokeParamManager::SetInstanceMax(int instanceMax) {
 	if (instanceMax > m_instanceMax) {

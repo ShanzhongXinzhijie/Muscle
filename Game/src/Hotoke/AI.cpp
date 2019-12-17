@@ -13,6 +13,7 @@ void TestAI::Update() {
 			m_outputStatus.isMovingToTarget = true;
 			//敵の位置を攻撃
 			m_ptrCore->SetTargetPos(P->GetPos());
+			m_ptrCore->SetTarget(P->GetLockableWrapper());
 			m_outputStatus.isAttackingTarget = true;
 			return false;//クエリ終了
 		}

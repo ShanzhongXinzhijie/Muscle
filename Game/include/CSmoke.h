@@ -1,5 +1,10 @@
 #pragma once
 
+struct SmokeParam {
+	float t = 0.0f;
+	CVector4 color = 1.0f;
+};
+
 //煙
 class CSmoke : private SuicideObj::CParticle<CBillboard>
 {
@@ -16,7 +21,7 @@ private:
 	static constexpr int MAX_NUM = 2048;//表示できる煙の最大数
 
 	int m_maxLifeTime = 8;
-	float m_t = 0.0f;
+	SmokeParam m_param;
 
 	//共通リソース
 	static bool m_isStaticInited;
@@ -42,10 +47,11 @@ public:
 	InstancingSmokeParamManager(int instancingMaxNum);
 
 private:
-	std::unique_ptr<float[]> m_cashe;
-	StructuredBuffer<float> m_dissolve_t;
-
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_dissolveTextureView;
+	std::unique_ptr<float[]> m_cashe_t;
+	StructuredBuffer<float> m_dissolve_t;
+	std::unique_ptr<CVector4[]> m_cashe_color;
+	StructuredBuffer<CVector4> m_color;
 
 	int m_instanceMax = 0;
 };
