@@ -120,7 +120,7 @@ void BP_HumanLeg::Stomp() {
 }
 
 void HCon_HumanLeg::Update() {
-	if (m_ptrCore->GetPad()->GetLegDown()) {
+	if (m_ptrCore->GetPad()->GetLegDown()) {//TOTO ƒgƒŠƒK[“¯Žž‰Ÿ‚µ‚Ì‚Æ‚«‚Æ‚©
 		m_ptrBody->Jump();
 		m_ptrBody->Stomp();
 	}

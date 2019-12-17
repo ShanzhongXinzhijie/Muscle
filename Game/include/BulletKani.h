@@ -73,7 +73,7 @@ public:
 	/// <summary>
 	/// 毎フレームのベロシティの変化を計算
 	/// </summary>
-	static void CalcVelocityUpdate(CVector3& velocity, float gravity);
+	static void CalcVelocityUpdate(CVector3& velocity, float gravity, float upBrake, float downAccel);
 
 private:
 	//この弾のオーナー
@@ -93,6 +93,10 @@ public:
 	float m_radius = 0.0f;
 	//重力
 	float m_gravity = 0.0f;
+	//上昇減速
+	float m_upBrake = 0.025f;
+	//下降加速
+	float m_downAccel = 0.25f;
 };
 
 
@@ -312,6 +316,9 @@ public:
 		//常に加速設定 or 目標方向との角度が開いている
 		if (m_nonAccelRad < FLT_EPSILON || CVector3::AngleOf2NormalizeVector(targetDir,m_bullet->m_vector.GetNorm()) > m_nonAccelRad) {
 			CVector3 beforeVec = m_bullet->m_vector;
+			//ブレーキング
+			m_bullet->m_vector = m_bullet->m_vector.GetNorm()*max(0.0f, m_bullet->m_vector.Length() - m_thrust);
+			//目標へ加速
 			m_bullet->m_vector += targetDir * m_thrust;
 			if (m_bullet->m_vector.LengthSq() < FLT_EPSILON) {//停止はしない
 				m_bullet->m_vector = beforeVec;

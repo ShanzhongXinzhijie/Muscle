@@ -49,24 +49,24 @@ void BulletGO::Update() {
 	m_col.SetVelocity(m_vector);
 
 	//ベロシティ変更
-	CalcVelocityUpdate(m_vector, m_gravity);
+	CalcVelocityUpdate(m_vector, m_gravity, m_upBrake, m_downAccel);
 
 	for (auto& component : m_components) {
 		component->PostUpdate();
 	}
 }
 
-void BulletGO::CalcVelocityUpdate(CVector3& velocity, float gravity) {
+void BulletGO::CalcVelocityUpdate(CVector3& velocity, float gravity, float upBrake, float downAccel) {
 	//重力
 	velocity.y -= gravity;
 
 	if (velocity.y > 0.0f) {
 		//上昇減速
-		velocity = velocity.GetNorm() * (velocity.Length() + min(-velocity.y*0.025f, 0.0f));
+		velocity = velocity.GetNorm() * (velocity.Length() + min(-velocity.y*upBrake, 0.0f));
 	}
 	else {
 		//落下加速
-		velocity = velocity.GetNorm() * (velocity.Length() + max(-velocity.y*0.25f, 0.0f));
+		velocity = velocity.GetNorm() * (velocity.Length() + max(-velocity.y*downAccel, 0.0f));
 	}
 }
 

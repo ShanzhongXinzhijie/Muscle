@@ -320,12 +320,14 @@ void BP_KaniArm::Rocket(enLR lr) {
 	CVector3 dirNorm = (m_ikSetting[lr]->targetPos - m_model->GetBonePos(m_muzzleBoneID[lr])).GetNorm();
 	BulletGO* bullet = new BulletGO(
 		m_model->GetBonePos(m_muzzleBoneID[lr]),
-		(dirNorm*100.0f) + m_ptrCore->GetTotalVelocity(),
+		(dirNorm*60.0f) + m_ptrCore->GetTotalVelocity(),
 		m_ptrCore
 	);
+	bullet->m_downAccel = 0.0f;
+	bullet->m_upBrake = 0.0f;
 	bullet->AddComponent(std::make_unique<BD_BeamModel>(30.0f, L"Red"));
 	bullet->AddComponent(std::make_unique<BD_Contact>());
-	bullet->AddComponent(std::make_unique<BD_Homing>(m_ptrCore->GetTarget(), 10.0f, 0.0f, 30.0f));
+	bullet->AddComponent(std::make_unique<BD_Homing>(m_ptrCore->GetTarget(), 10.0f, 0.0f, 50.0f));
 	bullet->AddComponent(std::make_unique<BD_Brake>(1.0f));
 	bullet->AddComponent(std::make_unique<BD_Lockable>());
 }
