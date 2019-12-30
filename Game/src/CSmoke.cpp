@@ -42,7 +42,6 @@ CSmoke::CSmoke(
 	billboard->GetInstancingModel().SetParamPtr(&m_param);
 
 	//ステータス
-	//TODO 設定できるように
 	billboard->SetPos(pos);
 	billboard->SetScale(scale);
 	billboard->SetRot({ CVector3::AxisZ(),CMath::PI2*CMath::RandomZeroToOne() });

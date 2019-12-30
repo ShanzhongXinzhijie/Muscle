@@ -2,6 +2,7 @@
 #include "Shibuya.h"
 #include "Ari.h"
 #include "CSmoke.h"
+#include "FlyingGrass.h"
 
 #include "BP_FishHead.h"
 #include "BP_BirdWing.h"
@@ -34,7 +35,18 @@ Shibuya::Shibuya() : m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI>(
 	m_graund.GetAttributes().set(enGraund);
 	m_graund.SetCollisionFunc(
 		[&](ReferenceCollision* H, SuicideObj::CCollisionObj::SCallbackParam& p) {
-			new CSmoke(p.m_collisionPoint, 0.0f, {0.8f,0.8f ,0.5f,0.8f });
+			if (H->damege > 0.0f || H->velocity.LengthSq() > 1.0f) {
+				new CSmoke(p.m_collisionPoint, 0.0f, { 0.8f,0.8f ,0.5f,0.8f });
+
+				for (int i = 0; i < 12; i++) {
+					CVector3 ramdamVec = CVector3::Up()*(15.0f*CMath::RandomZeroToOne() + 30.0f);
+					CQuaternion rot = { CVector3::AxisX(), CMath::RandomZeroToOne() * CMath::DegToRad(55.0f) };
+					rot.Multiply(ramdamVec);
+					rot.SetRotation(CVector3::AxisY(), CMath::RandomZeroToOne() * CMath::PI2);
+					rot.Multiply(ramdamVec);
+					new FlyingGrass(p.m_collisionPoint, ramdamVec + H->velocity, 16);
+				}
+			}
 		}
 	);
 	
@@ -130,7 +142,7 @@ Shibuya::Shibuya() : m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI>(
 	m_objGene.Generate<Grass>({ -70.0f,-70.0f*50.0f,-70.0f }, { 70.0f,70.0f*50.0f,70.0f }, Grass::m_sInstancingMax, 0.0f);
 
 	//“S“ƒ
-	m_objGene.Generate<TransmissionTower>({ -70.0f*500.0f,-70.0f*50.0f,-70.0f*500.0f }, { 70.0f*500.0f,70.0f*50.0f,70.0f*500.0f }, TransmissionTower::m_sInstancingMax, 300.0f);
+	m_objGene.Generate<TransmissionTower>({ -70.0f*500.0f,-70.0f*50.0f,-70.0f*500.0f }, { 70.0f*500.0f,70.0f*50.0f,70.0f*500.0f }, 64, 300.0f);
 	
 	//GetGraphicsEngine().GetAmbientOcclusionRender().SetEnable(false);
 

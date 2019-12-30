@@ -27,6 +27,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\FlyingGrass.cpp" />
+    <ClCompile Include="src\CTitle.cpp" />
     <ClCompile Include="src\CountDown.cpp" />
     <ClCompile Include="src\HUDFont.cpp" />
     <ClCompile Include="src\CBlood.cpp" />
@@ -65,6 +67,8 @@
     <ClCompile Include="src\ZoomOutCamera.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\FlyingGrass.h" />
+    <ClInclude Include="include\CTitle.h" />
     <ClInclude Include="include\CountDown.h" />
     <ClInclude Include="include\HUDFont.h" />
     <ClInclude Include="include\CBlood.h" />
@@ -145,6 +149,7 @@
     <MeshContentTask Include="Asset\modelData\tikei.fbx" />
     <MeshContentTask Include="Asset\modelData\tikei_flat.fbx" />
     <MeshContentTask Include="Asset\modelData\tower.FBX" />
+    <MeshContentTask Include="Asset\modelData\wire.fbx" />
   </ItemGroup>
   <ItemGroup>
     <ImageContentTask Include="Asset\modelData\land2.png">

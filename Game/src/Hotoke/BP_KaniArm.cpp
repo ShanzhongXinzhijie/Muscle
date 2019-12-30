@@ -88,11 +88,14 @@ void BP_KaniArm::Update() {
 
 void BP_KaniArm::PostUTRSUpdate() {	
 	for (int i = 0; i < enLRNUM; i++) {
+		//腕の目標点
+		CVector3 armTargetPos = m_isMachineGunning[i] ? m_ptrCore->GetTargetPos() : m_ptrCore->GetVanisingPoint();
+
 		//IKターゲットの移動
 
 		//TODO 腕の回転軸ごとにやる?
 
-		CVector3 targetDir = m_ptrCore->GetTargetPos() - m_model->GetBonePos(m_muzzleBoneID[i]); targetDir.Normalize();
+		CVector3 targetDir = armTargetPos - m_model->GetBonePos(m_muzzleBoneID[i]); targetDir.Normalize();
 
 		//Z軸を基準方向へ向けるクォータニオンを作成
 		CQuaternion LorRrot; LorRrot.MakeLookToUseXYAxis(i != L ? m_ptrCore->GetLeft() : m_ptrCore->GetRight());
@@ -152,7 +155,7 @@ void BP_KaniArm::PostUTRSUpdate() {
 				m_ikTargetPos[i] = armDir + (outDir - armDir).GetNorm()*armSpeed;
 			}
 
-		m_ikTargetPos[i] *= (m_ptrCore->GetTargetPos() - m_model->GetBonePos(m_muzzleBoneID[i])).Length();
+		m_ikTargetPos[i] *= (armTargetPos - m_model->GetBonePos(m_muzzleBoneID[i])).Length();
 		m_ikTargetPos[i] += m_model->GetBonePos(m_muzzleBoneID[i]);
 
 		//ターゲット座標をローカル座標型に変換
@@ -210,6 +213,7 @@ void BP_KaniArm::PostUTRSUpdate() {
 				constexpr float bulletSpeed = 100.0f;//弾速
 
 				//偏差射撃
+				float hitTime = 0.0f;
 				float aimPow = 1.0f;
 				CVector3 aimOffset;
 				if (m_ptrCore->GetTarget()) {
@@ -227,6 +231,7 @@ void BP_KaniArm::PostUTRSUpdate() {
 					t1 = max(t1, t2);
 					if (t1 > 0.0f) {
 						aimOffset = v*t1;
+						hitTime = t1;
 					}
 				}
 
@@ -268,9 +273,12 @@ void BP_KaniArm::PostUTRSUpdate() {
 					m_model->GetBonePos(m_muzzleBoneID[i]),
 					(dirNorm*bulletSpeed)+kansei,
 					m_ptrCore
-				);
+				);				
 				bullet->AddComponent(std::make_unique<BD_BeamModel>(3.0f,L"BLUE"));
 				bullet->AddComponent(std::make_unique<BD_Tracking>(m_ptrCore->GetTarget()));
+				std::unique_ptr<BD_Timer> bd_timer = std::make_unique<BD_Timer>(hitTime/2.0f);
+				bd_timer->AddComponent(&bullet->GetComponentBack());
+				bullet->AddComponent(std::move(bd_timer));
 				bullet->AddComponent(std::make_unique<BD_Reflect>());
 				bullet->AddComponent(std::make_unique<BD_Contact>(false));
 				//bullet->m_gravity = 0.2f;

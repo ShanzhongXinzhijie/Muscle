@@ -59,6 +59,8 @@ public:
 	void SetTargetPos(const CVector3& pos) { m_targetPos = pos; }
 	//ターゲット対象設定
 	void SetTarget(LockableWrapper* target) { m_target = target; }
+	//消失点を設定
+	void SetVanisingPoint(const CVector3& pos) { m_vanisingPoint = pos; }
 
 	//HUDを表示するか設定
 	void SetIsDrawHUD(bool enable) { m_isDrawHUD = enable; }
@@ -126,6 +128,8 @@ public:
 			return nullptr;
 		}
 	}
+	//消失点を取得
+	[[nodiscard]] const CVector3& GetVanisingPoint() const { return m_vanisingPoint; }
 
 	//パッドの取得
 	[[nodiscard]] const IGamePad* GetPad()const { return m_ptrPad; }
@@ -197,6 +201,7 @@ private:
 	//ターゲット
 	LockableWrapper* m_target = nullptr;
 	CVector3 m_targetPos;
+	CVector3 m_vanisingPoint;
 
 	//ズームアウト方向
 	CVector3 m_zoomoutDir = { 0.f, 400.f, 800.f };

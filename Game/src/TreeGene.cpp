@@ -5,7 +5,7 @@
 /// <summary>
 /// 石
 /// </summary>
-void Stone::Init(const CVector3& pos, const CVector3& normal) {
+/*void Stone::Init(const CVector3& pos, const CVector3& normal) {
 	float scale = 1.0f;
 	scale = (CMath::RandomZeroToOne() > 0.5f ? 0.05f : 0.1f)*(0.5f + CMath::RandomZeroToOne());
 	switch (CMath::RandomInt()%100)
@@ -51,24 +51,67 @@ void Stone::Init(const CVector3& pos, const CVector3& normal) {
 			me->SetEmissive(0.0f);
 		}
 	);
-}
+}*/
 
 /// <summary>
 /// 鉄塔
 /// </summary>
 void TransmissionTower::Init(const CVector3& pos, const CVector3& normal) {
-	m_model.Init(m_sInstancingMax, L"Resource/modelData/tettou.cmo");
-	m_model.GetInstancingModel()->GetModelRender().GetSkinModel().FindMaterialSetting(
+	m_model.Init(L"Resource/modelData/tettou.cmo");
+	m_model.GetSkinModel().FindMaterialSetting(
 		[&](MaterialSetting* me) {
-			me->SetMetallic(0.5f);
+			me->SetMetallic(1.0f);
+			me->SetShininess(0.8f);
 		}
 	);
-	m_model.SetPos(pos);//TODO 鉄塔は4つの足で高さ判定
-	//CQuaternion rot(CVector3::AxisX(), CMath::RandomZeroToOne()*CMath::PI2);
-	//rot.Concatenate(CQuaternion(CVector3::AxisY(), CMath::RandomZeroToOne()*CMath::PI2));
-	//rot.Concatenate(CQuaternion(CVector3::AxisZ(), CMath::RandomZeroToOne()*CMath::PI2));
+	m_model.SetPos(pos);
 	m_model.SetRot(CQuaternion(CVector3::AxisY(), CMath::RandomZeroToOne()*CMath::PI2));
-	m_model.SetScale(1.4f);
+	m_model.SetScale(100.4f);
+
+	//鉄塔は4つの足で高さ判定	
+	CVector3 setpos = pos;
+	for (int i = 0; i < 4; i++) {
+		btVector3 rayStart;
+		switch (i)
+		{
+		case 0:
+			rayStart = m_model.GetBonePos(m_model.FindBoneID(L"Graund001_end"));
+			break;
+		case 1:
+			rayStart = m_model.GetBonePos(m_model.FindBoneID(L"Graund002_end"));
+			break;
+		case 2:
+			rayStart = m_model.GetBonePos(m_model.FindBoneID(L"Graund003_end")); 
+			break;
+		case 3:
+			rayStart = m_model.GetBonePos(m_model.FindBoneID(L"Graund_end")); 
+			break;
+		default:
+			break;
+		}
+		btVector3 rayEnd = rayStart;
+		rayStart.setY(rayStart.y() + 1000.0f);
+		rayEnd.setY(rayEnd.y() - 10000.0f);
+		btCollisionWorld::ClosestRayResultCallback gnd_ray(rayStart, rayEnd);
+		//地形と判定
+		GetEngine().GetPhysicsWorld().RayTest(rayStart, rayEnd, gnd_ray);
+		if (gnd_ray.hasHit()) {
+			//土台設置
+			m_dodai[i] = std::make_unique<GameObj::CSkinModelRender>();
+			m_dodai[i]->Init(L"Resource/modelData/beam.cmo");
+			m_dodai[i]->SetPos(gnd_ray.m_hitPointWorld);
+			m_dodai[i]->SetRot(m_model.GetRot());
+			m_dodai[i]->SetScale(10.4f);
+
+			//モデル座標より接触点が低い位置なら
+			if (gnd_ray.m_hitPointWorld.y() < setpos.y) {
+				//接触点を座標に
+				setpos.y = gnd_ray.m_hitPointWorld.y();
+			}
+		}
+	}
+	setpos.y -= 25.0f;
+	m_model.SetPos(setpos);
 }
 
 /// <summary>
@@ -104,13 +147,13 @@ void Grass::Init(const CVector3& pos, const CVector3& normal) {
 	insModel.SetRot(rot);
 	insModel.SetScale((CMath::RandomZeroToOne()*0.0015f + 0.003f)*(isType2 ? 1.5f : 1.0f));
 	//insModel.SetIsDraw(false);
-	insModel.GetInstancingModel()->GetModelRender().SetIsShadowCaster(false);
+	//insModel.GetInstancingModel()->GetModelRender().SetIsShadowCaster(false);
 	//insModel.GetInstancingModel()->GetModelRender().InitPostDraw(PostDrawModelRender::enAlpha);// , false, true);//ポストドロー(ソフトパーティクル)
 	//insModel.GetInstancingModel()->GetModelRender().GetSkinModel().SetCullMode(D3D11_CULL_NONE);//バックカリングしない	
 	insModel.GetInstancingModel()->GetModelRender().GetSkinModel().FindMaterialSetting(
 		[&](MaterialSetting* me) {
 			me->SetShininess(0.4f);
-			me->SetAlbedoScale({40.0f, 0.0f, 40.0f, 1.0f});
+			//me->SetAlbedoScale({40.0f, 0.0f, 40.0f, 1.0f});
 		}
 	);
 }

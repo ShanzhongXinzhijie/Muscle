@@ -109,6 +109,10 @@ void CPlayer::Update() {
 	//引きカメラ演出
 	m_cam.SetIsZoomout(m_hotoke.GetIsStun(), m_hotoke.GetZoomoutDirection());
 
+	//消失点
+	CVector3 vanisingPoint = m_hotoke.GetPos() + m_hotoke.GetTotalVelocity() + (m_cam.GetTargetPoint() - m_hotoke.GetPos()).GetNorm()*15000.0f*0.125f;
+	m_hotoke.SetVanisingPoint(vanisingPoint);
+
 	//ロックオン
 	bool isLock = false; float minDistance = 0.0f; 
 	CVector3 outPos; LockableWrapper* outObj = nullptr;
@@ -134,7 +138,7 @@ void CPlayer::Update() {
 		m_hotoke.SetTarget(outObj);
 	}
 	else {
-		m_hotoke.SetTargetPos(m_hotoke.GetPos() + m_hotoke.GetTotalVelocity() + (m_cam.GetTargetPoint() - m_hotoke.GetPos()).GetNorm()*15000.0f*0.125f);
+		m_hotoke.SetTargetPos(vanisingPoint);
 		m_hotoke.SetTarget(nullptr);
 	}
 	m_isLockon = isLock;
@@ -161,7 +165,7 @@ void CPlayer::PostLoopUpdate() {
 
 	//エネミーへのライン
 	QueryGOs<LockableWrapper>(L"LockableObject", [&](LockableWrapper* go) {
-		if (&m_hotoke == go->GetFu()) { return true; }//自分は除く
+		if (&m_hotoke == go->GetFu() || &m_hotoke == go->GetOwner()) { return true; }//自分は除く
 
 		CVector3 screenPos = m_cam.CalcScreenPosFromWorldPos(go->GetFu()->GetCollisionPos());
 		

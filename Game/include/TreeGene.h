@@ -6,20 +6,20 @@
 /// <summary>
 /// 石
 /// </summary>
-class Stone : public IStageObject {
-public:
-	using IStageObject::IStageObject;
-
-	//初期化関数
-	void Init(const CVector3& pos, const CVector3& normal)override;
-
-private:
-	//グラフィック
-	GameObj::CInstancingModelRender m_model;
-
-public:
-	static inline int m_sInstancingMax = 512; //このクラスの最大インスタンス数
-};
+//class Stone : public IStageObject {
+//public:
+//	using IStageObject::IStageObject;
+//
+//	//初期化関数
+//	void Init(const CVector3& pos, const CVector3& normal)override;
+//
+//private:
+//	//グラフィック
+//	GameObj::CInstancingModelRender m_model;
+//
+//public:
+//	static inline int m_sInstancingMax = 512; //このクラスの最大インスタンス数
+//};
 
 /// <summary>
 /// 鉄塔
@@ -33,10 +33,8 @@ public:
 
 private:
 	//グラフィック
-	GameObj::CInstancingModelRender m_model;
-
-public:
-	static inline int m_sInstancingMax = 10; //このクラスの最大インスタンス数
+	GameObj::CSkinModelRender m_model;
+	std::unique_ptr<GameObj::CSkinModelRender> m_dodai[4];
 };
 
 /// <summary>

@@ -53,11 +53,23 @@ public:
 	/// <summary>
 	/// コンポーネントを追加する
 	/// </summary>
-	void AddComponent(std::unique_ptr<IBulletComponent> component) {
+	void AddComponent(std::unique_ptr<IBulletComponent>&& component) {
 		m_components.emplace_back(std::move(component));
 		m_components.back()->SetBullet(this);
 		m_components.back()->Start();
 	}
+	/// <summary>
+	/// コンポーネントを取得
+	/// </summary>
+	IBulletComponent& GetComponent(int i) {
+		return *m_components[i].get();
+	}
+	/// <summary>
+	/// 最後に追加したコンポーネントを取得
+	/// </summary>
+	IBulletComponent& GetComponentBack() {
+		return *m_components.back().get();
+	}	
 
 	/// <summary>
 	/// オーナーの取得
@@ -257,9 +269,9 @@ class BD_SmokeTrail : public IBulletComponent {
 public:
 	void PostUpdate()override {
 		new CSmoke(m_bullet->GetPos(), CVector3::Zero(), 
-			{ 1.0f,1.0f,1.0f,1.0f },
-			100.0f, 1.0f,//1.05f + 0.05f*(0.5f + CMath::RandomZeroToOne()),
-			180
+			{ 0.9f,0.88f,0.88f,0.65f },
+			100.0f, 1.02f,//1.05f + 0.05f*(0.5f + CMath::RandomZeroToOne()),
+			360
 		);
 	}
 

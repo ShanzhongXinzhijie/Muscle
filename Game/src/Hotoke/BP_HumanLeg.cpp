@@ -4,6 +4,10 @@
 
 using namespace GameObj;
 
+namespace{
+	const CVector3 hitboxOffset = CVector3::Down()*50.f;
+}
+
 void BP_HumanLeg::InnerStart() {
 	//アニメーション(ボーン初期化用)
 	m_initPose.Load(L"Resource/animation/humanleg.tka", true);
@@ -18,25 +22,28 @@ void BP_HumanLeg::InnerStart() {
 	);
 
 	//足のIK設定
-	//
+	//L
 	m_ikSetting[0] = m_model->GetSkinModel().GetSkeleton().CreateIK();
 	m_ikSetting[0]->tipBone = m_model->FindBone(L"Bone022");
 	m_ikSetting[0]->rootBone = m_model->FindBone(L"Bone019");
 	m_ikSetting[0]->InitFootIK();
-	m_ikSetting[0]->footIKRayEndOffset = CVector3::AxisY()*-2500.0f*m_ptrCore->GetScale().y;
-	//
+	m_ikSetting[0]->footIKRayEndOffset = CVector3::AxisY()*-2500.0f*m_ptrCore->GetScale().y;//1400
+	//R
 	m_ikSetting[1] = m_model->GetSkinModel().GetSkeleton().CreateIK();
 	m_ikSetting[1]->tipBone = m_model->FindBone(L"Bone022(mirrored)");
 	m_ikSetting[1]->rootBone = m_model->FindBone(L"Bone019(mirrored)");
 	m_ikSetting[1]->InitFootIK();
-	m_ikSetting[1]->footIKRayEndOffset = CVector3::AxisY()*-2500.0f*m_ptrCore->GetScale().y;
+	m_ikSetting[1]->footIKRayEndOffset = CVector3::AxisY()*-2500.0f*m_ptrCore->GetScale().y;	
 
 	//当たり判定(足)
 	constexpr float radius = 50.0f;
+	constexpr float height = 50.0f;
 	const float modelScale = m_ptrCore->GetScale().GetMax() / (0.0188f*2.0f);
 	for (auto lr : {L,R}) {
-		m_col[lr].m_collision.CreateSphere(m_model->GetBonePos(m_ikSetting[lr]->tipBone->GetNo()), {}, radius * modelScale);
-		m_col[lr].m_reference.position = m_model->GetBonePos(m_ikSetting[lr]->tipBone->GetNo());
+		//m_col[lr].m_collision.CreateSphere({}, {}, radius * modelScale);
+		m_col[lr].m_collision.CreateCapsule({}, {}, radius * modelScale, height*modelScale);
+		m_col[lr].SetPos(m_model->GetBonePos(m_ikSetting[lr]->tipBone->GetNo()) + hitboxOffset);
+		m_beforePos[lr] = m_model->GetBonePos(m_ikSetting[lr]->tipBone->GetNo());
 		m_col[lr].m_reference.attributes.set(enPhysical);
 		m_col[lr].m_reference.m_preCollisionFunc = [&,lr](ReferenceCollision* H) { 
 			//体当たり
@@ -80,8 +87,9 @@ void BP_HumanLeg::Update() {
 void BP_HumanLeg::PostUTRSUpdate() {
 	//判定の更新
 	for (auto lr : LR) {
-		m_col[lr].SetPos(m_model->GetBonePos(m_ikSetting[lr]->tipBone->GetNo()));
-		m_col[lr].SetVelocity(m_ptrCore->GetMove());
+		m_col[lr].SetPos(m_model->GetBonePos(m_ikSetting[lr]->tipBone->GetNo()) + hitboxOffset);
+		m_col[lr].SetVelocity(m_model->GetBonePos(m_ikSetting[lr]->tipBone->GetNo()) - m_beforePos[lr]);
+		m_beforePos[lr] = m_model->GetBonePos(m_ikSetting[lr]->tipBone->GetNo());
 	}
 
 	//足の位置取得

@@ -10,6 +10,7 @@ BulletGO::BulletGO(const CVector3& pos, const CVector3& move, IFu* owner, bool i
 	m_col.m_collision.SetCallback(
 		[&](SuicideObj::CCollisionObj::SCallbackParam& p) {
 			for (auto& component : m_components) {
+				if (!component->GetEnable()) { continue; }
 				component->Contact(p);
 			}		
 		}
@@ -23,6 +24,7 @@ BulletGO::BulletGO(const CVector3& pos, const CVector3& move, IFu* owner, bool i
 	m_col.m_reference.attributes.set(enFlame);
 
 	for (auto& component : m_components) {
+		if (!component->GetEnable()) { continue; }
 		component->Start();
 	}
 }
@@ -31,6 +33,7 @@ void BulletGO::Update() {
 	//m_isMoved = true;
 
 	for (auto& component : m_components) {
+		if (!component->GetEnable()) { continue; }
 		component->Update();
 	}
 
@@ -52,6 +55,7 @@ void BulletGO::Update() {
 	CalcVelocityUpdate(m_vector, m_gravity, m_upBrake, m_downAccel);
 
 	for (auto& component : m_components) {
+		if (!component->GetEnable()) { continue; }
 		component->PostUpdate();
 	}
 }
@@ -72,18 +76,21 @@ void BulletGO::CalcVelocityUpdate(CVector3& velocity, float gravity, float upBra
 
 void BulletGO::PreLoopUpdate() {
 	for (auto& component : m_components) {
+		if (!component->GetEnable()) { continue; }
 		component->PreLoopUpdate();
 	}
 }
 
 void BulletGO::PostLoopUpdate() {
 	for (auto& component : m_components) {
+		if (!component->GetEnable()) { continue; }
 		component->PostLoopUpdate();
 	}
 }
 
 void BulletGO::Pre3DRender(int n) {
 	for (auto& component : m_components) {
+		if (!component->GetEnable()) { continue; }
 		component->Pre3DRender(n);
 	}
 }
