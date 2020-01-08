@@ -16,11 +16,12 @@ public:
 
 private:
 	IFu m_graund;
-	GameObj::CSkinModelRender m_model;
-	//SuicideObj::CCollisionObj m_graundCollision;
-	//PhysicsStaticObject m_phyStaticObject;
+	GameObj::CSkinModelRender m_graundModel;
+	GameObj::CSkinModelRender m_areaWallModel;
 
 	GameObj::CSkybox m_sky;
+	GameObj::CSkinModelRender m_midGraund, m_midCastle, m_farGraund;
+
 	GameObj::CDirectionLight m_directionLight;
 	//CascadeShadowHandler m_shadowmap;
 	

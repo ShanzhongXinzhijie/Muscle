@@ -24,17 +24,29 @@
 /// <summary>
 /// 鉄塔
 /// </summary>
-class TransmissionTower : public IStageObject {
-public:
+class TransmissionTower : public IStageObject, public IGameObject {
+public:	
 	using IStageObject::IStageObject;
 
 	//初期化関数
 	void Init(const CVector3& pos, const CVector3& normal)override;
 
+	//モデルを取得
+	GameObj::CSkinModelRender& GetModel() {
+		return m_model;
+	}
+
+	//ワイヤーを通されているか?
+	void SetIsWired(bool b) { m_isWired = b; }
+	bool IsWired()const { return m_isWired; }
+
 private:
 	//グラフィック
 	GameObj::CSkinModelRender m_model;
-	std::unique_ptr<GameObj::CSkinModelRender> m_dodai[4];
+	std::unique_ptr<GameObj::CSkinModelRender> m_wire[6];
+	//std::unique_ptr<GameObj::CSkinModelRender> m_dodai[4];
+
+	bool m_isWired = false;//ワイヤー通されてるか?
 };
 
 /// <summary>

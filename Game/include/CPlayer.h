@@ -20,6 +20,20 @@ public:
 	void PostLoopUpdate()override;
 	void HUDRender(int HUDNum)override;
 
+	/// <summary>
+	/// ƒvƒŒƒCƒ„[”Ô†‚ğæ“¾
+	/// </summary>
+	int GetPlayerNum()const {
+		return m_playerNum;
+	}
+
+	/// <summary>
+	/// €‚ñ‚Å‚é?
+	/// </summary>
+	bool GetIsDeath()const {
+		return m_hotoke.GetHP() <= 0.0f;
+	}
+
 private:
 	int m_playerNum = -1;
 

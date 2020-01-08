@@ -86,7 +86,7 @@ public:
 	/// <summary>
 	/// 毎フレームのベロシティの変化を計算
 	/// </summary>
-	static void CalcVelocityUpdate(CVector3& velocity, float gravity, float upBrake, float downAccel);
+	static void CalcVelocityUpdate(CVector3& velocity, float gravity = 0.0f, float upBrake = 0.025f, float downAccel = 0.25f);
 
 private:
 	//この弾のオーナー
@@ -319,8 +319,8 @@ private:
 /// </summary>
 class BD_Homing : public IBulletComponent {
 public:
-	BD_Homing(LockableWrapper* target = nullptr, float thrust = 0.0f, float noAccelRad = 0.0f, float timer = 0.0f)
-		: m_target(target), m_thrust(thrust), m_nonAccelRad(noAccelRad), m_timerf(timer)
+	BD_Homing(LockableWrapper* target = nullptr, float thrust = 0.0f, float noAccelRad = 0.0f, float limitRad = CMath::PI2, float timer = 0.0f)
+		: m_target(target), m_thrust(thrust), m_nonAccelRad(noAccelRad), m_limitRad(limitRad), m_timerf(timer)
 	{
 		if (target) {
 			isTargetDeath = std::make_shared<bool>(false);
@@ -330,8 +330,18 @@ public:
 
 	void Update()override {
 		//タイマー処理
-		m_timerf = max(0.0f, m_timerf - 1.0f);
-		if (m_timerf > 0.0f) { return; }
+		if (m_timerf > 0.0f) {
+			m_timerf = max(0.0f, m_timerf - 1.0f);
+			if (m_timerf > 0.0f) { 
+				return;
+			}
+			else {
+				//方向初期化 
+				if (m_target && !(*isTargetDeath.get())) {
+					m_bullet->m_vector = (m_target->GetFu()->GetCollisionPos() - m_bullet->GetPos() + m_target->GetMove()).GetNorm()*m_bullet->m_vector.Length();
+				}
+			}
+		}
 
 		CVector3 targetDir(m_bullet->m_vector);
 		
@@ -342,8 +352,9 @@ public:
 
 		targetDir.Normalize();
 
-		//常に加速設定 or 目標方向との角度が開いている
-		if (m_nonAccelRad < FLT_EPSILON || CVector3::AngleOf2NormalizeVector(targetDir,m_bullet->m_vector.GetNorm()) > m_nonAccelRad) {
+		//常に加速設定 or 目標方向との角度が開いている and 誘導角度内
+		float rad = CVector3::AngleOf2NormalizeVector(targetDir, m_bullet->m_vector.GetNorm());
+		if ((m_nonAccelRad < FLT_EPSILON || rad > m_nonAccelRad) && rad < m_limitRad) {
 			CVector3 beforeVec = m_bullet->m_vector;
 			//ブレーキング
 			//m_bullet->m_vector = m_bullet->m_vector.GetNorm()*max(0.0f, m_bullet->m_vector.Length() - m_thrust);
@@ -365,6 +376,7 @@ private:
 	std::shared_ptr<bool> isTargetDeath;//ターゲットのインスタンスが存在するか?
 	float m_thrust = 0.0f;//推力
 	float m_nonAccelRad = 0.0f;//加速しない角度範囲
+	float m_limitRad = CMath::PI2;//追尾可能な角度
 	float m_timerf = 0.0f;//ホーミング開始までのフレーム数
 };
 

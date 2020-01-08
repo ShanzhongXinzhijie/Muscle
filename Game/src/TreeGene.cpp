@@ -61,12 +61,13 @@ void TransmissionTower::Init(const CVector3& pos, const CVector3& normal) {
 	m_model.GetSkinModel().FindMaterialSetting(
 		[&](MaterialSetting* me) {
 			me->SetMetallic(1.0f);
-			me->SetShininess(0.8f);
+			me->SetShininess(0.4f);
+			//me->SetAlbedoScale({ 1.0f,1.0f, 1.0f, 1.0f });
 		}
 	);
 	m_model.SetPos(pos);
 	m_model.SetRot(CQuaternion(CVector3::AxisY(), CMath::RandomZeroToOne()*CMath::PI2));
-	m_model.SetScale(100.4f);
+	m_model.SetScale(1.4f*0.4f);
 
 	//鉄塔は4つの足で高さ判定	
 	CVector3 setpos = pos;
@@ -75,16 +76,16 @@ void TransmissionTower::Init(const CVector3& pos, const CVector3& normal) {
 		switch (i)
 		{
 		case 0:
-			rayStart = m_model.GetBonePos(m_model.FindBoneID(L"Graund001_end"));
+			rayStart = m_model.GetBonePos(m_model.FindBoneID(L"Graund0"));
 			break;
 		case 1:
-			rayStart = m_model.GetBonePos(m_model.FindBoneID(L"Graund002_end"));
+			rayStart = m_model.GetBonePos(m_model.FindBoneID(L"Graund1"));
 			break;
 		case 2:
-			rayStart = m_model.GetBonePos(m_model.FindBoneID(L"Graund003_end")); 
+			rayStart = m_model.GetBonePos(m_model.FindBoneID(L"Graund2")); 
 			break;
 		case 3:
-			rayStart = m_model.GetBonePos(m_model.FindBoneID(L"Graund_end")); 
+			rayStart = m_model.GetBonePos(m_model.FindBoneID(L"Graund3")); 
 			break;
 		default:
 			break;
@@ -97,11 +98,11 @@ void TransmissionTower::Init(const CVector3& pos, const CVector3& normal) {
 		GetEngine().GetPhysicsWorld().RayTest(rayStart, rayEnd, gnd_ray);
 		if (gnd_ray.hasHit()) {
 			//土台設置
-			m_dodai[i] = std::make_unique<GameObj::CSkinModelRender>();
+			/*m_dodai[i] = std::make_unique<GameObj::CSkinModelRender>();
 			m_dodai[i]->Init(L"Resource/modelData/beam.cmo");
 			m_dodai[i]->SetPos(gnd_ray.m_hitPointWorld);
 			m_dodai[i]->SetRot(m_model.GetRot());
-			m_dodai[i]->SetScale(10.4f);
+			m_dodai[i]->SetScale(15.0f);*/
 
 			//モデル座標より接触点が低い位置なら
 			if (gnd_ray.m_hitPointWorld.y() < setpos.y) {
@@ -110,8 +111,66 @@ void TransmissionTower::Init(const CVector3& pos, const CVector3& normal) {
 			}
 		}
 	}
-	setpos.y -= 25.0f;
+	setpos.y -= 5.0f;
 	m_model.SetPos(setpos);
+
+	//ワイヤー通し
+	SetName(L"TransmissionTower");
+	QueryGOs<TransmissionTower>(L"TransmissionTower", 
+		[&](auto* go) {
+			if (go == this) { return true; }
+			if (!go->IsWired()) {
+				//ワイヤー作成
+				for (int i = 0; i < 6; i++) {
+					CVector3 start, end;
+					switch (i)
+					{
+					case 0:
+						start = m_model.GetBonePos(m_model.FindBoneID(L"Wire0"));
+						end = go->GetModel().GetBonePos(m_model.FindBoneID(L"Wire0"));
+						break;
+					case 1:
+						start = m_model.GetBonePos(m_model.FindBoneID(L"Wire1"));
+						end = go->GetModel().GetBonePos(m_model.FindBoneID(L"Wire1"));
+						break; 
+					case 2:
+						start = m_model.GetBonePos(m_model.FindBoneID(L"Wire2"));
+						end = go->GetModel().GetBonePos(m_model.FindBoneID(L"Wire2"));
+						break;
+					case 3:
+						start = m_model.GetBonePos(m_model.FindBoneID(L"Wire3"));
+						end = go->GetModel().GetBonePos(m_model.FindBoneID(L"Wire3"));
+						break; 
+					case 4:
+						start = m_model.GetBonePos(m_model.FindBoneID(L"Wire4"));
+						end = go->GetModel().GetBonePos(m_model.FindBoneID(L"Wire4"));
+						break;
+					case 5:
+						start = m_model.GetBonePos(m_model.FindBoneID(L"Wire5"));
+						end = go->GetModel().GetBonePos(m_model.FindBoneID(L"Wire5"));
+						break; 
+					default:
+						break;
+					}
+					m_wire[i] = std::make_unique<GameObj::CSkinModelRender>();
+					m_wire[i]->Init(L"Resource/modelData/wire.cmo");
+					m_wire[i]->SetPos(start);
+					CQuaternion rot;
+					rot.MakeLookToUseXYAxis((end - start).GetNorm());
+					m_wire[i]->SetRot(rot);
+					m_wire[i]->SetScale({0.3f,0.3f,(start - end).Length()});
+					m_wire[i]->GetSkinModel().FindMaterialSetting(
+						[&](MaterialSetting* me) {
+							me->SetShininess(0.9f);
+						}
+					);
+				}
+				go->SetIsWired(true);
+				return false;
+			}
+			return true;
+		}
+	);
 }
 
 /// <summary>
@@ -207,16 +266,16 @@ void Tree::Init(const CVector3& pos, const CVector3& normal){
 
 	//木の種類
 	constexpr wchar_t treeModelFilePath[2][64] = {
-		L"Resource/modelData/realTree.cmo",
+		L"Resource/modelData/realTree_S.cmo",
 		L"Resource/modelData/realTree2_S.cmo"
 	};
 
 	//バリエーション
-	float sizeScale = 0.5f*(1.0f + CMath::RandomZeroToOne()*1.2f);		//スケール
-	//0.5f*(1.0f + CMath::RandomZeroToOne()*0.3f);
+	//float sizeScale = 0.5f*(1.0f + CMath::RandomZeroToOne()*1.2f);		//スケール
+	float sizeScale = 0.5f*(1.0f + CMath::RandomZeroToOne()*0.3f);
 	float radY = -CMath::PI2 + CMath::PI2*2.0f*CMath::RandomZeroToOne();//回転
 	m_rot.SetRotation(CVector3::AxisY(), radY);
-	int treeTypeInd = CMath::RandomZeroToOne() > 1.0f ? 1 : 0;			//モデル種類
+	int treeTypeInd = 0;// CMath::RandomZeroToOne() > 0.5f ? 1 : 0;			//モデル種類
 	
 	//TODO
 	//木の色・地面の色ムラ　パーリンノイズ
@@ -236,17 +295,28 @@ void Tree::Init(const CVector3& pos, const CVector3& normal){
 	
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> barktex, leaftex;
 	TextureFactory::GetInstance().Load(L"Resource/texture/nadeln4.dds", nullptr, &leaftex);
-	TextureFactory::GetInstance().Load(L"Asset/modelData/realTree/stamm2.jpg", nullptr, &barktex, nullptr, true);//TODO Resourceにする
+	TextureFactory::GetInstance().Load(L"Resource/texture/stamm2.dds", nullptr, &barktex);
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> barktexN, leaftexN;
+	TextureFactory::GetInstance().Load(L"Resource/normalMap/nadeln4_n.png", nullptr, &leaftexN, nullptr, true);
+	TextureFactory::GetInstance().Load(L"Resource/normalMap/stamm2_n.png", nullptr, &barktexN, nullptr, true);
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> leaftexT;
+	TextureFactory::GetInstance().Load(L"Resource/translucentMap/nadeln4_t.png", nullptr, &leaftexT, nullptr, true);
+
 	std::function setMaterial = [&](MaterialSetting* me) {
-		me->SetShininess(0.1f);
+		me->SetShininess(0.01f);
 		if (me->EqualMaterialName(L"leaves")) {
 			me->SetIsUseTexZShader(true);
 			me->SetAlbedoTexture(leaftex.Get());
+			me->SetNormalTexture(leaftexN.Get());
+			me->SetTranslucentTexture(leaftexT.Get());
+			me->SetTranslucent(0.8f);
 		}
 		else {
 			me->SetAlbedoTexture(barktex.Get());
+			me->SetNormalTexture(barktexN.Get());
 		}
 	};
+
 	insModel.GetInstancingModel()->GetModelRender().GetSkinModel().FindMaterialSetting(setMaterial);
 
 	////マテリアル設定

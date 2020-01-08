@@ -226,8 +226,17 @@ void BP_KaniArm::PostUTRSUpdate() {
 					CVector3 v = m_ptrCore->GetTarget()->GetMove();
 					float sita = CVector3::AngleOf2NormalizeVector(OL.GetNorm(), v.GetNorm());
 					float vLength = v.Length();
-					float t1 = OL.Length() / (totalSpeed * sqrt(1.0f - CMath::Square(vLength / totalSpeed * sin(sita))) - vLength * cos(sita));
-					float t2 = OL.Length() / (-totalSpeed * sqrt(1.0f - CMath::Square(vLength / totalSpeed * sin(sita))) - vLength * cos(sita));
+					float toTargetDistance = OL.Length();
+
+					/*CVector3 vector = dirNorm * totalSpeed;
+					for (int i = 0; i < toTargetDistance / totalSpeed; i++) {
+						BulletGO::CalcVelocityUpdate(vector);
+					}
+					totalSpeed = (totalSpeed+vector.Length())/2.0f;*/
+
+					float t1 = toTargetDistance / (totalSpeed * sqrt(1.0f - CMath::Square(vLength / totalSpeed * sin(sita))) - vLength * cos(sita));
+					float t2 = toTargetDistance / (-totalSpeed * sqrt(1.0f - CMath::Square(vLength / totalSpeed * sin(sita))) - vLength * cos(sita));
+					
 					t1 = max(t1, t2);
 					if (t1 > 0.0f) {
 						aimOffset = v*t1;
@@ -275,10 +284,10 @@ void BP_KaniArm::PostUTRSUpdate() {
 					m_ptrCore
 				);				
 				bullet->AddComponent(std::make_unique<BD_BeamModel>(3.0f,L"BLUE"));
-				bullet->AddComponent(std::make_unique<BD_Tracking>(m_ptrCore->GetTarget()));
-				std::unique_ptr<BD_Timer> bd_timer = std::make_unique<BD_Timer>(hitTime/2.0f);
-				bd_timer->AddComponent(&bullet->GetComponentBack());
-				bullet->AddComponent(std::move(bd_timer));
+				//bullet->AddComponent(std::make_unique<BD_Tracking>(m_ptrCore->GetTarget()));
+				//std::unique_ptr<BD_Timer> bd_timer = std::make_unique<BD_Timer>(hitTime/2.0f);
+				//bd_timer->AddComponent(&bullet->GetComponentBack());
+				//bullet->AddComponent(std::move(bd_timer));
 				bullet->AddComponent(std::make_unique<BD_Reflect>());
 				bullet->AddComponent(std::make_unique<BD_Contact>(false));
 				//bullet->m_gravity = 0.2f;
@@ -336,7 +345,7 @@ void BP_KaniArm::Rocket(enLR lr) {
 	bullet->AddComponent(std::make_unique<BD_BeamModel>(30.0f, L"Red"));
 	bullet->AddComponent(std::make_unique<BD_SmokeTrail>());
 	bullet->AddComponent(std::make_unique<BD_Contact>());
-	bullet->AddComponent(std::make_unique<BD_Homing>(m_ptrCore->GetTarget(), 10.0f, 0.0f, 50.0f));
+	bullet->AddComponent(std::make_unique<BD_Homing>(m_ptrCore->GetTarget(), 10.0f, 0.0f, CMath::DegToRad(60.0f), 50.0f));
 	bullet->AddComponent(std::make_unique<BD_Brake>(1.0f));
 	bullet->AddComponent(std::make_unique<BD_Lockable>());
 }

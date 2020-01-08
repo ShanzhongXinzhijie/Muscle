@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "LoadingScreen.h"
+#include "GameManager.h"
 
 bool LoadingScreen::Start() {
 	m_gomiCamera = std::make_unique<GameObj::NoRegisterOrthoCamera>();
@@ -21,9 +22,8 @@ void LoadingScreen::PostRender() {
 		m_gomiCamera.reset();
 		//このクラス無効化
 		SetEnable(false);
-
 		//ロードするぞ
-		m_game = std::make_unique<Game>();
+		new GameManager;
 	}
 	m_isOneLooped = true;
 

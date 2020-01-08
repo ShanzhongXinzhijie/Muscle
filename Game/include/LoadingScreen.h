@@ -1,5 +1,4 @@
 #pragma once
-#include "Game.h"
 
 class LoadingScreen : public IGameObject
 {
@@ -15,7 +14,5 @@ private:
 	bool m_isOneLooped = false;
 	CFont m_font;
 	CSprite m_sprite;
-
-	std::unique_ptr<Game> m_game;
 };
 

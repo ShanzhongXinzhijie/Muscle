@@ -44,6 +44,16 @@ public:
 			GetGraphicsEngine().GetMotionBlurRender().SetMotionBlurScale(motionBlurScale);
 		}
 	}
+	/// <summary>
+	/// İ’è‚ğ‚à‚Æ‚É–ß‚·
+	/// </summary>
+	void ResetFrameRate() {
+		SetEnable(false);
+		m_lastSetTimeLimit = 0.0f;
+		GetEngine().SetStandardFrameRate(FRAME_RATE);
+		GetEngine().SetUseFpsLimiter(true, FRAME_RATE);
+		GetGraphicsEngine().GetMotionBlurRender().SetMotionBlurScale();
+	}
 
 	/// <summary>
 	/// –ˆƒtƒŒ[ƒ€‚Ìˆ—
@@ -52,12 +62,7 @@ public:
 		m_timeLimitSec -= GetDeltaTimeSec();
 		m_timeLimitSec = max(0.0f, m_timeLimitSec);
 		if (m_timeLimitSec < FLT_EPSILON) {
-			//‚à‚Æ‚É–ß‚·
-			SetEnable(false);
-			m_lastSetTimeLimit = 0.0f;
-			GetEngine().SetStandardFrameRate(FRAME_RATE);
-			GetEngine().SetUseFpsLimiter(true, FRAME_RATE);
-			GetGraphicsEngine().GetMotionBlurRender().SetMotionBlurScale();
+			ResetFrameRate();//‚à‚Æ‚É–ß‚·
 		}
 	}
 

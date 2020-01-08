@@ -4,37 +4,24 @@ class CountDown :
 	public IGameObject
 {
 public:
-	CountDown();
+	CountDown(int round, int roundmax, int score[PLAYER_NUM], int timeLimitSec);
 	~CountDown() {
 		GetEngine().SetStandardFrameRate(FRAME_RATE);//フレームレート戻す
 	}
 
-	/*bool Start()override {
-		m_font.LoadFont(L"Resource/font/eunomia_0200/Eunomia.spritefont");
-		return true;
-	}*/
-	void PostLoopUpdate()override {
-		//最初の何フレームかは処理しない
-		if (m_unuseFrameCount > 0) {
-			m_unuseFrameCount--;
-			if (m_unuseFrameCount == 0) {
-				GetEngine().SetStandardFrameRate(1);//フレームレート変更
-			}
-			return;
-		}
-		//カウントダウン減少
-		m_countDownSec -= GetRealDeltaTimeSec();
-		if (m_countDownSec < 0.0f) {
-			delete this;
-			return;
-		}
-	}
+	bool Start()override;
+	void PostLoopUpdate()override;
 	void PostRender()override;
 
 private:
 	CFont m_font;
+
 	int m_unuseFrameCount = 2;
-	int m_countDownType = 0;
-	float m_countDownSec = 3.0f;
+	//int m_countDownType = 0;
+	float m_countDownSec = 6.0f;
+
+	int m_roundCount = 0, m_maxRound = 0;
+	int m_score[PLAYER_NUM] = {};
+	int m_timeLimitSec = 0;
 };
 

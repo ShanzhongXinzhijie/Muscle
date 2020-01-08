@@ -22,14 +22,15 @@ Shibuya::Shibuya() : m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI>(
 
 	//ライト作成
 	m_directionLight.SetDirection(CVector3::AxisZ()*-1.0f);
-	m_directionLight.SetColor(CVector3::One() * 0.5f);
+	m_directionLight.SetColor(CVector3(0.98f,0.97f,0.91f)*0.5f);
+	//m_directionLight.SetColor(CVector3::One() * 0.5f);
 
 	//街モデル
-	m_model.Init(L"Resource/modelData/tikei_flat.cmo");
-	m_model.SetScale({ 500.0f,500.0f,500.0f });
+	m_graundModel.Init(L"Resource/modelData/tikei_flat.cmo");
+	m_graundModel.SetScale({ 500.0f,500.0f,500.0f });
 	//当たり判定
 	m_graund.SetIsStaticObject(true);
-	m_graund.CreateMesh(m_model);
+	m_graund.CreateMesh(m_graundModel);
 	m_graund.On_OneGroup(enField);
 	m_graund.GetAttributes().set(enPhysical);
 	m_graund.GetAttributes().set(enGraund);
@@ -49,20 +50,85 @@ Shibuya::Shibuya() : m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI>(
 			}
 		}
 	);
-	
+
+	//エリア範囲
+	//m_areaWallModel.Init(L"Preset/modelData/sky.cmo");
+	//m_areaWallModel.SetScale({ 500.f,50.f,500.f });
+
 	//テクスチャ
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> tex, normaltex;	
 	TextureFactory::GetInstance().Load(L"Resource/texture/moss3.png", nullptr, tex.ReleaseAndGetAddressOf(), nullptr, true);
 	TextureFactory::GetInstance().Load(L"Resource/normalMap/moss3_n.bmp", nullptr, normaltex.ReleaseAndGetAddressOf(), nullptr, true);
 
 	//モデルにシェーダとノーマルマップ設定
-	m_model.GetSkinModel().FindMaterialSetting(
+	m_graundModel.GetSkinModel().FindMaterialSetting(
 		[&](MaterialSetting* mat) {
 			mat->SetNormalTexture(normaltex.Get());
 			mat->SetAlbedoTexture(tex.Get());
 			mat->SetTriPlanarMappingPS();
 			mat->SetTriPlanarMappingUVScale(0.002f);
 			mat->SetShininess(0.3f);// m_shinnes);
+		}
+	);
+
+	//城
+	m_midCastle.Init(L"Resource/modelData/mid_graund.cmo");
+	m_midCastle.SetScale(500.0f);
+	//モデルにシェーダとノーマルマップ設定
+	m_midCastle.GetSkinModel().FindMaterialSetting(
+		[&](MaterialSetting* mat) {
+			if (mat->EqualMaterialName(L"Graund")) {
+				mat->SetAlbedoTexture(tex.Get());
+				mat->SetTriPlanarMappingPS();
+				mat->SetTriPlanarMappingUVScale(0.002f);
+				mat->SetShininess(0.3f);
+			}
+			else {
+				mat->SetShininess(0.1f);
+			}
+		}
+	);
+
+	//中景	
+	m_midGraund.Init(L"Resource/modelData/far_graund.cmo");
+	m_midGraund.SetRot({ CVector3::AxisY(), CMath::PI_HALF });
+	m_midGraund.SetScale(500.0f);
+	//モデルにシェーダとノーマルマップ設定
+	m_midGraund.GetSkinModel().FindMaterialSetting(
+		[&](MaterialSetting* mat) {
+			//mat->SetNormalTexture(normaltex.Get());
+			mat->SetAlbedoTexture(tex.Get());
+			mat->SetTriPlanarMappingPS();
+			mat->SetTriPlanarMappingUVScale(0.002f);
+			mat->SetShininess(0.3f);// m_shinnes);
+		}
+	);	
+
+	//遠景
+	m_farGraund.Init(L"Resource/modelData/far_graund.cmo");
+	m_farGraund.SetScale(500.0f);
+	//モデルにシェーダとノーマルマップ設定
+	m_farGraund.GetSkinModel().FindMaterialSetting(
+		[&](MaterialSetting* mat) {
+			//mat->SetNormalTexture(normaltex.Get());
+			mat->SetAlbedoTexture(tex.Get());
+			//mat->SetTriPlanarMappingPS();
+			//mat->SetTriPlanarMappingUVScale(0.002f);
+			mat->SetShininess(0.3f);// m_shinnes);
+		}
+	);
+	//設定
+	m_farGraund.SetDrawPriority(DRAW_PRIORITY_MAX - 1);
+	m_farGraund.SetIsMostDepth(true);
+	//m_farGraund.GetSkinModel().SetDepthBias(0.0f);
+	m_farGraund.SetIsShadowCaster(false);
+	//m_farGraund.GetSkinModel().SetDepthStencilState(GetGraphicsEngine().GetCommonStates().DepthNone());
+	//描画前処理を設定
+	m_farGraund.GetSkinModel().SetPreCullingFunction(
+		[&](SkinModel* model) {
+			m_farGraund.SetPos(GetMainCamera()->GetPos());
+			//m_farGraund.SetPos({ GetMainCamera()->GetPos().x, 0.0f, GetMainCamera()->GetPos().z });
+			m_farGraund.RefreshWorldMatrix();
 		}
 	);
 
@@ -114,7 +180,8 @@ Shibuya::Shibuya() : m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI>(
 	m_dinosaur.SetScale(CVector3::One()*0.09f);
 
 	//空
-	m_sky.Init(L"Resource/cubemap/cube2.dds");
+	m_sky.Init(L"Resource/cubemap/cube2.dds",-1.0f,false);
+	SetAmbientCubeMap(L"Resource/cubemap/cubemap.dds", CVector3::One());
 	
 	//m_skyModel.Init(L"Resource/modelData/sky.cmo");
 	////設定
@@ -130,13 +197,17 @@ Shibuya::Shibuya() : m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI>(
 
 	//フォグを有効化
 	SetEnableFog(true);
-	SetFogDistance(30000.0f);
+	SetFogDistance(30000.0f*1.5f);
+	SetFogHeightScale(3.0f);
+	//SetFogColor({ 0.58f,0.69f,0.84f });
+	SetFogColor({0.28f,0.4f,0.65f});
 
 	//木々
 	//TODO 木のモデルの描画負荷が高い 判定が重い 画面分割時は判定削除とか
 	Tree::m_sInstancingMax = 4000;
-	m_objGene.Generate<Tree>({ -70.0f*50.0f,-70.0f*50.0f,-70.0f*50.0f }, { 70.0f*50.0f,70.0f*50.0f,70.0f*50.0f }, Tree::m_sInstancingMax, 120.0f);
-	
+	//m_objGene.Generate<Tree>({ -70.0f*50.0f,-70.0f*50.0f,-70.0f*50.0f }, { 70.0f*50.0f,70.0f*50.0f,70.0f*50.0f }, Tree::m_sInstancingMax, 120.0f);
+	m_objGene.Generate<Tree>(CVector3::Zero(), 70.0f*50.0f, 70.0f*50.0f, Tree::m_sInstancingMax, 120.0f);
+
 	//草
 	Grass::m_sInstancingMax = 512*4;
 	m_objGene.Generate<Grass>({ -70.0f,-70.0f*50.0f,-70.0f }, { 70.0f,70.0f*50.0f,70.0f }, Grass::m_sInstancingMax, 0.0f);
