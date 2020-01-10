@@ -19,7 +19,7 @@ void GameManager::GameEnd(bool isDeathPlayer[PLAYER_NUM]) {
 	m_roundCount++;
 	
 	//‡I—¹
-	if (m_maxRound <= m_roundCount || static_cast<int>(ceil(m_maxRound / 2.0f)) <= max(m_score[0], m_score[1])) {
+	if (m_maxRound <= m_roundCount || (m_maxRound - m_roundCount) < max(m_score[0], m_score[1]) - min(m_score[0], m_score[1])) {
 		return;
 	}
 	

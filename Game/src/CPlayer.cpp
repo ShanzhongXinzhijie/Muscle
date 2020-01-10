@@ -11,7 +11,11 @@ bool CPlayer::Start() {
 	m_anim.Load(L"Resource/animation/human/stand.tka");
 	m_human.Init(L"Resource/modelData/human.cmo", &m_anim, 1);
 	m_human.SetScale(10.0f);
-	//m_human.SetPos(CVector3::AxisY()*900.0f + CVector3::AxisX()*50.0f + CVector3::AxisZ()*100.0f);
+
+	m_animHeri.Load(L"Resource/animation/herico.tka", true);
+	m_heri.Init(L"Resource/modelData/herico.cmo", &m_animHeri, 1);
+	m_heri.SetScale(0.3f);
+
 	//ÉåÉCÇ≈îªíË
 	btVector3 rayStart = btVector3(0.0f, 100000.0f, 0.0f);
 	btVector3 rayEnd = btVector3(0.0f, -100000.0f, 0.0f);
@@ -20,6 +24,7 @@ bool CPlayer::Start() {
 	if (gnd_ray.hasHit()) {
 		//ê⁄êGì_Çç¿ïWÇ…
 		m_human.SetPos(gnd_ray.m_hitPointWorld);
+		m_heri.SetPos(gnd_ray.m_hitPointWorld+CVector3::Back()*25.f);
 	}
 
 	//m_humanCam.SetViewAngleDeg(25.0f);

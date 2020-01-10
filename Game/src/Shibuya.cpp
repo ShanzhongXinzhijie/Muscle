@@ -207,11 +207,7 @@ Shibuya::Shibuya() : m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI>(
 	Tree::m_sInstancingMax = 4000;
 	//m_objGene.Generate<Tree>({ -70.0f*50.0f,-70.0f*50.0f,-70.0f*50.0f }, { 70.0f*50.0f,70.0f*50.0f,70.0f*50.0f }, Tree::m_sInstancingMax, 120.0f);
 	m_objGene.Generate<Tree>(CVector3::Zero(), 70.0f*50.0f, 70.0f*50.0f, Tree::m_sInstancingMax, 120.0f);
-
-	//ëê
-	Grass::m_sInstancingMax = 512*4;
-	m_objGene.Generate<Grass>({ -70.0f,-70.0f*50.0f,-70.0f }, { 70.0f,70.0f*50.0f,70.0f }, Grass::m_sInstancingMax, 0.0f);
-
+	
 	//ìSìÉ
 	m_objGene.Generate<TransmissionTower>({ -70.0f*500.0f,-70.0f*50.0f,-70.0f*500.0f }, { 70.0f*500.0f,70.0f*50.0f,70.0f*500.0f }, 64, 300.0f);
 	

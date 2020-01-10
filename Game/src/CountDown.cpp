@@ -53,14 +53,18 @@ void CountDown::PostRender() {
 	CVector2 scale = 0.8f;
 
 	if (m_countDownSec > 4.0f) {
+		scale.x *= 1.0f - CMath::Saturate(m_countDownSec - 5.0f);
 		if (m_roundCount + 1 == m_maxRound) {
-			swprintf_s(string, L"FINALROUND\n%d - %d",  m_score[0], m_score[1]);
 			color.x = 1.0f;
+			m_font.Draw(L"FINALROUND", { 0.5f,0.4f }, color, scale, { 0.565f, 1.0f });
+			color = CVector4::Black();
+			swprintf_s(string, L"\n%d - %d",  m_score[0], m_score[1]);
 		}
 		else {
-			swprintf_s(string, L"ROUND %d/%d\n%d - %d", m_roundCount + 1, m_maxRound, m_score[0], m_score[1]);
+			swprintf_s(string, L"ROUND %d/%d", m_roundCount + 1, m_maxRound);
+			m_font.Draw(string, { 0.5f,0.4f }, color, scale, { 0.575f, 1.0f });
+			swprintf_s(string, L"\n%d - %d",  m_score[0], m_score[1]);
 		}
-		scale.x *= 1.0f - CMath::Saturate(m_countDownSec - 5.0f);
 	}else
 	if (m_countDownSec > 2.0f) {
 		swprintf_s(string, L"TIME LIMIT\n%2d:%2d", m_timeLimitSec / 60, m_timeLimitSec % 60);

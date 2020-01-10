@@ -67,7 +67,7 @@ void TransmissionTower::Init(const CVector3& pos, const CVector3& normal) {
 	);
 	m_model.SetPos(pos);
 	m_model.SetRot(CQuaternion(CVector3::AxisY(), CMath::RandomZeroToOne()*CMath::PI2));
-	m_model.SetScale(1.4f*0.4f);
+	m_model.SetScale(1.4f*0.4f*2.0f);
 
 	//鉄塔は4つの足で高さ判定	
 	CVector3 setpos = pos;
@@ -158,7 +158,7 @@ void TransmissionTower::Init(const CVector3& pos, const CVector3& normal) {
 					CQuaternion rot;
 					rot.MakeLookToUseXYAxis((end - start).GetNorm());
 					m_wire[i]->SetRot(rot);
-					m_wire[i]->SetScale({0.3f,0.3f,(start - end).Length()});
+					m_wire[i]->SetScale({0.3f*2.0f,0.3f*2.0f,(start - end).Length()});
 					m_wire[i]->GetSkinModel().FindMaterialSetting(
 						[&](MaterialSetting* me) {
 							me->SetShininess(0.9f);
@@ -181,18 +181,9 @@ namespace {
 	constexpr float GRASS_VIEW_DISTANCE_XZ_SQ = CMath::Square(GRASS_VIEW_DISTANCE_XZ);
 	constexpr float GRASS_VIEW_HEIGHT = 200.0f;
 }
-void Grass::Init(const CVector3& pos, const CVector3& normal) {
-	//LOD初期化
-	/*CVector2 FrustumSize; GetMainCamera()->GetFrustumPlaneSize(100.0f, FrustumSize);
-	m_lodSwitcher.AddDrawObject(&m_model, FrustumSize.y);
-	m_lodSwitcher.AddDrawObject(&m_nothing);
-	m_lodSwitcher.SetPos(pos);*/
-
-	//TODO
-	//LODやめて　カメラごとにカメラの周囲(円形)に生成、距離範囲外のものを生成し直し続ける
-	
+bool Grass::Start(){
 	//モデル初期化
-	GameObj::CInstancingModelRender& insModel = m_model.Get();
+	GameObj::CInstancingModelRender& insModel = m_model;
 	bool isType2 = CMath::RandomZeroToOne() > 0.5f;
 	if (isType2) {
 		insModel.Init(m_sInstancingMax, L"Resource/modelData/pinGrass2.cmo", nullptr, 0, enFbxUpAxisY);
@@ -200,52 +191,68 @@ void Grass::Init(const CVector3& pos, const CVector3& normal) {
 	else {
 		insModel.Init(m_sInstancingMax, L"Resource/modelData/pinGrass.cmo", nullptr, 0, enFbxUpAxisY);
 	}
-	insModel.SetPos(pos);
+	//回転
 	CQuaternion rot(CVector3::AxisX(), -CMath::PI_HALF*0.9f + CMath::PI_HALF*0.9f*2.0f*CMath::RandomZeroToOne());
 	rot.Concatenate(CQuaternion(CVector3::AxisY(), -CMath::PI2 + CMath::PI2*2.0f*CMath::RandomZeroToOne()));
 	insModel.SetRot(rot);
+	//拡大
 	insModel.SetScale((CMath::RandomZeroToOne()*0.0015f + 0.003f)*(isType2 ? 1.5f : 1.0f));
 	//insModel.SetIsDraw(false);
 	//insModel.GetInstancingModel()->GetModelRender().SetIsShadowCaster(false);
 	//insModel.GetInstancingModel()->GetModelRender().InitPostDraw(PostDrawModelRender::enAlpha);// , false, true);//ポストドロー(ソフトパーティクル)
 	//insModel.GetInstancingModel()->GetModelRender().GetSkinModel().SetCullMode(D3D11_CULL_NONE);//バックカリングしない	
+	//材質
 	insModel.GetInstancingModel()->GetModelRender().GetSkinModel().FindMaterialSetting(
 		[&](MaterialSetting* me) {
 			me->SetShininess(0.4f);
-			//me->SetAlbedoScale({40.0f, 0.0f, 40.0f, 1.0f});
+			me->SetAlbedoScale({40.0f, 0.0f, 40.0f, 1.0f});
 		}
 	);
+	//位置
+	RePos(GetCameraList().at(m_cameraNum));
+
+	return true;
+}
+void Grass::RePos(GameObj::ICamera* mainCamera) {
+	//ランダムな位置
+	CVector3 pos = CVector3::AxisX()*(GRASS_VIEW_DISTANCE_XZ * CMath::RandomZeroToOne());
+	CQuaternion(CVector3::AxisY(), CMath::PI2*CMath::RandomZeroToOne()).Multiply(pos);
+	//カメラを中心に
+	pos += mainCamera->GetPos();
+
+	//レイで判定
+	btVector3 rayStart = btVector3(pos.x, 70.0f*50.0f, pos.z);
+	btVector3 rayEnd = btVector3(pos.x, -70.0f*50.0f, pos.z);
+	btCollisionWorld::ClosestRayResultCallback gnd_ray(rayStart, rayEnd);
+	GetEngine().GetPhysicsWorld().RayTest(rayStart, rayEnd, gnd_ray);
+	//衝突
+	if (gnd_ray.hasHit()) {
+		//接触点を座標に
+		pos = gnd_ray.m_hitPointWorld;
+	}
+
+	m_model.SetPos(pos);//再設置
+	m_model.ResetWorldMatrixOld();//旧ワールド行列のリセット
 }
 void Grass::PostLoopUpdate() {
-	GameObj::CInstancingModelRender& insModel = m_model.Get();
-	GameObj::ICamera* mainCamera = GetCameraList().at(m_cameraNum);
+	//描画状態初期化
+	m_model.SetIsDraw(true);
+
 	//カメラとの距離が遠いものは近くに生成し直し
 	//TODO 予め座標マッピング作っておく　あるいはフラクタル or　進行方向に生成
-	if (((insModel.GetPos() - mainCamera->GetPos())*CVector3(1.0f,0.0f,1.0f)).LengthSq() > GRASS_VIEW_DISTANCE_XZ_SQ) {
-		CVector3 pos = CVector3::AxisX()*(GRASS_VIEW_DISTANCE_XZ * CMath::RandomZeroToOne());
-		CQuaternion(CVector3::AxisY(), CMath::PI2*CMath::RandomZeroToOne()).Multiply(pos);
-		pos += mainCamera->GetPos();
-		//レイで判定
-		btVector3 rayStart = btVector3(pos.x, 70.0f*50.0f, pos.z);
-		btVector3 rayEnd = btVector3(pos.x, -70.0f*50.0f, pos.z);
-		btCollisionWorld::ClosestRayResultCallback gnd_ray(rayStart, rayEnd);
-		GetEngine().GetPhysicsWorld().RayTest(rayStart, rayEnd, gnd_ray);
-		if (gnd_ray.hasHit()) {
-			//接触点を座標に
-			pos = gnd_ray.m_hitPointWorld;
-		}
-		insModel.SetPos(pos);//再設置
-		insModel.ResetWorldMatrixOld();//旧ワールド行列のリセット
+	GameObj::ICamera* mainCamera = GetCameraList().at(m_cameraNum);
+	if (((m_model.GetPos() - mainCamera->GetPos())*CVector3(1.0f,0.0f,1.0f)).LengthSq() > GRASS_VIEW_DISTANCE_XZ_SQ) {
+		RePos(mainCamera);
 	}
 }
 void Grass::Pre3DRender(int screenNum) {
 	//指定のカメラ以外には描画しない
-	if (screenNum != m_cameraNum || abs(m_model.Get().GetPos().y - GetMainCamera()->GetPos().y) > GRASS_VIEW_HEIGHT) {
-		m_model.Get().SetIsDraw(false);
+	if (screenNum != m_cameraNum || abs(m_model.GetPos().y - GetMainCamera()->GetPos().y) > GRASS_VIEW_HEIGHT) {
+		m_model.SetIsDraw(false);
 		return;
 	}
 	else {
-		m_model.Get().SetIsDraw(true);
+		m_model.SetIsDraw(true);
 	}	
 }
 
