@@ -71,8 +71,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	
 	//‰æ–Ê•ªŠ„
 	constexpr int screenSize = 640;
-	constexpr int screenSize3D = 640;
-	constexpr int HUDSize = 64;
+	constexpr int screenSize3D = SCREEN_SIZE_3D;
+	constexpr int HUDSize = SCREEN_SPRITE_BAR;
 	GetEngine().ChangeWindowSize(screenSize * 2 + HUDSize, screenSize);
 	float screensSize[8] = {
 		0.0f,0.0f,(float)screenSize / (screenSize * 2 + HUDSize),1.0f,

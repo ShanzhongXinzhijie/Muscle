@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "BulletKani.h"
 
-BulletGO::BulletGO(const CVector3& pos, const CVector3& move, IFu* owner, bool isLockable)
+BulletGO::BulletGO(const CVector3& pos, const CVector3& move, IFu* owner, float damege, bool isLockable)
 	: m_vector(move), m_owner(owner), ILifeObject(isLockable, owner)
 {
 	SetPos(pos), m_posOld = GetPos();
@@ -18,8 +18,8 @@ BulletGO::BulletGO(const CVector3& pos, const CVector3& move, IFu* owner, bool i
 	m_col.m_collision.SetIsCollisionStaticObject(true);//静的オブジェクトとも衝突する
 	m_col.m_collision.SetIsHighSpeed(true);//これは高速です
 
+	m_col.m_reference.damege = damege;
 	//TODO
-	m_col.m_reference.damege = 1.0f;
 	m_col.m_reference.attributes.set(enPhysical);
 	m_col.m_reference.attributes.set(enFlame);
 

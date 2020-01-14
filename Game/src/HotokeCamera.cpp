@@ -12,13 +12,15 @@ void HotokeCameraController::ChangeCamera() {
 			m_hotokeCam.SetToMainCamera();
 		}
 	}
-	for (auto& listcam : GetCameraList()) {
+	int i = 0;
+	for (auto& listcam : ViewCameraList()) {
 		if (!m_isZoomOut && listcam == &m_zoomOutCam) {
-			listcam = &m_hotokeCam.GetCamera();
+			SetCameraToList(i, &m_hotokeCam.GetCamera());
 		}
 		if (m_isZoomOut && listcam == &m_hotokeCam.GetCamera()) {
-			listcam = &m_zoomOutCam;
+			SetCameraToList(i, &m_zoomOutCam);
 		}
+		i++;
 	}
 }
 void HotokeCameraController::UpdateZoomOutCamera(bool isInit) {

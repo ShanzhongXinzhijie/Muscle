@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "GameManager.h"
+#include "CResult.h"
 
 void GameManager::GameStart() {
 	m_game = std::make_unique<Game>(this);
@@ -20,6 +21,8 @@ void GameManager::GameEnd(bool isDeathPlayer[PLAYER_NUM]) {
 	
 	//‡I—¹
 	if (m_maxRound <= m_roundCount || (m_maxRound - m_roundCount) < max(m_score[0], m_score[1]) - min(m_score[0], m_score[1])) {
+		new CResult(m_score);
+		delete this;
 		return;
 	}
 	

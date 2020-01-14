@@ -11,10 +11,6 @@
 #include "CBlood.h"
 
 namespace {
-//	float CalcAirScale(float heightMeter) {
-//		return max(0.0f, 1.0f - max(0.0f, heightMeter / 1000.0f));//‚“x1000m‚É‹ß‚Ã‚­‚É˜A‚ê‹ó‹C‚ª”–‚­‚È‚é
-//	}
-
 	CVector3 CalcCollisionPosOffset(const CVector3& scale) {
 		return { 0.0f, 90.0f*(scale.y / (0.0188f*2.0f)), -15.0f*(scale.z / (0.0188f*2.0f)) };
 	}

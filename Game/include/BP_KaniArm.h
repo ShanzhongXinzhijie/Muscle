@@ -42,6 +42,9 @@ private:
 	bool m_isCharging[enLRNUM] = {}, m_isMachineGunning[enLRNUM] = {};
 	int m_chargeTime[enLRNUM] = {};
 	static constexpr int MACHINE_GUN_CHARGE_TIME = 10, LAZER_CHARGE_TIME = MACHINE_GUN_CHARGE_TIME - 3;
+	//クールダウン時間
+	int m_coolDown[enLRNUM] = {};
+	static constexpr int ROCKET_COOLDOWN = FRAME_RATE * 5;
 
 	//HUD
 	CSprite m_guncross;

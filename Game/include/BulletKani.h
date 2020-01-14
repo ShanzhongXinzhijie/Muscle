@@ -43,7 +43,7 @@ protected:
 /// </summary>
 class BulletGO : public ILifeObject {
 public:
-	BulletGO(const CVector3& pos, const CVector3& move, IFu* owner, bool isLockable = false);
+	BulletGO(const CVector3& pos, const CVector3& move, IFu* owner, float damege, bool isLockable = false);
 
 	void PreLoopUpdate()override;
 	void Update()override;
@@ -196,7 +196,7 @@ public:
 		//モデルの更新(画面数分)
 		for (int i = 0; i < m_modelNum; i++) {
 			CVector3 rootPos, tipPos;
-			GameObj::ICamera* screenCamera = m_modelNum == 1 ? GetMainCamera() : GetCameraList()[i];
+			GameObj::ICamera* screenCamera = m_modelNum == 1 ? GetMainCamera() : ViewCameraList()[i];
 
 			//カメラと相対的な座標を求める(お尻側)
 			CVector3 soutaiPos = m_lastDrawPos;
@@ -357,7 +357,11 @@ public:
 		if ((m_nonAccelRad < FLT_EPSILON || rad > m_nonAccelRad) && rad < m_limitRad) {
 			CVector3 beforeVec = m_bullet->m_vector;
 			//ブレーキング
-			//m_bullet->m_vector = m_bullet->m_vector.GetNorm()*max(0.0f, m_bullet->m_vector.Length() - m_thrust);
+			float brakePow = CMath::Saturate(targetDir.Dot(m_bullet->m_vector.GetNorm()));//1.0f - CMath::Saturate(targetDir.Dot(m_bullet->m_vector.GetNorm()));
+			m_bullet->m_vector *= brakePow;
+			//if (brakePow > 0.0f) {
+				//m_bullet->m_vector = m_bullet->m_vector.GetNorm()*max(0.0f, m_bullet->m_vector.Length() - m_thrust * brakePow);
+			//}
 			//目標へ加速
 			m_bullet->m_vector += targetDir * m_thrust;
 			if (m_bullet->m_vector.LengthSq() < FLT_EPSILON) {//停止はしない

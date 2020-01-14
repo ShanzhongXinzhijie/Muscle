@@ -5,7 +5,7 @@ using namespace GameObj;
 
 namespace {
 	float CalcAirScale(float heightMeter) {
-		return max(0.0f, 1.0f - max(0.0f, heightMeter / 1000.0f));//高度1000mに近づくに連れ空気が薄くなる
+		return max(0.0f, 1.0f - max(0.0f, heightMeter / MAX_HEIGHT_METER));//高度MAX_HEIGHT_METERに近づくに連れ空気が薄くなる
 	}
 }
 

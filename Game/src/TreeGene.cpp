@@ -60,7 +60,7 @@ void TransmissionTower::Init(const CVector3& pos, const CVector3& normal) {
 	m_model.Init(L"Resource/modelData/tettou.cmo");
 	m_model.GetSkinModel().FindMaterialSetting(
 		[&](MaterialSetting* me) {
-			me->SetMetallic(1.0f);
+			me->SetMetallic(0.5f);
 			me->SetShininess(0.4f);
 			//me->SetAlbedoScale({ 1.0f,1.0f, 1.0f, 1.0f });
 		}
@@ -209,7 +209,7 @@ bool Grass::Start(){
 		}
 	);
 	//位置
-	RePos(GetCameraList().at(m_cameraNum));
+	RePos(ViewCameraList().at(m_cameraNum));
 
 	return true;
 }
@@ -240,7 +240,7 @@ void Grass::PostLoopUpdate() {
 
 	//カメラとの距離が遠いものは近くに生成し直し
 	//TODO 予め座標マッピング作っておく　あるいはフラクタル or　進行方向に生成
-	GameObj::ICamera* mainCamera = GetCameraList().at(m_cameraNum);
+	GameObj::ICamera* mainCamera = ViewCameraList().at(m_cameraNum);
 	if (((m_model.GetPos() - mainCamera->GetPos())*CVector3(1.0f,0.0f,1.0f)).LengthSq() > GRASS_VIEW_DISTANCE_XZ_SQ) {
 		RePos(mainCamera);
 	}

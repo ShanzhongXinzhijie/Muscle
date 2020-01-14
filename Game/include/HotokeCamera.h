@@ -62,7 +62,7 @@ public:
 		SetMainCamera(&m_camera);
 	}
 	void SetToMainCamera(int num) {
-		GetCameraList().at(num) = &m_camera;
+		SetCameraToList(num, &m_camera);
 	}
 
 	//ƒJƒƒ‰‚ğæ“¾
@@ -162,9 +162,8 @@ public:
 		}
 	}
 	void SetToMainCamera(int num) {
-		GetCameraList().resize(2);
 		if (m_isZoomOut) {
-			GetCameraList().at(num) = &m_zoomOutCam;
+			SetCameraToList(num, &m_zoomOutCam);
 		}
 		else {
 			m_hotokeCam.SetToMainCamera(num);

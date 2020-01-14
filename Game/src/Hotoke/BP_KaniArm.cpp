@@ -75,6 +75,7 @@ void BP_KaniArm::Update() {
 		m_isCharging[i] = false;
 		m_isMachineGunning[i] = false;
 		m_muzzleFlash[i].SetIsDraw(false);
+		m_coolDown[i] = max(0, m_coolDown[i]-1);//クールダウン
 	}	
 
 	//コントローラーに操作させる
@@ -281,7 +282,8 @@ void BP_KaniArm::PostUTRSUpdate() {
 				BulletGO* bullet = new BulletGO(
 					m_model->GetBonePos(m_muzzleBoneID[i]),
 					(dirNorm*bulletSpeed)+kansei,
-					m_ptrCore
+					m_ptrCore,
+					1.0f
 				);				
 				bullet->AddComponent(std::make_unique<BD_BeamModel>(3.0f,L"BLUE"));
 				//bullet->AddComponent(std::make_unique<BD_Tracking>(m_ptrCore->GetTarget()));
@@ -316,54 +318,77 @@ void BP_KaniArm::Draw2D() {
 		}
 	}
 
+	//操作	
+	//TODO 操作説明用フォント
+	CVector2 beforeScale = m_ptrCore->GetFont()->GetScale();
+	m_ptrCore->GetFont()->SetScale(0.05f);
+	m_ptrCore->GetFont()->SetUseFont(HUDFont::enJPN);
+	m_ptrCore->GetFont()->Draw(L"[LB/RB](ながおし): マシンガン\n[LB/RB](2どおし): ミッソー", {0.0f,0.5f});
+	if (m_coolDown[L] > 0) {
+		m_ptrCore->GetFont()->Draw(L"///////////////////////\n///////////////////////////", { 0.0f,0.5f });
+	}
+	m_ptrCore->GetFont()->SetUseFont(HUDFont::enENG);
+	m_ptrCore->GetFont()->SetScale(beforeScale);
+	//クールダウン
+
+
 	//debug
 	//m_ptrCore->GetFont()->DrawFormat(L"L:%.3f\nR:%.3f", { 0.0f,0.6f }, {}, m_angle[L], m_angle[R]);
 }
 
 void BP_KaniArm::ChargeAndMachinegun(enLR lr) {
-	//チャージ
-	m_isCharging[lr] = true;
-	m_chargeTime[lr] ++;
-	//マシンガン
-	if (m_chargeTime[lr] > MACHINE_GUN_CHARGE_TIME) {
-		m_isMachineGunning[lr] = true;
+	if (m_coolDown[lr] <= 0) {
+		//チャージ
+		m_isCharging[lr] = true;
+		m_chargeTime[lr] ++;
+		//マシンガン
+		if (m_chargeTime[lr] > MACHINE_GUN_CHARGE_TIME) {
+			m_isMachineGunning[lr] = true;
+		}
 	}
 }
 void BP_KaniArm::Rocket(enLR lr) {
 	//ロケット出す
-	//マズルエフェクト
-	m_muzzleTime[lr] = 2;
-	//発射
-	CVector3 dirNorm = (m_ikSetting[lr]->targetPos - m_model->GetBonePos(m_muzzleBoneID[lr])).GetNorm();
-	BulletGO* bullet = new BulletGO(
-		m_model->GetBonePos(m_muzzleBoneID[lr]),
-		(dirNorm*60.0f) + m_ptrCore->GetTotalVelocity(),
-		m_ptrCore
-	);
-	bullet->m_downAccel = 0.0f;
-	bullet->m_upBrake = 0.0f;
-	bullet->AddComponent(std::make_unique<BD_BeamModel>(30.0f, L"Red"));
-	bullet->AddComponent(std::make_unique<BD_SmokeTrail>());
-	bullet->AddComponent(std::make_unique<BD_Contact>());
-	bullet->AddComponent(std::make_unique<BD_Homing>(m_ptrCore->GetTarget(), 10.0f, 0.0f, CMath::DegToRad(60.0f), 50.0f));
-	bullet->AddComponent(std::make_unique<BD_Brake>(1.0f));
-	bullet->AddComponent(std::make_unique<BD_Lockable>());
-}
-void BP_KaniArm::Lazer(enLR lr) {
-	//グレネード出す
-	if (m_chargeTime[lr] >= LAZER_CHARGE_TIME && m_chargeTime[lr] < MACHINE_GUN_CHARGE_TIME) {
+	if (m_coolDown[lr] <= 0) {
 		//マズルエフェクト
 		m_muzzleTime[lr] = 2;
+
 		//発射
 		CVector3 dirNorm = (m_ikSetting[lr]->targetPos - m_model->GetBonePos(m_muzzleBoneID[lr])).GetNorm();
 		BulletGO* bullet = new BulletGO(
 			m_model->GetBonePos(m_muzzleBoneID[lr]),
-			dirNorm*(100.0f + dirNorm.Dot(m_ptrCore->GetTotalVelocity())),
-			m_ptrCore
+			(dirNorm*60.0f) + m_ptrCore->GetTotalVelocity(),
+			m_ptrCore,
+			10.0f
 		);
-		bullet->AddComponent(std::make_unique<BD_BeamModel>(3.0f, L"Yellow"));
-		bullet->AddComponent(std::make_unique<BD_ContactExplosion>());
+		bullet->m_downAccel = 0.0f;
+		bullet->m_upBrake = 0.0f;
+		bullet->AddComponent(std::make_unique<BD_BeamModel>(30.0f, L"Red"));
+		bullet->AddComponent(std::make_unique<BD_SmokeTrail>());
+		bullet->AddComponent(std::make_unique<BD_Contact>());
+		bullet->AddComponent(std::make_unique<BD_Homing>(m_ptrCore->GetTarget(), 10.0f, 0.0f, CMath::DegToRad(90.0f), 50.0f));
+		bullet->AddComponent(std::make_unique<BD_Brake>(1.0f));
+		bullet->AddComponent(std::make_unique<BD_Lockable>());
+
+		//クールダウン
+		m_coolDown[lr] = ROCKET_COOLDOWN;
 	}
+}
+void BP_KaniArm::Lazer(enLR lr) {
+	//グレネード出す
+	//if (m_chargeTime[lr] >= LAZER_CHARGE_TIME && m_chargeTime[lr] < MACHINE_GUN_CHARGE_TIME) {
+	//	//マズルエフェクト
+	//	m_muzzleTime[lr] = 2;
+	//	//発射
+	//	CVector3 dirNorm = (m_ikSetting[lr]->targetPos - m_model->GetBonePos(m_muzzleBoneID[lr])).GetNorm();
+	//	BulletGO* bullet = new BulletGO(
+	//		m_model->GetBonePos(m_muzzleBoneID[lr]),
+	//		dirNorm*(100.0f + dirNorm.Dot(m_ptrCore->GetTotalVelocity())),
+	//		m_ptrCore
+	//	);
+	//	bullet->AddComponent(std::make_unique<BD_BeamModel>(3.0f, L"Yellow"));
+	//	bullet->AddComponent(std::make_unique<BD_ContactExplosion>());
+	//}
 }
 void BP_KaniArm::Stab() {
 	//スタブ出す

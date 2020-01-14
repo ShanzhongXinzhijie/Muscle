@@ -122,7 +122,8 @@ void BP_HumanLeg::Stomp() {
 	BulletGO* bullet = new BulletGO(
 		m_ptrCore->GetTargetPos()+ CVector3::Up()*150.0f,
 		CVector3::Down()*5.0f,
-		m_ptrCore
+		m_ptrCore,
+		3.0f
 	);
 	bullet->AddComponent(std::make_unique<BD_LegModel>(m_ptrCore->GetRot(), m_ptrCore->GetScale()));
 }

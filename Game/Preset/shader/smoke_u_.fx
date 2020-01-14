@@ -12,10 +12,10 @@ float4 PSMain_Smoke(PSInput In) : SV_Target0
 	color *= smokeColor[In.instanceID];
 	color.rgb *= color.a;	
 	color *= saturate(1.0f - (Disolve_t[In.instanceID] / DisolveTexture.Sample(Sampler, In.TexCoord)));
-	//if (color.a < 0.0001f)
-	//{
-	//	discard;
-	//}
+    if (color.a < 0.0001f)
+    {
+        discard;
+    }
 	return color;
 }
 

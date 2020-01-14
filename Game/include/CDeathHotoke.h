@@ -135,7 +135,7 @@ public:
 	[[nodiscard]] const IGamePad* GetPad()const { return m_ptrPad; }
 
 	//フォントの取得
-	[[nodiscard]] const HUDFont* GetFont()const { return m_ptrHUDFont; }
+	[[nodiscard]] HUDFont* GetFont()const { return m_ptrHUDFont; }
 
 	//HUDを表示するか取得
 	[[nodiscard]] bool GetIsDrawHUD()const { return m_isDrawHUD; }
@@ -175,7 +175,7 @@ private:
 	CQuaternion m_angularVelocity;
 
 	//ステータス
-	static constexpr float HP_MAX = 100.0f;
+	static constexpr float HP_MAX = 20.0f;
 	float m_hp = HP_MAX;//ヘルス
 	float m_stunTimeSec = 0.0f;//スタン時間
 	enum{enNow,enNext};

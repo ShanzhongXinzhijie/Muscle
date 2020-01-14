@@ -50,7 +50,8 @@ void Ari::Update() {
 		BulletGO* bullet = new BulletGO(
 			GetPos()+ GetFront()*100.0f,
 			GetFront()*(100.0f + GetFront().Dot(m_velocity)),
-			this
+			this,
+			1.0f
 		);
 		bullet->AddComponent(std::make_unique<BD_BeamModel>());
 

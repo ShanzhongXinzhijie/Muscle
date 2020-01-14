@@ -3,11 +3,15 @@
 #include "GameManager.h"
 
 bool LoadingScreen::Start() {
+	//–³ˆÓ–¡ƒJƒƒ‰İ’è
 	m_gomiCamera = std::make_unique<GameObj::NoRegisterOrthoCamera>();
 	SetMainCamera(m_gomiCamera.get());
-	GetCameraList().push_back(m_gomiCamera.get());
-	GetCameraList().push_back(m_gomiCamera.get());
+	SetCameraToList(0, m_gomiCamera.get());
+	SetCameraToList(1, m_gomiCamera.get());
+
+	//ƒƒS“Ç‚İ‚İ
 	m_sprite.Init(L"Resource/spriteData/logo.png");
+
 	return true;
 }
 
