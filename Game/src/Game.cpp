@@ -5,9 +5,12 @@
 Game::Game(GameManager* manager) : m_manager(manager), m_timeLimitSec(static_cast<float>(manager->GetTimeLimitSec()) + 0.5f) {
 	int scores[PLAYER_NUM] = { m_manager->GetPlayerScore(0),m_manager->GetPlayerScore(1) };
 	new CountDown(m_manager->GetRoundCount(), m_manager->GetMaxRound(), scores, m_manager->GetTimeLimitSec());
+
 	m_player[0] = std::make_unique<CPlayer>(1);
 	m_player[1] = std::make_unique<CPlayer>(0);
 	m_shibuya = std::make_unique<Shibuya>();
+
+	//m_font.SetColor(CVector4::Black());
 }
 
 void Game::PreUpdate() {
@@ -37,5 +40,21 @@ void Game::PreUpdate() {
 void Game::PostRender() {
 	//êßå¿éûä‘
 	m_timeLimitSec = max(0.0f, m_timeLimitSec);
-	m_font.DrawFormat(L"%d:%d", { 0.5f,0.0f }, {0.5f,0.0f}, static_cast<int>(m_timeLimitSec / 60.0f), static_cast<int>(m_timeLimitSec)%60);
+
+	if (GetScreenNum() == 1) {
+		m_font.DrawFormat(
+			L"%2d:%2d",
+			{ 0.95f,0.0f }, { 1.0f,0.0f },
+			static_cast<int>(m_timeLimitSec / 60.0f), static_cast<int>(m_timeLimitSec) % 60
+		);
+	}
+	else {
+		m_font.DrawFormat(
+			L"%2d:%2d",
+			{ 0.5f,0.0f }, { 0.5f,0.0f },
+			//m_manager->GetRoundCount(), m_manager->GetMaxRound(),
+			//m_manager->GetPlayerScore(0), m_manager->GetPlayerScore(1),
+			static_cast<int>(m_timeLimitSec / 60.0f), static_cast<int>(m_timeLimitSec) % 60
+		);
+	}
 }

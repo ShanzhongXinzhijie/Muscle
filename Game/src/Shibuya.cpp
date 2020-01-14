@@ -10,12 +10,14 @@
 #include "BP_HumanLeg.h"
 #include "BP_HumanMantle.h"
 
-Shibuya::Shibuya() : m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI>(&m_hotoke))
+Shibuya::Shibuya() //: m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI>(&m_hotoke))
 {
+	/*
 	m_hotoke.SetBodyPart(CDeathHotoke::enHead, std::make_unique<BP_FishHead>(&m_hotoke));
-	//m_hotoke.SetBodyPart(CDeathHotoke::enArm, std::make_unique<BP_KaniArm>(&m_hotoke));
+	m_hotoke.SetBodyPart(CDeathHotoke::enArm, std::make_unique<BP_KaniArm>(&m_hotoke));
 	m_hotoke.SetBodyPart(CDeathHotoke::enWing, std::make_unique<BP_BirdWing>(&m_hotoke));
 	m_hotoke.SetBodyPart(CDeathHotoke::enLeg, std::make_unique<BP_HumanLeg>(&m_hotoke));
+	*/
 
 	//Ari* ari = new Ari(CVector3::AxisY()*900.0f + CVector3::AxisX()*50.0f, {});
 	//ari->SetTarget(&m_hotoke);
@@ -175,9 +177,9 @@ Shibuya::Shibuya() : m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI>(
 	//m_uni.SetIsDrawBoundingBox(true);
 	//m_uni.SetScale(3.5f); //0.15f 3.5f
 
-	m_dinosaur.Init(L"Resource/modelData/dinosaur.cmo");
+	/*m_dinosaur.Init(L"Resource/modelData/dinosaur.cmo");
 	m_dinosaur.SetPos(CVector3::AxisY()*900.0f+ CVector3::AxisX()*50.0f);
-	m_dinosaur.SetScale(CVector3::One()*0.09f);
+	m_dinosaur.SetScale(CVector3::One()*0.09f);*/
 
 	//‹ó
 	m_sky.Init(L"Resource/cubemap/cube2.dds",-1.0f,false);

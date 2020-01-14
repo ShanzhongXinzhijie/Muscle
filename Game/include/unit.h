@@ -8,7 +8,7 @@ static constexpr int FRAME_RATE = 60;//動作フレームレート
 
 static constexpr int PLAYER_NUM = 2;//プレイヤー数
 
-static constexpr float MAX_HEIGHT_METER = 100.0f;//最高高度(m)
+static constexpr float MAX_HEIGHT_METER = 250.0f;// 1000.0f;//最高高度(m)
 
 //解像度
 static constexpr int SCREEN_SIZE_3D = 640;//1280

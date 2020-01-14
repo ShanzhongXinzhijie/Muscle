@@ -98,6 +98,9 @@ void BP_BirdWing::Draw2D() {
 	//加速
 	//m_ptrCore->GetFont()->DrawFormat(L"ACL(per): %.1f", { 0.0f,0.85f },0.0f, m_accel / 20.0f*100.0f);
 
+	// TODO 稼いだ速度で上がれる量
+	m_ptrCore->GetFont()->DrawFormat(L"%.1f,%.5f", { 0.0f,0.85f }, 0.0f, m_accel, CalcAirScale(m_ptrCore->GetHeightMeter()));
+
 	//ブレーキ表示
 	if (m_isBraking) {
 		m_ptrCore->GetFont()->Draw(L"[BRAKING]", { 0.5f,0.90f }, { 0.5f,0.0f });

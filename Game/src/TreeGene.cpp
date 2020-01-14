@@ -219,6 +219,8 @@ void Grass::RePos(GameObj::ICamera* mainCamera) {
 	CQuaternion(CVector3::AxisY(), CMath::PI2*CMath::RandomZeroToOne()).Multiply(pos);
 	//カメラを中心に
 	pos += mainCamera->GetPos();
+	//移動速度分ずらす
+	pos += mainCamera->GetPos() - mainCamera->GetPosOld();
 
 	//レイで判定
 	btVector3 rayStart = btVector3(pos.x, 70.0f*50.0f, pos.z);

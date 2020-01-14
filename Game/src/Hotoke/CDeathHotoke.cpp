@@ -70,7 +70,6 @@ bool CDeathHotoke::Start() {
 	//m_col.m_collision.SetIsHighSpeed(true);//これは高速です	
 
 	//位置初期化	
-	SetPos(CVector3::AxisY()*1000.0f + CVector3::AxisZ()*200.0f);
 	m_posOld = GetPos();
 
 	//パーツのStart

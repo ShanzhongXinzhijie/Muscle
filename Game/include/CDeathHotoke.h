@@ -15,6 +15,16 @@ public:
 	{
 		SetName(L"CDeathHotoke");
 		SetHPRef(&m_hp);
+
+		//初期位置
+		SetPos(CVector3::AxisY()*2000.0f);
+		if (m_playerNum == 0) {
+			SetPos(CVector3::AxisY()*1000.0f - CVector3::AxisZ()*1200.0f);
+		}
+		if (m_playerNum == 1) {
+			SetPos(CVector3::AxisY()*1000.0f + CVector3::AxisZ()*1200.0f);
+			SetRot({ CVector3::AxisY(),CMath::PI });
+		}
 	}
 
 	//ボディパーツの種類

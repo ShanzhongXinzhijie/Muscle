@@ -37,7 +37,7 @@ void CResult::PostRender() {
 		m_font.Draw(L"ひだりのかち\nみぎはカス", { 0.5f,0.6f }, CVector4::Black(), CVector2::One(), { 0.5f,0.0f });
 	}
 	else {
-		m_font.Draw(L"みぎのかち\nひだりはしね", { 0.5f,0.6f }, CVector4::Black(), CVector2::One(), { 0.5f,0.0f });
+		m_font.Draw(L"みぎのかち\nひだりはカス", { 0.5f,0.6f }, CVector4::Black(), CVector2::One(), { 0.5f,0.0f });
 	}
 
 	//次の操作
