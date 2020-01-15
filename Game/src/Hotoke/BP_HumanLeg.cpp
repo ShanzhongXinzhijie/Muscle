@@ -50,6 +50,7 @@ void BP_HumanLeg::InnerStart() {
 			auto[damege,stunSec] = DHUtil::CalcRamDamege(m_col[lr].m_reference.velocity, H->velocity);
 			m_col[lr].m_reference.damege = damege;
 			m_col[lr].m_reference.stunTimeSec = stunSec;
+			return true;
 		};
 	}
 
@@ -114,23 +115,71 @@ void BP_HumanLeg::PostUTRSUpdate() {
 	m_isJump = false;
 }
 
+void BP_HumanLeg::PostLoopUpdate() {
+	//if (CanKick()) {
+	//	DrawQuad2D({ 0.5f - 0.2f,0.4f - 0.025f,0.0f }, { 0.5f + 0.25f,0.4f + 0.025f,0.0f }, {1.f,1.f,1.f,0.1f}, m_ptrCore->GetPlayerNum());
+	//}
+}
+
+void BP_HumanLeg::Draw2D() {
+	//いまだ!
+	if (CanKick()) {
+		CVector2 size = m_ptrCore->GetJapaneseFont()->GetScale();
+		CVector4 color = m_ptrCore->GetJapaneseFont()->GetColor();
+
+		m_ptrCore->GetJapaneseFont()->SetScale(size*1.5f);
+		m_ptrCore->GetJapaneseFont()->SetColor(m_ptrCore->GetWarningFont()->GetColor());
+
+		m_ptrCore->GetJapaneseFont()->Draw(L"[LT]or[RT]キック!", { 0.5f,0.4f }, { 0.5f,0.5f });
+
+		m_ptrCore->GetJapaneseFont()->SetColor(color);
+		m_ptrCore->GetJapaneseFont()->SetScale(size);
+	}
+
+	//球数
+	m_ptrCore->GetJapaneseFont()->DrawFormat(
+		m_leftStomp > 0 ? L"のこりふみつけ:%dそく" : L"あしなし",
+		{ 0.3f,0.95f + 0.01f }, { 0.0f,0.0f },
+		m_leftStomp
+	);
+}
+
+bool BP_HumanLeg::CanKick()const {
+	//キック可能か判定
+	constexpr float KICK_LENGE_Sq = CMath::Square(200.0f*METER);
+	CVector3 distance = m_ptrCore->GetTargetPos() - m_ptrCore->GetPos(); 
+	float rad = CVector3::AngleOf2NormalizeVector((m_ptrCore->GetVanisingPoint() - m_ptrCore->GetPos()).GetNorm(), distance.GetNorm());
+	distance.y = 0.0f;
+	return m_ptrCore->GetTarget() && m_leftStomp > 0 && distance.LengthSq() < KICK_LENGE_Sq && rad < CMath::DegToRad(67.0f);
+}
+
 void BP_HumanLeg::Jump() {
 	m_isJump = true;
 }
 
 void BP_HumanLeg::Stomp() {
+	if (!CanKick()) { return; }
+
+	//踏みつけ作成
 	BulletGO* bullet = new BulletGO(
 		m_ptrCore->GetTargetPos()+ CVector3::Up()*150.0f,
 		CVector3::Down()*5.0f,
 		m_ptrCore,
 		3.0f
 	);
-	bullet->AddComponent(std::make_unique<BD_LegModel>(m_ptrCore->GetRot(), m_ptrCore->GetScale()));
+	bullet->SetStunTimeSec(0.5f);//スタン時間
+	bullet->AddComponent(std::make_unique<BD_LegModel>(m_ptrCore->GetRot(), m_ptrCore->GetScale()));//モデル
+	bullet->AddComponent(std::make_unique<BD_OneContactMask>());//多段ヒットしない
+
+	m_leftStomp--;
 }
 
 void HCon_HumanLeg::Update() {
-	if (m_ptrCore->GetPad()->GetLegDown()) {//TOTO トリガー同時押しのときとか
+	if (m_ptrCore->GetPad()->GetLegDown()) {
 		m_ptrBody->Jump();
+	}
+	//if (m_ptrCore->GetPad()->GetDoubleLegDown()) {//同時押し
+	if (m_ptrCore->GetPad()->GetLegDown()) {
 		m_ptrBody->Stomp();
 	}
 }

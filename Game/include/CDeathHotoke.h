@@ -19,12 +19,17 @@ public:
 		//初期位置
 		SetPos(CVector3::AxisY()*2000.0f);
 		if (m_playerNum == 0) {
-			SetPos(CVector3::AxisY()*1000.0f - CVector3::AxisZ()*1200.0f);
+			SetPos(CVector3::AxisY()*1000.0f - CVector3::AxisZ()*2400.0f);
 		}
 		if (m_playerNum == 1) {
-			SetPos(CVector3::AxisY()*1000.0f + CVector3::AxisZ()*1200.0f);
+			SetPos(CVector3::AxisY()*1000.0f + CVector3::AxisZ()*2400.0f);
 			SetRot({ CVector3::AxisY(),CMath::PI });
 		}
+	}
+	//フォントを設定
+	void SetFonts(HUDFont* warningfont, HUDFont* japanesefont) {
+		m_ptrWarningHUDFont = warningfont;
+		m_ptrJapaneseHUDFont = japanesefont;
 	}
 
 	//ボディパーツの種類
@@ -78,6 +83,15 @@ public:
 	void SetIsBackMirror(bool isMirror) { m_isBackMirror = isMirror; }
 	
 	//ゲッター//
+
+	//座標から足元までの距離
+	float GetToFootDistance()const {
+		return 205.0f;
+	}
+	//足元の座標を取得
+	CVector3 GetFootPos()const {
+		return GetPos() + CVector3::Down()*GetToFootDistance();
+	}
 
 	//高度を取得(メートル)
 	float GetHeightMeter()const {
@@ -141,11 +155,16 @@ public:
 	//消失点を取得
 	[[nodiscard]] const CVector3& GetVanisingPoint() const { return m_vanisingPoint; }
 
+	//プレイヤー番号の取得
+	[[nodiscard]] int GetPlayerNum() { return m_playerNum; }
+
 	//パッドの取得
 	[[nodiscard]] const IGamePad* GetPad()const { return m_ptrPad; }
 
 	//フォントの取得
 	[[nodiscard]] HUDFont* GetFont()const { return m_ptrHUDFont; }
+	[[nodiscard]] HUDFont* GetWarningFont()const{ return m_ptrWarningHUDFont ? m_ptrWarningHUDFont : m_ptrHUDFont; }
+	[[nodiscard]] HUDFont* GetJapaneseFont()const { return m_ptrJapaneseHUDFont ? m_ptrJapaneseHUDFont : m_ptrHUDFont; }
 
 	//HUDを表示するか取得
 	[[nodiscard]] bool GetIsDrawHUD()const { return m_isDrawHUD; }
@@ -205,7 +224,7 @@ private:
 		
 	//HUD
 	bool m_isDrawHUD = false;//HUDを表示するか
-	HUDFont* m_ptrHUDFont = nullptr;//HUDフォント
+	HUDFont* m_ptrHUDFont = nullptr, *m_ptrWarningHUDFont = nullptr, *m_ptrJapaneseHUDFont = nullptr;//HUDフォント
 	bool m_isBackMirror = false;//バックミラー状態
 
 	//ターゲット

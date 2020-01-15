@@ -27,6 +27,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\CShockRing.cpp" />
     <ClCompile Include="src\CResult.cpp" />
     <ClCompile Include="src\GameManager.cpp" />
     <ClCompile Include="src\FlyingGrass.cpp" />
@@ -69,6 +70,7 @@
     <ClCompile Include="src\ZoomOutCamera.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\CShockRing.h" />
     <ClInclude Include="include\CResult.h" />
     <ClInclude Include="include\GameManager.h" />
     <ClInclude Include="include\FlyingGrass.h" />

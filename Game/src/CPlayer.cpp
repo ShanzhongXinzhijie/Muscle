@@ -266,6 +266,6 @@ void CPlayer::HUDRender(int HUDNum) {
 
 	//バックミラー
 	if (m_cam.GetIsBackMirror()) {
-		m_HUDFont.Draw(L"((BACK VIEW))", { 0.5f,0.961f }, { 0.5f,0.0f });
+		m_HUDFont.Draw(L"((BACK VIEW))", { 0.5f,0.0f }, { 0.5f,0.0f });
 	}
 }

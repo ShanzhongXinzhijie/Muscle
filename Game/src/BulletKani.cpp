@@ -1,12 +1,15 @@
 #include "stdafx.h"
 #include "BulletKani.h"
+#include "CShockRing.h"
 
 BulletGO::BulletGO(const CVector3& pos, const CVector3& move, IFu* owner, float damege, bool isLockable)
 	: m_vector(move), m_owner(owner), ILifeObject(isLockable, owner)
 {
+	//初期座標
 	SetPos(pos), m_posOld = GetPos();
 	
-	//当たり判定
+	//攻撃判定
+	//衝突処理
 	m_col.m_collision.SetCallback(
 		[&](SuicideObj::CCollisionObj::SCallbackParam& p) {
 			for (auto& component : m_components) {
@@ -15,6 +18,18 @@ BulletGO::BulletGO(const CVector3& pos, const CVector3& move, IFu* owner, float 
 			}		
 		}
 	);
+	//衝突前処理
+	m_col.m_reference.m_preCollisionFunc = 
+		[&](ReferenceCollision* refcol) {
+			bool isContact = true;
+			for (auto& component : m_components) {
+				if (!component->GetEnable()) { continue; }
+				if (component->PreContact(refcol) == false) {
+					isContact = false;
+				}
+			}
+			return isContact;
+	};
 	m_col.m_collision.SetIsCollisionStaticObject(true);//静的オブジェクトとも衝突する
 	m_col.m_collision.SetIsHighSpeed(true);//これは高速です
 
@@ -44,6 +59,7 @@ void BulletGO::Update() {
 	//寿命処理
 	m_lifeTime -= FRAME_PER_SECOND;
 	if (m_lifeTime < FLT_EPSILON) {
+		new CShockRing(GetPos(), CVector4::Black(), 200.0f);
 		Death(); return;
 	}
 

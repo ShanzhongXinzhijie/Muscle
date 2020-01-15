@@ -6,6 +6,7 @@
 //カラー
 StructuredBuffer<float4> smokeColor : register(t60);
 
+//煙シェーダ
 float4 PSMain_Smoke(PSInput In) : SV_Target0
 {
 	float4 color = SozaiNoAziInner(In);
@@ -17,6 +18,19 @@ float4 PSMain_Smoke(PSInput In) : SV_Target0
         discard;
     }
 	return color;
+}
+
+//色変えビルボードシェーダ
+float4 PSMain_ColorChange(PSInput In) : SV_Target0
+{
+    float4 color = SozaiNoAziInner(In);
+    color *= smokeColor[In.instanceID];
+    if (color.a < 0.0001f)
+    {
+        discard;
+    }
+    color.rgb *= color.a;
+    return color;
 }
 
 #endif //SMOKE_FX

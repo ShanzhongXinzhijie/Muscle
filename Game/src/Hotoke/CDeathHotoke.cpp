@@ -63,6 +63,7 @@ bool CDeathHotoke::Start() {
 			SetDamegePower(damege);//ダメージ	
 			SetStunSec(stunSec);//スタン秒数			
 			//TODO 体当たりの跳ね返り 多段ヒット
+			return true;
 		}
 	);
 	SetCollisionPosOffset(CalcCollisionPosOffset(m_scale));

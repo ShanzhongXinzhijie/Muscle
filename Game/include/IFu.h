@@ -68,7 +68,7 @@ public:
 	/// <summary>
 	/// CollisionFunc(ª)‚Ì‘O‚ÉÀs‚·‚éŠÖ”
 	/// </summary>
-	void SetPreCollisionFunc(std::function<void(ReferenceCollision*)> func) {
+	void SetPreCollisionFunc(std::function<bool(ReferenceCollision*)> func) {
 		m_col.m_reference.m_preCollisionFunc = func;
 	}
 

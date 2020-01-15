@@ -10,10 +10,13 @@ public:
 	void InnerStart()override;
 	void Update()override;
 	void PostUTRSUpdate()override;
+	void PostLoopUpdate()override;
+	void Draw2D()override;
 
 	//ジャンプ
 	void Jump();
 	//踏みつけ
+	bool CanKick()const;
 	void Stomp();
 	//うんち
 	//void Unchi();
@@ -26,7 +29,8 @@ private:
 	SkeletonIK::IKSetting* m_ikSetting[enLRNUM] = {};	//IK設定
 	CVector3 m_beforePos[enLRNUM];
 	DHCollision m_col[enLRNUM];							//コリジョン
-	bool m_isJump = false;
+	bool m_isJump = false;								//ジャンプするフラグ
+	int m_leftStomp = 1;								//残り踏みつけ回数
 };
 
 /// <summary>

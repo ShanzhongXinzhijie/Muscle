@@ -105,7 +105,7 @@ void HotokeCameraController::Update() {
 	}	
 	
 	//カメラ位置設定
-	CVector3 offsetVec = { 0.0f, -205.0f, -100.0f };
+	CVector3 offsetVec = { 0.0f, -m_ptrHotoke->GetToFootDistance(), -100.0f };
 	m_ptrHotoke->GetRot().Multiply(offsetVec);
 
 	//地面と判定して高さ算出

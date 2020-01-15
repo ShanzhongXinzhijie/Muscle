@@ -2,6 +2,7 @@
 #include"BeamModel.h"
 #include"CSmoke.h"
 #include"IFu.h"
+#include<unordered_set>
 
 class BulletGO;
 
@@ -19,6 +20,7 @@ public:
 	virtual void PostLoopUpdate() {}
 	virtual void Pre3DRender(int) {}
 	virtual void Contact(SuicideObj::CCollisionObj::SCallbackParam& p) {}
+	virtual bool PreContact(ReferenceCollision* refcol) { return true; }
 
 	//設定元を設定
 	void SetBullet(BulletGO* bullet) {
@@ -49,6 +51,13 @@ public:
 	void Update()override;
 	void PostLoopUpdate()override;
 	void Pre3DRender(int)override;
+
+	/// <summary>
+	/// スタン時間を設定
+	/// </summary>
+	void SetStunTimeSec(float stunTimeSec) {
+		m_col.m_reference.stunTimeSec = stunTimeSec;
+	}
 
 	/// <summary>
 	/// コンポーネントを追加する
@@ -477,4 +486,21 @@ public:
 			//TODO 爆発生成
 		}
 	}
+};
+/// <summary>
+/// 一回衝突したものとは衝突しないコンポーネント
+/// </summary>
+class BD_OneContactMask : public IBulletComponent {
+public:
+	bool PreContact(ReferenceCollision* refcol)override {
+		if (m_contactedObjects.find(refcol) == m_contactedObjects.end()) {
+			//一度も衝突してない
+			m_contactedObjects.emplace(refcol);
+			return true;
+		}
+		//すでに衝突済み
+		return false;
+	}
+private:
+	std::unordered_set<ReferenceCollision*> m_contactedObjects;
 };

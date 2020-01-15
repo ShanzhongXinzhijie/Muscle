@@ -62,20 +62,27 @@ void BP_BirdWing::Update() {
 	if (!m_isYawInput) { m_yawAccel = 0.0f; }
 	if (!m_isPitchInput) { m_pitchAccel = 0.0f; }
 
+	//移動方向
+	CVector3 move = m_ptrCore->GetFront();
+	m_pitch.Multiply(move);
+
 	//速度制限
 	m_accel = max(m_accel, 0.0f);
-	if (m_accel > 20.0f) {
+	if (m_accel > 20.0f && move.y >= 0.0f) {
 		m_accel = max(20.0f, m_accel - 1.5f);
 	}	
 
-	//移動
-	CVector3 move = m_ptrCore->GetFront()*m_accel;
-	m_pitch.Multiply(move);
+	//移動	
+	move *= m_accel;
 	m_ptrCore->AddVelocity(move);	
 
 	//上昇による減速
 	if (move.y > 0.0f) {
 		m_accel += move.y * -0.003f;
+		//限界高度制限
+		if (m_ptrCore->GetHeightMeter() > LIMIT_HEIGHT_METER) {
+			m_accel += move.y * -0.03f;
+		}
 	}	
 
 	//アニメーション
@@ -87,9 +94,24 @@ void BP_BirdWing::PostUTRSUpdate() {
 	if (m_ptrCore->GetMove().y < 0.0f) {
 		m_accel += m_ptrCore->GetMove().y * -0.006f;
 	}
+
+	//地面効果度合いを算出
+	float graundEffect = 1.0f;//1.0~
+	constexpr float GE_MAX_Y = 300.0f;
+	//レイで判定
+	btVector3 rayStart = m_ptrCore->GetFootPos();
+	btVector3 rayEnd = m_ptrCore->GetFootPos(); rayEnd.setY(rayEnd.y() - (GE_MAX_Y+20.0f));
+	btCollisionWorld::ClosestRayResultCallback gnd_ray(rayStart, rayEnd);
+	GetEngine().GetPhysicsWorld().RayTest(rayStart, rayEnd, gnd_ray);
+	if (gnd_ray.hasHit()) {
+		graundEffect = 2.0f - min(1.0f, abs(gnd_ray.m_hitPointWorld.y() - m_ptrCore->GetFootPos().y) / GE_MAX_Y);
+		graundEffect *= graundEffect;
+		//m_y = graundEffect;
+	}
+
 	//揚力発生	
 	CVector3 youryok = m_ptrCore->GetMove(); youryok.y = 0.0f;
-	m_ptrCore->AddVelocity(CVector3::Up()*youryok.Length()*0.25f);
+	m_ptrCore->AddVelocity(CVector3::Up()*youryok.Length()*0.25f*graundEffect);
 }
 
 void BP_BirdWing::Draw2D() {
@@ -99,11 +121,16 @@ void BP_BirdWing::Draw2D() {
 	//m_ptrCore->GetFont()->DrawFormat(L"ACL(per): %.1f", { 0.0f,0.85f },0.0f, m_accel / 20.0f*100.0f);
 
 	// TODO 稼いだ速度で上がれる量
-	m_ptrCore->GetFont()->DrawFormat(L"%.1f,%.5f", { 0.0f,0.85f }, 0.0f, m_accel, CalcAirScale(m_ptrCore->GetHeightMeter()));
+	//m_ptrCore->GetFont()->DrawFormat(L"%.1f, %.5f\n%.1f", { 0.0f,0.85f }, 0.0f, m_accel, CalcAirScale(m_ptrCore->GetHeightMeter()),m_y);
 
 	//ブレーキ表示
 	if (m_isBraking) {
-		m_ptrCore->GetFont()->Draw(L"[BRAKING]", { 0.5f,0.90f }, { 0.5f,0.0f });
+		m_ptrCore->GetFont()->Draw(L"[BRAKING]", { 0.3f,0.90f }, { 0.0f,0.0f });
+	}
+
+	//限界高度警告
+	if (m_ptrCore->GetHeightMeter() > LIMIT_HEIGHT_METER) {
+		m_ptrCore->GetWarningFont()->Draw(L"[WARNING-HEIGHT]", { 0.7f,0.90f }, { 1.0f,0.0f });
 	}
 }
 

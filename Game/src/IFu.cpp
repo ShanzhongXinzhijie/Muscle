@@ -9,8 +9,16 @@ IFu::IFu() {
 			if (p.EqualName(L"ReferenceCollision")) {
 				//クラス取り出す
 				ReferenceCollision* H = p.GetClass<ReferenceCollision>();
-				if (H->m_preCollisionFunc) { H->m_preCollisionFunc(&m_col.m_reference); }
-				if (m_collisionFunc) { m_collisionFunc(H, p); }
+				//相手の衝突前処理
+				if (H->m_preCollisionFunc) { 
+					if (H->m_preCollisionFunc(&m_col.m_reference) == false) {
+						return;//衝突しない
+					}
+				}
+				//自分の衝突時処理
+				if (m_collisionFunc) {
+					m_collisionFunc(H, p);
+				}
 			}
 		}
 	);

@@ -101,6 +101,11 @@ public:
 	bool GetLegDown() const {
 		return m_usePad->GetDown(enButtonLT) || m_usePad->GetDown(enButtonRT);
 	}
+	//同時押し
+	[[nodiscard]]
+	bool GetDoubleLegDown() const {
+		return (m_usePad->GetDown(enButtonLT) || m_usePad->GetDown(enButtonRT)) && (m_usePad->GetButton(enButtonLT) && m_usePad->GetButton(enButtonRT));
+	}
 
 private:
 	XInputPad* m_usePad = nullptr;//使用するパッド

@@ -5,6 +5,10 @@
 
 using namespace GameObj;
 
+namespace {
+	std::wstring string;
+}
+
 void BP_KaniArm::InnerStart() {
 	//アニメーション(ボーン初期化用)
 	m_initPose.Load(L"Resource/animation/kaniarm.tka", true);
@@ -311,26 +315,47 @@ void BP_KaniArm::Draw2D() {
 	if (!m_ptrCore->GetIsDrawHUD()) { return; }
 
 	//腕の照準
-	for (auto lr : { L, R }) {
+	for (auto lr : LR) {
 		CVector3 pos = GetMainCamera()->CalcScreenPosFromWorldPos(m_ikSetting[lr]->targetPos);//TODO メインカメラ使う?
 		if (pos.z > 0.0f && pos.z < 1.0f) {
-			m_guncross.Draw(pos, 0.5f, { lr == R ? 0.0f : 1.0f,0.5f }, 0.0f, m_ptrCore->GetFont()->GetColor(), lr == L ? DirectX::SpriteEffects::SpriteEffects_None : DirectX::SpriteEffects::SpriteEffects_FlipHorizontally);
+			CVector4 color = m_coolDown[lr] > 0 ? m_ptrCore->GetWarningFont()->GetColor() : m_ptrCore->GetFont()->GetColor();
+			m_guncross.Draw(pos, 0.5f, { lr == R ? 0.0f : 1.0f,0.5f }, 0.0f, color, lr == L ? DirectX::SpriteEffects::SpriteEffects_None : DirectX::SpriteEffects::SpriteEffects_FlipHorizontally);
 		}
 	}
 
 	//操作	
 	//TODO 操作説明用フォント
-	CVector2 beforeScale = m_ptrCore->GetFont()->GetScale();
-	m_ptrCore->GetFont()->SetScale(0.05f);
-	m_ptrCore->GetFont()->SetUseFont(HUDFont::enJPN);
-	m_ptrCore->GetFont()->Draw(L"[LB/RB](ながおし): マシンガン\n[LB/RB](2どおし): ミッソー", {0.0f,0.5f});
-	if (m_coolDown[L] > 0) {
-		m_ptrCore->GetFont()->Draw(L"///////////////////////\n///////////////////////////", { 0.0f,0.5f });
-	}
-	m_ptrCore->GetFont()->SetUseFont(HUDFont::enENG);
-	m_ptrCore->GetFont()->SetScale(beforeScale);
+	//CVector2 beforeScale = m_ptrCore->GetFont()->GetScale();
+	//m_ptrCore->GetFont()->SetScale(0.375f);
+	//m_ptrCore->GetFont()->SetUseFont(HUDFont::enJPN);
+	//m_ptrCore->GetFont()->Draw(L"[LB/RB](ながおし): マシンガン\n[LB/RB](2どおし): ミッソー", {0.0f,0.5f});
+	///*if (m_coolDown[L] > 0) {
+	//	m_ptrCore->GetFont()->Draw(L"///////////////////////\n///////////////////////////", { 0.0f,0.5f });
+	//}*/
+	//m_ptrCore->GetFont()->SetUseFont(HUDFont::enENG);
+	//m_ptrCore->GetFont()->SetScale(beforeScale);
+	
 	//クールダウン
-
+	for (auto lr : LR) {
+		if (m_coolDown[lr] > 0) {
+			int leftTime = m_coolDown[lr] / FRAME_RATE;
+			string.clear();
+			if (lr == L) {
+				string += L"COOLDOWN";
+				for (int i = 0; i < leftTime; i++) {
+					string += L"<";
+				}
+				m_ptrCore->GetWarningFont()->Draw(string, { 0.0f,0.5f });
+			}
+			else {
+				for (int i = 0; i < leftTime; i++) {
+					string += L">";
+				}
+				string += L"COOLDOWN";
+				m_ptrCore->GetWarningFont()->Draw(string, { 1.0f,0.5f }, { 1.1f,0.0f });
+			}
+		}
+	}
 
 	//debug
 	//m_ptrCore->GetFont()->DrawFormat(L"L:%.3f\nR:%.3f", { 0.0f,0.6f }, {}, m_angle[L], m_angle[R]);
@@ -417,6 +442,7 @@ void AICon_KaniArm::Update() {
 	if (m_ptrCore->GetAIStatus()->isAttackingTarget) {
 		for (auto lr : { L, R }) {
 			m_ptrBody->ChargeAndMachinegun(lr);
+			m_ptrBody->Rocket(lr);
 		}
 	}
 }

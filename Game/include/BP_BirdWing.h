@@ -36,6 +36,8 @@ private:
 	float m_yawAccel = 0.0f; bool m_isYawInput = false;
 	float m_pitchAccel = 0.0f; bool m_isPitchInput = false;
 	CQuaternion m_pitch;//ècâÒì]
+
+	//float m_y = 0;
 };
 
 /// <summary>

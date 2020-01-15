@@ -34,7 +34,7 @@ public:
 	float damege = 0.0f;//ダメージ
 	float stunTimeSec = 0.0f;//スタン秒数
 
-	std::function<void(ReferenceCollision*)> m_preCollisionFunc;
+	std::function<bool(ReferenceCollision*)> m_preCollisionFunc;
 };
 
 /// <summary>
