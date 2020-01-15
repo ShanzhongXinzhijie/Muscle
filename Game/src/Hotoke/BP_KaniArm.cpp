@@ -280,9 +280,11 @@ void BP_KaniArm::PostUTRSUpdate() {
 				aimOffset *= aimPow;
 
 				CVector3 dirNorm = ((m_ikSetting[i]->targetPos + aimOffset) - m_model->GetBonePos(m_muzzleBoneID[i])).GetNorm();
+				
 				CVector3 kansei = m_ptrCore->GetTotalVelocity();
 				kansei = dirNorm * dirNorm.Dot(kansei);
 				kansei.Lerp(aimPow, m_ptrCore->GetTotalVelocity(), kansei);
+
 				BulletGO* bullet = new BulletGO(
 					m_model->GetBonePos(m_muzzleBoneID[i]),
 					(dirNorm*bulletSpeed)+kansei,
@@ -386,12 +388,13 @@ void BP_KaniArm::Rocket(enLR lr) {
 			m_ptrCore,
 			10.0f
 		);
+		bullet->m_lifeTime = 230.0f;
 		bullet->m_downAccel = 0.0f;
 		bullet->m_upBrake = 0.0f;
 		bullet->AddComponent(std::make_unique<BD_BeamModel>(30.0f, L"Red"));
 		bullet->AddComponent(std::make_unique<BD_SmokeTrail>());
 		bullet->AddComponent(std::make_unique<BD_Contact>());
-		bullet->AddComponent(std::make_unique<BD_Homing>(m_ptrCore->GetTarget(), 10.0f, 0.0f, CMath::DegToRad(90.0f), 50.0f));
+		bullet->AddComponent(std::make_unique<BD_Homing>(m_ptrCore->GetTarget(), 10.0f, 0.0f, CMath::DegToRad(90.0f), 50.0f*2.0f));
 		bullet->AddComponent(std::make_unique<BD_Brake>(1.0f));
 		bullet->AddComponent(std::make_unique<BD_Lockable>());
 

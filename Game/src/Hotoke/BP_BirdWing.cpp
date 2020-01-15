@@ -105,7 +105,7 @@ void BP_BirdWing::PostUTRSUpdate() {
 	GetEngine().GetPhysicsWorld().RayTest(rayStart, rayEnd, gnd_ray);
 	if (gnd_ray.hasHit()) {
 		graundEffect = 2.0f - min(1.0f, abs(gnd_ray.m_hitPointWorld.y() - m_ptrCore->GetFootPos().y) / GE_MAX_Y);
-		graundEffect *= graundEffect;
+		//graundEffect *= graundEffect;
 		//m_y = graundEffect;
 	}
 

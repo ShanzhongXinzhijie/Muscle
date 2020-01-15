@@ -141,6 +141,8 @@ void CPlayer::Update() {
 	if (isLock) {
 		m_hotoke.SetTargetPos(outPos);
 		m_hotoke.SetTarget(outObj);
+		m_targetHP = m_hotoke.GetTarget()->GetHP();
+		m_targetPos = m_hotoke.GetTargetFu()->GetPos();
 	}
 	else {
 		m_hotoke.SetTargetPos(vanisingPoint);
@@ -242,20 +244,17 @@ void CPlayer::HUDRender(int HUDNum) {
 		if (m_isLockon) {
 			//ステータス
 			//HP
-			if (m_hotoke.GetTarget()->GetHP() > 0.0f) {
-				m_HUDFont.DrawFormat(L"%.0f", pos - CVector3(0.0f, 0.025f, 0.0f), { 0.5f,1.5f }, m_hotoke.GetTarget()->GetHP());
+			if (m_targetHP > 0.0f) {
+				m_HUDFont.DrawFormat(L"%.0f", pos - CVector3(0.0f, 0.025f, 0.0f), { 0.5f,1.5f }, m_targetHP);
 			}
 			//距離(m)
 			CVector2 motoScale = m_HUDFont.GetScale();
 			m_HUDFont.SetScale(motoScale*0.75f);
-			m_HUDFont.DrawFormat(L"%.0f", pos - CVector3(0.0f, -0.025f, 0.0f), { 0.5f,0.0f }, (m_hotoke.GetTargetFu()->GetPos() - m_hotoke.GetPos()).Length() / METER);
+			m_HUDFont.DrawFormat(L"%.0f", pos - CVector3(0.0f, -0.025f, 0.0f), { 0.5f,0.0f }, (m_targetPos - m_hotoke.GetPos()).Length() / METER);
 			m_HUDFont.SetScale(motoScale);
 		}
 	}
 	//m_guncrossPosOld = pos;
-
-	//目標の距離・接近速度・HP・スタミナ
-	//TODO HUDにブラー	
 
 	//ベロシティベクトル(進行方向)
 	if (m_hotoke.GetMove().LengthSq() > 1.0f) {

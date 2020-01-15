@@ -39,7 +39,7 @@ void CountDown::PostLoopUpdate() {
 		return;
 	}
 	//カウントダウン減少
-	m_countDownSec -= GetRealDeltaTimeSec();
+	m_countDownSec -= GetRealDeltaTimeSec()*1.5f;
 	if (m_countDownSec < 0.0f) {
 		//自殺
 		delete this;

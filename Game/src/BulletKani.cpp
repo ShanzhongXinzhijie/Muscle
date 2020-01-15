@@ -2,11 +2,16 @@
 #include "BulletKani.h"
 #include "CShockRing.h"
 
+namespace {
+	constexpr int BOOST_EFECT_MAXNUM = 512;
+}
+
 BulletGO::BulletGO(const CVector3& pos, const CVector3& move, IFu* owner, float damege, bool isLockable)
 	: m_vector(move), m_owner(owner), ILifeObject(isLockable, owner)
 {
 	//初期座標
 	SetPos(pos), m_posOld = GetPos();
+	m_defaultPos = GetPos();
 	
 	//攻撃判定
 	//衝突処理
@@ -34,6 +39,8 @@ BulletGO::BulletGO(const CVector3& pos, const CVector3& move, IFu* owner, float 
 	m_col.m_collision.SetIsHighSpeed(true);//これは高速です
 
 	m_col.m_reference.damege = damege;
+	m_defaultDamege = damege;
+
 	//TODO
 	m_col.m_reference.attributes.set(enPhysical);
 	m_col.m_reference.attributes.set(enFlame);
@@ -56,10 +63,27 @@ void BulletGO::Update() {
 	m_posOld = GetPos();
 	Move(m_vector);
 
+	//発射点からの高さひらく(落下する)ほど威力上昇
+	if (m_isDamegeHeightBoost) {
+		float power = max(0.0f, m_defaultPos.y - GetPos().y) / (LIMIT_HEIGHT_METER * METER);
+		m_col.m_reference.damege = m_defaultDamege * (1.0f + power);
+
+		//エフェクト
+		if (!m_damegeBoostEffect) {
+			m_damegeBoostEffect = std::make_unique<CBillboard>();
+			m_damegeBoostEffect->Init(L"Resource/effect/light.png", BOOST_EFECT_MAXNUM);
+			m_damegeBoostEffect->SetRot({ CVector3::AxisZ(), CMath::RandomZeroToOne()*CMath::PI2 });
+			m_damegeBoostEffect->GetModel().InitPostDraw(PostDrawModelRender::enAlpha);//ポストドロー
+			m_damegeBoostEffect->GetModel().SetIsShadowCaster(false);
+		}
+		m_damegeBoostEffect->SetPos(GetPos());
+		m_damegeBoostEffect->SetScale(3000.0f*power);
+	}
+
 	//寿命処理
-	m_lifeTime -= FRAME_PER_SECOND;
+	m_lifeTime -= 1.0f;// FRAME_PER_SECOND;
 	if (m_lifeTime < FLT_EPSILON) {
-		new CShockRing(GetPos(), CVector4::Black(), 200.0f);
+		new CShockRing(GetPos(), CVector4::White(), 400.0f);
 		Death(); return;
 	}
 

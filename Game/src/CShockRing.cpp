@@ -17,7 +17,7 @@ CShockRing::CShockRing(
 
 	//ビルボード読み込み
 	std::unique_ptr<CBillboard> billboard = std::make_unique<CBillboard>();
-	billboard->Init(L"Resource/effect/airblurring2.png", MAX_NUM);
+	billboard->Init(L"Resource/effect/shock.png", MAX_NUM);
 	billboard->GetModel().InitPostDraw(PostDrawModelRender::enAlpha, false, true);//ポストドロー(ソフトパーティクル)
 	billboard->GetModel().SetIsShadowCaster(false);
 	billboard->GetModel().GetSkinModel().FindMaterialSetting(

@@ -67,6 +67,8 @@ private:
 	//HUD
 	bool m_isDrawHUD = true;
 	bool m_isLockon = false;
+	float m_targetHP = 0.f;
+	CVector3 m_targetPos;
 	CVector4 m_HUDColor = { 0.0f,0.0f,0.0f,1.0f };
 	CSprite m_guncross, m_wMark, m_velocityVector;
 	//CVector3 m_guncrossPosOld, m_velocityPosOld;

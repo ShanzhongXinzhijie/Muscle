@@ -104,9 +104,15 @@ private:
 	std::vector<std::unique_ptr<IBulletComponent>> m_components;	
 	//古座標
 	CVector3 m_posOld;
+	//初期座標
+	CVector3 m_defaultPos;
+	//初期攻撃力
+	float m_defaultDamege = 0.0f;
+	//ダメージブーストエフェクト
+	std::unique_ptr<CBillboard> m_damegeBoostEffect;
 public:
 	//寿命
-	float m_lifeTime = 3.0f;
+	float m_lifeTime = 3.0f*FRAME_RATE;
 	//進行ベクトル
 	CVector3 m_vector;
 	//攻撃コリジョン
@@ -119,6 +125,8 @@ public:
 	float m_upBrake = 0.025f;
 	//下降加速
 	float m_downAccel = 0.25f;
+	//高さによるダメージブーストの有効フラグ
+	bool m_isDamegeHeightBoost = true;
 };
 
 
@@ -352,7 +360,7 @@ public:
 			}
 		}
 
-		CVector3 targetDir(m_bullet->m_vector);
+		CVector3 targetDir(CVector3::Down());
 		
 		//目標あり ＆ 目標のインスタンスが消滅していない
 		if (m_target && !(*isTargetDeath.get())) {
@@ -362,18 +370,27 @@ public:
 		targetDir.Normalize();
 
 		//常に加速設定 or 目標方向との角度が開いている and 誘導角度内
-		float rad = CVector3::AngleOf2NormalizeVector(targetDir, m_bullet->m_vector.GetNorm());
-		if ((m_nonAccelRad < FLT_EPSILON || rad > m_nonAccelRad) && rad < m_limitRad) {
+		float rad = 0.0f;
+		float dirLength = m_bullet->m_vector.LengthSq();
+		if (dirLength > FLT_EPSILON) {
+			rad = CVector3::AngleOf2NormalizeVector(targetDir, m_bullet->m_vector.GetNorm());
+		}
+		if (dirLength < FLT_EPSILON || ((m_nonAccelRad < FLT_EPSILON || rad > m_nonAccelRad) && rad < m_limitRad)) {
 			CVector3 beforeVec = m_bullet->m_vector;
-			//ブレーキング
-			float brakePow = CMath::Saturate(targetDir.Dot(m_bullet->m_vector.GetNorm()));//1.0f - CMath::Saturate(targetDir.Dot(m_bullet->m_vector.GetNorm()));
-			m_bullet->m_vector *= brakePow;
-			//if (brakePow > 0.0f) {
-				//m_bullet->m_vector = m_bullet->m_vector.GetNorm()*max(0.0f, m_bullet->m_vector.Length() - m_thrust * brakePow);
-			//}
+			
+			if (dirLength > FLT_EPSILON) {
+				//ブレーキング
+				float brakePow = CMath::Saturate(targetDir.Dot(m_bullet->m_vector.GetNorm()));//1.0f - CMath::Saturate(targetDir.Dot(m_bullet->m_vector.GetNorm()));
+				m_bullet->m_vector *= brakePow;
+				//if (brakePow > 0.0f) {
+					//m_bullet->m_vector = m_bullet->m_vector.GetNorm()*max(0.0f, m_bullet->m_vector.Length() - m_thrust * brakePow);
+				//}
+			}
+
 			//目標へ加速
 			m_bullet->m_vector += targetDir * m_thrust;
-			if (m_bullet->m_vector.LengthSq() < FLT_EPSILON) {//停止はしない
+			//停止はしない
+			if (m_bullet->m_vector.LengthSq() < FLT_EPSILON) {
 				m_bullet->m_vector = beforeVec;
 			}
 		}

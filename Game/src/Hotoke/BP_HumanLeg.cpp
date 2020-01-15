@@ -162,11 +162,12 @@ void BP_HumanLeg::Stomp() {
 
 	//踏みつけ作成
 	BulletGO* bullet = new BulletGO(
-		m_ptrCore->GetTargetPos()+ CVector3::Up()*150.0f,
+		m_ptrCore->GetTargetPos(),//+ CVector3::Up()*150.0f,
 		CVector3::Down()*5.0f,
 		m_ptrCore,
 		3.0f
 	);
+	bullet->m_isDamegeHeightBoost = false;//ダメージブースト無効
 	bullet->SetStunTimeSec(0.5f);//スタン時間
 	bullet->AddComponent(std::make_unique<BD_LegModel>(m_ptrCore->GetRot(), m_ptrCore->GetScale()));//モデル
 	bullet->AddComponent(std::make_unique<BD_OneContactMask>());//多段ヒットしない
