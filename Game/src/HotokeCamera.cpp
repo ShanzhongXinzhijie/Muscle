@@ -59,6 +59,9 @@ void HotokeCameraController::UpdateZoomOutCamera(bool isInit) {
 		CVector3 target;
 		target.Lerp(m_zoomPercent, m_originalTarget, m_zoomOutDir*-1.0f);
 		m_zoomOutCam.SetTarget(pos + target * m_zoomOutCam.GetFar());
+
+		//m_zoomOutCam.SetPos(0);
+		//m_zoomOutCam.SetTarget(CVector3::AxisZ()*100);
 	}
 }
 
