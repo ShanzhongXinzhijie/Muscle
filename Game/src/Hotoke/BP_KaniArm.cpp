@@ -85,9 +85,17 @@ void BP_KaniArm::Update() {
 	//コントローラーに操作させる
 	m_controller->Update();
 
-	//チャージ時間リセット
 	for (int i = 0; i < enLRNUM; i++) {
-		if (!m_isCharging[i]) { m_chargeTime[i] = 0; }
+		if (!m_isCharging[i]) { 
+			//チャージ時間リセット
+			m_chargeTime[i] = 0;
+		}
+		else {
+			//チャージ時間ずらす(同時発射はうーん)
+			if (m_chargeTime[L] == m_chargeTime[R]) {
+				m_chargeTime[i]++;
+			}
+		}
 	}
 }
 
@@ -215,13 +223,17 @@ void BP_KaniArm::PostUTRSUpdate() {
 				//マズルエフェクト
 				m_muzzleTime[i] = 2;
 				//発射
-				constexpr float bulletSpeed = 100.0f;//弾速
+				constexpr float bulletSpeed = 100.0f*2.0f;//弾速
+
+				float aimPow = 0.0f;
+				if (m_ptrCore->GetTarget()) {
+					aimPow = 1.0f;
+				}
 
 				//偏差射撃
 				float hitTime = 0.0f;
-				float aimPow = 1.0f;
 				CVector3 aimOffset;
-				if (m_ptrCore->GetTarget()) {
+				if (m_ptrCore->GetTarget() && aimPow > 0.0f) {
 					CVector3 dirNorm = ((m_ikSetting[i]->targetPos + aimOffset) - m_model->GetBonePos(m_muzzleBoneID[i])).GetNorm();
 					CVector3 kansei = m_ptrCore->GetTotalVelocity();
 					float plusspeed = dirNorm.Dot(kansei);
