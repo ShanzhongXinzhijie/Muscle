@@ -50,7 +50,7 @@ private:
 class HCon_HumanMantle : public IBodyController<BP_HumanMantle> {
 public:
 	using IBodyController::IBodyController;
-	void Update()override;
+	void InnerUpdate()override;
 };
 /// <summary>
 /// マント #AIコントローラー
@@ -58,5 +58,5 @@ public:
 class AICon_HumanMantle : public IBodyController<BP_HumanMantle> {
 public:
 	using IBodyController::IBodyController;
-	void Update()override;
+	void InnerUpdate()override;
 };

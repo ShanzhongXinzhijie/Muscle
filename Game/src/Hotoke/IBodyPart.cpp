@@ -1,7 +1,10 @@
 #include "stdafx.h"
 #include "BodyPartsHeader.h"
 
-void IBodyPart::Start() { InnerStart(); UpdateTRS(); }
+void IBodyPart::Start() { 
+	InnerStart(); 
+	UpdateTRS();
+}
 void IBodyPart::UpdateTRS() {
 	if (m_model) {
 		CQuaternion rot = GetFinalRot();

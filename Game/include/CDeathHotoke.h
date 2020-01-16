@@ -40,6 +40,11 @@ public:
 	//パーツ設定
 	void SetBodyPart(enBodyParts partsType, std::unique_ptr<IBodyPart> part);
 
+	//操作可能かどうか設定
+	void SetIsControl(bool isControl) {
+		m_isControl = isControl;
+	}
+
 	//IGameObject関係
 	bool Start()override;
 	void PreUpdate()override;
@@ -183,6 +188,11 @@ public:
 	//落下速度を取得
 	[[nodiscard]] constexpr float GetGravity()const { return GRAVITY; }
 
+	//操作可能か取得
+	[[nodiscard]] bool GetIsControl()const {
+		return m_isControl;
+	}
+
 private:
 	//スタン処理
 	void Stun();
@@ -235,5 +245,8 @@ private:
 
 	//ズームアウト方向
 	CVector3 m_zoomoutDir = { 0.f, 400.f, 800.f };
+
+	//操作可能か?
+	bool m_isControl = false;
 };
 

@@ -39,5 +39,5 @@ private:
 class HCon_HumanLeg : public IBodyController<BP_HumanLeg> {
 public:
 	using IBodyController::IBodyController;
-	void Update()override;
+	void InnerUpdate()override;
 };

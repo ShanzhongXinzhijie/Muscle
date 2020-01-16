@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "CountDown.h"
 #include "TimeManager.h"
+#include "CDeathHotoke.h"
 
 //namespace {
 //	constexpr int MAX_COUNTDOWN_TYPE = 2;
@@ -14,6 +15,8 @@
 CountDown::CountDown(int round, int roundmax, int score[PLAYER_NUM], int timeLimitSec)
 	: m_roundCount(round), m_maxRound(roundmax), m_timeLimitSec(timeLimitSec)
 {
+	SetName(L"CountDown");
+
 	int i = 0;
 	for (auto& playerscore : m_score) {
 		playerscore = score[i];
@@ -39,8 +42,16 @@ void CountDown::PostLoopUpdate() {
 		return;
 	}
 	//カウントダウン減少
-	m_countDownSec -= GetRealDeltaTimeSec()*1.5f;
+	m_countDownSec -= GetRealDeltaTimeSec()*2.0f;// 1.5f;
+	//カウントダウン終了
 	if (m_countDownSec < 0.0f) {
+		//すべてのホトケを操作可能に
+		QueryGOs<CDeathHotoke>(L"CDeathHotoke",
+			[](CDeathHotoke* go) {
+				go->SetIsControl(true);
+				return true;
+			}
+		);
 		//自殺
 		delete this;
 		return;

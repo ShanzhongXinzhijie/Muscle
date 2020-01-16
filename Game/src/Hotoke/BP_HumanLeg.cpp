@@ -186,7 +186,7 @@ void BP_HumanLeg::Stomp() {
 	m_leftStomp--;
 }
 
-void HCon_HumanLeg::Update() {
+void HCon_HumanLeg::InnerUpdate() {
 	if (m_ptrCore->GetPad()->GetLegDown()) {
 		m_ptrBody->Jump();
 	}

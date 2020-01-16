@@ -202,7 +202,7 @@ void BP_BirdWing::Yaw(float lerp) {
 	m_ptrCore->AddAngularVelocity(CVector3::AxisY(), lerp*roll*accel);
 }
 
-void HCon_BirdWing::Update() {
+void HCon_BirdWing::InnerUpdate() {
 	constexpr float ACCEL_TIME_MAX = 0.35f;
 	//左スティック一回転以上で加速
 	if (m_ptrCore->GetPad()->GetStickCircleInput(L) - m_beforeClrcleInputNum > 0) {
@@ -232,7 +232,7 @@ void HCon_BirdWing::Update() {
 	//}
 }
 
-void AICon_BirdWing::Update() {
+void AICon_BirdWing::InnerUpdate() {
 	//if (m_ptrBody->GetAccel() < 5.0f){
 		m_ptrBody->Accel();
 	//}

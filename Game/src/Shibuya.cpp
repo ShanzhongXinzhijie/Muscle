@@ -10,13 +10,13 @@
 #include "BP_HumanLeg.h"
 #include "BP_HumanMantle.h"
 
-Shibuya::Shibuya() : m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI>(&m_hotoke))
+Shibuya::Shibuya() //: m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI>(&m_hotoke))
 {
 	
-	m_hotoke.SetBodyPart(CDeathHotoke::enHead, std::make_unique<BP_FishHead>(&m_hotoke));
+	/*m_hotoke.SetBodyPart(CDeathHotoke::enHead, std::make_unique<BP_FishHead>(&m_hotoke));
 	m_hotoke.SetBodyPart(CDeathHotoke::enArm, std::make_unique<BP_KaniArm>(&m_hotoke));
 	m_hotoke.SetBodyPart(CDeathHotoke::enWing, std::make_unique<BP_BirdWing>(&m_hotoke));
-	m_hotoke.SetBodyPart(CDeathHotoke::enLeg, std::make_unique<BP_HumanLeg>(&m_hotoke));
+	m_hotoke.SetBodyPart(CDeathHotoke::enLeg, std::make_unique<BP_HumanLeg>(&m_hotoke));*/
 	
 
 	//Ari* ari = new Ari(CVector3::AxisY()*900.0f + CVector3::AxisX()*50.0f, {});
@@ -207,10 +207,9 @@ Shibuya::Shibuya() : m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI>(
 	//–ØX
 	//TODO –Ø‚Ìƒ‚ƒfƒ‹‚Ì•`‰æ•‰‰×‚ª‚‚¢ ”»’è‚ªd‚¢ ‰æ–Ê•ªŠ„‚Í”»’èíœ‚Æ‚©
 	Tree::m_sInstancingMax = 4000;
-	m_objGene.Generate<Tree>(CVector3::Zero(), 70.0f*50.0f, 70.0f*50.0f, Tree::m_sInstancingMax, 120.0f);
-	
+	//m_objGene.Generate<Tree>(CVector3::Zero(), 70.0f*50.0f, 70.0f*50.0f, Tree::m_sInstancingMax, 120.0f);	
 	//“S“ƒ
-	m_objGene.Generate<TransmissionTower>({ -70.0f*500.0f,-70.0f*50.0f,-70.0f*500.0f }, { 70.0f*500.0f,70.0f*50.0f,70.0f*500.0f }, 64, 300.0f);
+	//m_objGene.Generate<TransmissionTower>({ -70.0f*500.0f,-70.0f*50.0f,-70.0f*500.0f }, { 70.0f*500.0f,70.0f*50.0f,70.0f*500.0f }, 64, 300.0f);
 	
 	//GetGraphicsEngine().GetAmbientOcclusionRender().SetEnable(false);
 

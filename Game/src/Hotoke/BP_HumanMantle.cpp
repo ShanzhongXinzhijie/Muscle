@@ -280,7 +280,7 @@ void BP_HumanMantle::Parachute() {}
 
 
 //コントローラー
-void HCon_HumanMantle::Update() {
+void HCon_HumanMantle::InnerUpdate() {
 
 	//移動
 	m_ptrBody->Move(m_ptrCore->GetPad()->GetStick(L));
@@ -291,4 +291,4 @@ void HCon_HumanMantle::Update() {
 	}
 }
 
-void AICon_HumanMantle::Update() {}
+void AICon_HumanMantle::InnerUpdate() {}

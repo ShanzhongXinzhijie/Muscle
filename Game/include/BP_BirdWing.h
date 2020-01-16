@@ -46,7 +46,7 @@ private:
 class HCon_BirdWing : public IBodyController<BP_BirdWing> {
 public:
 	using IBodyController::IBodyController;
-	void Update()override;
+	void InnerUpdate()override;
 private:
 	float m_accelTime = 0.0f;
 	int m_beforeClrcleInputNum = 0;
@@ -57,5 +57,5 @@ private:
 class AICon_BirdWing : public IBodyController<BP_BirdWing> {
 public:
 	using IBodyController::IBodyController;
-	void Update()override;
+	void InnerUpdate()override;
 };

@@ -2,7 +2,9 @@
 #include "Game.h"
 #include "GameManager.h"
 
-Game::Game(GameManager* manager) : m_manager(manager), m_timeLimitSec(static_cast<float>(manager->GetTimeLimitSec()) + 0.5f) {
+Game::Game(GameManager* manager) 
+	: m_manager(manager), m_timeLimitSec(static_cast<float>(manager->GetTimeLimitSec()) + 0.9f)
+{
 	int scores[PLAYER_NUM] = { m_manager->GetPlayerScore(0),m_manager->GetPlayerScore(1) };
 	new CountDown(m_manager->GetRoundCount(), m_manager->GetMaxRound(), scores, m_manager->GetTimeLimitSec());
 

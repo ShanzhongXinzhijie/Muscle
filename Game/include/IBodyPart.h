@@ -10,8 +10,15 @@ class IBodyController {
 public:
 	//コンストラクタ
 	IBodyController(T* ptrbody, CDeathHotoke* ptrCore) : m_ptrBody(ptrbody), m_ptrCore(ptrCore) {}
+
 	//毎フレーム実行する処理
-	virtual void Update() = 0;
+	void Update() {
+		if (!m_ptrCore->GetIsControl()) {
+			return;
+		}
+		InnerUpdate();
+	}
+	virtual void InnerUpdate() = 0;
 
 protected:
 	//操作するボディパーツのポインタ

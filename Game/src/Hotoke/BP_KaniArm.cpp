@@ -446,7 +446,7 @@ void BP_KaniArm::Stab() {
 }
 
 //ヒューマンコントローラー
-void HCon_KaniArm::Update() {
+void HCon_KaniArm::InnerUpdate() {
 	/*{
 		m_ptrBody->Stab();
 	}*/
@@ -464,7 +464,7 @@ void HCon_KaniArm::Update() {
 }
 
 //AIコントローラー
-void AICon_KaniArm::Update() {
+void AICon_KaniArm::InnerUpdate() {
 	if (m_ptrCore->GetAIStatus()->isAttackingTarget) {
 		for (auto lr : { L, R }) {
 			m_ptrBody->ChargeAndMachinegun(lr);

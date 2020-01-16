@@ -57,7 +57,7 @@ private:
 class HCon_KaniArm : public IBodyController<BP_KaniArm> {
 public:
 	using IBodyController::IBodyController;	
-	void Update()override;
+	void InnerUpdate()override;
 };
 
 /// <summary>
@@ -68,7 +68,7 @@ class AICon_KaniArm : public IBodyController<BP_KaniArm>
 {
 public:
 	using IBodyController::IBodyController;	
-	void Update()override;
+	void InnerUpdate()override;
 	//TODO
 	//どこどこへの移動、相手への攻撃などムーブセットを実装する仮想関数作る?
 private:
