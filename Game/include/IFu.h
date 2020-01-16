@@ -5,6 +5,17 @@
 /// </summary>
 class IFu 
 {
+private:
+	//ユニークIDの生成
+	static inline unsigned long long m_s_generatedID = 0;
+	void GenerateID() {
+		m_s_generatedID++;
+		if (m_s_generatedID == 0 || m_s_generatedID == 1) {//0,1はけつばん
+			m_s_generatedID = 2;
+		}
+		m_id = m_s_generatedID;
+	}
+
 public:
 	//コンストラクタ
 	IFu();
@@ -16,6 +27,11 @@ public:
 				*flag.lock() = true;
 			}
 		}
+	}
+
+	//IDを取得
+	unsigned long long GetFuID()const {
+		return m_id;
 	}
 
 	//通知用死亡フラグを設定
@@ -115,6 +131,15 @@ public:
 		return m_col.m_reference;
 	}
 
+	//喰らい判定のID設定
+	void SetCollisionOwnerID(unsigned long long id) {
+		m_col.m_reference.ownerID = id;
+	}
+	//喰らい判定と衝突しない判定のID設定
+	void SetCollisionNonHitID(unsigned long long id) {
+		m_col.m_reference.nonHitID = id;
+	}
+
 	//喰らい判定の判定グループを設定
 	void On_OneGroup(unsigned int oneGroup) {
 		m_col.On_OneGroup(oneGroup);
@@ -140,6 +165,8 @@ private:
 	}
 
 private:
+	unsigned long long m_id = 0;
+
 	//位置と回転
 	CVector3 m_pos;
 	CQuaternion m_rot;
@@ -161,6 +188,8 @@ private:
 //ロックできるオブジェクトラッパー
 class LockableWrapper : public IQSGameObject {
 public:
+	static constexpr int DEFAULT_LEVEL = 2;
+
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
@@ -173,6 +202,10 @@ public:
 		SetName(L"LockableObject");
 	}
 
+	//ロックオン優先度を設定
+	void SetPriorityLevel(int level = DEFAULT_LEVEL){
+		m_priorityLevel = level;
+	}
 	//HPを設定
 	void SetHPRef(float* hpPtr) {
 		m_hpPtr = hpPtr;
@@ -197,6 +230,11 @@ public:
 		return m_fu;
 	}
 
+	//ロックオン優先度を取得
+	int GetPriorityLevel()const {
+		return m_priorityLevel;
+	}
+
 	//移動量を取得
 	const CVector3& GetMove()const {
 		return m_move;
@@ -218,6 +256,8 @@ public:
 private:
 	IFu* m_fu = nullptr;
 	IFu* m_owner = nullptr;
+
+	int m_priorityLevel = DEFAULT_LEVEL;//ロックオン優先度
 
 	bool m_isFirstUpdate = true;
 	CVector3 m_move;//移動量(偏差射撃に使う)
@@ -255,10 +295,11 @@ public:
 	}
 
 	//ロックオン可能か設定
-	void SetLockable(bool isLockable, IFu* owner) {
+	void SetLockable(bool isLockable, IFu* owner, int lockLevel = LockableWrapper::DEFAULT_LEVEL) {
 		if (isLockable) {
 			if (!m_lockableWrapper) {
 				m_lockableWrapper = std::make_unique<LockableWrapper>(this, nullptr, owner);
+				m_lockableWrapper->SetPriorityLevel(lockLevel);
 			}
 		}
 		else {

@@ -45,7 +45,7 @@ protected:
 /// </summary>
 class BulletGO : public ILifeObject {
 public:
-	BulletGO(const CVector3& pos, const CVector3& move, IFu* owner, float damege, bool isLockable = false);
+	BulletGO(const CVector3& pos, const CVector3& move, IFu* owner, float damege, bool isLockable = false, int priorityLevel = LockableWrapper::DEFAULT_LEVEL);
 
 	void PreLoopUpdate()override;
 	void Update()override;
@@ -173,9 +173,15 @@ private:
 /// ロックオン可能化コンポーネント
 /// </summary>
 class BD_Lockable :public IBulletComponent {
+public:
+	BD_Lockable(int lockLevel = LockableWrapper::DEFAULT_LEVEL) :m_lockLevel(lockLevel) {}
+
 	void Start()override {
 		m_bullet->SetLockable(true, m_bullet->GetOwner());
 	}
+
+private:
+	int m_lockLevel = LockableWrapper::DEFAULT_LEVEL;
 };
 
 /// <summary>
@@ -343,30 +349,72 @@ public:
 			isTargetDeath = std::make_shared<bool>(false);
 			target->GetFu()->SetDeleteFlag(isTargetDeath);
 		}
+		
+		m_arrowModel.SetEnable(false);
 	};
 
+	/// <summary>
+	/// 初期化方向を設定
+	/// </summary>
+	void SetInitDirection(const CVector3& dir) {
+		m_isInitedDir = true;
+		m_initDir = dir.GetNorm();
+	}
+
+	void Start()override {
+		if (!m_isInitedDir) {
+			SetInitDirection(m_bullet->m_vector);
+		}
+		if (m_timerf > 0.0f) {
+			m_arrowModel.SetEnable(true);
+			m_arrowModel.Init(L"Resource/modelData/arrow.cmo");
+			//m_arrowModel.InitPostDraw(PostDrawModelRender::enBlendMode::enAlpha);
+			m_arrowModel.GetSkinModel().FindMaterialSetting(
+				[&](MaterialSetting* mat) {
+					mat->SetIsMotionBlur(false);
+					mat->SetLightingEnable(false);
+				}
+			);
+			m_arrowModel.SetPos(m_bullet->GetPos());
+			CQuaternion rot;
+			rot.MakeLookToUseXYAxis(m_initDir*-1.0f);
+			m_arrowModel.SetRot(rot);
+			m_arrowModel.SetScale(2.0f);
+		}
+	}
+
 	void Update()override {
+		if (m_bullet->m_vector.LengthSq() > FLT_EPSILON) {
+			m_lastDir = m_bullet->m_vector.GetNorm();
+		}		
+
 		//タイマー処理
 		if (m_timerf > 0.0f) {
 			m_timerf = max(0.0f, m_timerf - 1.0f);
 			if (m_timerf > 0.0f) { 
+				//座標
+				m_arrowModel.SetPos(m_bullet->GetPos());
+				//点滅
+				m_isDrawTimer--;
+				if (m_isDrawTimer <= 0) {
+					m_isDrawTimer = !m_arrowModel.GetIsDraw() ? 10 : 4;
+					m_arrowModel.SetIsDraw(!m_arrowModel.GetIsDraw());
+				}
 				return;
 			}
 			else {
-				//方向初期化 
-				if (m_target && !(*isTargetDeath.get())) {
-					m_bullet->m_vector = (m_target->GetFu()->GetCollisionPos() - m_bullet->GetPos() + m_target->GetMove()).GetNorm()*m_bullet->m_vector.Length();
-				}
+				m_arrowModel.SetEnable(false);
+				//方向初期化
+				m_bullet->m_vector = m_initDir * max(1.0f, m_bullet->m_vector.Length());
 			}
 		}
 
-		CVector3 targetDir(CVector3::Down());
-		
+		//目標方向
+		CVector3 targetDir(m_bullet->m_vector);
 		//目標あり ＆ 目標のインスタンスが消滅していない
 		if (m_target && !(*isTargetDeath.get())) {
 			targetDir = m_target->GetFu()->GetCollisionPos() - m_bullet->GetPos() + m_target->GetMove();
 		}
-
 		targetDir.Normalize();
 
 		//常に加速設定 or 目標方向との角度が開いている and 誘導角度内
@@ -375,16 +423,17 @@ public:
 		if (dirLength > FLT_EPSILON) {
 			rad = CVector3::AngleOf2NormalizeVector(targetDir, m_bullet->m_vector.GetNorm());
 		}
+		else {
+			targetDir = m_lastDir;
+		}
 		if (dirLength < FLT_EPSILON || ((m_nonAccelRad < FLT_EPSILON || rad > m_nonAccelRad) && rad < m_limitRad)) {
 			CVector3 beforeVec = m_bullet->m_vector;
 			
 			if (dirLength > FLT_EPSILON) {
 				//ブレーキング
-				float brakePow = CMath::Saturate(targetDir.Dot(m_bullet->m_vector.GetNorm()));//1.0f - CMath::Saturate(targetDir.Dot(m_bullet->m_vector.GetNorm()));
+				float brakePow = CMath::Saturate(targetDir.Dot(m_bullet->m_vector.GetNorm()));
 				m_bullet->m_vector *= brakePow;
-				//if (brakePow > 0.0f) {
-					//m_bullet->m_vector = m_bullet->m_vector.GetNorm()*max(0.0f, m_bullet->m_vector.Length() - m_thrust * brakePow);
-				//}
+				//m_bullet->m_vector -= m_bullet->m_vector.GetNorm()* m_thrust * 2.0f *(1.0f - brakePow);
 			}
 
 			//目標へ加速
@@ -393,6 +442,10 @@ public:
 			if (m_bullet->m_vector.LengthSq() < FLT_EPSILON) {
 				m_bullet->m_vector = beforeVec;
 			}
+		}
+		else if(m_nonAccelRad < FLT_EPSILON){
+			//ただの加速
+			m_bullet->m_vector += m_bullet->m_vector.GetNorm() * m_thrust;
 		}
 	}
 
@@ -408,6 +461,12 @@ private:
 	float m_nonAccelRad = 0.0f;//加速しない角度範囲
 	float m_limitRad = CMath::PI2;//追尾可能な角度
 	float m_timerf = 0.0f;//ホーミング開始までのフレーム数
+	CVector3 m_initDir;//初期化方向
+	bool m_isInitedDir = false;
+	CVector3 m_lastDir = CVector3::Down();
+
+	GameObj::CSkinModelRender m_arrowModel;
+	int m_isDrawTimer = 0;
 };
 
 

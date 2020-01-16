@@ -380,6 +380,8 @@ void BP_KaniArm::Rocket(enLR lr) {
 		//マズルエフェクト
 		m_muzzleTime[lr] = 2;
 
+		constexpr float homingStartTime = 50.0f*2.0f;//ホーミング開始時間
+
 		//発射
 		CVector3 dirNorm = (m_ikSetting[lr]->targetPos - m_model->GetBonePos(m_muzzleBoneID[lr])).GetNorm();
 		BulletGO* bullet = new BulletGO(
@@ -392,11 +394,20 @@ void BP_KaniArm::Rocket(enLR lr) {
 		bullet->m_downAccel = 0.0f;
 		bullet->m_upBrake = 0.0f;
 		bullet->AddComponent(std::make_unique<BD_BeamModel>(30.0f, L"Red"));
+
 		bullet->AddComponent(std::make_unique<BD_SmokeTrail>());
+		std::unique_ptr<BD_Timer> bd_timer = std::make_unique<BD_Timer>(homingStartTime);
+		bd_timer->AddComponent(&bullet->GetComponentBack());
+		bullet->AddComponent(std::move(bd_timer));
+
 		bullet->AddComponent(std::make_unique<BD_Contact>());
-		bullet->AddComponent(std::make_unique<BD_Homing>(m_ptrCore->GetTarget(), 10.0f, 0.0f, CMath::DegToRad(90.0f), 50.0f*2.0f));
+		std::unique_ptr<BD_Homing> homing = std::make_unique<BD_Homing>(m_ptrCore->GetTarget(), 10.0f, 0.0f, CMath::DegToRad(67.5f), homingStartTime);
+		if (m_ptrCore->GetTarget()) {
+			homing->SetInitDirection(m_ptrCore->GetTarget()->GetFu()->GetCollisionPos() - bullet->GetPos());
+		}
+		bullet->AddComponent(std::move(homing));
 		bullet->AddComponent(std::make_unique<BD_Brake>(1.0f));
-		bullet->AddComponent(std::make_unique<BD_Lockable>());
+		bullet->AddComponent(std::make_unique<BD_Lockable>(LockableWrapper::DEFAULT_LEVEL + 2));
 
 		//クールダウン
 		m_coolDown[lr] = ROCKET_COOLDOWN;
@@ -445,7 +456,10 @@ void AICon_KaniArm::Update() {
 	if (m_ptrCore->GetAIStatus()->isAttackingTarget) {
 		for (auto lr : { L, R }) {
 			m_ptrBody->ChargeAndMachinegun(lr);
-			m_ptrBody->Rocket(lr);
+			if (lr == L && m_cnt < 10 || lr == R && m_cnt > 10) {
+				m_ptrBody->Rocket(lr);
+			}
 		}
 	}
+	m_cnt++; if (m_cnt > 20) { m_cnt = 0; }
 }

@@ -119,7 +119,7 @@ void CPlayer::Update() {
 	m_hotoke.SetVanisingPoint(vanisingPoint);
 
 	//ロックオン
-	bool isLock = false; float minDistance = 0.0f; 
+	bool isLock = false; float minDistance = 0.0f; int lastLockLevel = -1;
 	CVector3 outPos; LockableWrapper* outObj = nullptr;
 	QueryGOs<LockableWrapper>(L"LockableObject", [&](LockableWrapper* go) {
 		if (&m_hotoke == go->GetFu() || &m_hotoke == go->GetOwner()) { return true; }//自分は除く
@@ -128,7 +128,7 @@ void CPlayer::Update() {
 		float distance = CVector3(screenPos.x - 0.5f, screenPos.y - 0.5f, 0.0f).LengthSq();
 		//位置が画面内か?
 		if (screenPos.x > 0.0f && screenPos.x < 1.0f && screenPos.y > 0.0f && screenPos.y < 1.0f && screenPos.z > 0.0f && screenPos.z < 1.0f) {
-			if (!isLock || minDistance > distance) {
+			if (!isLock || lastLockLevel < go->GetPriorityLevel() || minDistance > distance) {
 				isLock = true;
 				outPos = go->GetFu()->GetCollisionPos();
 				outObj = go;

@@ -2,9 +2,11 @@
 #include "IFu.h"
 
 IFu::IFu() {
+	//ID¶¬
+	GenerateID();
 	//“–‚½‚è”»’è
 	m_col.m_collision.SetIsHurtCollision(true);//‚±‚ê‚Í‹ò‚ç‚¢”»’è
-	m_col.m_collision.SetCallback(
+	m_col.SetCollisionCallback(
 		[&](SuicideObj::CCollisionObj::SCallbackParam& p) {
 			if (p.EqualName(L"ReferenceCollision")) {
 				//ƒNƒ‰ƒXæ‚èo‚·

@@ -10,7 +10,7 @@ class Shibuya : IGameObject
 public:
 	Shibuya();
 
-	void Update()override;
+	//void Update()override;
 	void PostLoopUpdate()override;
 	//void PostRender()override;
 
@@ -27,10 +27,10 @@ private:
 	
 	StageObjectGenerator m_objGene;
 	//GameObj::CSkinModelRender m_dinosaur, m_skyModel, m_uni;
-	GameObj::CSkinModelRender m_knight, m_cloud[6];
-	SkinModelEffectShader m_psCloud;
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_cloudtex;
-	float m_cloudTimer = 0.0f;
+	GameObj::CSkinModelRender m_knight;// , m_cloud[6];
+	//SkinModelEffectShader m_psCloud;
+	//Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_cloudtex;
+	//float m_cloudTimer = 0.0f;
 
 	//CBillboard m_billboard, m_billboard2;
 	//CImposter m_imp, m_imp2;

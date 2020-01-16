@@ -6,16 +6,24 @@ namespace {
 	constexpr int BOOST_EFECT_MAXNUM = 512;
 }
 
-BulletGO::BulletGO(const CVector3& pos, const CVector3& move, IFu* owner, float damege, bool isLockable)
+BulletGO::BulletGO(const CVector3& pos, const CVector3& move, IFu* owner, float damege, bool isLockable, int priorityLevel)
 	: m_vector(move), m_owner(owner), ILifeObject(isLockable, owner)
 {
 	//初期座標
 	SetPos(pos), m_posOld = GetPos();
 	m_defaultPos = GetPos();
+
+	//ロックオン優先度
+	if (isLockable) {
+		GetLockableWrapper()->SetPriorityLevel(priorityLevel);
+	}
 	
 	//攻撃判定
+	//ID設定
+	m_col.m_reference.ownerID = GetFuID();
+	m_col.m_reference.nonHitID = owner->GetFuID();
 	//衝突処理
-	m_col.m_collision.SetCallback(
+	m_col.SetCollisionCallback(
 		[&](SuicideObj::CCollisionObj::SCallbackParam& p) {
 			for (auto& component : m_components) {
 				if (!component->GetEnable()) { continue; }
@@ -38,9 +46,11 @@ BulletGO::BulletGO(const CVector3& pos, const CVector3& move, IFu* owner, float 
 	m_col.m_collision.SetIsCollisionStaticObject(true);//静的オブジェクトとも衝突する
 	m_col.m_collision.SetIsHighSpeed(true);//これは高速です
 
+	//ダメージ設定
 	m_col.m_reference.damege = damege;
 	m_defaultDamege = damege;
 
+	//属性設定
 	//TODO
 	m_col.m_reference.attributes.set(enPhysical);
 	m_col.m_reference.attributes.set(enFlame);
@@ -73,17 +83,17 @@ void BulletGO::Update() {
 			m_damegeBoostEffect = std::make_unique<CBillboard>();
 			m_damegeBoostEffect->Init(L"Resource/effect/light.png", BOOST_EFECT_MAXNUM);
 			m_damegeBoostEffect->SetRot({ CVector3::AxisZ(), CMath::RandomZeroToOne()*CMath::PI2 });
-			m_damegeBoostEffect->GetModel().InitPostDraw(PostDrawModelRender::enAlpha);//ポストドロー
+			m_damegeBoostEffect->GetModel().InitPostDraw(PostDrawModelRender::enAlpha, false, true);//ポストドロー
 			m_damegeBoostEffect->GetModel().SetIsShadowCaster(false);
 		}
 		m_damegeBoostEffect->SetPos(GetPos());
-		m_damegeBoostEffect->SetScale(3000.0f*power);
+		m_damegeBoostEffect->SetScale(1500.0f*power);
 	}
 
 	//寿命処理
 	m_lifeTime -= 1.0f;// FRAME_PER_SECOND;
 	if (m_lifeTime < FLT_EPSILON) {
-		new CShockRing(GetPos(), CVector4::White(), 400.0f);
+		new CShockRing(GetPos(), {0.f, 0.f, 0.f, 0.5f}, 400.0f);
 		Death(); return;
 	}
 

@@ -101,9 +101,9 @@ private:
 	CQuaternion m_rot, m_rotOffset;
 
 	//当たり判定
-	DHCollision m_col;
-	bool m_isHited = false;
-	float m_modelHeight = 100.0f, m_modelRadius = 0.0f;
+	//DHCollision m_col;
+	//bool m_isHited = false;
+	//float m_modelHeight = 100.0f, m_modelRadius = 0.0f;
 
 public:
 	static inline int m_sInstancingMax = 512; //このクラスの最大インスタンス数

@@ -26,6 +26,7 @@ public:
 			SetRot({ CVector3::AxisY(),CMath::PI });
 		}
 	}
+
 	//ƒtƒHƒ“ƒg‚ğİ’è
 	void SetFonts(HUDFont* warningfont, HUDFont* japanesefont) {
 		m_ptrWarningHUDFont = warningfont;

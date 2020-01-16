@@ -135,37 +135,37 @@ Shibuya::Shibuya() : m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI>(
 	);
 
 	//雲
-	DirectX::CreateWICTextureFromFile(GetGraphicsEngine().GetD3DDevice(), L"Resource/texture/colud2.png", nullptr, &m_cloudtex);
-	int cloud_i = 0;
-	for (auto& cloud : m_cloud) {
-		cloud.Init(L"Resource/modelData/sphere.cmo");
-		DirectX::CreateWICTextureFromFile(GetGraphicsEngine().GetD3DDevice(), L"Resource/texture/colud.png", nullptr, tex.ReleaseAndGetAddressOf());
+	//DirectX::CreateWICTextureFromFile(GetGraphicsEngine().GetD3DDevice(), L"Resource/texture/colud2.png", nullptr, &m_cloudtex);
+	//int cloud_i = 0;
+	//for (auto& cloud : m_cloud) {
+	//	cloud.Init(L"Resource/modelData/sphere.cmo");
+	//	DirectX::CreateWICTextureFromFile(GetGraphicsEngine().GetD3DDevice(), L"Resource/texture/colud.png", nullptr, tex.ReleaseAndGetAddressOf());
 
-		D3D_SHADER_MACRO macros[] = {
-			//	"USE_LOCALPOS", "1",
-				"CLOUD", "1",
-				NULL, NULL
-		};
-		m_psCloud.Load("Preset/shader/TriPlanarMapping.fx", "PS_TriPlanarMapping", Shader::EnType::PS, "CLOUD", macros);
+	//	D3D_SHADER_MACRO macros[] = {
+	//		//	"USE_LOCALPOS", "1",
+	//			"CLOUD", "1",
+	//			NULL, NULL
+	//	};
+	//	m_psCloud.Load("Preset/shader/TriPlanarMapping.fx", "PS_TriPlanarMapping", Shader::EnType::PS, "CLOUD", macros);
 
-		cloud.GetSkinModel().FindMaterialSetting(
-			[&](MaterialSetting* mat) {
-				mat->SetAlbedoTexture(tex.Get());
-				mat->SetPS(&m_psCloud);
-				mat->SetTriPlanarMappingUVScale(0.0025f);
-			}
-		);
-		cloud.GetSkinModel().SetPreDrawFunction(
-			L"SetCLOUDTEX",
-			[&](SkinModel*) {
-				GetGraphicsEngine().GetD3DDeviceContext()->PSSetShaderResources(7, 1, m_cloudtex.GetAddressOf());
-			}
-		);
+	//	cloud.GetSkinModel().FindMaterialSetting(
+	//		[&](MaterialSetting* mat) {
+	//			mat->SetAlbedoTexture(tex.Get());
+	//			mat->SetPS(&m_psCloud);
+	//			mat->SetTriPlanarMappingUVScale(0.0025f);
+	//		}
+	//	);
+	//	cloud.GetSkinModel().SetPreDrawFunction(
+	//		L"SetCLOUDTEX",
+	//		[&](SkinModel*) {
+	//			GetGraphicsEngine().GetD3DDeviceContext()->PSSetShaderResources(7, 1, m_cloudtex.GetAddressOf());
+	//		}
+	//	);
 
-		cloud.SetPos(CVector3::AxisY()*(5200.0f+1000.0f*CMath::RandomZeroToOne()) +CVector3::AxisZ()*700.0f*(float)cloud_i + CVector3::AxisX()*1000.0f*CMath::RandomZeroToOne());
-		cloud.SetScale(28.0f+20.0f*CMath::RandomZeroToOne());
-		cloud_i++;
-	}	
+	//	cloud.SetPos(CVector3::AxisY()*(5200.0f+1000.0f*CMath::RandomZeroToOne()) +CVector3::AxisZ()*700.0f*(float)cloud_i + CVector3::AxisX()*1000.0f*CMath::RandomZeroToOne());
+	//	cloud.SetScale(28.0f+20.0f*CMath::RandomZeroToOne());
+	//	cloud_i++;
+	//}	
 
 	//m_knight.Init(L"Resource/modelData/knight.cmo");
 	//m_knight.SetPos(CVector3::AxisY()*850.0f);
@@ -207,8 +207,7 @@ Shibuya::Shibuya() : m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI>(
 	//木々
 	//TODO 木のモデルの描画負荷が高い 判定が重い 画面分割時は判定削除とか
 	Tree::m_sInstancingMax = 4000;
-	//m_objGene.Generate<Tree>({ -70.0f*50.0f,-70.0f*50.0f,-70.0f*50.0f }, { 70.0f*50.0f,70.0f*50.0f,70.0f*50.0f }, Tree::m_sInstancingMax, 120.0f);
-	m_objGene.Generate<Tree>(CVector3::Zero(), 70.0f*50.0f, 70.0f*50.0f, Tree::m_sInstancingMax, 120.0f);
+	//m_objGene.Generate<Tree>(CVector3::Zero(), 70.0f*50.0f, 70.0f*50.0f, Tree::m_sInstancingMax, 120.0f);
 	
 	//鉄塔
 	m_objGene.Generate<TransmissionTower>({ -70.0f*500.0f,-70.0f*50.0f,-70.0f*500.0f }, { 70.0f*500.0f,70.0f*50.0f,70.0f*500.0f }, 64, 300.0f);
@@ -283,25 +282,25 @@ Shibuya::Shibuya() : m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI>(
 	//GetPhysicsWorld().GetDynamicWorld()->addSoftBody(rope);
 }
 
-void Shibuya::Update() {
-	int i = 0;
-	for (auto& cloud : m_cloud) {
-		i++;
-		cloud.GetSkinModel().FindMaterialSetting(
-			[&](MaterialSetting* mat) {
-				mat->SetUVOffset({ m_cloudTimer + 0.33f*i , m_cloudTimer + 0.33f*i });
-			}
-		);
-	}
-	m_cloudTimer += 0.0005f;
-	if (m_cloudTimer > 1.0f) { m_cloudTimer -= 1.0f; }
-
-	//TODO 地面を分割して変化あったもののみ更新とか
-	//m_phyStaticObject.GetMeshCollider()->GetMeshShape()->buildOptimizedBvh();
-
-	//if (GetKeyDown(VK_UP)) { m_shinnes += 0.01f; }
-	//if (GetKeyDown(VK_DOWN)) { m_shinnes -= 0.01f; }
-}
+//void Shibuya::Update() {
+//	int i = 0;
+//	for (auto& cloud : m_cloud) {
+//		i++;
+//		cloud.GetSkinModel().FindMaterialSetting(
+//			[&](MaterialSetting* mat) {
+//				mat->SetUVOffset({ m_cloudTimer + 0.33f*i , m_cloudTimer + 0.33f*i });
+//			}
+//		);
+//	}
+//	m_cloudTimer += 0.0005f;
+//	if (m_cloudTimer > 1.0f) { m_cloudTimer -= 1.0f; }
+//
+//	//TODO 地面を分割して変化あったもののみ更新とか
+//	//m_phyStaticObject.GetMeshCollider()->GetMeshShape()->buildOptimizedBvh();
+//
+//	//if (GetKeyDown(VK_UP)) { m_shinnes += 0.01f; }
+//	//if (GetKeyDown(VK_DOWN)) { m_shinnes -= 0.01f; }
+//}
 
 //void Shibuya::PostRender() {
 //	m_font.DrawFormat(L"%.2f", {0.f,0.3f}, {}, m_shinnes);

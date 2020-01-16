@@ -344,16 +344,16 @@ void Tree::Init(const CVector3& pos, const CVector3& normal){
 	//insModel.GetInstancingModel()->GetModelRender().GetSkinModel().FindMaterialSetting(setMaterial);
 
 	//ƒ‚ƒfƒ‹‚Ì‚‚³Žæ“¾
-	CVector3 min, max;
-	insModel.GetInstancingModel()->GetModelRender().GetSkinModel().GetBoundingBox(min, max);
-	if (insModel.GetInstancingModel()->GetModelRender().GetSkinModel().GetFBXUpAxis() == enFbxUpAxisZ) {
-		m_modelHeight = max.z;//Z-UP
-		m_modelRadius = (abs(max.x) + abs(max.y) + abs(min.x) + abs(min.y)) / 4.0f;
-	}
-	else {
-		m_modelHeight = max.y;//Y-UP
-		m_modelRadius = (abs(max.x) + abs(max.z) + abs(min.x) + abs(min.z)) / 4.0f;
-	}
+	//CVector3 min, max;
+	//insModel.GetInstancingModel()->GetModelRender().GetSkinModel().GetBoundingBox(min, max);
+	//if (insModel.GetInstancingModel()->GetModelRender().GetSkinModel().GetFBXUpAxis() == enFbxUpAxisZ) {
+	//	m_modelHeight = max.z;//Z-UP
+	//	m_modelRadius = (abs(max.x) + abs(max.y) + abs(min.x) + abs(min.y)) / 4.0f;
+	//}
+	//else {
+	//	m_modelHeight = max.y;//Y-UP
+	//	m_modelRadius = (abs(max.x) + abs(max.z) + abs(min.x) + abs(min.z)) / 4.0f;
+	//}
 
 	//‰“Œiƒ‚ƒfƒ‹
 	//if (insModel.GetInstancingModel()->GetModelRender().GetSkinModel().EqualModelName(L"tree_notall")) {
@@ -374,11 +374,11 @@ void Tree::Init(const CVector3& pos, const CVector3& normal){
 	imposter.SetIsShadowCaster(false);
 
 	//“–‚½‚è”»’è
-	constexpr float radius = 50.0f;
+	/*constexpr float radius = 50.0f;
 	//m_col.m_collision.CreateSphere(m_pos + CVector3::AxisY()*radius*sizeScale, {}, radius*sizeScale);
 	m_col.m_reference.position = m_pos + CVector3::AxisY()*radius*sizeScale;
 	m_col.m_collision.SetIsHurtCollision(true);
-	m_col.m_collision.SetCallback(
+	m_col.SetCollisionCallback(
 		[&](SuicideObj::CCollisionObj::SCallbackParam& p) {
 			//‚È‚¬“|‚³‚ê‚é
 			if (m_isHited) { return; }//‚·‚Å‚É“|‚ê‚Ä‚é
@@ -422,7 +422,7 @@ void Tree::Init(const CVector3& pos, const CVector3& normal){
 				}
 			}
 		}
-	);
+	);*/
 	//m_col.m_collision.SetEnable(false);
 	//m_col.IGameObject::SetEnable(false);
 }

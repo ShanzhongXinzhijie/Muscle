@@ -40,11 +40,22 @@ void BP_HumanLeg::InnerStart() {
 	constexpr float height = 50.0f;
 	const float modelScale = m_ptrCore->GetScale().GetMax() / (0.0188f*2.0f);
 	for (auto lr : {L,R}) {
-		//m_col[lr].m_collision.CreateSphere({}, {}, radius * modelScale);
+		//Œ`ó‰Šú‰»
 		m_col[lr].m_collision.CreateCapsule({}, {}, radius * modelScale, height*modelScale);
+		//m_col[lr].m_collision.CreateSphere({}, {}, radius * modelScale);
+
+		//IDÝ’è
+		m_col[lr].m_reference.ownerID = m_ptrCore->GetFuID();
+		m_col[lr].m_reference.nonHitID = m_ptrCore->GetFuID();
+		
+		//ˆÊ’u
 		m_col[lr].SetPos(m_model->GetBonePos(m_ikSetting[lr]->tipBone->GetNo()) + hitboxOffset);
 		m_beforePos[lr] = m_model->GetBonePos(m_ikSetting[lr]->tipBone->GetNo());
+
+		//•¨—‘®«
 		m_col[lr].m_reference.attributes.set(enPhysical);
+
+		//Õ“Ëˆ—
 		m_col[lr].m_reference.m_preCollisionFunc = [&,lr](ReferenceCollision* H) { 
 			//‘Ì“–‚½‚è
 			auto[damege,stunSec] = DHUtil::CalcRamDamege(m_col[lr].m_reference.velocity, H->velocity);

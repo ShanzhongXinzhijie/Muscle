@@ -117,6 +117,7 @@
   </ItemGroup>
   <ItemGroup>
     <MeshContentTask Include="Asset\modelData\ari.FBX" />
+    <MeshContentTask Include="Asset\modelData\arrow.FBX" />
     <MeshContentTask Include="Asset\modelData\billboard.FBX" />
     <MeshContentTask Include="Asset\modelData\bullet\beam.FBX" />
     <MeshContentTask Include="Asset\modelData\cloud\sphere.fbx" />

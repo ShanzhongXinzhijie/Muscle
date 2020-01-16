@@ -41,6 +41,12 @@ bool CDeathHotoke::Start() {
 
 	//当たり判定
 	CreateCapsule({}, {}, 60.0f*(m_scale.x / (0.0188f*2.0f)), 30.0f*(m_scale.y / (0.0188f*2.0f)));
+	
+	//ID設定
+	SetCollisionOwnerID(GetFuID());
+	SetCollisionNonHitID(GetFuID());
+
+	//衝突時に実行する処理
 	SetCollisionFunc(
 		[&](ReferenceCollision* H, SuicideObj::CCollisionObj::SCallbackParam& p) {			
 			//ダメージ
@@ -66,8 +72,8 @@ bool CDeathHotoke::Start() {
 			return true;
 		}
 	);
-	SetCollisionPosOffset(CalcCollisionPosOffset(m_scale));
-	GetAttributes().set(enPhysical);
+	SetCollisionPosOffset(CalcCollisionPosOffset(m_scale));//位置
+	GetAttributes().set(enPhysical);//物理属性
 	//m_col.m_collision.SetIsHighSpeed(true);//これは高速です	
 
 	//位置初期化	
