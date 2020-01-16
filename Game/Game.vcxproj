@@ -159,6 +159,7 @@
     <MeshContentTask Include="Asset\modelData\tikei.fbx" />
     <MeshContentTask Include="Asset\modelData\tikei_flat.fbx" />
     <MeshContentTask Include="Asset\modelData\tower.FBX" />
+    <MeshContentTask Include="Asset\modelData\unchi\unchi.FBX" />
     <MeshContentTask Include="Asset\modelData\wire.fbx" />
   </ItemGroup>
   <ItemGroup>

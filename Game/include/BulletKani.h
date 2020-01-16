@@ -265,7 +265,22 @@ public:
 
 	void Start()override {
 		//モデル作成
-		m_model.Init(L"Resource/modelData/leg.cmo");
+		if (CMath::RandomZeroToOne() < 1.0f / 5.0f) {
+			//まれにうんちに
+			m_model.Init(L"Resource/modelData/unchi.cmo");
+			//ノーマルマップ適用
+			Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> textureView;
+			TextureFactory::GetInstance().Load(L"Resource/normalMap/unchi_n.jpg", nullptr, &textureView);// , nullptr, true);
+			m_model.GetSkinModel().FindMaterialSetting(
+				[&](MaterialSetting* mat) {
+					mat->SetNormalTexture(textureView.Get());
+					mat->SetShininess(0.5f);
+				}
+			);
+		}
+		else {
+			m_model.Init(L"Resource/modelData/leg.cmo");
+		}
 		m_model.SetPos(m_bullet->GetPos());
 		m_model.SetRot(m_rot);
 		m_model.SetScale(m_scale);

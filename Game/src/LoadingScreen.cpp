@@ -15,23 +15,44 @@ bool LoadingScreen::Start() {
 	return true;
 }
 
+void LoadingScreen::Update() {
+	//PRESS ANY BUTTON
+	for (int i = 0; i < PLAYER_NUM; i++) {
+		if (Pad(i).GetAnyDown()) {
+			m_enter = true;
+			break;
+		}
+	}
+}
+
 void LoadingScreen::PostLoopUpdate() {
 	//ロード画面背景
 	DrawQuad2D(0.0f, 1.0f, CVector4::White());
 }
 
-void LoadingScreen::PostRender() {
-	if (m_isOneLooped) {
-		//ゴミカメラ削除
-		m_gomiCamera.reset();
-		//このクラス無効化
-		SetEnable(false);
-		//ロードするぞ
-		new GameManager;
+void LoadingScreen::PostRender() 
+{
+	if (m_enter) {
+		if (m_isOneLooped) {
+			//ゴミカメラ削除
+			m_gomiCamera.reset();
+			//このクラス無効化
+			SetEnable(false);
+			//ロードするぞ
+			new GameManager;
+		}
+		m_isOneLooped = true;
 	}
-	m_isOneLooped = true;
 
-	//ロード画面
+	//ロゴ
 	m_sprite.Draw({ 0.5f,0.5f }, CVector2::One(), { 0.5f,0.5f });
-	m_font.Draw(L"プリプリプリプリ...",{ 0.5f,0.85f }, CVector4::Black(), CVector2::One(), { 0.5f,0.5f });
+	
+	if (m_enter) {
+		//ロード画面
+		m_font.Draw(L"プリプリプリプリ...", { 0.5f,0.85f }, CVector4::Black(), CVector2::One(), { 0.5f,0.5f });
+	}
+	else {
+		m_font.Draw(L"ｭｭｭｭｭデスホトケ", { 0.5f,0.0f }, CVector4::Black(), CVector2::One(), { 0.5f,0.0f });
+		m_font.Draw(L"PRESS ANY BUTTON ->ときめき", { 0.5f,0.85f }, CVector4::Black(), CVector2::One(), { 0.5f,0.5f });
+	}
 }
