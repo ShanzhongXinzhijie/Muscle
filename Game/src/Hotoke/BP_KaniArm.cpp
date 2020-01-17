@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "BP_KaniArm.h"
-#include "BulletKani.h"
-#include"CSmoke.h"
+#include "BulletHeader.h"
+#include "CSmoke.h"
 
 using namespace GameObj;
 
@@ -391,78 +391,71 @@ void BP_KaniArm::Rocket(enLR lr) {
 	if (m_coolDown[lr] <= 0) {
 		//マズルエフェクト
 		m_muzzleTime[lr] = 2;
+		//クールダウン
+		m_coolDown[lr] = ROCKET_COOLDOWN;
 
 		constexpr float homingStartTime = 50.0f*2.0f;//ホーミング開始時間
+		constexpr float thrust = 10.0f;//推力
 
 		//発射
 		CVector3 dirNorm = (m_ikSetting[lr]->targetPos - m_model->GetBonePos(m_muzzleBoneID[lr])).GetNorm();
+		//弾生成
 		BulletGO* bullet = new BulletGO(
-			m_model->GetBonePos(m_muzzleBoneID[lr]),
-			(dirNorm*60.0f) + m_ptrCore->GetTotalVelocity(),
-			m_ptrCore,
-			10.0f
+			m_model->GetBonePos(m_muzzleBoneID[lr]),//位置
+			(dirNorm*60.0f) + m_ptrCore->GetTotalVelocity(),//移動
+			m_ptrCore,//オーナー
+			10.0f//ダメージ
 		);
+		
+		//ステータス
 		bullet->m_lifeTime = 230.0f;
 		bullet->m_downAccel = 0.0f;
 		bullet->m_upBrake = 0.0f;
+	
+		//コンポーネント
+
+		//ホーミング開始時にコンポーネントをオンにするタイマー
+		std::unique_ptr<BD_Timer> bd_OnTimer = std::make_unique<BD_Timer>(homingStartTime);
+		//オフにするタイマー
+		std::unique_ptr<BD_Timer> bd_OffTimer = std::make_unique<BD_Timer>(homingStartTime,false);
+
+		//モデル
 		bullet->AddComponent(std::make_unique<BD_BeamModel>(30.0f, L"Red"));
-
-		bullet->AddComponent(std::make_unique<BD_SmokeTrail>());
-		std::unique_ptr<BD_Timer> bd_timer = std::make_unique<BD_Timer>(homingStartTime);
-		bd_timer->AddComponent(&bullet->GetComponentBack());
-		bullet->AddComponent(std::move(bd_timer));
-
+		//煙軌跡
+		bullet->AddComponent(std::make_unique<BD_SmokeTrail>());		
+		bd_OnTimer->AddComponent(&bullet->GetComponentBack());//オンタイマーに設定
+		//衝突
 		bullet->AddComponent(std::make_unique<BD_Contact>());
-		std::unique_ptr<BD_Homing> homing = std::make_unique<BD_Homing>(m_ptrCore->GetTarget(), 10.0f, 0.0f, CMath::DegToRad(67.5f), homingStartTime);
+		//衝突回避
+		bullet->AddComponent(std::make_unique<BD_ClashAvoidance>(thrust));
+		bd_OffTimer->AddComponent(&bullet->GetComponentBack());//オフタイマーに設定
+		//ホーミング
+		std::unique_ptr<BD_Homing> homing = std::make_unique<BD_Homing>(m_ptrCore->GetTarget(), thrust, 0.0f, CMath::DegToRad(67.5f), homingStartTime);
 		if (m_ptrCore->GetTarget()) {
 			homing->SetInitDirection(m_ptrCore->GetTarget()->GetFu()->GetCollisionPos() - bullet->GetPos());
 		}
 		bullet->AddComponent(std::move(homing));
+		//減速
 		bullet->AddComponent(std::make_unique<BD_Brake>(1.0f));
+		//ロックオン可能(優先度+2)
 		bullet->AddComponent(std::make_unique<BD_Lockable>(LockableWrapper::DEFAULT_LEVEL + 2));
-
-		//クールダウン
-		m_coolDown[lr] = ROCKET_COOLDOWN;
+		//タイマーを設定
+		bullet->AddComponent(std::move(bd_OffTimer));
+		bullet->AddComponent(std::move(bd_OnTimer));
 	}
-}
-void BP_KaniArm::Lazer(enLR lr) {
-	//グレネード出す
-	//if (m_chargeTime[lr] >= LAZER_CHARGE_TIME && m_chargeTime[lr] < MACHINE_GUN_CHARGE_TIME) {
-	//	//マズルエフェクト
-	//	m_muzzleTime[lr] = 2;
-	//	//発射
-	//	CVector3 dirNorm = (m_ikSetting[lr]->targetPos - m_model->GetBonePos(m_muzzleBoneID[lr])).GetNorm();
-	//	BulletGO* bullet = new BulletGO(
-	//		m_model->GetBonePos(m_muzzleBoneID[lr]),
-	//		dirNorm*(100.0f + dirNorm.Dot(m_ptrCore->GetTotalVelocity())),
-	//		m_ptrCore
-	//	);
-	//	bullet->AddComponent(std::make_unique<BD_BeamModel>(3.0f, L"Yellow"));
-	//	bullet->AddComponent(std::make_unique<BD_ContactExplosion>());
-	//}
-}
-void BP_KaniArm::Stab() {
-	//スタブ出す
 }
 
 //ヒューマンコントローラー
 void HCon_KaniArm::InnerUpdate() {
-	/*{
-		m_ptrBody->Stab();
-	}*/
 	for (auto lr : { L, R }) {
 		if (m_ptrCore->GetPad()->GetFire(lr)) {
 			m_ptrBody->ChargeAndMachinegun(lr);
 		}
-		/*else {
-			m_ptrBody->Lazer(lr);
-		}*/
 		if (m_ptrCore->GetPad()->GetDoubleTapFire(lr)) {
 			m_ptrBody->Rocket(lr);
 		}
 	}
 }
-
 //AIコントローラー
 void AICon_KaniArm::InnerUpdate() {
 	if (m_ptrCore->GetAIStatus()->isAttackingTarget) {

@@ -18,8 +18,6 @@ public:
 	//アクション
 	void ChargeAndMachinegun(enLR);
 	void Rocket(enLR);
-	void Lazer(enLR);
-	void Stab();
 
 	//チャージを取得
 	int GetChargeTimer(enLR lr)const { return m_chargeTime[lr]; }

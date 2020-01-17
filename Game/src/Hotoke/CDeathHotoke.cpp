@@ -11,6 +11,8 @@
 #include "CBlood.h"
 
 namespace {
+	constexpr float modelScale = 0.0188f*2.0f;
+
 	CVector3 CalcCollisionPosOffset(const CVector3& scale) {
 		return { 0.0f, 90.0f*(scale.y / (0.0188f*2.0f)), -15.0f*(scale.z / (0.0188f*2.0f)) };
 	}
@@ -23,7 +25,6 @@ void CDeathHotoke::SetBodyPart(enBodyParts partsType, std::unique_ptr<IBodyPart>
 
 bool CDeathHotoke::Start() {
 	//スケール
-	constexpr float modelScale = 0.0188f*2.0f;
 	m_scale = { modelScale };
 
 	//コア生成
@@ -36,6 +37,17 @@ bool CDeathHotoke::Start() {
 			mat->SetNormalTexture(textureView.Get());
 			mat->SetShininess(0.9f);
 			mat->SetTranslucent(0.2f);
+		}
+	);
+
+	//光背
+	m_kouhai.Init(L"Resource/effect/haikouCliping.png", 1, false);
+	m_kouhai.GetModel().GetSkinModel().SetCullMode(D3D11_CULL_NONE);//バックカリングしない
+	//m_kouhai.GetModel().InitPostDraw(PostDrawModelRender::enAlpha, false, true);//ポストドロー(ソフトパーティクル)
+	m_kouhai.GetModel().GetSkinModel().FindMaterialSetting(
+		[&](MaterialSetting* mat) {
+			mat->SetIsMotionBlur(false);
+			mat->SetLightingEnable(false);
 		}
 	);
 
@@ -102,6 +114,8 @@ void CDeathHotoke::PreUpdate() {
 	m_drag[enNext] = 1.0f;
 	m_angularDrag[enNext] = 1.0f;
 	m_rotatability[enNext] = 1.0f;
+
+	m_kouhai.SetIsDraw(true);
 }
 
 void CDeathHotoke::Update() {
@@ -137,6 +151,12 @@ void CDeathHotoke::Update() {
 	m_coreModel.SetPRS(GetPos(), GetRot(), m_scale);
 	SetCollisionPosOffset(CalcCollisionPosOffset(m_scale));
 	SetCollisionVelocity(GetMove());
+	//光背のTRS更新
+	m_kouhai.SetPRS(
+		GetPos() + (GetBack() * 25000.0f*0.5f * m_scale) + (GetUp() * 25000.0f*0.25f * m_scale),
+		GetRot(),
+		50000.0f* 0.75f * m_scale
+	);
 
 	//パーツのワールド行列更新後Update
 	for (auto& part : m_parts) {
@@ -150,6 +170,15 @@ void CDeathHotoke::PostLoopUpdate() {
 	}	
 }
 
+void CDeathHotoke::Pre3DRender(int screenNum) {
+	if (m_playerNum == screenNum) {
+		m_kouhai.SetIsDraw(true);
+	}
+	else {
+		m_kouhai.SetIsDraw(false);
+	}
+}
+
 void CDeathHotoke::HUDRender(int HUDNum) {
 	if (!m_isDrawHUD || m_playerNum != HUDNum)return;
 
@@ -157,19 +186,6 @@ void CDeathHotoke::HUDRender(int HUDNum) {
 	for (auto& part : m_parts) {
 		if (part)part->Draw2D();
 	}
-	//ステータス描画
-	/*if (!m_isDrawHUD) {
-		CFont font;
-		wchar_t output[256];
-		swprintf_s(output, L"%.1f", m_hp);
-		font.Draw(output, { 0.0f,0.25f });
-	}
-	else {
-		CFont font;
-		wchar_t output[256];
-		swprintf_s(output, L"(%.1f,%.1f,%.1f)\n%.1f", m_veloxity.x, m_veloxity.y, m_veloxity.z, m_drag[enNow]);
-		font.Draw(output, { 0.5f,0.25f }, 1.0f, 0.5f);
-	}*/
 }
 
 void CDeathHotoke::Damage(const ReferenceCollision& ref, const CVector3& pos) {

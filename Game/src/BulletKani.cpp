@@ -105,7 +105,9 @@ void BulletGO::Update() {
 	CalcVelocityUpdate(m_vector, m_gravity, m_upBrake, m_downAccel);
 
 	for (auto& component : m_components) {
-		if (!component->GetEnable()) { continue; }
+		if (!component->GetEnable()) {
+			continue;
+		}
 		component->PostUpdate();
 	}
 }

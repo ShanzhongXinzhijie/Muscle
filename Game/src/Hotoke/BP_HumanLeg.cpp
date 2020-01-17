@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "BP_HumanLeg.h"
-#include "BulletKani.h"
+#include "BulletHeader.h"
 
 using namespace GameObj;
 
@@ -119,6 +119,7 @@ void BP_HumanLeg::PostUTRSUpdate() {
 		//ƒWƒƒƒ“ƒv
 		if (m_isJump) {
 			float power = 25.0f + 38.0f*(1.0f - abs((minFootDistance - footDistance) / (minFootDistance - maxFootDistance)));
+			power *= 1.25f;
 			m_ptrCore->SetMaxLinearVelocity(CVector3::Up()*power);
 		}
 	}

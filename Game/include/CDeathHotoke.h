@@ -50,6 +50,7 @@ public:
 	void PreUpdate()override;
 	void Update()override;
 	void PostLoopUpdate()override;
+	void Pre3DRender(int)override;
 	void HUDRender(int)override;
 
 	//移動量を加える
@@ -203,6 +204,8 @@ private:
 
 	//コアのモデル
 	GameObj::CSkinModelRender m_coreModel;
+	//光背
+	CBillboard m_kouhai;
 	
 	//スケール
 	CVector3 m_scale;

@@ -2,7 +2,7 @@
 #include "Ari.h"
 
 #include "Effect.h"
-#include "BulletKani.h"
+#include "BulletHeader.h"
 
 bool Ari::Start() {
 	//アニメーション

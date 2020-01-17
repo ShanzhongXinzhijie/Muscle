@@ -70,6 +70,10 @@
     <ClCompile Include="src\ZoomOutCamera.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\BulletComponentContact.h" />
+    <ClInclude Include="include\BulletComponentModel.h" />
+    <ClInclude Include="include\BulletComponentMove.h" />
+    <ClInclude Include="include\BulletHeader.h" />
     <ClInclude Include="include\CShockRing.h" />
     <ClInclude Include="include\CResult.h" />
     <ClInclude Include="include\GameManager.h" />
