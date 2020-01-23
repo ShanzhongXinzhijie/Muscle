@@ -6,6 +6,7 @@
 #include "BP_KaniArm.h"
 #include "BP_HumanLeg.h"
 #include "BP_HumanMantle.h"
+#include "BP_HumanArm.h"
 
 bool CPlayer::Start() {	
 	m_anim.Load(L"Resource/animation/human/stand.tka");
@@ -31,7 +32,7 @@ bool CPlayer::Start() {
 	m_humanCam.SetFar(150000.0f);
 
 	m_hotoke.SetBodyPart(CDeathHotoke::enHead, std::make_unique<BP_FishHead>(&m_hotoke));
-	m_hotoke.SetBodyPart(CDeathHotoke::enArm, std::make_unique<BP_KaniArm>(&m_hotoke));
+	m_hotoke.SetBodyPart(CDeathHotoke::enArm, std::make_unique<BP_HumanArm>(&m_hotoke));
 	m_hotoke.SetBodyPart(CDeathHotoke::enWing, std::make_unique<BP_BirdWing>(&m_hotoke));
 	m_hotoke.SetBodyPart(CDeathHotoke::enLeg, std::make_unique<BP_HumanLeg>(&m_hotoke));
 

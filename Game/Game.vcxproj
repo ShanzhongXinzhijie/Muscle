@@ -27,6 +27,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\BP_HumanArm.cpp" />
     <ClCompile Include="src\CShockRing.cpp" />
     <ClCompile Include="src\CResult.cpp" />
     <ClCompile Include="src\GameManager.cpp" />
@@ -70,6 +71,7 @@
     <ClCompile Include="src\ZoomOutCamera.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\BP_HumanArm.h" />
     <ClInclude Include="include\BulletComponentContact.h" />
     <ClInclude Include="include\BulletComponentModel.h" />
     <ClInclude Include="include\BulletComponentMove.h" />

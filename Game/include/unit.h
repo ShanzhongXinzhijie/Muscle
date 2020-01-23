@@ -14,5 +14,5 @@ static constexpr float LIMIT_HEIGHT_METER = 250.0f;//ç≈çÇçÇìx(m)
 static constexpr float MIN_Y = -3000.0f;//ç≈í·çÇÇ≥
 
 //âëúìx
-static constexpr int SCREEN_SIZE_3D = 640/2;//1280
+static constexpr int SCREEN_SIZE_3D = 640;//1280
 static constexpr int SCREEN_SPRITE_BAR = 0;//64

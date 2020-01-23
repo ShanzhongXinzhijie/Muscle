@@ -103,6 +103,11 @@ bool CDeathHotoke::Start() {
 	return true;
 }
 
+void CDeathHotoke::PreLoopUpdate() {
+	//ï`âÊèâä˙âª
+	m_kouhai.SetIsDraw(true);
+}
+
 void CDeathHotoke::PreUpdate() {
 	//ãåç¿ïWãLò^
 	m_posOld = GetPos();
@@ -115,7 +120,6 @@ void CDeathHotoke::PreUpdate() {
 	m_angularDrag[enNext] = 1.0f;
 	m_rotatability[enNext] = 1.0f;
 
-	m_kouhai.SetIsDraw(true);
 }
 
 void CDeathHotoke::Update() {
@@ -171,7 +175,7 @@ void CDeathHotoke::PostLoopUpdate() {
 }
 
 void CDeathHotoke::Pre3DRender(int screenNum) {
-	if (m_playerNum == screenNum) {
+	if (m_playerNum != screenNum) {
 		m_kouhai.SetIsDraw(true);
 	}
 	else {

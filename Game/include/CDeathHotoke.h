@@ -47,6 +47,7 @@ public:
 
 	//IGameObjectŠÖŒW
 	bool Start()override;
+	void PreLoopUpdate()override;
 	void PreUpdate()override;
 	void Update()override;
 	void PostLoopUpdate()override;
