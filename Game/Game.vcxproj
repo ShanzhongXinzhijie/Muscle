@@ -27,6 +27,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\AssembleScene.cpp" />
     <ClCompile Include="src\BP_HumanArm.cpp" />
     <ClCompile Include="src\CShockRing.cpp" />
     <ClCompile Include="src\CResult.cpp" />
@@ -54,7 +55,6 @@
     <ClCompile Include="src\Hotoke\BP_HumanLeg.cpp" />
     <ClCompile Include="src\IGamePad.cpp" />
     <ClCompile Include="src\Hotoke\BP_BirdWing.cpp" />
-    <ClCompile Include="src\CPlayerController.cpp" />
     <ClCompile Include="src\Hotoke\IBodyPart.cpp" />
     <ClCompile Include="src\Hotoke\CDeathHotoke.cpp" />
     <ClCompile Include="src\CPlayer.cpp" />
@@ -71,6 +71,7 @@
     <ClCompile Include="src\ZoomOutCamera.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\AssembleScene.h" />
     <ClInclude Include="include\BP_HumanArm.h" />
     <ClInclude Include="include\BulletComponentContact.h" />
     <ClInclude Include="include\BulletComponentModel.h" />
@@ -100,7 +101,6 @@
     <ClInclude Include="include\BP_HumanLeg.h" />
     <ClInclude Include="include\IGamePad.h" />
     <ClInclude Include="include\BP_BirdWing.h" />
-    <ClInclude Include="include\CPlayerController.h" />
     <ClInclude Include="include\IBodyPart.h" />
     <ClInclude Include="include\CDeathHotoke.h" />
     <ClInclude Include="include\CPlayer.h" />

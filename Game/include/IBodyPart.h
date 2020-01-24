@@ -53,6 +53,14 @@ public:
 	//最終的な回転クォータニオンを取得
 	CQuaternion GetFinalRot()const;
 
+	//パーツ名を取得
+	const wchar_t* GetName() {
+		return m_name.c_str();
+	}
+
+	//自分自身を作成
+	virtual IBodyPart* Create() = 0;
+
 private:
 	virtual void InnerStart() = 0;
 	
@@ -66,4 +74,7 @@ protected:
 	//座標等
 	CVector3 m_localPos, m_localScale = 1.0f;
 	CQuaternion m_localRot;
+
+	//名前
+	std::wstring m_name = L"UNKNOWN";
 };

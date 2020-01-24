@@ -31,6 +31,7 @@ bool CPlayer::Start() {
 	//m_humanCam.SetViewAngleDeg(25.0f);
 	m_humanCam.SetFar(150000.0f);
 
+	//機体のパーツを設定
 	m_hotoke.SetBodyPart(CDeathHotoke::enHead, std::make_unique<BP_FishHead>(&m_hotoke));
 	m_hotoke.SetBodyPart(CDeathHotoke::enArm, std::make_unique<BP_HumanArm>(&m_hotoke));
 	m_hotoke.SetBodyPart(CDeathHotoke::enWing, std::make_unique<BP_BirdWing>(&m_hotoke));
