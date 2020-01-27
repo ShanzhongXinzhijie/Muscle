@@ -10,6 +10,8 @@ namespace {
 }
 
 void BP_KaniArm::InnerStart() {
+	m_name = L"ノーマル";
+	
 	//アニメーション(ボーン初期化用)
 	m_initPose.Load(L"Resource/animation/kaniarm.tka", true);
 

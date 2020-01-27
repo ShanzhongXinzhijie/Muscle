@@ -9,6 +9,8 @@ namespace{
 }
 
 void BP_HumanLeg::InnerStart() {
+	m_name = L"ヒューマン";
+	
 	//アニメーション(ボーン初期化用)
 	m_initPose.Load(L"Resource/animation/humanleg.tka", true);
 	

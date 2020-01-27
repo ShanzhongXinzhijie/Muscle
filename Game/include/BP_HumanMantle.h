@@ -9,6 +9,9 @@ class BP_HumanMantle :
 {
 public:
 	using IBodyPart::IBodyPart;
+	IBodyPart* Create()override {
+		return new BP_HumanMantle;
+	}
 
 	void InnerStart()override;
 	void Update()override;

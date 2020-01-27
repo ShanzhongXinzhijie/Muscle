@@ -4,6 +4,8 @@
 using namespace GameObj;
 
 void BP_FishHead::InnerStart() {
+	m_name = L"サカナ";
+
 	//モデル
 	m_model = std::make_unique<CSkinModelRender>();
 	m_model->Init(L"Resource/modelData/fishhead.cmo");

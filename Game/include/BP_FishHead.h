@@ -5,6 +5,9 @@ class BP_FishHead :
 {
 public:
 	using IBodyPart::IBodyPart;
+	IBodyPart* Create()override {
+		return new BP_FishHead;
+	}
 
 	void InnerStart()override;
 	void Update()override;

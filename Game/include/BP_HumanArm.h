@@ -9,6 +9,9 @@ class BP_HumanArm :
 {
 public:
 	using IBodyPart::IBodyPart;
+	IBodyPart* Create()override {
+		return new BP_HumanArm;
+	}
 
 	void InnerStart()override;
 	void Update()override;

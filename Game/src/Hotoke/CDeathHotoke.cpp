@@ -20,6 +20,7 @@ namespace {
 
 void CDeathHotoke::SetBodyPart(enBodyParts partsType, std::unique_ptr<IBodyPart> part) {
 	m_parts[partsType] = std::move(part);
+	m_parts[partsType]->Init(this);
 	if (GetIsStart()) { m_parts[partsType]->Start(); }
 }
 

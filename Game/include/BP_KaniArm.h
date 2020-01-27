@@ -9,7 +9,10 @@ class BP_KaniArm :
 {
 public:
 	using IBodyPart::IBodyPart;
-	
+	IBodyPart* Create()override {
+		return new BP_KaniArm;
+	}
+
 	void InnerStart()override;
 	void Update()override;
 	void PostUTRSUpdate()override;

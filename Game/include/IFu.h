@@ -62,7 +62,9 @@ public:
 	const CQuaternion& GetRot()const { return m_rot; }
 
 	//‘O•ûŒü‚ğæ“¾
-	const CVector3& GetFront()const { return m_front; }
+	const CVector3& GetFront()const { 
+		return m_front;
+	}
 	//Œã•ûŒü‚ğæ“¾
 	const CVector3& GetBack()const { return m_back; }
 	//ã•ûŒü‚ğæ“¾

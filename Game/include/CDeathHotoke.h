@@ -10,8 +10,12 @@ class CDeathHotoke :
 {
 public:
 	//コンストラクタ
+	CDeathHotoke() {
+		SetName(L"CDeathHotoke");
+		SetHPRef(&m_hp);
+	}
 	CDeathHotoke(int playernum, IGamePad* ptrPad, bool isDrawHUD, HUDFont* ptrFont, std::unique_ptr<IAI> AI)
-		: m_playerNum(playernum),m_ptrPad(ptrPad),m_isDrawHUD(isDrawHUD), m_ptrHUDFont(ptrFont),m_ai(std::move(AI))
+		: m_playerNum(playernum),m_ptrPad(ptrPad),m_isDrawHUD(isDrawHUD), m_ptrHUDFont(ptrFont), m_ai(std::move(AI))
 	{
 		SetName(L"CDeathHotoke");
 		SetHPRef(&m_hp);
@@ -35,10 +39,14 @@ public:
 
 	//ボディパーツの種類
 	enum enBodyParts {
-		enWing, enLeg, enArm, enHead, enPartsNum,
+		enHead, enArm, enWing, enLeg, enPartsNum,
 	};
 	//パーツ設定
 	void SetBodyPart(enBodyParts partsType, std::unique_ptr<IBodyPart> part);
+	//パーツを取得
+	const IBodyPart& GetBodyPart(enBodyParts partsType)const {
+		return *m_parts[partsType].get();
+	}
 
 	//操作可能かどうか設定
 	void SetIsControl(bool isControl) {
@@ -136,7 +144,9 @@ public:
 	[[nodiscard]] float GetRotatability()const { return m_rotatability[enNow]; }
 
 	//ターゲット位置を取得
-	[[nodiscard]] const CVector3& GetTargetPos() const { return m_targetPos; }
+	[[nodiscard]] const CVector3& GetTargetPos() const {
+		return m_targetPos; 
+	}
 	//ターゲットを取得
 	[[nodiscard]] const LockableWrapper* GetTarget() const {
 		return m_target;

@@ -5,6 +5,9 @@ class BP_BirdWing :
 {
 public:
 	using IBodyPart::IBodyPart;
+	IBodyPart* Create()override {
+		return new BP_BirdWing;
+	}
 
 	void InnerStart()override;
 	void Update()override;

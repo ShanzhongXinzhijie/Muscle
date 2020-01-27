@@ -2,6 +2,8 @@
 #include "BP_HumanArm.h"
 
 void BP_HumanArm::InnerStart() {
+	m_name = L"ヒューマン";
+	
 	//アニメーション(ボーン初期化用)
 	m_initPose.Load(L"Resource/animation/humanarms.tka", true);
 

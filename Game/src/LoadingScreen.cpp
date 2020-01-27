@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "LoadingScreen.h"
 #include "GameManager.h"
+#include "AssembleScene.h"
 
 bool LoadingScreen::Start() {
 	//無意味カメラ設定
@@ -39,7 +40,7 @@ void LoadingScreen::PostRender()
 			//このクラス無効化
 			SetEnable(false);
 			//ロードするぞ
-			new GameManager;
+			new AssembleScene;// GameManager;
 		}
 		m_isOneLooped = true;
 	}
@@ -53,6 +54,6 @@ void LoadingScreen::PostRender()
 	}
 	else {
 		m_font.Draw(L"ｭｭｭｭｭデスホトケ", { 0.5f,0.0f }, CVector4::Black(), CVector2::One(), { 0.5f,0.0f });
-		m_font.Draw(L"PRESS ANY BUTTON ->ときめき", { 0.5f,0.85f }, CVector4::Black(), CVector2::One(), { 0.5f,0.5f });
+		m_font.Draw(L"PRESS ANY BUTTON ->THE ORDER", { 0.5f,0.85f }, CVector4::Black(), CVector2::One(), { 0.5f,0.5f });
 	}
 }

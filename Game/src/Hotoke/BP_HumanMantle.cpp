@@ -4,6 +4,8 @@
 using namespace GameObj;
 
 void BP_HumanMantle::InnerStart() {
+	m_name = L"マント";
+	
 	//物理ワールド設定
 	//TODO　別の所テ゛
 	GetPhysicsWorld().SetGravity({0.0f,-800.0f,0.0f});	

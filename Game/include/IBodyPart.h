@@ -37,6 +37,9 @@ public:
 	IBodyPart(CDeathHotoke* ptrCore) : m_ptrCore(ptrCore) {};
 	virtual ~IBodyPart() {};
 
+	//自分自身を作成する仮想関数
+	virtual IBodyPart* Create() = 0;
+
 	//初期化
 	void Init(CDeathHotoke* ptrCore) {
 		m_ptrCore = ptrCore;
@@ -54,14 +57,12 @@ public:
 	CQuaternion GetFinalRot()const;
 
 	//パーツ名を取得
-	const wchar_t* GetName() {
+	const wchar_t* GetName()const {
 		return m_name.c_str();
 	}
 
-	//自分自身を作成
-	virtual IBodyPart* Create() = 0;
-
 private:
+	//Start関数内で実行される仮想関数
 	virtual void InnerStart() = 0;
 	
 protected:

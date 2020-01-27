@@ -10,6 +10,8 @@ namespace {
 }
 
 void BP_BirdWing::InnerStart() {
+	m_name = L"TEBASAKI";
+	
 	//ÉAÉjÉÅ
 	m_anim[enDefault].Load(L"Resource/animation/birdWing_default.tka");
 	m_anim[enFlying].Load(L"Resource/animation/birdWing_Flying.tka");

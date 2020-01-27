@@ -6,6 +6,9 @@ class BP_HumanLeg :
 {
 public:
 	using IBodyPart::IBodyPart;
+	IBodyPart* Create()override {
+		return new BP_HumanLeg;
+	}
 
 	void InnerStart()override;
 	void Update()override;
