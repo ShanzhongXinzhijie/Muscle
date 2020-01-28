@@ -4,6 +4,7 @@
 #include "BP_FishHead.h"
 #include "BP_BirdWing.h"
 #include "BP_KaniArm.h"
+#include "BP_Heads.h"
 #include "BP_HumanLeg.h"
 #include "BP_HumanMantle.h"
 #include "BP_HumanArm.h"
@@ -19,6 +20,13 @@ bool AssembleScene::Start() {
 
 	//パーツリスト初期化
 	m_parts[CDeathHotoke::enHead].push_back(std::make_unique<BP_FishHead>());
+	m_parts[CDeathHotoke::enHead].push_back(std::make_unique<BP_HumanHead>());	
+	m_parts[CDeathHotoke::enHead].push_back(std::make_unique<BP_SnailHead>());
+	m_parts[CDeathHotoke::enHead].push_back(std::make_unique<BP_RockHead>());
+	m_parts[CDeathHotoke::enHead].push_back(std::make_unique<BP_RockIIHead>());
+	m_parts[CDeathHotoke::enHead].push_back(std::make_unique<BP_EggHead>());
+	m_parts[CDeathHotoke::enHead].push_back(std::make_unique<BP_ElephantHead>());
+	m_parts[CDeathHotoke::enHead].push_back(std::make_unique<BP_PalmHead>());
 
 	m_parts[CDeathHotoke::enArm].push_back(std::make_unique<BP_KaniArm>());
 	m_parts[CDeathHotoke::enArm].push_back(std::make_unique<BP_HumanArm>());
