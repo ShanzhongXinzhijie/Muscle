@@ -97,6 +97,11 @@ public:
 	void SetIsDrawHUD(bool enable) { m_isDrawHUD = enable; }
 	//バックミラー状態か設定
 	void SetIsBackMirror(bool isMirror) { m_isBackMirror = isMirror; }
+
+	//光背を表示するか設定
+	void SetIsDrawKouhai(bool isDraw) {
+		m_isDrawKouhai = isDraw;
+	}
 	
 	//ゲッター//
 
@@ -217,6 +222,7 @@ private:
 	GameObj::CSkinModelRender m_coreModel;
 	//光背
 	CBillboard m_kouhai;
+	bool m_isDrawKouhai = true;
 	
 	//スケール
 	CVector3 m_scale;

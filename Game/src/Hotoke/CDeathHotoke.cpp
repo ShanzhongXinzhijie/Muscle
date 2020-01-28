@@ -106,7 +106,7 @@ bool CDeathHotoke::Start() {
 
 void CDeathHotoke::PreLoopUpdate() {
 	//ï`âÊèâä˙âª
-	m_kouhai.SetIsDraw(true);
+	m_kouhai.SetIsDraw(m_isDrawKouhai);
 }
 
 void CDeathHotoke::PreUpdate() {
@@ -176,6 +176,9 @@ void CDeathHotoke::PostLoopUpdate() {
 }
 
 void CDeathHotoke::Pre3DRender(int screenNum) {
+	if (!m_isDrawKouhai) {
+		return;
+	}
 	if (m_playerNum != screenNum) {
 		m_kouhai.SetIsDraw(true);
 	}

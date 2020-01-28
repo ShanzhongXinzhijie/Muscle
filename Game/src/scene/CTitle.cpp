@@ -36,10 +36,13 @@ void CTitle::Update() {
 				FindGO<WindowSizeManager>(L"WindowSizeManager")->ChangeWindowSize(m_selectMode == 0);
 				//‘JˆÚ
 				if (m_selectMode == 0) {
-					new LoadingScreen([]() {new AssembleScene; });
-					delete this;
-					return;
+					new LoadingScreen([]() {new AssembleScene(2); });
 				}
+				else {
+					new LoadingScreen([]() {new AssembleScene(1); });
+				}
+				delete this;
+				return;
 			}
 		}
 	}
