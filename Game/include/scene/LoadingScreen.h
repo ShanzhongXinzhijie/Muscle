@@ -1,20 +1,29 @@
 #pragma once
 
+/// <summary>
+/// ロード画面
+/// 引数の処理を実行してロード画面を表示する
+/// </summary>
 class LoadingScreen : public IGameObject
 {
 public:
-	LoadingScreen() = default;
+	LoadingScreen(std::function<void()> func) :m_func(func) {};
 
 	bool Start()override;
-	void Update()override;
 	void PostLoopUpdate()override;
 	void PostRender()override;
 
 private:
-	std::unique_ptr<GameObj::NoRegisterOrthoCamera> m_gomiCamera;
+	void Load() {
+		m_func();
+	}
+
+private:
 	bool m_isOneLooped = false;
-	bool m_enter = false;
+
 	CFont m_font;
 	CSprite m_sprite;
+
+	std::function<void()> m_func;
 };
 

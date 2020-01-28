@@ -58,7 +58,7 @@ void BP_RockHead::InnerStart() {
 }
 
 void BP_RockIIHead::InnerStart() {
-	m_name = L"イワアタマ";
+	m_name = L"イワ2";
 
 	//モデル
 	m_model = std::make_unique<CSkinModelRender>();

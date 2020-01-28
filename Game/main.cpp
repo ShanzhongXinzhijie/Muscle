@@ -1,5 +1,7 @@
 #include "stdafx.h"
+#include "CTitle.h"
 #include "LoadingScreen.h"
+#include "WindowSizeManager.h"
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
 {
@@ -70,18 +72,11 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	CFont::LoadDefaultFont(L"Resource/font/x14y24pxHeadUpDaisy.spritefont");
 	
 	//画面分割
-	constexpr int screenSize = 640;
-	constexpr int screenSize3D = SCREEN_SIZE_3D;
-	constexpr int HUDSize = SCREEN_SPRITE_BAR;
-	GetEngine().ChangeWindowSize(screenSize * 2 + HUDSize, screenSize);
-	float screensSize[8] = {
-		0.0f,0.0f,(float)screenSize / (screenSize * 2 + HUDSize),1.0f,
-		1.0f - (float)screenSize / (screenSize * 2 + HUDSize),0.0f,1.0f,1.0f,
-	};
-	GetGraphicsEngine().ChangeFrameBufferSize(screenSize * 2 + HUDSize, screenSize, screenSize3D, screenSize3D, screenSize, screenSize, enSide_TwoSplit, screensSize);
-		
+	WindowSizeManager windowSizeManager;
+	windowSizeManager.ChangeWindowSize(true);
+
 	//ゲームインスタンス作成
-	LoadingScreen game;
+	new LoadingScreen([]() {new CTitle; });
 
 	//ゲームループ。
 	GetEngine().RunGameLoop();

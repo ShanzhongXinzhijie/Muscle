@@ -70,6 +70,7 @@
     </ClCompile>
     <ClCompile Include="src\TreeGene.cpp" />
     <ClCompile Include="src\ZoomOutCamera.cpp" />
+    <ClCompile Include="src\WindowSizeManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\hotoke\BP_Heads.h" />
@@ -122,6 +123,7 @@
     <ClInclude Include="include\TreeGene.h" />
     <ClInclude Include="include\ZoomOutCamera.h" />
     <ClInclude Include="include\TimeManager.h" />
+    <ClInclude Include="include\WindowSizeManager.h" />
   </ItemGroup>
   <ItemGroup>
     <MeshContentTask Include="Asset\modelData\ari.FBX" />

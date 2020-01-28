@@ -18,7 +18,7 @@ public:
 	//void PostRender()override;
 
 private:
-	bool m_isReady = false;
+	bool m_isReady[PLAYER_NUM] = {};
 	int m_nowEditBody[PLAYER_NUM] = {};
 	int m_nowBodyType[PLAYER_NUM][CDeathHotoke::enPartsNum] = {};
 

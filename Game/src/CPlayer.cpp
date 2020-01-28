@@ -47,6 +47,7 @@ bool CPlayer::Start() {
 
 void CPlayer::Update() {
 
+	//デバッグ移動
 	CVector3 pos = m_hotoke.GetPos();
 	CVector3 moveDir;
 	if (GetKeyInput('W')) {
@@ -78,39 +79,17 @@ void CPlayer::Update() {
 	m_hotoke.SetPos(pos);
 
 	//カメラ切り替え
-	static bool uih = false;
-	static bool iscahsnge = false;
 	if (GetKeyInput('F')) {
+		//ヒト目線
 		m_humanCam.SetPos(m_human.GetBonePos(m_human.FindBoneID(L"Head"))+CVector3::AxisY()*0);
 		m_humanCam.SetTarget(m_hotoke.GetPos());
 		SetMainCamera(&m_humanCam);
-		m_human.SetIsDraw(false);
-
-		if (!uih) {
-			constexpr int screenSize = 640;
-			constexpr int screenSize3D = SCREEN_SIZE_3D;
-			constexpr int HUDSize = SCREEN_SPRITE_BAR;
-			if (iscahsnge) {
-				GetEngine().ChangeWindowSize(screenSize, screenSize);
-				GetGraphicsEngine().ChangeFrameBufferSize(screenSize, screenSize, screenSize3D, screenSize3D, screenSize, screenSize, enNoSplit);
-				iscahsnge = false;
-			}
-			else {
-				GetEngine().ChangeWindowSize(screenSize*2+ HUDSize, screenSize);
-				float screensSize[8] = {
-					0.0f,0.0f,(float)screenSize / (screenSize * 2 + HUDSize),1.0f,
-					1.0f - (float)screenSize / (screenSize * 2 + HUDSize),0.0f,1.0f,1.0f,
-				};
-				GetGraphicsEngine().ChangeFrameBufferSize(screenSize*2+ HUDSize, screenSize, screenSize3D, screenSize3D, screenSize, screenSize, enSide_TwoSplit, screensSize);
-				iscahsnge = true;
-			}
-		}
-		uih = true;
+		m_human.SetIsDraw(false);		
 	}
 	else {
+		//元
 		m_cam.SetToMainCamera();
 		m_human.SetIsDraw(true);
-		uih = false;
 	}
 
 	//引きカメラ演出

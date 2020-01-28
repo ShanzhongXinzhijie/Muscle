@@ -74,7 +74,7 @@ void AssembleScene::Update() {
 	for (int i = 0; i < PLAYER_NUM; i++) {
 		//準備完了
 		if (Pad(i).GetDown(enButtonA) || Pad(i).GetDown(enButtonStart)) {
-			m_isReady = !m_isReady;
+			m_isReady[i] = !m_isReady[i];
 		}
 		
 		//編集パーツ選択
@@ -160,7 +160,7 @@ void AssembleScene::HUDRender(int HUDNum) {
 	}
 
 	//準備完了
-	if (m_isReady) {
+	if (m_isReady[HUDNum]) {
 		m_fontBold.Draw(L"READY", { 0.9f,0.85f }, CVector4::Red(), CVector2::One(), { 1.0f,1.0f });
 	}
 }
