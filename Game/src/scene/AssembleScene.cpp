@@ -52,6 +52,13 @@ bool AssembleScene::Start() {
 	m_light.SetColor(1.0f);
 	SetAmbientLight(CVector3( 0.8f,0.1f,0.35f )*0.2f);
 
+	//フォグを有効化
+	//SetEnableFog(true);
+	//SetFogDistance(1000.0f*1.5f);
+	//SetFogHeightScale(3.0f);
+	////SetFogColor({ 0.58f,0.69f,0.84f });
+	//SetFogColor({ 0.28f,0.4f,0.65f });
+
 	return true;
 }
 

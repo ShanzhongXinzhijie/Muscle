@@ -27,26 +27,27 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\AssembleScene.cpp" />
-    <ClCompile Include="src\BP_HumanArm.cpp" />
-    <ClCompile Include="src\CShockRing.cpp" />
-    <ClCompile Include="src\CResult.cpp" />
-    <ClCompile Include="src\GameManager.cpp" />
-    <ClCompile Include="src\FlyingGrass.cpp" />
-    <ClCompile Include="src\CTitle.cpp" />
+    <ClCompile Include="src\Hotoke\BP_Heads.cpp" />
+    <ClCompile Include="src\scene\AssembleScene.cpp" />
+    <ClCompile Include="src\Hotoke\BP_HumanArm.cpp" />
+    <ClCompile Include="src\effect\CShockRing.cpp" />
+    <ClCompile Include="src\scene\CResult.cpp" />
+    <ClCompile Include="src\scene\GameManager.cpp" />
+    <ClCompile Include="src\effect\FlyingGrass.cpp" />
+    <ClCompile Include="src\scene\CTitle.cpp" />
     <ClCompile Include="src\CountDown.cpp" />
     <ClCompile Include="src\HUDFont.cpp" />
-    <ClCompile Include="src\CBlood.cpp" />
-    <ClCompile Include="src\CSmoke.cpp" />
+    <ClCompile Include="src\effect\CBlood.cpp" />
+    <ClCompile Include="src\effect\CSmoke.cpp" />
     <ClCompile Include="src\Ari.cpp" />
-    <ClCompile Include="src\PartsList.cpp" />
+    <ClCompile Include="src\Hotoke\PartsList.cpp" />
     <ClCompile Include="src\IFu.cpp" />
-    <ClCompile Include="src\SceneAssemble.cpp" />
-    <ClCompile Include="src\LoadingScreen.cpp" />
+    <ClCompile Include="src\scene\SceneAssemble.cpp" />
+    <ClCompile Include="src\scene\LoadingScreen.cpp" />
     <ClCompile Include="src\Hotoke\BP_HumanMantle.cpp" />
     <ClCompile Include="src\Hotoke\AI.cpp" />
     <ClCompile Include="src\DHCollision.cpp" />
-    <ClCompile Include="src\HotokeCamera.cpp" />
+    <ClCompile Include="src\Hotoke\HotokeCamera.cpp" />
     <ClCompile Include="src\BeamModel.cpp" />
     <ClCompile Include="src\ShadowMapBaker.cpp" />
     <ClCompile Include="src\BulletKani.cpp" />
@@ -58,7 +59,7 @@
     <ClCompile Include="src\Hotoke\IBodyPart.cpp" />
     <ClCompile Include="src\Hotoke\CDeathHotoke.cpp" />
     <ClCompile Include="src\CPlayer.cpp" />
-    <ClCompile Include="src\Game.cpp" />
+    <ClCompile Include="src\scene\Game.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="src\Shibuya.cpp" />
     <ClCompile Include="src\StageObjectGenerator.cpp" />
@@ -71,49 +72,50 @@
     <ClCompile Include="src\ZoomOutCamera.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\AssembleScene.h" />
-    <ClInclude Include="include\BP_HumanArm.h" />
+    <ClInclude Include="include\hotoke\BP_Heads.h" />
+    <ClInclude Include="include\scene\AssembleScene.h" />
+    <ClInclude Include="include\hotoke\BP_HumanArm.h" />
     <ClInclude Include="include\BulletComponentContact.h" />
     <ClInclude Include="include\BulletComponentModel.h" />
     <ClInclude Include="include\BulletComponentMove.h" />
     <ClInclude Include="include\BulletHeader.h" />
-    <ClInclude Include="include\CShockRing.h" />
-    <ClInclude Include="include\CResult.h" />
-    <ClInclude Include="include\GameManager.h" />
-    <ClInclude Include="include\FlyingGrass.h" />
-    <ClInclude Include="include\CTitle.h" />
+    <ClInclude Include="include\effect\CShockRing.h" />
+    <ClInclude Include="include\scene\CResult.h" />
+    <ClInclude Include="include\scene\GameManager.h" />
+    <ClInclude Include="include\effect\FlyingGrass.h" />
+    <ClInclude Include="include\scene\CTitle.h" />
     <ClInclude Include="include\CountDown.h" />
     <ClInclude Include="include\HUDFont.h" />
-    <ClInclude Include="include\CBlood.h" />
-    <ClInclude Include="include\CSmoke.h" />
+    <ClInclude Include="include\effect\CBlood.h" />
+    <ClInclude Include="include\effect\CSmoke.h" />
     <ClInclude Include="include\Ari.h" />
-    <ClInclude Include="include\Effect.h" />
+    <ClInclude Include="include\effect\Effect.h" />
     <ClInclude Include="include\IFu.h" />
-    <ClInclude Include="include\BodyPartsHeader.h" />
-    <ClInclude Include="include\BP_HumanMantle.h" />
+    <ClInclude Include="include\hotoke\BodyPartsHeader.h" />
+    <ClInclude Include="include\hotoke\BP_HumanMantle.h" />
     <ClInclude Include="include\AI.h" />
     <ClInclude Include="include\DHCollision.h" />
-    <ClInclude Include="include\HotokeCamera.h" />
+    <ClInclude Include="include\hotoke\HotokeCamera.h" />
     <ClInclude Include="include\BeamModel.h" />
     <ClInclude Include="include\BulletKani.h" />
-    <ClInclude Include="include\BP_FishHead.h" />
-    <ClInclude Include="include\BP_KaniArm.h" />
-    <ClInclude Include="include\BP_HumanLeg.h" />
+    <ClInclude Include="include\hotoke\BP_FishHead.h" />
+    <ClInclude Include="include\hotoke\BP_KaniArm.h" />
+    <ClInclude Include="include\hotoke\BP_HumanLeg.h" />
     <ClInclude Include="include\IGamePad.h" />
-    <ClInclude Include="include\BP_BirdWing.h" />
-    <ClInclude Include="include\IBodyPart.h" />
-    <ClInclude Include="include\CDeathHotoke.h" />
+    <ClInclude Include="include\hotoke\BP_BirdWing.h" />
+    <ClInclude Include="include\hotoke\IBodyPart.h" />
+    <ClInclude Include="include\hotoke\CDeathHotoke.h" />
     <ClInclude Include="include\CPlayer.h" />
     <ClInclude Include="include\CPlayerCamera.h" />
-    <ClInclude Include="include\Game.h" />
+    <ClInclude Include="include\scene\Game.h" />
     <ClInclude Include="include\LOD.h" />
     <ClInclude Include="include\shaderDefine.h" />
     <ClInclude Include="include\Shibuya.h" />
     <ClInclude Include="include\ShadowMapBaker.h" />
     <ClInclude Include="include\StageObjectGenerator.h" />
-    <ClInclude Include="include\LoadingScreen.h" />
-    <ClInclude Include="include\SceneAssemble.h" />
-    <ClInclude Include="include\PartsList.h" />
+    <ClInclude Include="include\scene\LoadingScreen.h" />
+    <ClInclude Include="include\scene\SceneAssemble.h" />
+    <ClInclude Include="include\hotoke\PartsList.h" />
     <ClInclude Include="include\unit.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="include\TpsCamera.h" />
@@ -128,6 +130,7 @@
     <MeshContentTask Include="Asset\modelData\bullet\beam.FBX" />
     <MeshContentTask Include="Asset\modelData\cloud\sphere.fbx" />
     <MeshContentTask Include="Asset\modelData\dinosaur.FBX" />
+    <MeshContentTask Include="Asset\modelData\elephant\source\ELEPHANT_M.fbx" />
     <MeshContentTask Include="Asset\modelData\far_graund.fbx" />
     <MeshContentTask Include="Asset\modelData\fbx_Grass\Grass.FBX" />
     <MeshContentTask Include="Asset\modelData\Grass_free_fbx\free grass by adam127.fbx" />
@@ -135,6 +138,7 @@
     <MeshContentTask Include="Asset\modelData\hotoke\birdwing.FBX" />
     <MeshContentTask Include="Asset\modelData\hotoke\birdwingOld.FBX" />
     <MeshContentTask Include="Asset\modelData\hotoke\core.FBX" />
+    <MeshContentTask Include="Asset\modelData\hotoke\eggHead.fbx" />
     <MeshContentTask Include="Asset\modelData\hotoke\fishhead.FBX" />
     <MeshContentTask Include="Asset\modelData\hotoke\humanarms.FBX" />
     <MeshContentTask Include="Asset\modelData\hotoke\humanhead.FBX" />
@@ -142,6 +146,7 @@
     <MeshContentTask Include="Asset\modelData\hotoke\kaniarm.FBX" />
     <MeshContentTask Include="Asset\modelData\hotoke\manto.FBX" />
     <MeshContentTask Include="Asset\modelData\hotoke\manto_test.FBX" />
+    <MeshContentTask Include="Asset\modelData\hotoke\palmHead.FBX" />
     <MeshContentTask Include="Asset\modelData\human\human.fbx" />
     <MeshContentTask Include="Asset\modelData\knight.FBX" />
     <MeshContentTask Include="Asset\modelData\leg.FBX" />
@@ -156,9 +161,9 @@
     <MeshContentTask Include="Asset\modelData\realTree\realTree_S.FBX" />
     <MeshContentTask Include="Asset\modelData\sigemi\sigemi.fbx" />
     <MeshContentTask Include="Asset\modelData\sky.FBX" />
-    <MeshContentTask Include="Asset\modelData\stone\stone_pillar.fbx" />
-    <MeshContentTask Include="Asset\modelData\stone\stone_square.fbx" />
-    <MeshContentTask Include="Asset\modelData\stone\stone_tri.fbx" />
+    <MeshContentTask Include="Asset\modelData\snail\snailHead.FBX" />
+    <MeshContentTask Include="Asset\modelData\stone\stoneHead.FBX" />
+    <MeshContentTask Include="Asset\modelData\stone\stoneHead2.FBX" />
     <MeshContentTask Include="Asset\modelData\tall\tree_notall.fbx" />
     <MeshContentTask Include="Asset\modelData\tall\tree_tall.fbx" />
     <MeshContentTask Include="Asset\modelData\tettou.FBX" />
@@ -257,15 +262,15 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LibraryPath>$(ProjectDir)/../../DemolisherWeapon/DemolisherWeapon/lib/$(Platform)\$(Configuration)\;$(LibraryPath)</LibraryPath>
-    <IncludePath>$(ProjectDir);..\..\DemolisherWeapon\DemolisherWeapon\bulletPhysics\src;..\..\DemolisherWeapon;..\..;..\..\DemolisherWeapon\DemolisherWeapon\EffekseerRuntime140\Compiled\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)\include\effect;$(ProjectDir)\include\scene;$(ProjectDir)\include\hotoke;$(ProjectDir);..\..\DemolisherWeapon\DemolisherWeapon\bulletPhysics\src;..\..\DemolisherWeapon;..\..;..\..\DemolisherWeapon\DemolisherWeapon\EffekseerRuntime140\Compiled\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LibraryPath>$(ProjectDir)/../../DemolisherWeapon/DemolisherWeapon/lib/$(Platform)\$(Configuration)\;$(LibraryPath)</LibraryPath>
-    <IncludePath>$(ProjectDir);..\..\DemolisherWeapon\DemolisherWeapon\bulletPhysics\src;..\..\DemolisherWeapon;..\..;..\..\DemolisherWeapon\DemolisherWeapon\EffekseerRuntime140\Compiled\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)\include\effect;$(ProjectDir)\include\scene;$(ProjectDir)\include\hotoke;$(ProjectDir);..\..\DemolisherWeapon\DemolisherWeapon\bulletPhysics\src;..\..\DemolisherWeapon;..\..;..\..\DemolisherWeapon\DemolisherWeapon\EffekseerRuntime140\Compiled\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Preview|x64'">
     <LibraryPath>$(ProjectDir)/../../DemolisherWeapon/DemolisherWeapon/lib/$(Platform)\$(Configuration)\;$(LibraryPath)</LibraryPath>
-    <IncludePath>$(ProjectDir);..\..\DemolisherWeapon\DemolisherWeapon\bulletPhysics\src;..\..\DemolisherWeapon;..\..;..\..\DemolisherWeapon\DemolisherWeapon\EffekseerRuntime140\Compiled\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)\include\effect;$(ProjectDir)\include\scene;$(ProjectDir)\include\hotoke;$(ProjectDir);..\..\DemolisherWeapon\DemolisherWeapon\bulletPhysics\src;..\..\DemolisherWeapon;..\..;..\..\DemolisherWeapon\DemolisherWeapon\EffekseerRuntime140\Compiled\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>.\Include;..\..\DemolisherWeapon\DemolisherWeapon\bulletPhysics\src;..\..\DemolisherWeapon;..\..;$(IncludePath)</IncludePath>

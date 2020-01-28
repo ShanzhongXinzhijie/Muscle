@@ -1,14 +1,14 @@
 #include "stdafx.h"
-#include "BP_FishHead.h"
+#include "BP_Heads.h"
 
 using namespace GameObj;
 
-void BP_FishHead::InnerStart() {
-	m_name = L"サカナ";
+void BP_HumanHead::InnerStart() {
+	m_name = L"ヒューマン";
 
 	//モデル
 	m_model = std::make_unique<CSkinModelRender>();
-	m_model->Init(L"Resource/modelData/fishhead.cmo");
+	m_model->Init(L"Resource/modelData/humanhead.cmo");
 	//ノーマルマップ適用
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> textureView;
 	HRESULT hr = DirectX::CreateWICTextureFromFile(GetGraphicsEngine().GetD3DDevice(), L"Resource/normalMap/nfish.png", nullptr, textureView.ReleaseAndGetAddressOf());
@@ -19,3 +19,10 @@ void BP_FishHead::InnerStart() {
 		}
 	);
 }
+
+//palmHead
+//eggHead
+//ELEPHANT_M
+//snailHead
+//stoneHead
+//stoneHead2
