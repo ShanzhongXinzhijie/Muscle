@@ -6,7 +6,7 @@ class BP_FishHead :
 {
 public:
 	using IBodyPart::IBodyPart;
-	IBodyPart* Create()override {
+	IBodyPart* Create()const override {
 		return new BP_FishHead;
 	}
 

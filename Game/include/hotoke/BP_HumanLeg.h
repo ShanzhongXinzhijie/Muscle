@@ -6,7 +6,7 @@ class BP_HumanLeg :
 {
 public:
 	using IBodyPart::IBodyPart;
-	IBodyPart* Create()override {
+	IBodyPart* Create()const override {
 		return new BP_HumanLeg;
 	}
 

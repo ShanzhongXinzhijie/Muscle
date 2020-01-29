@@ -78,7 +78,8 @@ bool AssembleScene::Start() {
 	//ライト初期化
 	m_light.SetDirection({0.5f, -0.5f, -0.8f});
 	m_light.SetColor(1.0f);
-	SetAmbientLight(CVector3( 0.8f,0.1f,0.35f )*0.2f);
+	//SetAmbientLight(CVector3( 0.8f,0.1f,0.35f )*0.2f);
+	SetAmbientCubeMap(L"Resource/cubemap/cube2.dds", CVector3(0.8f, 0.1f, 0.35f)*0.2f);
 
 	//フォグを有効化
 	//SetEnableFog(true);
@@ -91,7 +92,7 @@ bool AssembleScene::Start() {
 }
 
 void AssembleScene::Update() {
-	int readyCnt = 0;
+	int readyCnt = 0;//準備完了数
 
 	for (int i = 0; i < m_playerNum; i++) {
 		//準備完了
@@ -142,7 +143,7 @@ void AssembleScene::Update() {
 
 		//カメラ移動
 		m_cameraRots[i].x += -Pad(i).GetStick(R).y*0.1f;
-		m_cameraRots[i].x = CMath::Clamp(m_cameraRots[i].x, -CMath::PI_HALF, CMath::PI_HALF);
+		m_cameraRots[i].x = CMath::Clamp(m_cameraRots[i].x, -1.20727777f, CMath::PI_HALF + (CMath::PI_HALF - 1.20727777f));
 		m_cameraRots[i].y += Pad(i).GetStick(R).x*0.1f;
 		if (m_cameraRots[i].y < -CMath::PI2) {
 			m_cameraRots[i].y += CMath::PI2;
@@ -166,8 +167,34 @@ void AssembleScene::Update() {
 		}
 	}
 
+	//規定数準備完了でゲームに移行
 	if (readyCnt >= m_playerNum) {
+		//アセンブル設定
+		HotokeAssembleManager* assembleManager = FindGO<HotokeAssembleManager>(L"HotokeAssembleManager");
+		for (int i = 0; i < m_playerNum; i++) {
+			HotokeAssembleManager::HotokeAssemble& assem = assembleManager->GetHotokeAssemble(i);
+			//パーツ設定
+			for (int partsNum = 0; partsNum < CDeathHotoke::enPartsNum; partsNum++) {
+				assem.parts[partsNum] = m_hotokes[i]->GetBodyPart((CDeathHotoke::enBodyParts)partsNum).Create();
+			}
+			//AIはナシ
+			assem.ai = nullptr;
+		}
+
+		//CPU設定
+		if (m_playerNum == 1) {
+			HotokeAssembleManager::HotokeAssemble& assem = assembleManager->GetHotokeAssemble(1);
+			//パーツ設定
+			for (int partsNum = 0; partsNum < CDeathHotoke::enPartsNum; partsNum++) {
+				assem.parts[partsNum] = m_hotokes[0]->GetBodyPart((CDeathHotoke::enBodyParts)partsNum).Create();
+			}
+			//AI
+			assem.ai = new TestAI();
+		}
+
+		//ゲームクラス作成
 		new LoadingScreen([]() {new GameManager; });
+		//自殺
 		delete this;
 		return;
 	}

@@ -2,6 +2,42 @@
 
 #include"CDeathHotoke.h"
 
+/// <summary>
+/// デスホトケのアセンブル情報を管理
+/// </summary>
+class HotokeAssembleManager : public IGameObject {
+public:
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	bool Start()override {
+		SetName(L"HotokeAssembleManager");
+		return true;
+	}
+
+	/// <summary>
+	/// デスホトケのアセンブル情報
+	/// </summary>
+	struct HotokeAssemble {
+		IBodyPart* parts[CDeathHotoke::enPartsNum] = {};
+		IAI* ai = nullptr;
+	};
+
+	/// <summary>
+	/// アセンブル情報を取得
+	/// </summary>
+	/// <param name="playerNum">プレイヤー番号</param>
+	HotokeAssemble& GetHotokeAssemble(int playerNum) {
+		return m_assemble[playerNum];
+	}
+
+private:
+	HotokeAssemble m_assemble[PLAYER_NUM];//アセンブル設定
+};
+
+/// <summary>
+/// アセンブル画面
+/// </summary>
 class AssembleScene :
 	public IGameObject
 {

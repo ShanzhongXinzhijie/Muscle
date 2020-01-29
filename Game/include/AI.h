@@ -17,9 +17,26 @@ struct AIStatus {
 class IAI
 {
 public:
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="ptrCore">本体のポインタ</param>
 	IAI(CDeathHotoke* ptrCore) : m_ptrCore(ptrCore){};
+	IAI() = default;
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	virtual ~IAI() {};
 
+	/// <summary>
+	/// 自分を作成
+	/// </summary>
+	virtual IAI* Create(CDeathHotoke* ptrCore = nullptr)const = 0;
+
+	/// <summary>
+	/// 毎フレームよぶやつ
+	/// </summary>
 	virtual void Update() = 0;
 
 	/// <summary>
@@ -32,8 +49,16 @@ protected:
 	AIStatus m_outputStatus;
 };
 
+/// <summary>
+/// テストAI
+/// </summary>
 class TestAI : public IAI {
 public:
 	using IAI::IAI;
+
+	IAI* Create(CDeathHotoke* ptrCore = nullptr)const override {
+		return new TestAI(ptrCore ? ptrCore : m_ptrCore);
+	}
+
 	void Update()override;
 };

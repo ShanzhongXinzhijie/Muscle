@@ -9,7 +9,7 @@ class BP_HumanArm :
 {
 public:
 	using IBodyPart::IBodyPart;
-	IBodyPart* Create()override {
+	IBodyPart* Create()const override {
 		return new BP_HumanArm;
 	}
 

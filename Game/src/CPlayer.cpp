@@ -1,14 +1,55 @@
 #include "stdafx.h"
 #include "CPlayer.h"
 
-#include "BP_FishHead.h"
-#include "BP_BirdWing.h"
-#include "BP_KaniArm.h"
-#include "BP_HumanLeg.h"
-#include "BP_HumanMantle.h"
-#include "BP_HumanArm.h"
+CPlayer::CPlayer(int playernum) :
+	//プレイヤー番号
+	m_playerNum(playernum),
+	//阿泉設定
+	m_assemble(FindGO<HotokeAssembleManager>(L"HotokeAssembleManager")->GetHotokeAssemble(m_playerNum)),
+	//フォント
+	m_HUDFont(m_HUDColor, 0.5f), m_warningFont(CVector4::Red(), 0.5f), m_japaneseFont(m_HUDColor, 0.5f)
+{
+	//パッド・カメラ
+	if (!m_assemble.ai) {
+		m_pad = std::make_unique<IGamePad>(playernum);
+		m_cam = std::make_unique<HotokeCameraController>(&m_hotoke, m_pad.get());
+		//メインカメラ設定
+		m_cam->SetToMainCamera(playernum);
+	}
+
+	//本体
+	if (!m_assemble.ai) {
+		//プレイヤー
+		m_hotoke.Init(playernum, m_pad.get(), true, &m_HUDFont, nullptr);
+	}
+	else {
+		//CPU
+		m_hotoke.Init(playernum, nullptr, false, nullptr, std::unique_ptr<IAI>(m_assemble.ai->Create(&m_hotoke)));
+	}
+	
+	//草
+	for (auto& grass : m_grass) {
+		grass.SetDrawCameraNum(m_playerNum);
+	}
+
+	//フォント
+	m_japaneseFont.SetUseFont(HUDFont::enJPN);
+	m_hotoke.SetFonts(&m_warningFont, &m_japaneseFont);
+};
 
 bool CPlayer::Start() {	
+	//機体のパーツを設定
+	m_hotoke.SetBodyPart(CDeathHotoke::enHead, std::unique_ptr<IBodyPart>(m_assemble.parts[CDeathHotoke::enHead]->Create()));
+	m_hotoke.SetBodyPart(CDeathHotoke::enArm, std::unique_ptr<IBodyPart>(m_assemble.parts[CDeathHotoke::enArm]->Create()));
+	m_hotoke.SetBodyPart(CDeathHotoke::enWing, std::unique_ptr<IBodyPart>(m_assemble.parts[CDeathHotoke::enWing]->Create()));
+	m_hotoke.SetBodyPart(CDeathHotoke::enLeg, std::unique_ptr<IBodyPart>(m_assemble.parts[CDeathHotoke::enLeg]->Create()));
+
+	//CPUは実行しない
+	if (m_assemble.ai) {
+		return true;
+	}
+
+	//テストモデル
 	m_anim.Load(L"Resource/animation/human/stand.tka");
 	m_human.Init(L"Resource/modelData/human.cmo", &m_anim, 1);
 	m_human.SetScale(10.0f);
@@ -31,12 +72,6 @@ bool CPlayer::Start() {
 	//m_humanCam.SetViewAngleDeg(25.0f);
 	m_humanCam.SetFar(150000.0f);
 
-	//機体のパーツを設定
-	m_hotoke.SetBodyPart(CDeathHotoke::enHead, std::make_unique<BP_FishHead>(&m_hotoke));
-	m_hotoke.SetBodyPart(CDeathHotoke::enArm, std::make_unique<BP_HumanArm>(&m_hotoke));
-	m_hotoke.SetBodyPart(CDeathHotoke::enWing, std::make_unique<BP_BirdWing>(&m_hotoke));
-	m_hotoke.SetBodyPart(CDeathHotoke::enLeg, std::make_unique<BP_HumanLeg>(&m_hotoke));
-
 	//HUD
 	m_guncross.Init(L"Resource/spriteData/gunCross.png");
 	m_wMark.Init(L"Resource/spriteData/wMark.png");
@@ -46,6 +81,10 @@ bool CPlayer::Start() {
 }
 
 void CPlayer::Update() {
+	//CPUは実行しない
+	if (m_assemble.ai) {
+		return;
+	}
 
 	//デバッグ移動
 	CVector3 pos = m_hotoke.GetPos();
@@ -88,15 +127,15 @@ void CPlayer::Update() {
 	}
 	else {
 		//元
-		m_cam.SetToMainCamera();
+		m_cam->SetToMainCamera();
 		m_human.SetIsDraw(true);
 	}
 
 	//引きカメラ演出
-	m_cam.SetIsZoomout(m_hotoke.GetIsStun(), m_hotoke.GetZoomoutDirection());
+	m_cam->SetIsZoomout(m_hotoke.GetIsStun(), m_hotoke.GetZoomoutDirection());
 
 	//消失点
-	CVector3 vanisingPoint = m_hotoke.GetPos() + m_hotoke.GetTotalVelocity() + (m_cam.GetTargetPoint() - m_hotoke.GetPos()).GetNorm()*15000.0f*0.125f;
+	CVector3 vanisingPoint = m_hotoke.GetPos() + m_hotoke.GetTotalVelocity() + (m_cam->GetTargetPoint() - m_hotoke.GetPos()).GetNorm()*15000.0f*0.125f;
 	m_hotoke.SetVanisingPoint(vanisingPoint);
 
 	//ロックオン
@@ -105,7 +144,7 @@ void CPlayer::Update() {
 	QueryGOs<LockableWrapper>(L"LockableObject", [&](LockableWrapper* go) {
 		if (&m_hotoke == go->GetFu() || &m_hotoke == go->GetOwner()) { return true; }//自分は除く
 
-		CVector3 screenPos = m_cam.CalcScreenPosFromWorldPos(go->GetFu()->GetCollisionPos());
+		CVector3 screenPos = m_cam->CalcScreenPosFromWorldPos(go->GetFu()->GetCollisionPos());
 		float distance = CVector3(screenPos.x - 0.5f, screenPos.y - 0.5f, 0.0f).LengthSq();
 		//位置が画面内か?
 		if (screenPos.x > 0.0f && screenPos.x < 1.0f && screenPos.y > 0.0f && screenPos.y < 1.0f && screenPos.z > 0.0f && screenPos.z < 1.0f) {
@@ -133,7 +172,9 @@ void CPlayer::Update() {
 }
 
 void CPlayer::PostUpdate() {
-	m_hotoke.SetIsBackMirror(m_cam.GetIsBackMirror());//ホトケにバックミラー状態を通知
+	if (m_cam) {
+		m_hotoke.SetIsBackMirror(m_cam->GetIsBackMirror());//ホトケにバックミラー状態を通知
+	}
 }
 
 namespace {
@@ -155,7 +196,7 @@ void CPlayer::PostLoopUpdate() {
 	QueryGOs<LockableWrapper>(L"LockableObject", [&](LockableWrapper* go) {
 		if (&m_hotoke == go->GetFu() || &m_hotoke == go->GetOwner()) { return true; }//自分は除く
 
-		CVector3 screenPos = m_cam.CalcScreenPosFromWorldPos(go->GetFu()->GetCollisionPos());
+		CVector3 screenPos = m_cam->CalcScreenPosFromWorldPos(go->GetFu()->GetCollisionPos());
 		
 		//位置が画面内か?
 		if (screenPos.x > 0.0f && screenPos.x < 1.0f && screenPos.y > 0.0f && screenPos.y < 1.0f && screenPos.z > 0.0f && screenPos.z < 1.0f) {
@@ -165,11 +206,11 @@ void CPlayer::PostLoopUpdate() {
 	});
 	
 	//グリッド
-	CVector3 origin = m_cam.GetPos(); origin += m_hotoke.GetFront()*380.0f;
+	CVector3 origin = m_cam->GetPos(); origin += m_hotoke.GetFront()*380.0f;
 	//DrawLine3D(origin - m_hotoke.GetLeft()*100.f, origin + m_hotoke.GetLeft()*100.f, m_HUDColor, m_playerNum);
 	//DrawLine3D(origin - m_hotoke.GetUp()*100.f, origin + m_hotoke.GetUp()*100.f, m_HUDColor, m_playerNum);//上方向
 	
-	origin = m_cam.CalcScreenPosFromWorldPos(origin);
+	origin = m_cam->CalcScreenPosFromWorldPos(origin);
 	if (origin.z > 0.0f && origin.z < 1.0f) {
 		DrawLine2D(origin + CVector3(-0.2f, 0.0f, 0.0f), origin + CVector3(0.2f, 0.0f, 0.0f), m_HUDColor*CVector4(1.0f, 1.0f, 1.0f, 0.5f), m_playerNum);
 		DrawLine2D(origin + CVector3(0.0f, -0.2f, 0.0f), origin + CVector3(0.0f, 0.2f, 0.0f), m_HUDColor*CVector4(1.0f, 1.0f, 1.0f, 0.5f), m_playerNum);
@@ -184,7 +225,7 @@ void CPlayer::HUDRender(int HUDNum) {
 	m_HUDFont.DrawFormat(L"%.0f/%.0f", HPBarMax + outlineOffset, { 1.0f,0.0f }, m_hotoke.GetHP(), m_hotoke.GetHPMax());
 
 	//期待の向いている方の位置
-	CVector3 tdFrontPos = m_cam.CalcScreenPosFromWorldPos(m_cam.GetPos() + m_hotoke.GetFront()*380.0f);
+	CVector3 tdFrontPos = m_cam->CalcScreenPosFromWorldPos(m_cam->GetPos() + m_hotoke.GetFront()*380.0f);
 	
 	//速度
 	if (tdFrontPos.z > 0.0f && tdFrontPos.z < 1.0f) {
@@ -213,7 +254,7 @@ void CPlayer::HUDRender(int HUDNum) {
 	}
 	
 	//ガンクロス(照準)
-	pos = m_cam.CalcScreenPosFromWorldPos(m_hotoke.GetTargetPos());
+	pos = m_cam->CalcScreenPosFromWorldPos(m_hotoke.GetTargetPos());
 	if (pos.z > 0.0f && pos.z < 1.0f) { 
 		/*if (m_guncrossPosOld.z > 0.0f && m_guncrossPosOld.z < 1.0f) {
 			constexpr int loopmax = 8;
@@ -239,13 +280,13 @@ void CPlayer::HUDRender(int HUDNum) {
 
 	//ベロシティベクトル(進行方向)
 	if (m_hotoke.GetMove().LengthSq() > 1.0f) {
-		pos = m_cam.CalcScreenPosFromWorldPos(m_hotoke.GetPos() + m_hotoke.GetMove().GetNorm() * (m_cam.GetFar()*0.5f));
+		pos = m_cam->CalcScreenPosFromWorldPos(m_hotoke.GetPos() + m_hotoke.GetMove().GetNorm() * (m_cam->GetFar()*0.5f));
 		if (pos.z > 0.0f && pos.z < 1.0f) { m_velocityVector.Draw(pos, 0.75f, 0.5f, 0.0f, m_HUDColor); }
 	}
 	//m_velocityPosOld = pos;
 
 	//バックミラー
-	if (m_cam.GetIsBackMirror()) {
+	if (m_cam->GetIsBackMirror()) {
 		m_HUDFont.Draw(L"((BACK VIEW))", { 0.5f,0.0f }, { 0.5f,0.0f });
 	}
 }

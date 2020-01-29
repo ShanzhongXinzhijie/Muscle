@@ -5,7 +5,7 @@ class BP_BirdWing :
 {
 public:
 	using IBodyPart::IBodyPart;
-	IBodyPart* Create()override {
+	IBodyPart* Create()const override {
 		return new BP_BirdWing;
 	}
 

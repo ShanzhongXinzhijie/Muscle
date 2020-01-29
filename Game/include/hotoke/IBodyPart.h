@@ -38,7 +38,7 @@ public:
 	virtual ~IBodyPart() {};
 
 	//©•ª©g‚ğì¬‚·‚é‰¼‘zŠÖ”
-	virtual IBodyPart* Create() = 0;
+	virtual IBodyPart* Create()const = 0;
 
 	//‰Šú‰»
 	void Init(CDeathHotoke* ptrCore) {

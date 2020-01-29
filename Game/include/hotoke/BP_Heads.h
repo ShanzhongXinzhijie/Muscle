@@ -10,7 +10,7 @@ class BP_HumanHead :
 {
 public:
 	using IBodyPart::IBodyPart;
-	IBodyPart* Create()override {
+	IBodyPart* Create()const override {
 		return new BP_HumanHead;
 	}
 
@@ -25,7 +25,7 @@ class BP_SnailHead :
 {
 public:
 	using IBodyPart::IBodyPart;
-	IBodyPart* Create()override {
+	IBodyPart* Create()const override {
 		return new BP_SnailHead;
 	}
 
@@ -40,7 +40,7 @@ class BP_RockHead :
 {
 public:
 	using IBodyPart::IBodyPart;
-	IBodyPart* Create()override {
+	IBodyPart* Create()const override {
 		return new BP_RockHead;
 	}
 
@@ -55,7 +55,7 @@ class BP_RockIIHead :
 {
 public:
 	using IBodyPart::IBodyPart;
-	IBodyPart* Create()override {
+	IBodyPart* Create()const override {
 		return new BP_RockIIHead;
 	}
 
@@ -70,7 +70,7 @@ class BP_EggHead :
 {
 public:
 	using IBodyPart::IBodyPart;
-	IBodyPart* Create()override {
+	IBodyPart* Create()const override {
 		return new BP_EggHead;
 	}
 
@@ -85,7 +85,7 @@ class BP_ElephantHead :
 {
 public:
 	using IBodyPart::IBodyPart;
-	IBodyPart* Create()override {
+	IBodyPart* Create()const override {
 		return new BP_ElephantHead;
 	}
 
@@ -100,7 +100,7 @@ class BP_PalmHead :
 {
 public:
 	using IBodyPart::IBodyPart;
-	IBodyPart* Create()override {
+	IBodyPart* Create()const override {
 		return new BP_PalmHead;
 	}
 

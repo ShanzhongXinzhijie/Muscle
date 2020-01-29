@@ -2,6 +2,7 @@
 #include "CTitle.h"
 #include "LoadingScreen.h"
 #include "WindowSizeManager.h"
+#include "assemblescene.h"
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
 {
@@ -71,9 +72,12 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	//フォント設定
 	CFont::LoadDefaultFont(L"Resource/font/x14y24pxHeadUpDaisy.spritefont");
 	
-	//画面分割
+	//画面分割マネージャー
 	WindowSizeManager windowSizeManager;
-	windowSizeManager.ChangeWindowSize(true);
+	windowSizeManager.ChangeWindowSize(true);//二画面にする
+
+	//デスホトケアセンブルマネージャー
+	HotokeAssembleManager hotokeAssembleManager;
 
 	//ゲームインスタンス作成
 	new LoadingScreen([]() {new CTitle; });

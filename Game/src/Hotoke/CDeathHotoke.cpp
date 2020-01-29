@@ -1,17 +1,11 @@
 #include "stdafx.h"
 #include "CDeathHotoke.h"
 
-#include "BP_BirdWing.h"
-#include "BP_HumanLeg.h"
-#include "BP_KaniArm.h"
-#include "BP_FishHead.h"
-#include "BP_HumanMantle.h"
-
 #include "CSmoke.h"
 #include "CBlood.h"
 
 namespace {
-	constexpr float modelScale = 0.0188f*2.0f;
+	constexpr float modelScale = 0.0188f*2.0f;//モデルのスケール
 
 	CVector3 CalcCollisionPosOffset(const CVector3& scale) {
 		return { 0.0f, 90.0f*(scale.y / (0.0188f*2.0f)), -15.0f*(scale.z / (0.0188f*2.0f)) };
@@ -176,6 +170,7 @@ void CDeathHotoke::PostLoopUpdate() {
 }
 
 void CDeathHotoke::Pre3DRender(int screenNum) {
+	//光背モデルを相手の画面でのみ描画させる
 	if (!m_isDrawKouhai) {
 		return;
 	}

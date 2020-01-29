@@ -5,11 +5,15 @@
 Game::Game(GameManager* manager) 
 	: m_manager(manager), m_timeLimitSec(static_cast<float>(manager->GetTimeLimitSec()) + 0.9f)
 {
+	//カウントダウンクラス生成
 	int scores[PLAYER_NUM] = { m_manager->GetPlayerScore(0),m_manager->GetPlayerScore(1) };
 	new CountDown(m_manager->GetRoundCount(), m_manager->GetMaxRound(), scores, m_manager->GetTimeLimitSec());
 
+	//プレイヤー生成
 	m_player[0] = std::make_unique<CPlayer>(1);
 	m_player[1] = std::make_unique<CPlayer>(0);
+
+	//ステージ生成
 	m_shibuya = std::make_unique<Shibuya>();
 
 	//m_font.SetColor(CVector4::Black());

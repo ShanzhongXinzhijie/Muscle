@@ -11,14 +11,35 @@ class CDeathHotoke :
 public:
 	//コンストラクタ
 	CDeathHotoke() {
+		//検索用の名前登録
 		SetName(L"CDeathHotoke");
+		//ロックオンされた際に参照されるHP変数を設定
 		SetHPRef(&m_hp);
 	}
-	CDeathHotoke(int playernum, IGamePad* ptrPad, bool isDrawHUD, HUDFont* ptrFont, std::unique_ptr<IAI> AI)
-		: m_playerNum(playernum),m_ptrPad(ptrPad),m_isDrawHUD(isDrawHUD), m_ptrHUDFont(ptrFont), m_ai(std::move(AI))
-	{
+	CDeathHotoke(int playernum, IGamePad* ptrPad, bool isDrawHUD, HUDFont* ptrFont, std::unique_ptr<IAI> AI){
+		//検索用の名前登録
 		SetName(L"CDeathHotoke");
-		SetHPRef(&m_hp);
+		//ロックオンされた際に参照されるHP変数を設定
+		SetHPRef(&m_hp);		
+		//初期化
+		Init(playernum, ptrPad, isDrawHUD, ptrFont, std::move(AI));
+	}
+
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	/// <param name="playernum">プレイヤー番号</param>
+	/// <param name="ptrPad">パッドのポインタ</param>
+	/// <param name="isDrawHUD">HUDを描画するか</param>
+	/// <param name="ptrFont">HUD用フォントのポインタ</param>
+	/// <param name="AI">AI</param>
+	void Init(int playernum, IGamePad* ptrPad, bool isDrawHUD, HUDFont* ptrFont, std::unique_ptr<IAI> AI) {
+		//初期化
+		m_playerNum = playernum;
+		m_ptrPad = ptrPad;
+		m_isDrawHUD = isDrawHUD;
+		m_ptrHUDFont = ptrFont;
+		m_ai = std::move(AI);
 
 		//初期位置
 		SetPos(CVector3::AxisY()*2000.0f);
