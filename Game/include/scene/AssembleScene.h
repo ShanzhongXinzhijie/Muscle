@@ -51,7 +51,7 @@ public:
 
 	//void PostLoopUpdate()override;
 	void HUDRender(int)override;
-	//void PostRender()override;
+	void PostRender()override;
 
 private:
 	int m_playerNum = PLAYER_NUM;
@@ -66,6 +66,9 @@ private:
 	CVector3 m_toCameraPos[PLAYER_NUM];
 	CVector2 m_cameraRots[PLAYER_NUM];
 	GameObj::CDirectionLight m_light;
+
+	int m_pushCnt = 0;
+	static constexpr int MAX_PUSH = 35;
 
 	std::vector<std::unique_ptr<IBodyPart>> m_parts[CDeathHotoke::enPartsNum];
 };

@@ -4,6 +4,7 @@
 #include "GameManager.h"
 #include "LoadingScreen.h"
 #include "CGameMode.h"
+#include "CTitle.h"
 
 #include "BP_FishHead.h"
 #include "BP_BirdWing.h"
@@ -98,6 +99,11 @@ void AssembleScene::Update() {
 	int readyCnt = 0;//準備完了数
 
 	for (int i = 0; i < m_playerNum; i++) {
+		//もどる
+		if (Pad(i).GetDown(enButtonB)) {
+			m_pushCnt++;
+		}
+
 		//準備完了
 		if (Pad(i).GetDown(enButtonA) || Pad(i).GetDown(enButtonStart)) {
 			m_isReady[i] = !m_isReady[i];
@@ -170,6 +176,13 @@ void AssembleScene::Update() {
 		}
 	}
 
+	//戻る
+	if (m_pushCnt >= MAX_PUSH) {
+		new LoadingScreen([]() {new CTitle; });
+		delete this;
+		return;
+	}
+
 	//規定数準備完了でゲームに移行
 	if (readyCnt >= m_playerNum) {
 		//アセンブル設定
@@ -219,6 +232,12 @@ void AssembleScene::PostUpdate() {
 	////背景
 	//DrawQuad2D(0.0f, 1.0f, CVector4::White());
 //}
+
+void AssembleScene::PostRender() {
+	wchar_t string[64];
+	swprintf_s(string, L"Bれんだでもどる (%d/%d)", m_pushCnt, MAX_PUSH);
+	m_font.Draw(string, { 0.5f,0.0f }, CVector4::White(), CVector2::One(), { 0.5f,0.0f });
+}
 
 void AssembleScene::HUDRender(int HUDNum) {
 	//パーツ名表示
