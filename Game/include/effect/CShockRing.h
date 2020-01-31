@@ -1,6 +1,6 @@
 #pragma once
 
-class CShockRing : private SuicideObj::CParticle<CBillboard>
+class CShockRing : private SuicideObj::CParticle<CBillboard>, public ICreateObject
 {
 public:
 	CShockRing(const CVector3& pos,

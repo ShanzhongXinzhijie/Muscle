@@ -9,6 +9,10 @@ class Game : public IGameObject
 {
 public:
 	Game(GameManager* manager);
+	~Game() {
+		//¶¬•¨íœ
+		ICreateObject::AllDestroy();
+	}
 
 	void PreUpdate()override;
 	void PostRender()override;

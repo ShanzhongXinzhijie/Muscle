@@ -227,6 +227,11 @@ public:
 		//ÉåÉCÇ≈îªíË
 		btVector3 rayStart = m_bullet->GetPos();
 		btVector3 rayEnd = m_bullet->GetPos() + m_bullet->m_vector * m_avoidanceFrame;
+
+		if ((rayStart - rayEnd).fuzzyZero()) {
+			return;
+		}
+
 		btCollisionWorld::ClosestRayResultCallback gnd_ray(rayStart, rayEnd);
 		GetEngine().GetPhysicsWorld().RayTest(rayStart, rayEnd, gnd_ray);
 		//Ç±ÇÃÇ‹Ç‹Ç≈ÇÕè’ìÀÇ∑ÇÈ!

@@ -6,7 +6,7 @@ struct SmokeParam {
 };
 
 //‰Œ
-class CSmoke : private SuicideObj::CParticle<CBillboard>
+class CSmoke : private SuicideObj::CParticle<CBillboard>, public ICreateObject
 {
 public:
 	CSmoke(const CVector3& pos, const CVector3& move, 

@@ -40,7 +40,7 @@ protected:
 /// <summary>
 /// バレットを動かすクラス
 /// </summary>
-class BulletGO : public ILifeObject {
+class BulletGO : public ILifeObject, public ICreateObject {
 public:
 	BulletGO(const CVector3& pos, const CVector3& move, IFu* owner, float damege, bool isLockable = false, int priorityLevel = LockableWrapper::DEFAULT_LEVEL);
 

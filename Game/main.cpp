@@ -4,6 +4,7 @@
 #include "WindowSizeManager.h"
 #include "assemblescene.h"
 #include "CGameMode.h"
+//#include "CreateObjectManager.h"
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
 {
@@ -82,6 +83,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 	//ゲームモード
 	CGameMode gameMode;
+
+	//生成オブジェクトマネージャー
+	//CreateObjectManager createObjectManager;
 
 	//ゲームインスタンス作成
 	new LoadingScreen([]() {new CTitle; });

@@ -1,7 +1,7 @@
 #pragma once
 
 //草パーティクル
-class FlyingGrass : private SuicideObj::CParticle<GameObj::CInstancingModelRender>
+class FlyingGrass : private SuicideObj::CParticle<GameObj::CInstancingModelRender>, public ICreateObject
 {
 public:
 	FlyingGrass(const CVector3& pos, const CVector3& move, int time = 8);

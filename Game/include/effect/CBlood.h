@@ -3,7 +3,7 @@
 #include "BeamModel.h"
 
 class CBlood :
-	public IFu, public IGameObject
+	public IFu, public IGameObject, public ICreateObject
 {
 public:
 	CBlood(const CVector3& pos, const CVector3& move, float radius = -1.0f, bool createCollision = true)
