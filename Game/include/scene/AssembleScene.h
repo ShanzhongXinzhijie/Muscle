@@ -42,7 +42,7 @@ class AssembleScene :
 	public IGameObject
 {
 public:
-	AssembleScene(int playerNum):m_playerNum(playerNum){}
+	AssembleScene();
 
 	bool Start()override;
 

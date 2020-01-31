@@ -3,6 +3,7 @@
 #include "WindowSizeManager.h"
 #include "GameManager.h"
 #include "LoadingScreen.h"
+#include "CGameMode.h"
 
 #include "BP_FishHead.h"
 #include "BP_BirdWing.h"
@@ -16,6 +17,8 @@ namespace {
 	const CVector3 HOTOKE_POS = { 300.0f,150.0f,-300.0f };
 	const CVector3 PLAYER_POS_OFFSET = HOTOKE_POS.GetNorm().GetCross(CVector3::AxisY()) * 10000.0f;
 }
+
+AssembleScene::AssembleScene() : m_playerNum(FindGO<CGameMode>(L"CGameMode")->GetPlayerNum()) {}
 
 bool AssembleScene::Start() {
 	//画面サイズ変更

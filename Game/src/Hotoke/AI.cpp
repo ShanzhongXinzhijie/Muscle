@@ -3,19 +3,26 @@
 #include "CDeathHotoke.h"
 
 void TestAI::Update() {
-	int i = 0;
+	//ƒ^[ƒQƒbƒg‚ğ’T‚·
+	CDeathHotoke* target = nullptr; float distance = -1.0f;
 	QueryGOs<CDeathHotoke>(L"CDeathHotoke",
 		[&](auto* P) {
 			if (P == m_ptrCore) { return true; }//©•ª
-			if (i == 0) { i++; return true; }
-			//“G‚ÌˆÊ’u‚ğ–Úw‚µ‚ÄˆÚ“®
-			m_outputStatus.moveTargetPosition = P->GetPos();
-			m_outputStatus.isMovingToTarget = true;
-			//“G‚ÌˆÊ’u‚ğUŒ‚
-			m_ptrCore->SetTargetPos(P->GetPos());
-			m_ptrCore->SetTarget(P->GetLockableWrapper());
-			m_outputStatus.isAttackingTarget = true;
+			if (distance < 0.0f || distance > (P->GetPos()- m_ptrCore->GetPos()).LengthSq()) {//‚¢‚¿‚Î‚ñ‚«‚å‚è‚ª‚¿‚©‚¢‚à‚Ì‚ª‚à‚­‚Ğ‚å‚¤
+				distance = (P->GetPos() - m_ptrCore->GetPos()).LengthSq();
+				target = P;
+			}
 			return false;//ƒNƒGƒŠI—¹
 		}
 	);	
+
+	if (target) {
+		//“G‚ÌˆÊ’u‚ğ–Úw‚µ‚ÄˆÚ“®
+		m_outputStatus.moveTargetPosition = target->GetPos();
+		m_outputStatus.isMovingToTarget = true;
+		//“G‚ÌˆÊ’u‚ğUŒ‚
+		m_ptrCore->SetTargetPos(target->GetPos());
+		m_ptrCore->SetTarget(target->GetLockableWrapper());
+		m_outputStatus.isAttackingTarget = true;
+	}
 }

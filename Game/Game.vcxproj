@@ -27,6 +27,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\CGameMode.cpp" />
     <ClCompile Include="src\Hotoke\BP_Heads.cpp" />
     <ClCompile Include="src\scene\AssembleScene.cpp" />
     <ClCompile Include="src\Hotoke\BP_HumanArm.cpp" />
@@ -73,6 +74,7 @@
     <ClCompile Include="src\WindowSizeManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\CGameMode.h" />
     <ClInclude Include="include\hotoke\BP_Heads.h" />
     <ClInclude Include="include\scene\AssembleScene.h" />
     <ClInclude Include="include\hotoke\BP_HumanArm.h" />

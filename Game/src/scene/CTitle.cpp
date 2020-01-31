@@ -3,6 +3,7 @@
 #include "WindowSizeManager.h"
 #include "LoadingScreen.h"
 #include "AssembleScene.h"
+#include "CGameMode.h"
 
 bool CTitle::Start() {
 	//画面サイズ変更
@@ -34,13 +35,16 @@ void CTitle::Update() {
 			if (Pad(i).GetDown(enButtonA) || Pad(i).GetDown(enButtonStart)) {
 				//画面サイズ変更
 				FindGO<WindowSizeManager>(L"WindowSizeManager")->ChangeWindowSize(m_selectMode == 0);
-				//遷移
+				//プレイヤー数変更
 				if (m_selectMode == 0) {
-					new LoadingScreen([]() {new AssembleScene(2); });
+					FindGO<CGameMode>(L"CGameMode")->SetPlayerNum(2);
 				}
 				else {
-					new LoadingScreen([]() {new AssembleScene(1); });
+					FindGO<CGameMode>(L"CGameMode")->SetPlayerNum(1);
 				}
+				//遷移
+				new LoadingScreen([]() {new AssembleScene(); });
+				//自殺
 				delete this;
 				return;
 			}

@@ -3,6 +3,7 @@
 #include "LoadingScreen.h"
 #include "WindowSizeManager.h"
 #include "assemblescene.h"
+#include "CGameMode.h"
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
 {
@@ -78,6 +79,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 	//デスホトケアセンブルマネージャー
 	HotokeAssembleManager hotokeAssembleManager;
+
+	//ゲームモード
+	CGameMode gameMode;
 
 	//ゲームインスタンス作成
 	new LoadingScreen([]() {new CTitle; });

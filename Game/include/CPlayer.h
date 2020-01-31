@@ -8,14 +8,9 @@
 #include"AssembleScene.h"
 #include"AI.h"
 
-class CPlayer : public IGameObject
-{
+class HumanPlayer : public IGameObject {
 public:
-	/// <summary>
-	/// コンストラクタ
-	/// </summary>
-	/// <param name="playernum">プレイヤー番号</param>
-	CPlayer(int playernum);
+	HumanPlayer(int playernum, CDeathHotoke& hotoke);
 
 	//IGameObject
 	bool Start()override;
@@ -24,33 +19,25 @@ public:
 	void PostLoopUpdate()override;
 	void HUDRender(int HUDNum)override;
 
-	/// <summary>
-	/// プレイヤー番号を取得
-	/// </summary>
-	int GetPlayerNum()const {
-		return m_playerNum;
+	IGamePad& GetPad() {
+		return m_pad;
 	}
 
-	/// <summary>
-	/// 死んでる?
-	/// </summary>
-	bool GetIsDeath()const {
-		return m_hotoke.GetHP() <= 0.0f;
+	HUDFont& GetHUDFont() {
+		return m_HUDFont;
 	}
 
 private:
-	//プレイヤー番号
 	int m_playerNum = -1;
-		
-	HotokeAssembleManager::HotokeAssemble& m_assemble;//アセンブル設定
-	CDeathHotoke m_hotoke;//ホトケ本体
-	
+
+	//ホトケ参照
+	CDeathHotoke& m_hotoke;
+
 	//カメラ
-	std::unique_ptr<HotokeCameraController> m_cam;
-	//ZoomOutCamera m_zoomoutCam;
-	
+	HotokeCameraController m_cam;
+
 	//パッド
-	std::unique_ptr<IGamePad> m_pad;
+	IGamePad m_pad;
 
 	//草
 	Grass m_grass[Grass::m_sInstancingMax / PLAYER_NUM];
@@ -69,5 +56,42 @@ private:
 	CSprite m_guncross, m_wMark, m_velocityVector;
 	//CVector3 m_guncrossPosOld, m_velocityPosOld;
 	HUDFont m_HUDFont, m_warningFont, m_japaneseFont;
+};
+
+class CPlayer : public IGameObject
+{
+public:
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="playernum">プレイヤー番号</param>
+	CPlayer(int playernum);
+
+	//IGameObject
+	bool Start()override;
+
+	/// <summary>
+	/// プレイヤー番号を取得
+	/// </summary>
+	int GetPlayerNum()const {
+		return m_playerNum;
+	}
+
+	/// <summary>
+	/// 死んでる?
+	/// </summary>
+	bool GetIsDeath()const {
+		return m_hotoke.GetHP() <= 0.0f;
+	}
+
+private:
+	//プレイヤー番号
+	int m_playerNum = -1;
+
+	//人間用データ
+	std::unique_ptr<HumanPlayer> m_humanPlayer;
+		
+	HotokeAssembleManager::HotokeAssemble& m_assemble;//アセンブル設定
+	CDeathHotoke m_hotoke;//ホトケ本体
 };
 
