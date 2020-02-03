@@ -110,12 +110,12 @@ public:
 		//m_model.Get().GetInstancingModel()->GetModelRender().SetIsShadowCaster(false);
 
 		//遠景モデル
-		if (!m_imposter.Get().Init( L"Resource/modelData/realTree_S.cmo", Tree::m_sInstancingMax)) {
-			//初回ロード
-			SkinModel model;
-			model.Init(L"Resource/modelData/realTree_S.cmo");
-			m_imposter.Get().Init(L"Resource/modelData/realTree_S.cmo", model, { 2, 2 }, { 1,1 }, Tree::m_sInstancingMax);
-		}
+		//if (!m_imposter.Get().Init( L"Resource/modelData/realTree_S.cmo", Tree::m_sInstancingMax)) {
+		//	//初回ロード
+		//	SkinModel model;
+		//	model.Init(L"Resource/modelData/realTree_S.cmo");
+		//	m_imposter.Get().Init(L"Resource/modelData/realTree_S.cmo", model, { 2, 2 }, { 1,1 }, Tree::m_sInstancingMax);
+		//}
 		/*m_imposter.Get().SetPos(pos);
 		m_imposter.Get().SetScale(1.0f);
 		m_imposter.Get().SetIsDraw(false);
@@ -123,5 +123,6 @@ public:
 	}
 
 	LODSwitcher m_lodSwitcher;
-	LODInstancingModel m_model; LODImposter m_imposter; LODNothing m_noDraw[3];
+	//LODInstancingModel m_model; LODImposter m_imposter; 
+	LODNothing m_noDraw[3];
 };

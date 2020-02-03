@@ -42,10 +42,11 @@ public:
 	/// <param name="maxnum">生成するオブジェクトの最大数</param>
 	template <typename T>
 	void Generate(const CVector3& minArea, const CVector3& maxArea, int maxnum, float radius = 80.0f) {
+		int start = genPoints.size();
 		//生成点作る
 		CMath::GenerateBlueNoise(maxnum, { minArea.x,minArea.z }, { maxArea.x,maxArea.z }, radius, genPoints);
 		//ステージオブジェクトを作る
-		for (int i = 0; i < genPoints.size(); i++) {
+		for (int i = start; i < genPoints.size(); i++) {
 			//座標生成
 			CVector3 pos = { genPoints[i].x, maxArea.y, genPoints[i].y };//{ minArea.x + (maxArea.x - minArea.x)*CMath::RandomZeroToOne(), maxArea.y, minArea.z + (maxArea.z - minArea.z)*CMath::RandomZeroToOne() };
 			//レイで判定
@@ -72,10 +73,11 @@ public:
 	/// <param name="maxnum">生成するオブジェクトの最大数</param>
 	template <typename T>
 	void Generate(const CVector3& point, float area, float height, int maxnum, float radius = 80.0f) {
+		int start = genPoints.size();
 		//生成点作る
 		CMath::GenerateBlueNoise(maxnum, { point.x - area, point.z - area }, { point.x + area, point.z + area }, radius, genPoints);
 		//ステージオブジェクトを作る
-		for (int i = 0; i < genPoints.size(); i++) {
+		for (int i = start; i < genPoints.size(); i++) {
 			//生成点は円内か?
 			if ((CVector2(point.x, point.z) - genPoints[i]).LengthSq() < CMath::Square(area)) {
 				//座標生成

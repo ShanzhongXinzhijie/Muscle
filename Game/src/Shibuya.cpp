@@ -206,7 +206,7 @@ Shibuya::Shibuya() //: m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI
 
 	//X
 	constexpr int FOREST_NUM = 10;
-	Tree::m_sInstancingMax = 4000*5;// *FOREST_NUM;
+	Tree::m_sInstancingMax = 4000;// *FOREST_NUM;
 
 	//X‚Ì’†S“_ì‚é
 	//std::vector<CVector2> genPoints;
@@ -219,10 +219,12 @@ Shibuya::Shibuya() //: m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI
 		m_objGene.Generate<Tree>({ forestPoint.x,0.0f,forestPoint.y }, 70.0f*50.0f*scale, 70.0f*50.0f, Tree::m_sInstancingMax / FOREST_NUM, 120.0f);
 	}*/
 
-	m_objGene.Generate<dammy>(0.f, 70.0f*50.0f*10.0f, 70.0f*50.0f, Tree::m_sInstancingMax, 120.0f);
+	//IGameObject‚Æ‚µ‚Ä“o˜^‚µ‚È‚¢
+	//‚»‚ê‚ðˆêŒÂ‚ÌGO‚Å
+	m_objGene.Generate<Tree>(0.f, 70.0f*50.0f*7.0f, 70.0f*50.0f, Tree::m_sInstancingMax, 120.0f);
 
 	//“S“ƒ
-	//m_objGene.Generate<TransmissionTower>({ -70.0f*500.0f,-70.0f*50.0f,-70.0f*500.0f }, { 70.0f*500.0f,70.0f*50.0f,70.0f*500.0f }, 64, 300.0f);
+	m_objGene.Generate<TransmissionTower>({ -70.0f*50.0f*7.0f,-70.0f*50.0f,-70.0f*50.0f*7.0f }, { 70.0f*50.0f*7.0f,70.0f*50.0f,70.0f*50.0f*7.0f }, 32, 300.0f);
 	
 	//GetGraphicsEngine().GetAmbientOcclusionRender().SetEnable(false);
 

@@ -215,9 +215,11 @@ void Tree::Init(const CVector3& pos, const CVector3& normal){
 	m_pos = pos;
 
 	//LOD‰Šú‰»
-	CVector2 FrustumSize; GetMainCamera()->GetFrustumPlaneSize(2400.0f/3.0f, FrustumSize);//TODO –Ø‚ÌScale‚É˜A“®
+	CVector2 FrustumSize; 
+	GetMainCamera()->GetFrustumPlaneSize(2400.0f/3.0f, FrustumSize);//TODO –Ø‚ÌScale‚É˜A“®
 	m_lodSwitcher.AddDrawObject(&m_model, FrustumSize.y);
-	m_lodSwitcher.AddDrawObject(&m_imposter, FrustumSize.y * 3.0f);
+	GetMainCamera()->GetFrustumPlaneSize(2400.0f*8.0f, FrustumSize);
+	m_lodSwitcher.AddDrawObject(&m_imposter, FrustumSize.y);
 	m_lodSwitcher.AddDrawObject(&m_noDraw);
 	m_lodSwitcher.SetPos(m_pos);
 

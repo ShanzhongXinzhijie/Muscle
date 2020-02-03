@@ -69,6 +69,7 @@ bool HumanPlayer::Start() {
 		m_animHeri.Load(L"Resource/animation/herico.tka", true);
 		m_heri.Init(L"Resource/modelData/herico.cmo", &m_animHeri, 1);
 		m_heri.SetScale(0.3f);
+		m_heri.GetSkinModel().FindMaterialSetting([](MaterialSetting* mat) {mat->SetAlbedoScale({ 0.01f,0.01f,0.05f,1.0f }); });
 
 		//ƒŒƒC‚Å”»’è
 		btVector3 rayStart = btVector3(0.0f, 100000.0f, 0.0f);
@@ -78,7 +79,7 @@ bool HumanPlayer::Start() {
 		if (gnd_ray.hasHit()) {
 			//ÚG“_‚ğÀ•W‚É
 			m_human.SetPos(gnd_ray.m_hitPointWorld);
-			m_heri.SetPos(gnd_ray.m_hitPointWorld + CVector3::Back()*25.f);
+			m_heri.SetPos(gnd_ray.m_hitPointWorld + CVector3::Back()*25.f + CVector3::Up() * 1250.0f);
 		}
 
 		//m_humanCam.SetViewAngleDeg(25.0f);
