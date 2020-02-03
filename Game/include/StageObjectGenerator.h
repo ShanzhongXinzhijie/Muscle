@@ -43,7 +43,6 @@ public:
 	template <typename T>
 	void Generate(const CVector3& minArea, const CVector3& maxArea, int maxnum, float radius = 80.0f) {
 		//生成点作る
-		std::vector<CVector2> genPoints;
 		CMath::GenerateBlueNoise(maxnum, { minArea.x,minArea.z }, { maxArea.x,maxArea.z }, radius, genPoints);
 		//ステージオブジェクトを作る
 		for (int i = 0; i < genPoints.size(); i++) {
@@ -74,7 +73,6 @@ public:
 	template <typename T>
 	void Generate(const CVector3& point, float area, float height, int maxnum, float radius = 80.0f) {
 		//生成点作る
-		std::vector<CVector2> genPoints;
 		CMath::GenerateBlueNoise(maxnum, { point.x - area, point.z - area }, { point.x + area, point.z + area }, radius, genPoints);
 		//ステージオブジェクトを作る
 		for (int i = 0; i < genPoints.size(); i++) {
@@ -109,5 +107,6 @@ public:
 
 private:
 	std::vector<std::unique_ptr<IStageObject>> m_objects;//ステージオブジェクト
+	std::vector<CVector2> genPoints;
 };
 

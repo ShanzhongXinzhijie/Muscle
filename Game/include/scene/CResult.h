@@ -17,6 +17,10 @@ public:
 
 		//プレイヤー人数の取得
 		m_playerCnt = FindGO<CGameMode>(L"CGameMode")->GetPlayerNum();
+
+		if (m_playerCnt == 1) {
+			MAX_PUSH = 6;
+		}
 	}
 
 	void Update()override;
@@ -31,6 +35,6 @@ private:
 	CFont m_font, m_fontScore;
 
 	int m_pushCnt = 0, m_pushCnt2 = 0;
-	static constexpr int MAX_PUSH = 35;
+	int MAX_PUSH = 35;
 };
 

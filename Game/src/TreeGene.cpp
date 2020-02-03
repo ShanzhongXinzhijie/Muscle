@@ -3,57 +3,6 @@
 #include "CDeathHotoke.h"
 
 /// <summary>
-/// 石
-/// </summary>
-/*void Stone::Init(const CVector3& pos, const CVector3& normal) {
-	float scale = 1.0f;
-	scale = (CMath::RandomZeroToOne() > 0.5f ? 0.05f : 0.1f)*(0.5f + CMath::RandomZeroToOne());
-	switch (CMath::RandomInt()%100)
-	{
-	case 0:
-		m_model.Init(m_sInstancingMax, L"Resource/modelData/stone_square.cmo", nullptr, 0, enFbxUpAxisY);
-		break;
-	case 1:
-		m_model.Init(m_sInstancingMax, L"Resource/modelData/stone_tri.cmo", nullptr, 0, enFbxUpAxisY);
-		break;
-	case 2:
-		m_model.Init(m_sInstancingMax, L"Resource/modelData/stone_pillar.cmo", nullptr, 0, enFbxUpAxisY);
-		break;
-	case 3:
-		m_model.Init(m_sInstancingMax, L"Resource/modelData/minitree.cmo", nullptr, 0, enFbxUpAxisY);
-		break;
-	case 4:
-		m_model.Init(m_sInstancingMax, L"Resource/modelData/tettou.cmo");
-		scale = 1.4f;
-		m_model.GetInstancingModel()->GetModelRender().GetSkinModel().FindMaterialSetting(
-			[&](MaterialSetting* me) {
-				me->SetEmissive(0.0f);
-				me->SetMetallic(0.5f);
-				//me->SetShininess(0.5f);
-			}
-		);
-		break;
-	default:
-		//return;
-		m_model.Init(m_sInstancingMax, L"Resource/modelData/sigemi.cmo", nullptr, 0, enFbxUpAxisY);
-		break;
-	}
-	m_model.SetPos(pos);
-	CQuaternion rot(CVector3::AxisX(), CMath::RandomZeroToOne()*CMath::PI2);
-	rot.Concatenate(CQuaternion(CVector3::AxisY(), CMath::RandomZeroToOne()*CMath::PI2));
-	rot.Concatenate(CQuaternion(CVector3::AxisZ(), CMath::RandomZeroToOne()*CMath::PI2));
-	//m_model.SetRot(rot);
-	m_model.SetScale(scale);
-	m_model.SetIsDraw(true);
-	m_model.GetInstancingModel()->GetModelRender().SetIsShadowCaster(false);
-	m_model.GetInstancingModel()->GetModelRender().GetSkinModel().FindMaterialSetting(
-		[&](MaterialSetting* me) {
-			me->SetEmissive(0.0f);
-		}
-	);
-}*/
-
-/// <summary>
 /// 鉄塔
 /// </summary>
 void TransmissionTower::Init(const CVector3& pos, const CVector3& normal) {
@@ -205,7 +154,8 @@ bool Grass::Start(){
 	insModel.GetInstancingModel()->GetModelRender().GetSkinModel().FindMaterialSetting(
 		[&](MaterialSetting* me) {
 			me->SetShininess(0.4f);
-			me->SetAlbedoScale({40.0f, 0.0f, 40.0f, 1.0f});
+			me->SetAlbedoScale({ 3.0f, 3.0f, 3.0f, 1.0f });
+			//me->SetAlbedoScale({40.0f, 0.0f, 40.0f, 1.0f});
 		}
 	);
 	//位置
@@ -265,9 +215,10 @@ void Tree::Init(const CVector3& pos, const CVector3& normal){
 	m_pos = pos;
 
 	//LOD初期化
-	CVector2 FrustumSize; GetMainCamera()->GetFrustumPlaneSize(2400.0f/3.0f, FrustumSize);//TODO Scaleに連動
+	CVector2 FrustumSize; GetMainCamera()->GetFrustumPlaneSize(2400.0f/3.0f, FrustumSize);//TODO 木のScaleに連動
 	m_lodSwitcher.AddDrawObject(&m_model, FrustumSize.y);
-	m_lodSwitcher.AddDrawObject(&m_imposter);
+	m_lodSwitcher.AddDrawObject(&m_imposter, FrustumSize.y * 3.0f);
+	m_lodSwitcher.AddDrawObject(&m_noDraw);
 	m_lodSwitcher.SetPos(m_pos);
 
 	GameObj::CInstancingModelRender& insModel = m_model.Get();
@@ -286,9 +237,6 @@ void Tree::Init(const CVector3& pos, const CVector3& normal){
 	m_rot.SetRotation(CVector3::AxisY(), radY);
 	int treeTypeInd = 0;// CMath::RandomZeroToOne() > 0.5f ? 1 : 0;			//モデル種類
 	
-	//TODO
-	//木の色・地面の色ムラ　パーリンノイズ
-
 	//近景モデル
 	insModel.Init(m_sInstancingMax, treeModelFilePath[treeTypeInd]);
 	insModel.SetPos(m_pos);
@@ -296,12 +244,8 @@ void Tree::Init(const CVector3& pos, const CVector3& normal){
 	insModel.SetScale(sizeScale);
 	insModel.SetIsDraw(false);
 	insModel.GetInstancingModel()->GetModelRender().SetIsShadowCaster(false);
-	//ファクトリでノーマルマップ読み込み
-	//Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> leafNormaltex, barkNormaltex, leafTranstex;
-	//TextureFactory::GetInstance().Load(L"Resource/normalMap/leaf fern_n.png", nullptr, &leafNormaltex, nullptr, true);
-	//TextureFactory::GetInstance().Load(L"Resource/normalMap/bark03_n.png", nullptr, &barkNormaltex, nullptr, true);
-	//TextureFactory::GetInstance().Load(L"Resource/translucentMap/leaf fern_t.png", nullptr, &leafTranstex, nullptr, true);
 	
+	//テクスチャ
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> barktex, leaftex;
 	TextureFactory::GetInstance().Load(L"Resource/texture/nadeln4.dds", nullptr, &leaftex);
 	TextureFactory::GetInstance().Load(L"Resource/texture/stamm2.dds", nullptr, &barktex);
@@ -311,6 +255,7 @@ void Tree::Init(const CVector3& pos, const CVector3& normal){
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> leaftexT;
 	TextureFactory::GetInstance().Load(L"Resource/translucentMap/nadeln4_t.png", nullptr, &leaftexT, nullptr, true);
 
+	//マテリアル設定関数
 	std::function setMaterial = [&](MaterialSetting* me) {
 		me->SetShininess(0.01f);
 		if (me->EqualMaterialName(L"leaves")) {
@@ -326,22 +271,8 @@ void Tree::Init(const CVector3& pos, const CVector3& normal){
 		}
 	};
 
+	//マテリアル設定
 	insModel.GetInstancingModel()->GetModelRender().GetSkinModel().FindMaterialSetting(setMaterial);
-
-	////マテリアル設定
-	//std::function setMaterial
-	//= [&](MaterialSetting* me) {
-	//	me->SetShininess(0.1f);
-	//	if (me->EqualMaterialName(L"leaf fern")) {
-	//		me->SetIsUseTexZShader(true);
-	//		me->SetNormalTexture(leafNormaltex.Get());
-	//		me->SetTranslucentTexture(leafTranstex.Get());
-	//	}
-	//	else {
-	//		me->SetNormalTexture(barkNormaltex.Get());
-	//	}
-	//};
-	//insModel.GetInstancingModel()->GetModelRender().GetSkinModel().FindMaterialSetting(setMaterial);
 
 	//モデルの高さ取得
 	//CVector3 min, max;
@@ -356,17 +287,13 @@ void Tree::Init(const CVector3& pos, const CVector3& normal){
 	//}
 
 	//遠景モデル
-	//if (insModel.GetInstancingModel()->GetModelRender().GetSkinModel().EqualModelName(L"tree_notall")) {
-	//	imposter.Init(L"Resource/modelData/tree_notall.cmo", { 2048 * 4, 2048 * 4 }, { 69,35 }, m_sInstancingMax);
-	//}
-	//else {
 	if (!imposter.Init(treeModelFilePath[treeTypeInd], m_sInstancingMax)) {
+		//初回ロード
 		SkinModel model;
 		model.Init(treeModelFilePath[treeTypeInd]);
 		model.FindMaterialSetting(setMaterial);//マテリアル設定
 		imposter.Init(treeModelFilePath[treeTypeInd], model, { 2048 * 2, 2048 * 2 }, { 35,35 }, m_sInstancingMax);
-	}
-	//}
+	}	
 	imposter.SetPos(m_pos);
 	imposter.SetRotY(radY);
 	imposter.SetScale(sizeScale);

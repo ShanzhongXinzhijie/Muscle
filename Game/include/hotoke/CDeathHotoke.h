@@ -44,10 +44,10 @@ public:
 		//èâä˙à íu
 		SetPos(CVector3::AxisY()*2000.0f);
 		if (m_playerNum == 0) {
-			SetPos(CVector3::AxisY()*1000.0f - CVector3::AxisZ()*2400.0f);
+			SetPos({ 1000.0f, 1000.0f, -2400.0f*1.0f });
 		}
 		if (m_playerNum == 1) {
-			SetPos(CVector3::AxisY()*1000.0f + CVector3::AxisZ()*2400.0f);
+			SetPos({ -1000.0f, 1000.0f, 2400.0f*1.0f });
 			SetRot({ CVector3::AxisY(),CMath::PI });
 		}
 	}

@@ -4,24 +4,6 @@
 #include"StageObjectGenerator.h"
 
 /// <summary>
-/// 石
-/// </summary>
-//class Stone : public IStageObject {
-//public:
-//	using IStageObject::IStageObject;
-//
-//	//初期化関数
-//	void Init(const CVector3& pos, const CVector3& normal)override;
-//
-//private:
-//	//グラフィック
-//	GameObj::CInstancingModelRender m_model;
-//
-//public:
-//	static inline int m_sInstancingMax = 512; //このクラスの最大インスタンス数
-//};
-
-/// <summary>
 /// 鉄塔
 /// </summary>
 class TransmissionTower : public IStageObject, public IGameObject {
@@ -95,6 +77,7 @@ private:
 	LODSwitcher m_lodSwitcher;
 	LODInstancingModel m_model;
 	LODImposter m_imposter;
+	LODNothing m_noDraw;
 
 	//座標とか
 	CVector3 m_pos;
@@ -107,4 +90,38 @@ private:
 
 public:
 	static inline int m_sInstancingMax = 512; //このクラスの最大インスタンス数
+};
+
+class dammy : public IStageObject {
+public:
+	using IStageObject::IStageObject;
+	void Init(const CVector3& pos, const CVector3& normal)override {
+		//LOD初期化
+		CVector2 FrustumSize; GetMainCamera()->GetFrustumPlaneSize(2400.0f / 3.0f, FrustumSize);//TODO 木のScaleに連動
+		m_lodSwitcher.AddDrawObject(&m_noDraw[2], FrustumSize.y);
+		m_lodSwitcher.AddDrawObject(&m_noDraw[1], FrustumSize.y * 3.0f);
+		m_lodSwitcher.AddDrawObject(&m_noDraw[0]);
+
+		//m_model.Get().Init(Tree::m_sInstancingMax, L"Resource/modelData/realTree_S.cmo");
+		//m_model.Get().SetPos(pos);
+		//m_model.Get().SetRot({});
+		//m_model.Get().SetScale(1.0f);
+		//m_model.Get().SetIsDraw(false);
+		//m_model.Get().GetInstancingModel()->GetModelRender().SetIsShadowCaster(false);
+
+		//遠景モデル
+		if (!m_imposter.Get().Init( L"Resource/modelData/realTree_S.cmo", Tree::m_sInstancingMax)) {
+			//初回ロード
+			SkinModel model;
+			model.Init(L"Resource/modelData/realTree_S.cmo");
+			m_imposter.Get().Init(L"Resource/modelData/realTree_S.cmo", model, { 2, 2 }, { 1,1 }, Tree::m_sInstancingMax);
+		}
+		/*m_imposter.Get().SetPos(pos);
+		m_imposter.Get().SetScale(1.0f);
+		m_imposter.Get().SetIsDraw(false);
+		m_imposter.Get().SetIsShadowCaster(false);*/
+	}
+
+	LODSwitcher m_lodSwitcher;
+	LODInstancingModel m_model; LODImposter m_imposter; LODNothing m_noDraw[3];
 };

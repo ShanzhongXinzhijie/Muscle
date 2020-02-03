@@ -204,10 +204,23 @@ Shibuya::Shibuya() //: m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI
 	//SetFogColor({ 0.58f,0.69f,0.84f });
 	SetFogColor({0.28f,0.4f,0.65f});
 
-	//木々
+	//森
+	constexpr int FOREST_NUM = 10;
+	Tree::m_sInstancingMax = 4000*5;// *FOREST_NUM;
+
+	//森の中心点作る
+	//std::vector<CVector2> genPoints;
+	//CMath::GenerateBlueNoise(FOREST_NUM, { -70.0f*50.0f*10.0f, -70.0f*50.0f*10.0f }, { 70.0f*50.0f*10.0f, 70.0f*50.0f*10.0f }, 70.0f*50.0f*2.0f, genPoints);
+
+	//木々生成
 	//TODO 木のモデルの描画負荷が高い 判定が重い 画面分割時は判定削除とか
-	Tree::m_sInstancingMax = 4000;
-	//m_objGene.Generate<Tree>(CVector3::Zero(), 70.0f*50.0f, 70.0f*50.0f, Tree::m_sInstancingMax, 120.0f);	
+	/*for (const auto& forestPoint : genPoints) {
+		float scale = 1.0f + CMath::RandomZeroToOne();
+		m_objGene.Generate<Tree>({ forestPoint.x,0.0f,forestPoint.y }, 70.0f*50.0f*scale, 70.0f*50.0f, Tree::m_sInstancingMax / FOREST_NUM, 120.0f);
+	}*/
+
+	m_objGene.Generate<dammy>(0.f, 70.0f*50.0f*10.0f, 70.0f*50.0f, Tree::m_sInstancingMax, 120.0f);
+
 	//鉄塔
 	//m_objGene.Generate<TransmissionTower>({ -70.0f*500.0f,-70.0f*50.0f,-70.0f*500.0f }, { 70.0f*500.0f,70.0f*50.0f,70.0f*500.0f }, 64, 300.0f);
 	

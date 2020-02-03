@@ -19,7 +19,11 @@ namespace {
 	const CVector3 PLAYER_POS_OFFSET = HOTOKE_POS.GetNorm().GetCross(CVector3::AxisY()) * 10000.0f;
 }
 
-AssembleScene::AssembleScene() : m_playerNum(FindGO<CGameMode>(L"CGameMode")->GetPlayerNum()) {}
+AssembleScene::AssembleScene() : m_playerNum(FindGO<CGameMode>(L"CGameMode")->GetPlayerNum()) {
+	if (m_playerNum == 1) {
+		MAX_PUSH = 6;
+	}
+}
 
 bool AssembleScene::Start() {
 	//画面サイズ変更

@@ -43,7 +43,7 @@
 		}
 
 		//ƒ‚ƒfƒ‹‚ðƒ[ƒh
-		const wchar_t* identArray[1] = { ptrBeamType->name };
+		std::wstring_view identArray[1] = { ptrBeamType->name };
 		m_model[i2].Init(BEAM_MODEL_MAXNUM, L"Resource/modelData/beam.cmo"
 			, nullptr, 0, enFbxUpAxisZ, enFbxRightHanded,
 			identArray);

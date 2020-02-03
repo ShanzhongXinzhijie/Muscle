@@ -27,7 +27,7 @@ private:
 	
 	StageObjectGenerator m_objGene;
 	//GameObj::CSkinModelRender m_dinosaur, m_skyModel, m_uni;
-	GameObj::CSkinModelRender m_knight;// , m_cloud[6];
+	//GameObj::CSkinModelRender m_knight;// , m_cloud[6];
 	//SkinModelEffectShader m_psCloud;
 	//Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_cloudtex;
 	//float m_cloudTimer = 0.0f;

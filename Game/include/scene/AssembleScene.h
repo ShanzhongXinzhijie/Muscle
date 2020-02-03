@@ -68,7 +68,7 @@ private:
 	GameObj::CDirectionLight m_light;
 
 	int m_pushCnt = 0;
-	static constexpr int MAX_PUSH = 35;
+	int MAX_PUSH = 35;
 
 	std::vector<std::unique_ptr<IBodyPart>> m_parts[CDeathHotoke::enPartsNum];
 };

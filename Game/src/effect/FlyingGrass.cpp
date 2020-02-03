@@ -8,15 +8,17 @@ FlyingGrass::FlyingGrass(const CVector3& pos, const CVector3& move, int time) : 
 	//ƒ‚ƒfƒ‹“Ç‚İ‚İ
 	std::unique_ptr<CInstancingModelRender> model = std::make_unique<CInstancingModelRender>();	
 	bool isType2 = CMath::RandomZeroToOne() > 0.5f;
+	std::wstring_view string[1]; string[0] = L"FlyingGrass";
 	if (isType2) {
-		model->Init(MAX_NUM, L"Resource/modelData/pinGrass2.cmo", nullptr, 0, enFbxUpAxisY);
+		model->Init(MAX_NUM, L"Resource/modelData/pinGrass2.cmo", nullptr, 0, enFbxUpAxisY, enFbxRightHanded, string);
 	}
 	else {
-		model->Init(MAX_NUM, L"Resource/modelData/pinGrass.cmo", nullptr, 0, enFbxUpAxisY);
+		model->Init(MAX_NUM, L"Resource/modelData/pinGrass.cmo", nullptr, 0, enFbxUpAxisY, enFbxRightHanded, string);
 	}
 	model->GetInstancingModel()->GetModelRender().GetSkinModel().FindMaterialSetting(
 		[&](MaterialSetting* me) {
 			me->SetShininess(0.4f);
+			me->SetIsMotionBlur(false);
 		}
 	);
 
