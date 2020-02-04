@@ -44,12 +44,7 @@ private:
 	//草
 	Grass m_grass[Grass::m_sInstancingMax / PLAYER_NUM];
 
-	//テスト用モデル
-	AnimationClip m_animHeri;
-	GameObj::CSkinModelRender m_heri;
-
 	CHuman* m_humanPtr = nullptr;
-	CGameMode* m_gameModePtr = nullptr;
 
 	//HUD
 	bool m_isDrawHUD = true;

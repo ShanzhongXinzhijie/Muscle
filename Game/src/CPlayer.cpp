@@ -60,27 +60,8 @@ bool CPlayer::Start() {
 }
 
 bool HumanPlayer::Start() {
-
-	if (m_playerNum == 0) {
-		//テストモデル
-		m_animHeri.Load(L"Resource/animation/herico.tka", true);
-		m_heri.Init(L"Resource/modelData/herico.cmo", &m_animHeri, 1);
-		m_heri.SetScale(0.3f);
-		m_heri.GetSkinModel().FindMaterialSetting([](MaterialSetting* mat) {mat->SetAlbedoScale({ 0.01f,0.01f,0.05f,1.0f }); });
-
-		//レイで判定
-		btVector3 rayStart = btVector3(0.0f, 100000.0f, 0.0f);
-		btVector3 rayEnd = btVector3(0.0f, -100000.0f, 0.0f);
-		btCollisionWorld::ClosestRayResultCallback gnd_ray(rayStart, rayEnd);
-		GetEngine().GetPhysicsWorld().RayTest(rayStart, rayEnd, gnd_ray);
-		if (gnd_ray.hasHit()) {
-			//接触点を座標に
-			m_heri.SetPos(gnd_ray.m_hitPointWorld + CVector3::Back()*25.f + CVector3::Up() * 1250.0f);
-		}
-	}
-
+	//参照
 	m_humanPtr = FindGO<CHuman>(L"CHuman");
-	m_gameModePtr = FindGO<CGameMode>(L"CGameMode");
 
 	//HUD
 	m_guncross.Init(L"Resource/spriteData/gunCross.png");

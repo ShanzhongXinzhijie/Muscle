@@ -1,5 +1,6 @@
 #pragma once
 
+#include"IFu.h"
 #include"LOD.h"
 #include"StageObjectGenerator.h"
 
@@ -63,9 +64,28 @@ private:
 };
 
 /// <summary>
+/// ヘリコプター
+/// </summary>
+class CHelicopter : public IStageObject, public IFu {
+public:
+	using IStageObject::IStageObject;
+
+	//初期化関数
+	void Init(const CVector3& pos, const CVector3& normal)override;
+
+private:
+	//グラフィック
+	AnimationClip m_animHeri;
+	GameObj::CInstancingModelRender m_heri;
+	
+public:
+	static inline int m_sInstancingMax = 32; //このクラスの最大インスタンス数
+};
+
+/// <summary>
 /// 鉄塔
 /// </summary>
-class TransmissionTower : public IStageObject, public IGameObject {
+class TransmissionTower : public IStageObject, public IGameObject, public IFu {
 public:	
 	using IStageObject::IStageObject;
 

@@ -1,6 +1,33 @@
 #include "stdafx.h"
 #include "TreeGene.h"
 #include "CDeathHotoke.h"
+//#include "DemolisherWeapon/physics/CollisionAttr.h"
+//#include "DHCollision.h"
+
+/// <summary>
+/// ヘリコプター
+/// </summary>
+void CHelicopter::Init(const CVector3& pos, const CVector3& normal) {
+	//テストモデル
+	m_animHeri.Load(L"Resource/animation/herico.tka", true);
+	m_heri.Init(m_sInstancingMax, L"Resource/modelData/herico.cmo", &m_animHeri, 1);
+	m_heri.SetScale(0.3f);
+	m_heri.GetInstancingModel()->GetModelRender().GetSkinModel().FindMaterialSetting(
+		[](MaterialSetting* mat) {
+			mat->SetAlbedoScale({ 0.01f, 0.01f, 0.05f, 1.0f });
+		}
+	);
+	m_heri.SetPos(pos + CVector3::Back()*25.f + CVector3::Up() * (1200.0f*CMath::RandomZeroToOne()+ 700.0f) );
+	m_heri.SetRot(CQuaternion(CVector3::AxisY(), CMath::PI2*CMath::RandomZeroToOne()));
+
+	//当たり判定
+	SetPos(m_heri.GetPos());
+	SetIsStaticObject(true);
+	CreateSphere({ 0.0f, 225.0f * 0.5f * m_heri.GetScale().y ,0.0f }, {}, 225.0f * m_heri.GetScale().y);
+	On_OneGroup(enField);
+	GetAttributes().set(enPhysical);
+	GetAttributes().set(enGraund);
+}
 
 /// <summary>
 /// 鉄塔
@@ -62,6 +89,14 @@ void TransmissionTower::Init(const CVector3& pos, const CVector3& normal) {
 	}
 	setpos.y -= 5.0f;
 	m_model.SetPos(setpos);
+
+	//当たり判定
+	SetPos(setpos);
+	SetIsStaticObject(true);
+	CreateCapsule({ 0.0f, 686.0f * 0.5f * m_model.GetScale().y ,0.0f }, {}, 70.0f * m_model.GetScale().x, 686.0f * m_model.GetScale().y - (70.0f * m_model.GetScale().x * 2.0f));
+	On_OneGroup(enField);
+	GetAttributes().set(enPhysical);
+	GetAttributes().set(enGraund);
 
 	//ワイヤー通し
 	SetName(L"TransmissionTower");
@@ -187,6 +222,14 @@ void Grass::RePos(GameObj::ICamera* mainCamera) {
 	if (gnd_ray.hasHit()) {
 		//接触点を座標に
 		pos = gnd_ray.m_hitPointWorld;
+		
+		//if (gnd_ray.m_collisionObject->getUserIndex() == enCollisionAttr_CCollisionObj) {
+		//	SuicideObj::CCollisionObj* Obj = (SuicideObj::CCollisionObj*)(gnd_ray.m_collisionObject->getUserPointer());			
+		//	if (Obj->EqualName(L"ReferenceCollision")) {
+		//		//クラス取り出す
+		//		ReferenceCollision* H = Obj->GetClass<ReferenceCollision>();
+		//	}
+		//}
 	}
 
 	m_model.SetPos(pos);//再設置
