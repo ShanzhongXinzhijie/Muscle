@@ -35,7 +35,7 @@ void BP_SnailHead::InnerStart() {
 		[&](MaterialSetting* mat) {
 			mat->SetNormalTexture(textureView.Get());
 			mat->SetShininess(0.75f);
-			mat->SetTranslucent(0.2f);
+			mat->SetTranslucent(0.8f);
 		}
 	);
 }
