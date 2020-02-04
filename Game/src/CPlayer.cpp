@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "CPlayer.h"
+#include "CGameMode.h"
 
 HumanPlayer::HumanPlayer(int playernum, CDeathHotoke& hotoke):
 	//プレイヤー番号
@@ -62,10 +63,6 @@ bool HumanPlayer::Start() {
 
 	if (m_playerNum == 0) {
 		//テストモデル
-		m_anim.Load(L"Resource/animation/human/stand.tka");
-		m_human.Init(L"Resource/modelData/human.cmo", &m_anim, 1);
-		m_human.SetScale(10.0f);
-
 		m_animHeri.Load(L"Resource/animation/herico.tka", true);
 		m_heri.Init(L"Resource/modelData/herico.cmo", &m_animHeri, 1);
 		m_heri.SetScale(0.3f);
@@ -78,13 +75,12 @@ bool HumanPlayer::Start() {
 		GetEngine().GetPhysicsWorld().RayTest(rayStart, rayEnd, gnd_ray);
 		if (gnd_ray.hasHit()) {
 			//接触点を座標に
-			m_human.SetPos(gnd_ray.m_hitPointWorld);
 			m_heri.SetPos(gnd_ray.m_hitPointWorld + CVector3::Back()*25.f + CVector3::Up() * 1250.0f);
 		}
-
-		//m_humanCam.SetViewAngleDeg(25.0f);
-		m_humanCam.SetFar(150000.0f);
 	}
+
+	m_humanPtr = FindGO<CHuman>(L"CHuman");
+	m_gameModePtr = FindGO<CGameMode>(L"CGameMode");
 
 	//HUD
 	m_guncross.Init(L"Resource/spriteData/gunCross.png");
@@ -95,6 +91,8 @@ bool HumanPlayer::Start() {
 }
 
 void HumanPlayer::Update() {
+
+#ifndef DW_MASTER
 	//デバッグ移動
 	CVector3 pos = m_hotoke.GetPos();
 	CVector3 moveDir;
@@ -125,19 +123,18 @@ void HumanPlayer::Update() {
 		pos.y -= 20.0f;
 	}
 	m_hotoke.SetPos(pos);
+#endif
 
 	//カメラ切り替え
-	if (GetKeyInput('F')) {
+	if (GetKeyInput('F') || Pad(m_playerNum).GetButton(enButtonBack)) {
 		//ヒト目線
-		m_humanCam.SetPos(m_human.GetBonePos(m_human.FindBoneID(L"Head"))+CVector3::AxisY()*0);
-		m_humanCam.SetTarget(m_hotoke.GetPos());
-		SetMainCamera(&m_humanCam);
-		m_human.SetIsDraw(false);		
+		m_humanPtr->EnableHumanCamera(m_hotoke.GetPos(), m_playerNum);
 	}
 	else {
 		//元
+		m_humanPtr->DisableHumanCamera();
 		m_cam.SetToMainCamera();
-		m_human.SetIsDraw(true);
+		m_cam.SetToMainCamera(m_playerNum);
 	}
 
 	//引きカメラ演出
@@ -207,7 +204,7 @@ void HumanPlayer::PostLoopUpdate() {
 		
 		//位置が画面内か?
 		if (screenPos.x > 0.0f && screenPos.x < 1.0f && screenPos.y > 0.0f && screenPos.y < 1.0f && screenPos.z > 0.0f && screenPos.z < 1.0f) {
-			DrawLine2D({0.5f}, screenPos, m_HUDColor*CVector4(1.0f, 1.0f, 1.0f, 0.5f), m_playerNum);
+			DrawLine2D({0.5f}, screenPos, m_enemyColor*CVector4(1.0f, 1.0f, 1.0f, 0.5f), m_playerNum);
 		}
 		return true;
 	});
@@ -269,9 +266,12 @@ void HumanPlayer::HUDRender(int HUDNum) {
 				m_guncross.Draw(pos + (m_guncrossPosOld - pos) / loopmax * (i+1), 1.0f, 0.5f, m_isLockon ? 0.0f : CMath::PI_QUARTER, m_HUDColor*CVector4(1.0f, 1.0f, 1.0f, 1.0f));
 			}
 		}*/
-		m_guncross.Draw(pos, 1.0f, 0.5f, m_isLockon ? 0.0f : CMath::PI_QUARTER, m_HUDColor);
 		if (m_isLockon) {
+			m_guncross.Draw(pos, 1.0f, 0.5f, m_isLockon ? 0.0f : CMath::PI_QUARTER, m_enemyColor);
 			//ステータス
+			CVector4 color = m_HUDFont.GetColor();
+			m_HUDFont.SetColor(m_enemyColor);
+			
 			//HP
 			if (m_targetHP > 0.0f) {
 				m_HUDFont.DrawFormat(L"%.0f", pos - CVector3(0.0f, 0.025f, 0.0f), { 0.5f,1.5f }, m_targetHP);
@@ -281,6 +281,11 @@ void HumanPlayer::HUDRender(int HUDNum) {
 			m_HUDFont.SetScale(motoScale*0.75f);
 			m_HUDFont.DrawFormat(L"%.0f", pos - CVector3(0.0f, -0.025f, 0.0f), { 0.5f,0.0f }, (m_targetPos - m_hotoke.GetPos()).Length() / METER);
 			m_HUDFont.SetScale(motoScale);
+			
+			m_HUDFont.SetColor(color);
+		}
+		else {
+			m_guncross.Draw(pos, 1.0f, 0.5f, m_isLockon ? 0.0f : CMath::PI_QUARTER, m_HUDColor);
 		}
 	}
 	//m_guncrossPosOld = pos;

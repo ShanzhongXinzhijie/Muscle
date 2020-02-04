@@ -84,10 +84,13 @@ bool AssembleScene::Start() {
 	}
 
 	//ライト初期化
-	m_light.SetDirection({0.5f, -0.5f, -0.8f});
+	m_light.SetDirection({ 293.840912f, -327.994568f, 75.4622879f });// {0.5f, -0.5f, -0.8f});
 	m_light.SetColor(1.0f);
 	//SetAmbientLight(CVector3( 0.8f,0.1f,0.35f )*0.2f);
-	SetAmbientCubeMap(L"Resource/cubemap/cube2.dds", CVector3(0.8f, 0.1f, 0.35f)*0.2f);
+	//SetAmbientCubeMap(L"Resource/cubemap/cube2.dds", CVector3(0.8f, 0.1f, 0.35f)*0.2f);
+
+	//空
+	m_sky.Init(L"Resource/cubemap/loadcube.dds");// , -1.f, true, CVector3(0.8f, 0.1f, 0.35f));
 
 	//フォグを有効化
 	//SetEnableFog(true);

@@ -41,22 +41,22 @@ void WindowSizeManager::ChangeWindowSize(bool isTwoScreen) {
 	}
 }
 
-void WindowSizeManager::Update() {
-	for (int i = 0; i < PLAYER_NUM; i++) {
-		//Ý’è‰æ–ÊONEOFF
-		if (Pad(i).GetDown(enButtonBack)) {
-			m_isEnable = !m_isEnable;
-		}
-	}
-}
-
-void WindowSizeManager::PostLoopUpdate() {
-	if (!m_isEnable) { return; }
-	//”wŒi
-	DrawQuad2D(0.25f, 1.0f-0.25f, CVector4::Black()*0.5f);
-}
-
-void WindowSizeManager::PostRender() {
-	if (!m_isEnable) { return; }
-
-}
+//void WindowSizeManager::Update() {
+//	for (int i = 0; i < PLAYER_NUM; i++) {
+//		//Ý’è‰æ–ÊONEOFF
+//		if (Pad(i).GetDown(enButtonBack)) {
+//			m_isEnable = !m_isEnable;
+//		}
+//	}
+//}
+//
+//void WindowSizeManager::PostLoopUpdate() {
+//	if (!m_isEnable) { return; }
+//	//”wŒi
+//	DrawQuad2D(0.25f, 1.0f-0.25f, CVector4::Black()*0.5f);
+//}
+//
+//void WindowSizeManager::PostRender() {
+//	if (!m_isEnable) { return; }
+//
+//}

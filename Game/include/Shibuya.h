@@ -26,6 +26,7 @@ private:
 	//CascadeShadowHandler m_shadowmap;
 	
 	StageObjectGenerator m_objGene;
+	CHuman m_human;
 	//GameObj::CSkinModelRender m_dinosaur, m_skyModel, m_uni;
 	//GameObj::CSkinModelRender m_knight;// , m_cloud[6];
 	//SkinModelEffectShader m_psCloud;

@@ -8,6 +8,8 @@
 #include"AssembleScene.h"
 #include"AI.h"
 
+class CGameMode;
+
 class HumanPlayer : public IGameObject {
 public:
 	HumanPlayer(int playernum, CDeathHotoke& hotoke);
@@ -43,9 +45,11 @@ private:
 	Grass m_grass[Grass::m_sInstancingMax / PLAYER_NUM];
 
 	//テスト用モデル
-	AnimationClip m_anim, m_animHeri;
-	GameObj::CSkinModelRender m_human, m_heri;
-	GameObj::PerspectiveCamera m_humanCam;
+	AnimationClip m_animHeri;
+	GameObj::CSkinModelRender m_heri;
+
+	CHuman* m_humanPtr = nullptr;
+	CGameMode* m_gameModePtr = nullptr;
 
 	//HUD
 	bool m_isDrawHUD = true;
@@ -53,6 +57,7 @@ private:
 	float m_targetHP = 0.f;
 	CVector3 m_targetPos;
 	CVector4 m_HUDColor = { 0.0f,0.0f,0.0f,1.0f };
+	CVector4 m_enemyColor = { 0.0f,1.0f,0.0f,1.0f };
 	CSprite m_guncross, m_wMark, m_velocityVector;
 	//CVector3 m_guncrossPosOld, m_velocityPosOld;
 	HUDFont m_HUDFont, m_warningFont, m_japaneseFont;

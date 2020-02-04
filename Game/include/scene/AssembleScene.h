@@ -61,6 +61,7 @@ private:
 	int m_nowBodyType[PLAYER_NUM][CDeathHotoke::enPartsNum] = {};
 
 	CFont m_font, m_fontBold;
+	GameObj::CSkybox m_sky;
 	std::vector< std::unique_ptr<CDeathHotoke>> m_hotokes;
 	std::vector<std::unique_ptr<GameObj::PerspectiveCamera>> m_cameras;
 	CVector3 m_toCameraPos[PLAYER_NUM];

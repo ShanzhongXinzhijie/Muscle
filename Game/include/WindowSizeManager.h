@@ -8,10 +8,10 @@ public:
 
 	bool Start()override;
 
-	void Update()override;
+	/*void Update()override;
 
 	void PostLoopUpdate()override;
-	void PostRender()override;
+	void PostRender()override;*/
 
 private:
 	int m_windowSize = WINDOW_SIZE;

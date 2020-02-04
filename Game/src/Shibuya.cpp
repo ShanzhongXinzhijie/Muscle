@@ -221,11 +221,20 @@ Shibuya::Shibuya() //: m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI
 
 	//IGameObject‚Æ‚µ‚Ä“o˜^‚µ‚È‚¢
 	//‚»‚ê‚ðˆêŒÂ‚ÌGO‚Å
-	m_objGene.Generate<Tree>(0.f, 70.0f*50.0f*7.0f, 70.0f*50.0f, Tree::m_sInstancingMax, 120.0f);
+	m_objGene.CircularGenerate<Tree>(0.f, 70.0f*50.0f*7.0f, 70.0f*50.0f, Tree::m_sInstancingMax, 120.0f);
 
 	//“S“ƒ
-	m_objGene.Generate<TransmissionTower>({ -70.0f*50.0f*7.0f,-70.0f*50.0f,-70.0f*50.0f*7.0f }, { 70.0f*50.0f*7.0f,70.0f*50.0f,70.0f*50.0f*7.0f }, 32, 300.0f);
-	
+	//for (int i = 0; i < 3;i++) {
+		constexpr float lineLength = 70.0f*50.0f*7.0f;
+		constexpr float offsetLength = 70.0f*50.0f*7.0f*0.15f;
+		CQuaternion dirrot(CVector3::AxisY(), CMath::RandomZeroToOne()* CMath::PI2);
+		CVector3 gendir = CVector3::Front();
+		CVector2 offset = {CMath::Lerp(CMath::RandomZeroToOne(),-offsetLength,offsetLength),CMath::Lerp(CMath::RandomZeroToOne(),-offsetLength,offsetLength) };
+		dirrot.Multiply(gendir);
+		m_objGene.LinearGenerate<TransmissionTower>(offset + CVector2(gendir.x, gendir.z)*-lineLength, offset + CVector2(gendir.x, gendir.z)*lineLength, 70.0f*50.0f, 32, 300.0f);
+		//m_objGene.RectangularGenerate<TransmissionTower>({ -70.0f*50.0f*7.0f,-70.0f*50.0f,-70.0f*50.0f*7.0f }, { 70.0f*50.0f*7.0f,70.0f*50.0f,70.0f*50.0f*7.0f }, 32, 300.0f);
+	//}
+
 	//GetGraphicsEngine().GetAmbientOcclusionRender().SetEnable(false);
 
 	//Stone::m_sInstancingMax = 4000;

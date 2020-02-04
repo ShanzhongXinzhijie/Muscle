@@ -69,6 +69,12 @@ void TransmissionTower::Init(const CVector3& pos, const CVector3& normal) {
 		[&](auto* go) {
 			if (go == this) { return true; }
 			if (!go->IsWired()) {
+				//Œü‚«•ÏX
+				CQuaternion rot;
+				rot.MakeLookToUseXYAxis((m_model.GetPos() - go->GetModel().GetPos()).GetNorm());
+				m_model.SetRot(rot);
+				go->GetModel().SetRot(rot);
+
 				//ƒƒCƒ„[ì¬
 				for (int i = 0; i < 6; i++) {
 					CVector3 start, end;
@@ -76,27 +82,27 @@ void TransmissionTower::Init(const CVector3& pos, const CVector3& normal) {
 					{
 					case 0:
 						start = m_model.GetBonePos(m_model.FindBoneID(L"Wire0"));
-						end = go->GetModel().GetBonePos(m_model.FindBoneID(L"Wire0"));
+						end = go->GetModel().GetBonePos(go->GetModel().FindBoneID(L"Wire0"));
 						break;
 					case 1:
 						start = m_model.GetBonePos(m_model.FindBoneID(L"Wire1"));
-						end = go->GetModel().GetBonePos(m_model.FindBoneID(L"Wire1"));
+						end = go->GetModel().GetBonePos(go->GetModel().FindBoneID(L"Wire1"));
 						break; 
 					case 2:
 						start = m_model.GetBonePos(m_model.FindBoneID(L"Wire2"));
-						end = go->GetModel().GetBonePos(m_model.FindBoneID(L"Wire2"));
+						end = go->GetModel().GetBonePos(go->GetModel().FindBoneID(L"Wire2"));
 						break;
 					case 3:
 						start = m_model.GetBonePos(m_model.FindBoneID(L"Wire3"));
-						end = go->GetModel().GetBonePos(m_model.FindBoneID(L"Wire3"));
+						end = go->GetModel().GetBonePos(go->GetModel().FindBoneID(L"Wire3"));
 						break; 
 					case 4:
 						start = m_model.GetBonePos(m_model.FindBoneID(L"Wire4"));
-						end = go->GetModel().GetBonePos(m_model.FindBoneID(L"Wire4"));
+						end = go->GetModel().GetBonePos(go->GetModel().FindBoneID(L"Wire4"));
 						break;
 					case 5:
 						start = m_model.GetBonePos(m_model.FindBoneID(L"Wire5"));
-						end = go->GetModel().GetBonePos(m_model.FindBoneID(L"Wire5"));
+						end = go->GetModel().GetBonePos(go->GetModel().FindBoneID(L"Wire5"));
 						break; 
 					default:
 						break;

@@ -3,8 +3,8 @@
 #include "CResult.h"
 
 void GameManager::GameStart() {
+	m_game.reset();
 	m_game = std::make_unique<Game>(this);
-	//TODO エフェクトとか消さないと
 }
 void GameManager::GameEnd(bool isDeathPlayer[PLAYER_NUM]) {	
 	//相手が死んでたらスコア増やす

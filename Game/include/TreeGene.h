@@ -4,6 +4,65 @@
 #include"StageObjectGenerator.h"
 
 /// <summary>
+/// 人間!
+/// </summary>
+class CHuman : public IGameObject {
+public:	
+	CHuman() {
+		SetName(L"CHuman");
+	}
+
+	/// <summary>
+	/// 開始時処理
+	/// </summary>
+	bool Start()override {
+		m_anim.Load(L"Resource/animation/human/stand.tka");
+		m_human.Init(L"Resource/modelData/human.cmo", &m_anim, 1);
+		m_human.SetScale(10.0f);
+
+		//レイで判定
+		btVector3 rayStart = btVector3(0.0f, 100000.0f, 0.0f);
+		btVector3 rayEnd = btVector3(0.0f, -100000.0f, 0.0f);
+		btCollisionWorld::ClosestRayResultCallback gnd_ray(rayStart, rayEnd);
+		GetEngine().GetPhysicsWorld().RayTest(rayStart, rayEnd, gnd_ray);
+		if (gnd_ray.hasHit()) {
+			//接触点を座標に
+			m_human.SetPos(gnd_ray.m_hitPointWorld);
+		}
+
+		//m_humanCam.SetViewAngleDeg(25.0f);
+		m_humanCam.SetFar(150000.0f);
+
+		return true;
+	}
+
+	/// <summary>
+	/// この人間の視点をメインカメラに設定
+	/// </summary>
+	/// <param name="targetView">注視点</param>
+	/// <param name="cameraNum">セット先のカメラ番号</param>
+	void EnableHumanCamera(const CVector3& targetView, int cameraNum = 0) {
+		m_humanCam.SetPos(m_human.GetBonePos(m_human.FindBoneID(L"Head")) + CVector3::AxisY() * 0);
+		m_humanCam.SetTarget(targetView);
+		SetMainCamera(&m_humanCam);
+		SetCameraToList(cameraNum, &m_humanCam);
+		m_human.SetIsDraw(false);
+	}
+	/// <summary>
+	/// メインカメラから人間視点を外すときに呼ぶ処理
+	/// ※新たなカメラの設定は別でやってください
+	/// </summary>
+	void DisableHumanCamera() {
+		m_human.SetIsDraw(true);
+	}
+
+private:
+	AnimationClip m_anim;
+	GameObj::CSkinModelRender m_human;
+	GameObj::PerspectiveCamera m_humanCam;
+};
+
+/// <summary>
 /// 鉄塔
 /// </summary>
 class TransmissionTower : public IStageObject, public IGameObject {
