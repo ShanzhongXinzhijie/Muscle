@@ -243,7 +243,7 @@ void AssembleScene::PostUpdate() {
 void AssembleScene::PostRender() {
 	wchar_t string[64];
 	swprintf_s(string, L"B‚ê‚ñ‚¾‚Å‚à‚Ç‚é (%d/%d)", m_pushCnt, MAX_PUSH);
-	m_font.Draw(string, { 0.5f,0.0f }, CVector4::White(), CVector2::One(), { 0.5f,0.0f });
+	m_font.Draw(string, { 0.5f,0.0f }, CVector4::White(), CVector2::One()*0.5f, { 0.5f,0.0f });
 }
 
 void AssembleScene::HUDRender(int HUDNum) {

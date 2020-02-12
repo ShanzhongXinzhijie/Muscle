@@ -17,5 +17,8 @@ private:
 
 	bool m_enter = false;
 	int m_selectMode = 0;
+
+	int m_pushCnt = 0;
+	int MAX_PUSH = 10;
 };
 

@@ -15,6 +15,11 @@ bool CTitle::Start() {
 
 void CTitle::Update() {
 	for (int i = 0; i < PLAYER_NUM; i++) {
+		//終了
+		if (Pad(i).GetDown(enButtonB)) {
+			m_pushCnt++;
+		}
+
 		if (!m_enter) {
 			//タイトル
 			//PRESS ANY BUTTON
@@ -50,6 +55,13 @@ void CTitle::Update() {
 			}
 		}
 	}
+
+	//終了
+	if (m_pushCnt >= MAX_PUSH) {
+		BreakGameLoop();
+		delete this;
+		return;
+	}
 }
 
 void CTitle::PostLoopUpdate() {
@@ -61,14 +73,18 @@ void CTitle::PostRender() {
 	//ロゴ
 	m_sprite.Draw({ 0.5f,0.5f }, CVector2::One(), { 0.5f,0.5f });
 
+	wchar_t string[64];
+	swprintf_s(string, L"Bれんだでオワリ (%d/%d)", m_pushCnt, MAX_PUSH);
+	m_font.Draw(string, { 0.5f,0.0f }, CVector4::Black(), CVector2::One()*0.5f, { 0.5f,0.0f });
+
 	if(!m_enter) {
-		m_font.Draw(L"ｭｭｭｭｭデスホトケ", { 0.5f,0.0f }, CVector4::Black(), CVector2::One(), { 0.5f,0.0f });
-		m_font.Draw(L"PRESS ANY BUTTON ->THE ORDER", { 0.5f,0.85f }, CVector4::Black(), CVector2::One(), { 0.5f,0.5f });
+		m_font.Draw(L"ｭｭｭｭｭデスホトケ", { 0.5f,0.09f }, CVector4::Black(), CVector2::One(), { 0.5f,0.0f });
+		m_font.Draw(L"PRESS ANY BUTTON ->ECLIPSE", { 0.5f,0.85f }, CVector4::Black(), CVector2::One(), { 0.5f,0.5f });		
 		return;
 	}
 
 	//タイトル
-	m_font.Draw(L"モードをせんたく", { 0.5f,0.0f }, CVector4::Black(), CVector2::One(), { 0.5f,0.0f });
+	m_font.Draw(L"モードをせんたく", { 0.5f,0.09f }, CVector4::Black(), CVector2::One(), { 0.5f,0.0f });
 
 	//モードセレクト
 	for (int i = 0; i < 2; i++) {
