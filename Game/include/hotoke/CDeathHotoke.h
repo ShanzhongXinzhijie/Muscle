@@ -13,12 +13,14 @@ public:
 	CDeathHotoke() {
 		//検索用の名前登録
 		SetName(L"CDeathHotoke");
+		SetLockableObjectName(L"CDeathHotoke");
 		//ロックオンされた際に参照されるHP変数を設定
 		SetHPRef(&m_hp);
 	}
 	CDeathHotoke(int playernum, IGamePad* ptrPad, bool isDrawHUD, HUDFont* ptrFont, std::unique_ptr<IAI> AI){
 		//検索用の名前登録
 		SetName(L"CDeathHotoke");
+		SetLockableObjectName(L"CDeathHotoke");
 		//ロックオンされた際に参照されるHP変数を設定
 		SetHPRef(&m_hp);		
 		//初期化

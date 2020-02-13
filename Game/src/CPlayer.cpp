@@ -248,7 +248,7 @@ void HumanPlayer::HUDRender(int HUDNum) {
 			}
 		}*/
 		if (m_isLockon) {
-			m_guncross.Draw(pos, 1.0f, 0.5f, m_isLockon ? 0.0f : CMath::PI_QUARTER, m_enemyColor);
+			m_guncross.Draw(pos, 1.0f, 0.5f, m_isLockon ? 0.0f : CMath::PI_QUARTER, m_enemyColor*CVector4(1.0f,1.0f,1.0f,0.5f));
 			//ステータス
 			CVector4 color = m_HUDFont.GetColor();
 			m_HUDFont.SetColor(m_enemyColor);

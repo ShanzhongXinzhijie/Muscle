@@ -204,6 +204,11 @@ public:
 		SetName(L"LockableObject");
 	}
 
+	//名前を設定
+	void SetLockableObjectName(const wchar_t* name) {
+		m_name = name;
+	}
+
 	//ロックオン優先度を設定
 	void SetPriorityLevel(int level = DEFAULT_LEVEL){
 		m_priorityLevel = level;
@@ -230,6 +235,11 @@ public:
 	}
 	IFu* GetFu() {
 		return m_fu;
+	}
+
+	//名前を取得
+	std::wstring_view GetLockableObjectName() {
+		return m_name;
 	}
 
 	//ロックオン優先度を取得
@@ -259,6 +269,8 @@ private:
 	IFu* m_fu = nullptr;
 	IFu* m_owner = nullptr;
 
+	std::wstring m_name;
+
 	int m_priorityLevel = DEFAULT_LEVEL;//ロックオン優先度
 
 	bool m_isFirstUpdate = true;
@@ -287,6 +299,13 @@ public:
 	//ロックオン用クラス取得
 	LockableWrapper* GetLockableWrapper() {
 		return m_lockableWrapper ? m_lockableWrapper.get() : nullptr;
+	}
+
+	//ロックオンオブジェクトとしての名前を設定
+	void SetLockableObjectName(const wchar_t* name) {
+		if (m_lockableWrapper) {
+			m_lockableWrapper->SetLockableObjectName(name);
+		}
 	}
 
 	//HPを設定

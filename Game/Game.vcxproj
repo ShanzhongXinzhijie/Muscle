@@ -27,6 +27,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Hotoke\BP_DinoArm.cpp" />
     <ClCompile Include="src\CreateObjectManager.cpp" />
     <ClCompile Include="src\CGameMode.cpp" />
     <ClCompile Include="src\Hotoke\BP_Heads.cpp" />
@@ -75,6 +76,7 @@
     <ClCompile Include="src\WindowSizeManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\hotoke\BP_DinoArm.h" />
     <ClInclude Include="include\CreateObjectManager.h" />
     <ClInclude Include="include\CGameMode.h" />
     <ClInclude Include="include\hotoke\BP_Heads.h" />
@@ -136,6 +138,7 @@
     <MeshContentTask Include="Asset\modelData\bullet\beam.FBX" />
     <MeshContentTask Include="Asset\modelData\cloud\sphere.fbx" />
     <MeshContentTask Include="Asset\modelData\dinosaur.FBX" />
+    <MeshContentTask Include="Asset\modelData\dino\DinosaurArms.FBX" />
     <MeshContentTask Include="Asset\modelData\elephant\source\ELEPHANT_M.fbx" />
     <MeshContentTask Include="Asset\modelData\far_graund.fbx" />
     <MeshContentTask Include="Asset\modelData\fbx_Grass\Grass.FBX" />

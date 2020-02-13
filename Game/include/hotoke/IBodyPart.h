@@ -64,6 +64,10 @@ public:
 private:
 	//Start関数内で実行される仮想関数
 	virtual void InnerStart() = 0;
+
+protected:
+	//腕を指定の座標へ向ける処理
+	CVector3 TurnArm(const CVector3& armTargetPos, const CVector3& armTipPos, const CVector3& armAxis, float angleLimitFront, float angleLimitBack, float armSpeed, CVector3& localTargetPos);
 	
 protected:
 	//本体のポインタ

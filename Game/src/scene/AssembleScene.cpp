@@ -13,6 +13,7 @@
 #include "BP_HumanLeg.h"
 #include "BP_HumanMantle.h"
 #include "BP_HumanArm.h"
+#include "BP_DinoArm.h"
 
 namespace {
 	const CVector3 HOTOKE_POS = { 300.0f,150.0f,-300.0f };
@@ -43,7 +44,7 @@ bool AssembleScene::Start() {
 	m_parts[CDeathHotoke::enHead].push_back(std::make_unique<BP_PalmHead>());
 
 	m_parts[CDeathHotoke::enArm].push_back(std::make_unique<BP_KaniArm>());
-	m_parts[CDeathHotoke::enArm].push_back(std::make_unique<BP_HumanArm>());
+	m_parts[CDeathHotoke::enArm].push_back(std::make_unique<BP_DinoArm>());
 
 	m_parts[CDeathHotoke::enWing].push_back(std::make_unique<BP_BirdWing>());
 	m_parts[CDeathHotoke::enWing].push_back(std::make_unique<BP_HumanMantle>());
@@ -90,7 +91,7 @@ bool AssembleScene::Start() {
 	//SetAmbientCubeMap(L"Resource/cubemap/cube2.dds", CVector3(0.8f, 0.1f, 0.35f)*0.2f);
 
 	//空
-	m_sky.Init(L"Resource/cubemap/loadcube.dds");// , -1.f, true, CVector3(0.8f, 0.1f, 0.35f));
+	m_sky.Init(L"Resource/cubemap/loadcube.dds",-1.f,true,1.25f);// , -1.f, true, CVector3(0.8f, 0.1f, 0.35f));
 
 	//フォグを有効化
 	//SetEnableFog(true);

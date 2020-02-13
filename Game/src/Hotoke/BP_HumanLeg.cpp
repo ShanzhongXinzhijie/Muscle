@@ -160,11 +160,15 @@ void BP_HumanLeg::Draw2D() {
 
 bool BP_HumanLeg::CanKick()const {
 	//キック可能か判定
+	if (m_leftStomp <= 0 || !m_ptrCore->GetTarget() || m_ptrCore->GetTarget()->GetLockableObjectName() != L"CDeathHotoke") {
+		return false;
+	}
+
 	constexpr float KICK_LENGE_Sq = CMath::Square(200.0f*METER);
 	CVector3 distance = m_ptrCore->GetTargetPos() - m_ptrCore->GetPos(); 
 	float rad = CVector3::AngleOf2NormalizeVector((m_ptrCore->GetVanisingPoint() - m_ptrCore->GetPos()).GetNorm(), distance.GetNorm());
 	distance.y = 0.0f;
-	return m_ptrCore->GetTarget() && m_leftStomp > 0 && distance.LengthSq() < KICK_LENGE_Sq && rad < CMath::DegToRad(67.0f);
+	return distance.LengthSq() < KICK_LENGE_Sq && rad < CMath::DegToRad(67.0f);
 }
 
 void BP_HumanLeg::Jump() {
