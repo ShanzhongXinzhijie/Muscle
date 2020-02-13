@@ -14,6 +14,7 @@
 #include "BP_HumanMantle.h"
 #include "BP_HumanArm.h"
 #include "BP_DinoArm.h"
+#include "BP_TankLeg.h"
 
 namespace {
 	const CVector3 HOTOKE_POS = { 300.0f,150.0f,-300.0f };
@@ -49,7 +50,8 @@ bool AssembleScene::Start() {
 	m_parts[CDeathHotoke::enWing].push_back(std::make_unique<BP_BirdWing>());
 	m_parts[CDeathHotoke::enWing].push_back(std::make_unique<BP_HumanMantle>());
 
-	m_parts[CDeathHotoke::enLeg].push_back(std::make_unique<BP_HumanLeg>());
+	m_parts[CDeathHotoke::enLeg].push_back(std::make_unique<BP_HumanLeg>()); 
+	m_parts[CDeathHotoke::enLeg].push_back(std::make_unique<BP_TankLeg>());
 
 	//表示用ホトケ初期化
 	for (int i = 0; i < m_playerNum; i++) {
