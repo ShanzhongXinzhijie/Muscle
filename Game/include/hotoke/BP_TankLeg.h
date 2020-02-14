@@ -21,6 +21,9 @@ private:
 
 	CVector3 m_beforePos;//前回の位置
 	DHCollision m_col;//コリジョン
+
+	Bone* m_eye = nullptr;//視点位置ボーン
+	Bone* m_legs[6][2] = {};//足ボーン
 };
 
 /// <summary>

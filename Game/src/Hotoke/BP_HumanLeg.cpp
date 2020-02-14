@@ -10,6 +10,10 @@ namespace{
 
 void BP_HumanLeg::InnerStart() {
 	m_name = L"ヒューマン";
+
+	//足元への距離を設定
+	m_ptrCore->SetToFootDistance(205.0f);
+	m_ptrCore->SetUseFixedCamera(false);
 	
 	//アニメーション(ボーン初期化用)
 	m_initPose.Load(L"Resource/animation/humanleg.tka", true);

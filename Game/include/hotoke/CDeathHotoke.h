@@ -71,6 +71,19 @@ public:
 		return *m_parts[partsType].get();
 	}
 
+	//座標から足元までの距離を設定
+	void SetToFootDistance(float distance) {
+		m_toFootDistance = distance;
+	}
+	//固定カメラを使用するかのフラグを設定
+	void SetUseFixedCamera(bool enable) {
+		m_useFixedCamera = enable;
+	}
+	//固定カメラの位置を設定
+	void SetFixedCameraPoint(const CVector3& pos) {
+		m_fixedCameraPos = pos;
+	}
+
 	//操作可能かどうか設定
 	void SetIsControl(bool isControl) {
 		m_isControl = isControl;
@@ -130,11 +143,19 @@ public:
 
 	//座標から足元までの距離
 	float GetToFootDistance()const {
-		return 205.0f;
+		return m_toFootDistance;
 	}
 	//足元の座標を取得
 	CVector3 GetFootPos()const {
 		return GetPos() + CVector3::Down()*GetToFootDistance();
+	}
+	//固定カメラを使用するか
+	bool GetUseFixedCamera()const {
+		return m_useFixedCamera;
+	}
+	//固定カメラの位置
+	const CVector3& GetFixedCameraPoint()const {
+		return m_fixedCameraPos;
 	}
 
 	//高度を取得(メートル)
@@ -249,6 +270,12 @@ private:
 	
 	//スケール
 	CVector3 m_scale;
+
+	//足元への距離
+	float m_toFootDistance = 205.0f;
+	//固定カメラ
+	bool m_useFixedCamera = false;	//使うか
+	CVector3 m_fixedCameraPos;		//位置
 
 	//前フレームの位置
 	CVector3 m_posOld;

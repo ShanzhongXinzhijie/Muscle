@@ -108,35 +108,43 @@ void HotokeCameraController::Update() {
 	}	
 	
 	//カメラ位置設定
-	CVector3 offsetVec = { 0.0f, -m_ptrHotoke->GetToFootDistance(), -100.0f };
-	m_ptrHotoke->GetRot().Multiply(offsetVec);
+	if (m_ptrHotoke->GetUseFixedCamera()) {
+		//固定カメラ
+		//位置設定
+		m_hotokeCam.SetPos(m_ptrHotoke->GetFixedCameraPoint() + m_ptrHotoke->GetMove());
+		m_hotokeCam.SetTargetPosOffset(m_ptrHotoke->GetPos() - m_ptrHotoke->GetFixedCameraPoint());
+	}
+	else {
+		CVector3 offsetVec = { 0.0f, -m_ptrHotoke->GetToFootDistance(), -100.0f };
+		m_ptrHotoke->GetRot().Multiply(offsetVec);
 
-	//地面と判定して高さ算出
-	CVector3 start = m_ptrHotoke->GetPos() + offsetVec, end = m_ptrHotoke->GetPos() + offsetVec;
-	start.y = m_ptrHotoke->GetPos().y; end.y -= m_cameraHeight + 1.0f;
+		//地面と判定して高さ算出
+		CVector3 start = m_ptrHotoke->GetPos() + offsetVec, end = m_ptrHotoke->GetPos() + offsetVec;
+		start.y = m_ptrHotoke->GetPos().y; end.y -= m_cameraHeight + 1.0f;
 
-	btCollisionWorld::AllHitsRayResultCallback callback(start, end);
-	GetPhysicsWorld().RayTest(start, end, callback);
-		
-	start = m_ptrHotoke->GetPos() + offsetVec; start.y -= m_cameraHeight;
-	if (callback.hasHit()) {
-		for (int i = 0; i < callback.m_collisionObjects.size(); i++) {
-			if (callback.m_collisionObjects[i]->getUserIndex() == enCollisionAttr_CCollisionObj) {
-				SuicideObj::CCollisionObj* Obj = (SuicideObj::CCollisionObj*)(callback.m_collisionObjects[i]->getUserPointer());
-				if (Obj->GetGroupBitset().test(enField)) {
+		btCollisionWorld::AllHitsRayResultCallback callback(start, end);
+		GetPhysicsWorld().RayTest(start, end, callback);
+
+		start = m_ptrHotoke->GetPos() + offsetVec; start.y -= m_cameraHeight;
+		if (callback.hasHit()) {
+			for (int i = 0; i < callback.m_collisionObjects.size(); i++) {
+				if (callback.m_collisionObjects[i]->getUserIndex() == enCollisionAttr_CCollisionObj) {
+					SuicideObj::CCollisionObj* Obj = (SuicideObj::CCollisionObj*)(callback.m_collisionObjects[i]->getUserPointer());
+					if (Obj->GetGroupBitset().test(enField)) {
+						if (start.y < callback.m_hitPointWorld[i].y()) { start = callback.m_hitPointWorld[i]; }
+					}
+				}
+				else {
 					if (start.y < callback.m_hitPointWorld[i].y()) { start = callback.m_hitPointWorld[i]; }
 				}
 			}
-			else {
-				if (start.y < callback.m_hitPointWorld[i].y()) { start = callback.m_hitPointWorld[i]; }
-			}
 		}
-	}
-	start.y += m_cameraHeight;
+		start.y += m_cameraHeight;
 
-	//位置設定
-	m_hotokeCam.SetPos(start);
-	m_hotokeCam.SetTargetPosOffset(offsetVec*-1.0f);	
+		//位置設定
+		m_hotokeCam.SetPos(start);
+		m_hotokeCam.SetTargetPosOffset(m_ptrHotoke->GetPos() - start); //offsetVec*-1.0f
+	}
 
 	//カメラ回転設定
 	m_hotokeCam.SetRot(m_ptrHotoke->GetRot());	
