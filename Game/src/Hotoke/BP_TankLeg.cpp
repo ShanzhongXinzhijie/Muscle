@@ -33,19 +33,19 @@ void BP_TankLeg::InnerStart() {
 	m_eye = m_model->FindBone(L"eye");
 
 	//‹rƒ{[ƒ“Žæ“¾
-	m_legs[0][0] = m_model->FindBone(L"Bone004");
-	m_legs[0][1] = m_model->FindBone(L"Bone005");
-	m_legs[1][0] = m_model->FindBone(L"Bone007");
-	m_legs[1][1] = m_model->FindBone(L"Bone008");
-	m_legs[2][0] = m_model->FindBone(L"Bone010");
-	m_legs[2][1] = m_model->FindBone(L"Bone011");
+	m_legs[0][0] = m_model->FindBone(L"leg0s");
+	m_legs[0][1] = m_model->FindBone(L"leg0e");
+	m_legs[1][0] = m_model->FindBone(L"leg1s");
+	m_legs[1][1] = m_model->FindBone(L"leg1e");
+	m_legs[2][0] = m_model->FindBone(L"leg2s");
+	m_legs[2][1] = m_model->FindBone(L"leg2e");
 
-	m_legs[3][0] = m_model->FindBone(L"Bone004(mirrored)");
-	m_legs[3][1] = m_model->FindBone(L"Bone005(mirrored)");
-	m_legs[4][0] = m_model->FindBone(L"Bone007(mirrored)");
-	m_legs[4][1] = m_model->FindBone(L"Bone008(mirrored)");
-	m_legs[5][0] = m_model->FindBone(L"Bone010(mirrored)");
-	m_legs[5][1] = m_model->FindBone(L"Bone011(mirrored)");
+	m_legs[3][0] = m_model->FindBone(L"leg0s(mirrored)");
+	m_legs[3][1] = m_model->FindBone(L"leg0e(mirrored)");
+	m_legs[4][0] = m_model->FindBone(L"leg1s(mirrored)");
+	m_legs[4][1] = m_model->FindBone(L"leg1e(mirrored)");
+	m_legs[5][0] = m_model->FindBone(L"leg2s(mirrored)");
+	m_legs[5][1] = m_model->FindBone(L"leg2e(mirrored)");
 
 	//“–‚½‚è”»’è(‘«)
 	//TODO
@@ -97,8 +97,8 @@ void BP_TankLeg::Update() {
 		btCollisionWorld::ClosestRayResultCallback gnd_ray(rayStart, rayEnd);
 		GetEngine().GetPhysicsWorld().RayTest(rayStart, rayEnd, gnd_ray);
 		if (gnd_ray.hasHit()) {
-			if (height < rayEnd.y() - gnd_ray.m_hitPointWorld.y()) {
-				height = rayEnd.y() - gnd_ray.m_hitPointWorld.y();
+			if (height < gnd_ray.m_hitPointWorld.y() - rayEnd.y()) {
+				height = gnd_ray.m_hitPointWorld.y() - rayEnd.y();
 			}
 		}
 	}
