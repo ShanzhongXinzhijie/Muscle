@@ -89,6 +89,7 @@ void BP_TankLeg::Update() {
 	if (m_controller)m_controller->Update();
 
 	//接地判定
+	m_legHitNum = 0;
 	float height = 0.0f;
 	for (int i = 0; i < 6; i++) {
 		//レイで判定
@@ -97,13 +98,17 @@ void BP_TankLeg::Update() {
 		btCollisionWorld::ClosestRayResultCallback gnd_ray(rayStart, rayEnd);
 		GetEngine().GetPhysicsWorld().RayTest(rayStart, rayEnd, gnd_ray);
 		if (gnd_ray.hasHit()) {
+			m_legHitNum++;
 			if (height < gnd_ray.m_hitPointWorld.y() - rayEnd.y()) {
 				height = gnd_ray.m_hitPointWorld.y() - rayEnd.y();
 			}
 		}
 	}
-	//本体位置を上に
-	m_ptrCore->SetPos(m_ptrCore->GetPos() + CVector3(0.0f, height, 0.0f));
+	if (m_legHitNum > 0) {
+		//本体位置を上に
+		m_ptrCore->SetPos(m_ptrCore->GetPos() + CVector3(0.0f, height, 0.0f));
+		//m_ptrCore->AddVelocity(CVector3(0.0f, m_ptrCore->GetGravity(), 0.0f));
+	}
 }
 
 void BP_TankLeg::PostUTRSUpdate() {
@@ -115,6 +120,15 @@ void BP_TankLeg::PostUTRSUpdate() {
 	//固定カメラ設定
 	m_ptrCore->SetUseFixedCamera(true);
 	m_ptrCore->SetFixedCameraPoint(m_eye->GetPosition());
+
+	//接地処理
+	if (m_legHitNum > 0) {
+		//接地しているなら抵抗UP
+		m_ptrCore->MulDrag(20.0f*m_legHitNum + 10.0f*max(0.0f, -m_ptrCore->GetTotalVelocity().y));
+		m_ptrCore->MulRotatability(3.0f*m_legHitNum + 1.0f*max(0.0f, -m_ptrCore->GetTotalVelocity().y));//回転力もUP
+		//振動
+		m_ptrCore->SetShakePower(0.0015f*max(0.0f, -m_ptrCore->GetTotalVelocity().y - m_ptrCore->GetGravity()));//*(hitnum/6.0f)
+	}
 }
 
 void BP_TankLeg::Draw2D() {

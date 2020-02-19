@@ -24,6 +24,7 @@ private:
 
 	Bone* m_eye = nullptr;//視点位置ボーン
 	Bone* m_legs[6][2] = {};//足ボーン
+	int m_legHitNum = 0;
 };
 
 /// <summary>

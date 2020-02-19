@@ -21,8 +21,6 @@ public:
 	//踏みつけ
 	bool CanKick()const;
 	void Stomp();
-	//うんち
-	//void Unchi();
 
 private:
 	//コントローラー

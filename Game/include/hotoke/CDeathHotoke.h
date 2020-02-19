@@ -192,15 +192,25 @@ public:
 	//
 
 	//スケールを取得
-	[[nodiscard]] const CVector3& GetScale()const { return m_scale; }
+	[[nodiscard]] const CVector3& GetScale()const { 
+		return m_scale;
+	}
 	//移動したベクトルを取得
-	[[nodiscard]] CVector3 GetMove() const { return GetPos() - m_posOld; }
+	[[nodiscard]] CVector3 GetMove() const { 
+		return GetPos() - m_posOld; 
+	}
 	//ベロシティを取得
-	[[nodiscard]] CVector3 GetTotalVelocity() const { return m_veloxity + m_linearVelocity; }
+	[[nodiscard]] CVector3 GetTotalVelocity() const {
+		return m_veloxity + m_linearVelocity;
+	}
 	//抵抗を取得
-	[[nodiscard]] float GetDrag()const { return m_drag[enNow]; }
+	[[nodiscard]] float GetDrag()const {
+		return m_drag[enNow]; 
+	}
 	//回転しやすさを取得
-	[[nodiscard]] float GetRotatability()const { return m_rotatability[enNow]; }
+	[[nodiscard]] float GetRotatability()const {
+		return m_rotatability[enNow];
+	}
 
 	//ターゲット位置を取得
 	[[nodiscard]] const CVector3& GetTargetPos() const {
