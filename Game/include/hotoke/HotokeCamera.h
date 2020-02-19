@@ -251,7 +251,7 @@ private:
 	CVector2 m_padSensi = { 0.05f,-0.05f };//視点感度(パッド
 
 	//パラメータ
-	float m_cameraHeight = 16.45f;//カメラの地面からの高さ
+	static constexpr float m_cameraHeight = 16.45f;//カメラの地面からの高さ(人間の身長)
 	
 	//参照
 	CDeathHotoke* m_ptrHotoke = nullptr;

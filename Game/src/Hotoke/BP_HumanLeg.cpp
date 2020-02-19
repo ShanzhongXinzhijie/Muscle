@@ -122,6 +122,9 @@ void BP_HumanLeg::PostUTRSUpdate() {
 		//Ú’n‚µ‚Ä‚¢‚é‚È‚ç’ïRUP
 		m_ptrCore->MulDrag(20.0f + 10.0f*max(0.0f,-m_ptrCore->GetTotalVelocity().y));
 		m_ptrCore->MulRotatability(2.0f+ 1.0f*max(0.0f, -m_ptrCore->GetTotalVelocity().y));//‰ñ“]—Í‚àUP
+		//U“®
+		m_ptrCore->SetShakePower(0.0015f*max(0.0f, -m_ptrCore->GetTotalVelocity().y));
+
 		//ƒWƒƒƒ“ƒv
 		if (m_isJump) {
 			float power = 25.0f + 38.0f*(1.0f - abs((minFootDistance - footDistance) / (minFootDistance - maxFootDistance)));

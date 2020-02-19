@@ -200,6 +200,16 @@ void HumanPlayer::PostLoopUpdate() {
 		DrawLine2D(origin + CVector3(-0.2f, 0.0f, 0.0f), origin + CVector3(0.2f, 0.0f, 0.0f), m_HUDColor*CVector4(1.0f, 1.0f, 1.0f, 0.5f), m_playerNum);
 		DrawLine2D(origin + CVector3(0.0f, -0.2f, 0.0f), origin + CVector3(0.0f, 0.2f, 0.0f), m_HUDColor*CVector4(1.0f, 1.0f, 1.0f, 0.5f), m_playerNum);
 	}
+
+	//U“®
+	if (m_hotoke.GetShakePower() > 0.0f) {
+		//for (int i = 0; i < 4; i++) {‚¹
+			DrawQuad2D({ 0.0f,0.0f,0.0f }, { 1.0f * CMath::RandomZeroToOne() * m_hotoke.GetShakePower(),1.0f,0.0f }, CVector4(0.0f, 0.0f, 0.0f, 0.7f), m_playerNum);
+			DrawQuad2D({ 1.0f - 1.0f * CMath::RandomZeroToOne() * m_hotoke.GetShakePower(),0.0f,0.0f }, { 1.0f,1.0f,0.0f }, CVector4(0.0f, 0.0f, 0.0f, 0.7f), m_playerNum);
+			DrawQuad2D({ 0.0f,0.0f,0.0f }, { 1.0f,1.0f * CMath::RandomZeroToOne() * m_hotoke.GetShakePower(),0.0f }, CVector4(0.0f, 0.0f, 0.0f, 0.7f), m_playerNum);
+			DrawQuad2D({ 0.0f,1.0f - 1.0f * CMath::RandomZeroToOne() * m_hotoke.GetShakePower(),0.0f }, { 1.0f,1.0f,0.0f }, CVector4(0.0f, 0.0f, 0.0f, 0.7f), m_playerNum);
+		//}
+	}
 }
 
 void HumanPlayer::HUDRender(int HUDNum) {

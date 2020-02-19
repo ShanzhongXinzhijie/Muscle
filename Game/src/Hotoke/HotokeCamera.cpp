@@ -92,6 +92,7 @@ void HotokeCameraController::Update() {
 		m_hotokeCam.ResetMotionBlur();
 	}
 
+#ifndef DW_MASTER
 	if (GetAsyncKeyState('O')) {
 		//マウスカーソルを中央に固定
 		GetMouseCursorManager().SetLockMouseCursor(true);
@@ -106,7 +107,8 @@ void HotokeCameraController::Update() {
 		GetMouseCursorManager().SetShowMouseCursor(true);
 		m_lock = true;
 	}	
-	
+#endif
+
 	//カメラ位置設定
 	if (m_ptrHotoke->GetUseFixedCamera()) {
 		//固定カメラ

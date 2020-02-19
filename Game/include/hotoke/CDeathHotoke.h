@@ -84,6 +84,11 @@ public:
 		m_fixedCameraPos = pos;
 	}
 
+	//振動値を設定
+	void SetShakePower(float shakePower) {
+		m_shakePower = shakePower;
+	}
+
 	//操作可能かどうか設定
 	void SetIsControl(bool isControl) {
 		m_isControl = isControl;
@@ -156,6 +161,11 @@ public:
 	//固定カメラの位置
 	const CVector3& GetFixedCameraPoint()const {
 		return m_fixedCameraPos;
+	}
+
+	//振動値を取得
+	float GetShakePower()const {
+		return m_shakePower;
 	}
 
 	//高度を取得(メートル)
@@ -276,6 +286,9 @@ private:
 	//固定カメラ
 	bool m_useFixedCamera = false;	//使うか
 	CVector3 m_fixedCameraPos;		//位置
+
+	//振動値
+	float m_shakePower = 0.0f;
 
 	//前フレームの位置
 	CVector3 m_posOld;

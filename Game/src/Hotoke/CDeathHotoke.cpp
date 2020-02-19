@@ -114,6 +114,7 @@ void CDeathHotoke::PreUpdate() {
 	m_drag[enNext] = 1.0f;
 	m_angularDrag[enNext] = 1.0f;
 	m_rotatability[enNext] = 1.0f;
+	m_shakePower = 0.0f;
 }
 
 void CDeathHotoke::Update() {
