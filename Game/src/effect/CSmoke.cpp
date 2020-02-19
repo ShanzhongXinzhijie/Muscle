@@ -81,6 +81,12 @@ void InstancingSmokeParamManager::PreDraw(int instanceNum, int drawInstanceNum, 
 		if (drawInstanceMask[i]) {
 			data_t[drawNum] = m_cashe_t[i];
 			data_color[drawNum] = m_cashe_color[i];
+
+			//ƒJƒƒ‰‚Æ‚Ì‹——£‚ª‹ß‚¢‰Œ‚Í“§–¾“x‚ª‚‚¢
+			const CMatrix& worldmat = GetDrawInstanceWorldMatrix(drawNum);
+			CVector3 pos = { worldmat.m[3][0], worldmat.m[3][1], worldmat.m[3][2] };
+			data_color[drawNum].w *= CMath::Clamp((GetMainCamera()->GetPos() - pos).LengthSq() / CMath::Square(10.0f * METER), 0.25f, 1.0f);
+
 			drawNum++;
 		}
 	}
