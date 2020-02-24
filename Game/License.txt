@@ -1,8 +1,14 @@
 "Poop" by bilgehan.korkmaz is licensed under CC BY 4.0 を使用。
 https://sketchfab.com/3d-models/poop-5b80e6a023fc4ca591f4a9f73eb09a93
 
-"Turtle Snail" by Tannstongli is licensed under CC BY 4.0 の頭部をパーツとして使用。
+"Turtle Snail" by Tannstongli is licensed under CC BY 4.0
+頭部をパーツとして使用。
 https://sketchfab.com/3d-models/turtle-snail-59ccc31ca79c4bdf827a727eca06869e
 
-"ELEPHANT" by onderonvermez is licensed under CC BY 4.0 の頭部をパーツとして使用。テクスチャからノーマルマップを作成。
+"ELEPHANT" by onderonvermez is licensed under CC BY 4.0
+頭部をパーツとして使用。テクスチャからノーマルマップを作成。
 https://sketchfab.com/3d-models/elephant-93c389f9be37411c9ae4e97ef08bbeee
+
+"Snake Critter Animated (Bonerigged L-poly)" by DarkLordFlash is licensed under CC BY 4.0 
+脚部をパーツとして使用。
+https://sketchfab.com/3d-models/snake-critter-animated-bonerigged-l-poly-47b9bdcdaf3242469afd7adaf97dfcd4
