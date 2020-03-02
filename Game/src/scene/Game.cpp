@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Game.h"
 #include "GameManager.h"
+#include "CGameMode.h"
 
 Game::Game(GameManager* manager) 
 	: m_manager(manager), m_timeLimitSec(static_cast<float>(manager->GetTimeLimitSec()) + 0.9f)
@@ -13,10 +14,22 @@ Game::Game(GameManager* manager)
 	m_player[0] = std::make_unique<CPlayer>(1);
 	m_player[1] = std::make_unique<CPlayer>(0);
 
+	//練習ラウンドなら不死設定にする
+	if (m_manager->GetIsPracticeRound()) {
+		for (auto& player : m_player) {
+			player->GetDeathHotoke().SetIsImmortal(true);
+		}
+	}
+
 	//ステージ生成
 	m_shibuya = std::make_unique<Shibuya>();
 
 	//m_font.SetColor(CVector4::Black());
+
+	//プレイヤー人数の取得
+	if (FindGO<CGameMode>(L"CGameMode")->GetPlayerNum() == 1) {
+		MAX_PUSH = 6;
+	}
 }
 
 void Game::PreUpdate() {
@@ -33,6 +46,18 @@ void Game::PreUpdate() {
 	if (isDeath) {
 		m_manager->GameEnd(isDeathPlayer);
 		return;
+	}
+
+	//練習ラウンドならラウンド終了操作あり
+	if (m_manager->GetIsPracticeRound()) {
+		for (int i = 0; i < PLAYER_NUM; i++) {
+			if (Pad(i).GetDown(enButtonB)) {
+				m_pushCnt++;
+			}
+		}
+		if (m_pushCnt >= MAX_PUSH) {
+			m_timeLimitSec = -1.0f;
+		}		
 	}
 
 	//制限時間
@@ -62,5 +87,28 @@ void Game::PostRender() {
 			//m_manager->GetPlayerScore(0), m_manager->GetPlayerScore(1),
 			static_cast<int>(m_timeLimitSec / 60.0f), static_cast<int>(m_timeLimitSec) % 60
 		);
+	}
+
+	//ラウンド終了操作
+	if (m_manager->GetIsPracticeRound()) {
+		CVector2 scale = m_font.GetScale();
+		m_font.SetScale(scale*0.5f);
+		m_font.SetUseFont(m_font.enJPN);
+		if (GetScreenNum() == 1) {
+			m_font.DrawFormat(
+				L"Bれんだでゲームスタート(%d/%d)",
+				{ 0.95f,0.08f }, { 1.0f,0.0f },
+				m_pushCnt, MAX_PUSH
+			);
+		}
+		else {
+			m_font.DrawFormat(
+				L"Bれんだでゲームスタート(%d/%d)",				
+				{ 0.5f,0.08f }, { 0.5f,0.0f },
+				m_pushCnt, MAX_PUSH
+			);
+		}
+		m_font.SetUseFont(m_font.enENG);
+		m_font.SetScale(scale);
 	}
 }

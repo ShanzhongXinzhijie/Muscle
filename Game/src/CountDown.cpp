@@ -3,15 +3,6 @@
 #include "TimeManager.h"
 #include "CDeathHotoke.h"
 
-//namespace {
-//	constexpr int MAX_COUNTDOWN_TYPE = 2;
-//	constexpr int MAX_COUNTDOWN = 4;
-//	constexpr wchar_t countDownString[MAX_COUNTDOWN_TYPE][MAX_COUNTDOWN][32] = {
-//		{L"ベギン",L"勇敢な",L"走る…",L"行く"},
-//		{L"ベギン",L"勇敢な",L"走る…",L"行く"}
-//	};
-//}
-
 CountDown::CountDown(int round, int roundmax, int score[PLAYER_NUM], int timeLimitSec)
 	: m_roundCount(round), m_maxRound(roundmax), m_timeLimitSec(timeLimitSec)
 {
@@ -28,7 +19,9 @@ CountDown::CountDown(int round, int roundmax, int score[PLAYER_NUM], int timeLim
 }
 
 bool CountDown::Start() {
-	m_font.LoadFont(L"Resource/font/eunomia_0200/EunomiaBold.spritefont");//フォント初期化
+	//フォント初期化
+	m_font.LoadFont(L"Resource/font/eunomia_0200/EunomiaBold.spritefont");
+	m_fontJPN.LoadFont(L"Resource/font/x14y24pxHeadUpDaisy.spritefont"); 
 	return true;
 }
 
@@ -59,13 +52,18 @@ void CountDown::PostLoopUpdate() {
 }
 
 void CountDown::PostRender() {
+	bool isJpnFont = false;
 	wchar_t string[64];
 	CVector4 color = CVector4::Black();
 	CVector2 scale = 0.8f;
 
 	if (m_countDownSec > 4.0f) {
 		scale.x *= 1.0f - CMath::Saturate(m_countDownSec - 5.0f);
-		if (m_roundCount + 1 == m_maxRound) {
+
+		if (m_roundCount < 0) {
+			wcscpy_s(string, L"れんしゅうラウンド"); 
+			isJpnFont = true;
+		}else if (m_roundCount + 1 == m_maxRound) {
 			color.x = 1.0f;
 			m_font.Draw(L"FINALROUND", { 0.5f,0.4f }, color, scale, { 0.565f, 1.0f });
 			color = CVector4::Black();
@@ -87,23 +85,10 @@ void CountDown::PostRender() {
 		color.x = 1.0f;
 	}
 
-	//float scale, x; 
-	//scale = (1.0f-std::modf(m_countDownSec, &x));
-
-	m_font.Draw(string, 0.5f, color, scale, { 0.575f, 0.6f});
-	
-	/*int count = MAX_COUNTDOWN - 1 - (int)(m_countDownSec + 0.5f);
-	float scale,x;
-	if (count == MAX_COUNTDOWN-1) {
-		scale = 4.0f*(1.0f-std::modf(m_countDownSec, &x));
+	if (isJpnFont) {
+		m_fontJPN.Draw(string, 0.5f, color, scale*2.5f, { 0.575f, 0.6f });
 	}
 	else {
-		scale = 2.0f*std::modf(m_countDownSec, &x);
+		m_font.Draw(string, 0.5f, color, scale, { 0.575f, 0.6f });
 	}
-	m_font.Draw(
-		countDownString[m_countDownType][count], 0.5f,
-		CVector4::White(), 5.0f*scale, 0.5f,
-		0.0f,DirectX::SpriteEffects_None,
-		0.0f
-	);*/
 }

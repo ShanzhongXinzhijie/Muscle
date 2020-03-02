@@ -14,7 +14,7 @@ public:
 	void PostRender()override;
 
 private:
-	CFont m_font;
+	CFont m_font, m_fontJPN;
 
 	int m_unuseFrameCount = 2;
 	//int m_countDownType = 0;

@@ -194,8 +194,10 @@ void CDeathHotoke::HUDRender(int HUDNum) {
 void CDeathHotoke::Damage(const ReferenceCollision& ref, const CVector3& pos) {
 	if (ref.damege < FLT_EPSILON) { return; }//ノーダメージ
 
-	m_hp -= ref.damege;
-	
+	if (!m_isImmortal) {
+		m_hp -= ref.damege;
+	}
+
 	//血煙
 	for (int i = 0; i < 3; i++) {
 		CVector3 dir = ref.direction*-1.0f*(40.0f + 400.0f*CMath::RandomZeroToOne());

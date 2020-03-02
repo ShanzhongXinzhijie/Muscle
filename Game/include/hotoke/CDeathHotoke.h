@@ -46,10 +46,10 @@ public:
 		//初期位置
 		SetPos(CVector3::AxisY()*2000.0f);
 		if (m_playerNum == 0) {
-			SetPos({ 1000.0f, 1000.0f, -2400.0f*1.0f });
+			SetPos({ 0.0f, 1000.0f, -2400.0f*1.0f });
 		}
 		if (m_playerNum == 1) {
-			SetPos({ -1000.0f, 1000.0f, 2400.0f*1.0f });
+			SetPos({ 0.0f, 1000.0f, 2400.0f*1.0f });
 			SetRot({ CVector3::AxisY(),CMath::PI });
 		}
 	}
@@ -123,6 +123,11 @@ public:
 
 	//回転しやすさを乗算
 	void MulRotatability(float rotatability) { m_rotatability[enNext] *= rotatability; }
+
+	//不死設定
+	void SetIsImmortal(bool isImmortal) {
+		m_isImmortal = isImmortal;
+	}
 
 	//ダメージをあたえる
 	void Damage(const ReferenceCollision& ref, const CVector3& pos);
@@ -308,6 +313,7 @@ private:
 	CQuaternion m_angularVelocity;
 
 	//ステータス
+	bool m_isImmortal = false;//不死か
 	static constexpr float HP_MAX = 20.0f;
 	float m_hp = HP_MAX;//ヘルス
 	float m_stunTimeSec = 0.0f;//スタン時間

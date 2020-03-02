@@ -31,5 +31,8 @@ private:
 
 	//ゲームマネージャー
 	GameManager* m_manager = nullptr;
+
+	int m_pushCnt = 0;
+	int MAX_PUSH = 20;
 };
 

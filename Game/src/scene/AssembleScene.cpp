@@ -14,6 +14,7 @@
 #include "BP_HumanMantle.h"
 #include "BP_HumanArm.h"
 #include "BP_DinoArm.h"
+#include "BP_SnakeLeg.h"
 #include "BP_TankLeg.h"
 
 namespace {
@@ -51,6 +52,7 @@ bool AssembleScene::Start() {
 	m_parts[CDeathHotoke::enWing].push_back(std::make_unique<BP_HumanMantle>());
 
 	m_parts[CDeathHotoke::enLeg].push_back(std::make_unique<BP_HumanLeg>()); 
+	m_parts[CDeathHotoke::enLeg].push_back(std::make_unique<BP_SnakeLeg>());
 	m_parts[CDeathHotoke::enLeg].push_back(std::make_unique<BP_TankLeg>());
 
 	//表示用ホトケ初期化

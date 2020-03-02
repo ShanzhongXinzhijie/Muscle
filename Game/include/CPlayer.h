@@ -84,6 +84,13 @@ public:
 		return m_hotoke.GetHP() <= 0.0f;
 	}
 
+	/// <summary>
+	/// デスホトケ本体を取得
+	/// </summary>
+	CDeathHotoke& GetDeathHotoke() {
+		return m_hotoke;
+	}
+
 private:
 	//プレイヤー番号
 	int m_playerNum = -1;
