@@ -25,7 +25,7 @@ private:
 	CVector3 m_beforePos;//前回の位置
 	DHCollision m_col;//コリジョン
 
-	SkeletonIK::IKSetting* m_ikSetting[2];
+	SkeletonIK::IKSetting* m_ikSetting[1];
 };
 
 /// <summary>

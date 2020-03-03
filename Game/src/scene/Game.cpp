@@ -96,14 +96,14 @@ void Game::PostRender() {
 		m_font.SetUseFont(m_font.enJPN);
 		if (GetScreenNum() == 1) {
 			m_font.DrawFormat(
-				L"Bれんだでゲームスタート(%d/%d)",
+				L"れんしゅうラウンド\nBれんだでゲームスタート(%d/%d)",
 				{ 0.95f,0.08f }, { 1.0f,0.0f },
 				m_pushCnt, MAX_PUSH
 			);
 		}
 		else {
 			m_font.DrawFormat(
-				L"Bれんだでゲームスタート(%d/%d)",				
+				L"れんしゅうラウンド\nBれんだでゲームスタート(%d/%d)",				
 				{ 0.5f,0.08f }, { 0.5f,0.0f },
 				m_pushCnt, MAX_PUSH
 			);

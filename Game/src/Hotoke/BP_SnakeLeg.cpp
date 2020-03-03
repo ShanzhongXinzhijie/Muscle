@@ -16,35 +16,34 @@ void BP_SnakeLeg::InnerStart() {
 	//モデル
 	m_model = std::make_unique<CSkinModelRender>();
 	m_model->Init(L"Resource/modelData/snakeleg.cmo", m_animation, 1);
-	//SnakeNormalMapEX.png
-	//m_model->GetSkinModel().FindMaterialSetting(
-	//	[&](MaterialSetting* me) {
-	//		if (me->EqualMaterialName(L"08 - Default")) {
-	//			//履帯
-	//			me->SetMetallic(0.5f);
-	//			me->SetShininess(0.2f);
-	//		}
-	//		else {
-	//			//本体
-	//			me->SetMetallic(0.75f);
-	//			me->SetShininess(0.6f);
-	//		}
-	//	}
-	//);
+	//ノーマルマップ読み込み
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> textureView;
+	HRESULT hr = DirectX::CreateWICTextureFromFile(GetGraphicsEngine().GetD3DDevice(), L"Resource/normalMap/SnakeNormalMapEX.png", nullptr, textureView.ReleaseAndGetAddressOf());
+	//マテリアル設定
+	m_model->GetSkinModel().FindMaterialSetting(
+		[&](MaterialSetting* me) {
+			me->SetNormalTexture(textureView.Get());
+			me->SetShininess(0.45f);
+		}
+	);
 
 	//足のIK設定
-	for (int i = 0; i < 2; i++) {
+	for (int i = 0; i < 1; i++) {
 		m_ikSetting[i] = m_model->GetSkinModel().GetSkeleton().CreateIK();
 		if (i == 0) {
+			m_ikSetting[i]->tipBone = m_model->FindBone(L"Bone007");
+			m_ikSetting[i]->rootBone = m_model->FindBone(L"Bone002");
+		}
+		else if (i == 1) {
 			m_ikSetting[i]->tipBone = m_model->FindBone(L"Bone004");
 			m_ikSetting[i]->rootBone = m_model->FindBone(L"Bone002");
 		}
 		else {
-			m_ikSetting[i]->tipBone = m_model->FindBone(L"Bone007");
-			m_ikSetting[i]->rootBone = m_model->FindBone(L"Bone004");
+			m_ikSetting[i]->tipBone = m_model->FindBone(L"Bone003");
+			m_ikSetting[i]->rootBone = m_model->FindBone(L"Bone002");
 		}
 		m_ikSetting[i]->InitFootIK();
-		m_ikSetting[i]->footIKRayEndOffset = CVector3::AxisY()*-2500.0f*m_ptrCore->GetScale().y;
+		m_ikSetting[i]->footIKRayEndOffset = CVector3::AxisY()*-500.0f*m_ptrCore->GetScale().y;
 	}
 
 	//当たり判定(足)

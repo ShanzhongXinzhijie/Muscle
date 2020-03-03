@@ -65,8 +65,8 @@ private:
 	int m_roundCount = 0;//ラウンド数
 	int m_score[PLAYER_NUM] = {};//スコア
 
-	static constexpr float PRACTICE_TIME_LIMIT = 120;//練習ラウンド制限時間
-	static constexpr float TIME_LIMIT = 30;//制限時間
+	static constexpr int PRACTICE_TIME_LIMIT = 120;//練習ラウンド制限時間
+	static constexpr int TIME_LIMIT = 30;//制限時間
 
 	int m_maxRound = 5;//最大ラウンド
 	int m_timeLimitSec = PRACTICE_TIME_LIMIT;//制限時間(秒)
