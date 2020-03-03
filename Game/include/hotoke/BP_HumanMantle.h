@@ -13,6 +13,25 @@ public:
 		return new BP_HumanMantle;
 	}
 
+	~BP_HumanMantle() {
+		if (m_cloth) {
+			btCollisionObject* obj = m_cloth;
+
+			// オブジェクトがRigid Bodyの場合の破棄
+			btRigidBody* body = btRigidBody::upcast(obj);
+			if (body && body->getMotionState()) {
+				delete body->getMotionState();
+			}
+
+			// オブジェクトがSoft Bodyの場合の破棄
+			GetPhysicsWorld().GetDynamicWorld()->removeSoftBody(m_cloth);
+
+			GetPhysicsWorld().GetDynamicWorld()->removeCollisionObject(m_cloth);
+
+			delete m_cloth;
+		}
+	}
+
 	void InnerStart()override;
 	void Update()override;
 	void PostUTRSUpdate()override;

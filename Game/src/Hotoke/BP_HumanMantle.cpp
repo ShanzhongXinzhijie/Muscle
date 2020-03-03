@@ -5,11 +5,6 @@ using namespace GameObj;
 
 void BP_HumanMantle::InnerStart() {
 	m_name = L"マント";
-	
-	//物理ワールド設定
-	//TODO　別の所テ゛
-	GetPhysicsWorld().SetGravity({0.0f,-800.0f,0.0f});	
-	//GetPhysicsWorld().GetSoftBodyWorldInfo()->air_density = 1.2f*10.0f;
 
 	//布作る
 	btScalar sl = 500.0f;//8710.938 ~ 169.777
@@ -51,11 +46,7 @@ void BP_HumanMantle::InnerStart() {
 	//ソフトボディを登録
 	GetPhysicsWorld().GetDynamicWorld()->addSoftBody(cloth, btBroadphaseProxy::DefaultFilter, 0);
 
-	//btTransform trans;
-	//trans.setIdentity();		// 位置姿勢行列の初期化
-	//trans.setOrigin(btVector3(0, 2000, 0));		// 初期位
-	//cloth->transform(trans);
-
+	//ポインタをメンバにコピー
 	m_cloth = cloth;
 	
 	//表示モデル位置調整
@@ -63,11 +54,11 @@ void BP_HumanMantle::InnerStart() {
 	m_localPos.z = -65.0f;
 	m_localScale *= 15.0f;
 
+	//モデルロード
 	m_model = std::make_unique<CSkinModelRender>();
 	m_model->Init(L"Resource/modelData/manto_test.cmo", enFbxUpAxisY);
-	//m_model->GetSkinModel().SetCullMode(D3D11_CULL_NONE);//バックカリングしない
 	m_model->GetSkinModel().FindMaterialSetting(
-		[&](MaterialSetting* mat) {
+		[](MaterialSetting* mat) {
 			mat->SetAlbedoScale({1.0f,0.01f,0.08f,0.9f});//半透明
 			mat->SetIsUseTexZShader(true);//シャドウマップ描画にテクスチャ使う
 		}
@@ -86,7 +77,9 @@ void BP_HumanMantle::InnerStart() {
 
 				//頂点のロード
 				HRESULT hr = deviceContext->Map(mesh->vertexBuffer.Get(), 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &subresource);
-				if (FAILED(hr)) { return; }
+				if (FAILED(hr)) { 
+					return;
+				}
 
 				D3D11_BUFFER_DESC bufferDesc;
 				mesh->vertexBuffer->GetDesc(&bufferDesc);
@@ -129,7 +122,9 @@ void BP_HumanMantle::InnerStart() {
 
 				//インデックスバッファをロック
 				HRESULT hr = deviceContext->Map(mesh->indexBuffer.Get(), 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &subresource);
-				if (FAILED(hr)) { return; }
+				if (FAILED(hr)) { 
+					return;
+				}
 
 				D3D11_BUFFER_DESC bufferDesc;
 				mesh->indexBuffer->GetDesc(&bufferDesc);

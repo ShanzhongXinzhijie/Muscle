@@ -63,6 +63,10 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 	//歪曲収差設定
 	SetLensDistortionScale(5.0f);
+
+	//物理ワールド設定
+	GetPhysicsWorld().SetGravity({ 0.0f,-800.0f,0.0f });//重力
+	//GetPhysicsWorld().GetSoftBodyWorldInfo()->air_density = 1.2f*10.0f;
 	
 	//判定表示
 	//SetPhysicsDebugDrawMode(btIDebugDraw::DBG_DrawWireframe);
