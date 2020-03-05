@@ -203,7 +203,7 @@ void AssembleScene::Update() {
 			HotokeAssembleManager::HotokeAssemble& assem = assembleManager->GetHotokeAssemble(i);
 			//パーツ設定
 			for (int partsNum = 0; partsNum < CDeathHotoke::enPartsNum; partsNum++) {
-				assem.parts[partsNum] = m_hotokes[i]->GetBodyPart((CDeathHotoke::enBodyParts)partsNum).Create();
+				assem.parts[partsNum] = std::unique_ptr<IBodyPart>(m_hotokes[i]->GetBodyPart((CDeathHotoke::enBodyParts)partsNum).Create());
 			}
 			//AIはナシ
 			assem.ai = nullptr;
@@ -213,11 +213,12 @@ void AssembleScene::Update() {
 		if (m_playerNum == 1) {
 			HotokeAssembleManager::HotokeAssemble& assem = assembleManager->GetHotokeAssemble(1);
 			//パーツ設定
-			for (int partsNum = 0; partsNum < CDeathHotoke::enPartsNum; partsNum++) {
-				assem.parts[partsNum] = m_hotokes[0]->GetBodyPart((CDeathHotoke::enBodyParts)partsNum).Create();
-			}
+			assem.parts[CDeathHotoke::enHead] = std::make_unique<BP_FishHead>();
+			assem.parts[CDeathHotoke::enArm] = std::make_unique<BP_KaniArm>();
+			assem.parts[CDeathHotoke::enWing] = std::make_unique<BP_BirdWing>();
+			assem.parts[CDeathHotoke::enLeg] = std::make_unique<BP_HumanLeg>();
 			//AI
-			assem.ai = new TestAI();
+			assem.ai = std::unique_ptr<IAI>(new TestAI());
 		}
 
 		//ゲームクラス作成

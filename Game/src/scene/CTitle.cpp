@@ -73,6 +73,9 @@ void CTitle::PostRender() {
 	//ロゴ
 	m_sprite.Draw({ 0.5f,0.5f }, CVector2::One(), { 0.5f,0.5f });
 
+	//バージョン
+	//m_font.Draw(L"Ver.", { 0.0f,0.0f }, CVector4::Black(), CVector2::One(), { 0.0f,0.0f });
+
 	wchar_t string[64];
 	swprintf_s(string, L"Bれんだでオワリ (%d/%d)", m_pushCnt, MAX_PUSH);
 	m_font.Draw(string, { 0.5f,0.0f }, CVector4::Black(), CVector2::One()*0.5f, { 0.5f,0.0f });

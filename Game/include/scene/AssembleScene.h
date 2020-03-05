@@ -19,8 +19,8 @@ public:
 	/// デスホトケのアセンブル情報
 	/// </summary>
 	struct HotokeAssemble {
-		IBodyPart* parts[CDeathHotoke::enPartsNum] = {};
-		IAI* ai = nullptr;
+		std::unique_ptr<IBodyPart> parts[CDeathHotoke::enPartsNum];
+		std::unique_ptr<IAI> ai;
 	};
 
 	/// <summary>
