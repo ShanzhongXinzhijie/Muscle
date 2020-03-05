@@ -12,7 +12,7 @@ HumanPlayer::HumanPlayer(int playernum, CDeathHotoke& hotoke):
 	//カメラ
 	m_cam(&m_hotoke, &m_pad),
 	//フォント
-	m_HUDFont(m_HUDColor, 0.5f), m_warningFont(CVector4::Red(), 0.5f), m_japaneseFont(m_HUDColor, 0.5f) 
+	m_HUDFont(m_HUDColor, 0.5f), m_warningFont({252.f/255.f,58.f/255.f,0.f,1.f}, 0.5f), m_japaneseFont(m_HUDColor, 0.5f)
 {
 	//メインカメラ設定
 	m_cam.SetToMainCamera(playernum);

@@ -156,7 +156,6 @@
     <MeshContentTask Include="Asset\modelData\hotoke\humanhead.FBX" />
     <MeshContentTask Include="Asset\modelData\hotoke\humanleg.FBX" />
     <MeshContentTask Include="Asset\modelData\hotoke\kaniarm.FBX" />
-    <MeshContentTask Include="Asset\modelData\hotoke\manto.FBX" />
     <MeshContentTask Include="Asset\modelData\hotoke\manto_test.FBX" />
     <MeshContentTask Include="Asset\modelData\hotoke\palmHead.FBX" />
     <MeshContentTask Include="Asset\modelData\hotoke\tankleg.FBX" />

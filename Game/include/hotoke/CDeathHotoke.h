@@ -129,6 +129,20 @@ public:
 		m_isImmortal = isImmortal;
 	}
 
+	//無敵状態化
+	void Invincible() {
+		if (m_isInvincible) {
+			return;
+		}
+		m_isInvincible = true;
+		SetCollisionEnable(false);
+		m_coreModel.GetSkinModel().FindMaterialSetting(
+			[](MaterialSetting* mat) {
+				mat->SetAlbedoScale({5.0f,5.0f,5.0f,1.0f});// { 1.0f, 0.01f, 0.08f, 0.9f });
+			}
+		);
+	}
+
 	//ダメージをあたえる
 	void Damage(const ReferenceCollision& ref, const CVector3& pos);
 
@@ -314,6 +328,7 @@ private:
 
 	//ステータス
 	bool m_isImmortal = false;//不死か
+	bool m_isInvincible = false;//無敵状態
 	static constexpr float HP_MAX = 20.0f;
 	float m_hp = HP_MAX;//ヘルス
 	float m_stunTimeSec = 0.0f;//スタン時間

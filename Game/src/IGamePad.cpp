@@ -12,6 +12,44 @@ namespace {
 }
 
 void IGamePad::PreUpdate() {
+	//弾き入力
+	for (auto lr : LR) {
+		m_isSmash[lr] = false;
+		if (GetStick(lr).LengthSq() > CMath::Square(SMASH_INPUT_DEADZONE)) {
+			m_smashInputStartTime[lr] = min(SMASH_INPUT_TIME + 1, m_smashInputStartTime[lr] + 1);
+			//0.675f以上 2F以内に
+			if (m_smashInputStartTime[lr] <= SMASH_INPUT_TIME && m_usePad->GetStick(lr).LengthSq() > CMath::Square(0.675f)) {
+				//入力成立
+				m_isSmash[lr] = true;
+				m_smashInputStartTime[lr] = SMASH_INPUT_TIME + 1;
+			}
+		}
+		else {
+			m_smashInputStartTime[lr] = 0;
+		}
+	}
+
+	//スティック入力角度
+	for (auto lr : LR) {
+		const CVector2& stick = GetStick(lr);
+		if (m_isInitBeforeStickInput
+			&& m_beforeStickInput[lr].LengthSq() > CMath::Square(ANGLE_INPUT_DEADZONE) 
+			&& stick.LengthSq() > CMath::Square(ANGLE_INPUT_DEADZONE)
+		) {
+			CVector3 beforeDir = m_beforeStickInput[lr].GetNorm();
+			//角度
+			m_stickRollAngle[lr] = CVector3::AngleOf2NormalizeVector(beforeDir, stick.GetNorm());
+			//符号
+			CVector3 cross = beforeDir.GetCross(CVector3::AxisZ());
+			m_stickRollAngle[lr] *= cross.Dot(stick) > 0.0f ? 1.0f : -1.0f;
+		}
+		else {
+			m_stickRollAngle[lr] = 0.0f;
+		}
+		m_beforeStickInput[lr] = stick;
+		m_isInitBeforeStickInput = true;
+	}
+
 	//ダブルタップ判定
 	for (auto lr : LR) {
 		m_isDoubleTapFire[lr] = false;

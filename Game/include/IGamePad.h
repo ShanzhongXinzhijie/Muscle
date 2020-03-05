@@ -22,6 +22,24 @@ public:
 		return m_usePad->GetStick(lr);
 	}
 
+	/// <summary>
+	/// このフレームに弾き入力されたか
+	/// </summary>
+	/// <param name="lr">左右</param>
+	[[nodiscard]]
+	bool IsSmashInput(enLR lr)const {
+		return m_isSmash[lr];
+	}
+
+	/// <summary>
+	/// スティック入力の前フレームとの差角度を取得
+	/// </summary>
+	/// <param name="lr">左右</param>
+	[[nodiscard]]
+	float GetStickRollAngle(enLR lr) const {
+		return m_stickRollAngle[lr];
+	}
+
 	//回転入力系
 	enum enSpinDirection { enUp, enRight, enDown, enLeft, enDirNum, };//入力各方向
 	enum enSpinMode { enNone, enClockwise, enBack, };//回転方向
@@ -109,6 +127,18 @@ public:
 
 private:
 	XInputPad* m_usePad = nullptr;//使用するパッド
+
+	//弾き入力
+	bool m_isSmash[enLRNUM] = {};
+	int m_smashInputStartTime[enLRNUM] = {};
+	static constexpr float SMASH_INPUT_DEADZONE = 0.24f;//デッドゾーン
+	static constexpr int SMASH_INPUT_TIME = 4;//入力猶予
+
+	//角度入力系
+	float m_stickRollAngle[enLRNUM] = {};//スティックの角度入力
+	bool m_isInitBeforeStickInput = false;
+	CVector2 m_beforeStickInput[enLRNUM];//前フレームのスティック入力
+	static constexpr float ANGLE_INPUT_DEADZONE = 0.75f;//デッドゾーン
 
 	//ダブルタップ系
 	bool m_isDoubleTapFire[enLRNUM] = {};

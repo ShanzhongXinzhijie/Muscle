@@ -115,6 +115,19 @@ void CDeathHotoke::PreUpdate() {
 	m_angularDrag[enNext] = 1.0f;
 	m_rotatability[enNext] = 1.0f;
 	m_shakePower = 0.0f;
+
+	if (m_isInvincible) {
+		//•\¦‰Šú‰»
+		m_coreModel.GetSkinModel().FindMaterialSetting(
+			[](MaterialSetting* mat) {
+				mat->SetAlbedoScale(CVector4::White());
+			}
+		);
+		//”»’è‰Šú‰»
+		SetCollisionEnable(true);
+		//–³“GI—¹
+		m_isInvincible = false;
+	}
 }
 
 void CDeathHotoke::Update() {

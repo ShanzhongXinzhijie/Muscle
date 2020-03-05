@@ -39,7 +39,7 @@ Shibuya::Shibuya() //: m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI
 	m_graund.SetCollisionFunc(
 		[&](ReferenceCollision* H, SuicideObj::CCollisionObj::SCallbackParam& p) {
 			if (H->damege > 0.0f || H->velocity.LengthSq() > 1.0f) {
-				new CSmoke(p.m_collisionPoint, 0.0f, { 0.8f,0.8f ,0.5f,0.8f });
+				new CSmoke(p.m_collisionPoint, H->velocity*-1.0f, { 0.8f,0.8f ,0.5f,0.8f });
 
 				for (int i = 0; i < 12; i++) {
 					CVector3 ramdamVec = CVector3::Up()*(15.0f*CMath::RandomZeroToOne() + 30.0f);
@@ -348,10 +348,10 @@ Shibuya::Shibuya() //: m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI
 
 void Shibuya::PostLoopUpdate() {
 	//軸
-	CVector3 right; right.Cross(CVector3::AxisY(), CVector3::AxisZ());//右方向
-	DrawLine3D(CVector3::Zero(), right*100.0f, { 1.0f,0.0f,0.0f,1.0f });
-	DrawLine3D(CVector3::Zero(), CVector3::AxisZ().GetCross(right)*100.0f, { 0.0f,1.0f,0.0f,1.0f });//上方向
-	DrawLine3D(CVector3::Zero(), CVector3::AxisZ()*100.0f, { 0.0f,0.0f,1.0f,1.0f });
+	//CVector3 right; right.Cross(CVector3::AxisY(), CVector3::AxisZ());//右方向
+	//DrawLine3D(CVector3::Zero(), right*100.0f, { 1.0f,0.0f,0.0f,1.0f });
+	//DrawLine3D(CVector3::Zero(), CVector3::AxisZ().GetCross(right)*100.0f, { 0.0f,1.0f,0.0f,1.0f });//上方向
+	//DrawLine3D(CVector3::Zero(), CVector3::AxisZ()*100.0f, { 0.0f,0.0f,1.0f,1.0f });
 
 	//ビュー軸0
 	/*

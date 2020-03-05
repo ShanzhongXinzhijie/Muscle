@@ -13,6 +13,11 @@ static constexpr float LIMIT_HEIGHT_METER = 250.0f;//最高高度(m)
 
 static constexpr float MIN_Y = -3000.0f;//最低高さ
 
+//空気の濃さ取得
+static inline constexpr float CalcAirScale(float heightMeter) {
+	return max(0.0f, 1.0f - max(0.0f, heightMeter / MAX_HEIGHT_METER));//高度MAX_HEIGHT_METERに近づくに連れ空気が薄くなる
+}
+
 //解像度
 static constexpr int SCREEN_SIZE_2D = 640;
 static constexpr int SCREEN_SIZE_3D = 640*2;//1280

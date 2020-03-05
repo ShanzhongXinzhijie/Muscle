@@ -3,12 +3,6 @@
 
 using namespace GameObj;
 
-namespace {
-	float CalcAirScale(float heightMeter) {
-		return max(0.0f, 1.0f - max(0.0f, heightMeter / MAX_HEIGHT_METER));//‚“xMAX_HEIGHT_METER‚É‹ß‚Ã‚­‚É˜A‚ê‹ó‹C‚ª”–‚­‚È‚é
-	}
-}
-
 void BP_BirdWing::InnerStart() {
 	m_name = L"TEBASAKI";
 	

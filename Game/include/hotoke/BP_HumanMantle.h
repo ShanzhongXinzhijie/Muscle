@@ -36,16 +36,22 @@ public:
 	void Update()override;
 	void PostUTRSUpdate()override;
 	void PostLoopUpdate()override;
+	void Draw2D()override;
 
 	//アクション
 	void Move(const CVector2& dir);//移動
+	void Stop();//停止
 	void Step(const CVector2& dir);//ステップ移動
-	void Jump();//ジャンプ
-	void Parachute();//パラシュート(落下速度軽減)
+	void Yaw(float lerp);//旋回
 
 private:
 	//コントローラー
 	IBodyController<BP_HumanMantle>* m_controller = nullptr;
+
+	CVector3 m_moveDir;//移動方向
+	float m_yawInertia = 0.f;//回転慣性
+	int m_invincibleFrame = 0;//無敵時間
+	int m_cooldownFrame = 0;//クールダウン
 
 	//ソフトボディ
 	btSoftBody* m_cloth = nullptr;
@@ -73,6 +79,8 @@ class HCon_HumanMantle : public IBodyController<BP_HumanMantle> {
 public:
 	using IBodyController::IBodyController;
 	void InnerUpdate()override;
+private:
+	bool m_isStickNeutral = true;
 };
 /// <summary>
 /// マント #AIコントローラー
