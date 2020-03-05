@@ -5,7 +5,7 @@
 using namespace GameObj;
 
 namespace {
-	const CVector3 hitboxOffset = CVector3::Down()*50.f;
+	const CVector3 hitboxOffset = CVector3::Down()*25.f;
 }
 
 void BP_TankLeg::InnerStart() {
@@ -50,12 +50,11 @@ void BP_TankLeg::InnerStart() {
 	//“–‚½‚è”»’è(‘«)
 	//TODO
 	{
-		constexpr float radius = 50.0f;
-		constexpr float height = 50.0f;
+		constexpr float radius = 80.0f;
+		constexpr float height = 150.0f;
 		const float modelScale = m_ptrCore->GetScale().GetMax() / (0.0188f*2.0f);
 		//Œ`ó‰Šú‰»
-		//m_col[lr].m_collision.CreateCapsule({}, {}, radius * modelScale, height*modelScale);
-		m_col.m_collision.CreateSphere({}, {}, radius * modelScale);
+		m_col.m_collision.CreateCapsule({}, {CVector3::AxisX(),CMath::PI_HALF}, radius * modelScale, height*modelScale);
 
 		//IDÝ’è
 		m_col.m_reference.ownerID = m_ptrCore->GetFuID();
@@ -125,7 +124,9 @@ void BP_TankLeg::PostUTRSUpdate() {
 	if (m_legHitNum > 0) {
 		//Ú’n‚µ‚Ä‚¢‚é‚È‚ç’ïRUP
 		m_ptrCore->MulDrag(20.0f*m_legHitNum + 10.0f*max(0.0f, -m_ptrCore->GetTotalVelocity().y));
-		m_ptrCore->MulRotatability(3.0f*m_legHitNum + 1.0f*max(0.0f, -m_ptrCore->GetTotalVelocity().y));//‰ñ“]—Í‚àUP
+		//‰ñ“]—Í’á‰º
+		m_ptrCore->MulAngularDrag(3.0f*m_legHitNum + 1.0f*max(0.0f, -m_ptrCore->GetTotalVelocity().y));
+		//m_ptrCore->MulRotatability(1.0f / (3.0f*m_legHitNum + 1.0f*max(0.0f, -m_ptrCore->GetTotalVelocity().y)));
 		//U“®
 		m_ptrCore->SetShakePower(0.0015f*max(0.0f, -m_ptrCore->GetTotalVelocity().y - m_ptrCore->GetGravity()));//*(hitnum/6.0f)
 	}

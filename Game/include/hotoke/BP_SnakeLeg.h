@@ -15,6 +15,8 @@ public:
 	void PostUTRSUpdate()override;
 	void Draw2D()override;
 
+	void Dash();
+
 private:
 	//コントローラー
 	IBodyController<BP_SnakeLeg>* m_controller = nullptr;
@@ -25,7 +27,10 @@ private:
 	CVector3 m_beforePos;//前回の位置
 	DHCollision m_col;//コリジョン
 
-	SkeletonIK::IKSetting* m_ikSetting[1];
+	SkeletonIK::IKSetting* m_ikSetting[2];
+	Bone* m_legBone = nullptr;
+
+	bool m_isDash = false;//ダッシュフラグ
 };
 
 /// <summary>

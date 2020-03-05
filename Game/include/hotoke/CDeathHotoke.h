@@ -75,6 +75,10 @@ public:
 	void SetToFootDistance(float distance) {
 		m_toFootDistance = distance;
 	}
+	//足元カメラオフセット座標
+	void SetFootCameraOffsetPos(const CVector3& offsetpos) {
+		m_footCamOffsetPos = offsetpos;
+	}
 	//固定カメラを使用するかのフラグを設定
 	void SetUseFixedCamera(bool enable) {
 		m_useFixedCamera = enable;
@@ -172,6 +176,10 @@ public:
 	//足元の座標を取得
 	CVector3 GetFootPos()const {
 		return GetPos() + CVector3::Down()*GetToFootDistance();
+	}
+	//足元カメラオフセット座標
+	const CVector3& GetFootCameraOffsetPos()const {
+		return m_footCamOffsetPos;
 	}
 	//固定カメラを使用するか
 	bool GetUseFixedCamera()const {
@@ -312,6 +320,8 @@ private:
 
 	//足元への距離
 	float m_toFootDistance = 205.0f;
+	//足元カメラ
+	CVector3 m_footCamOffsetPos;
 	//固定カメラ
 	bool m_useFixedCamera = false;	//使うか
 	CVector3 m_fixedCameraPos;		//位置

@@ -39,7 +39,7 @@ Shibuya::Shibuya() //: m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI
 	m_graund.SetCollisionFunc(
 		[&](ReferenceCollision* H, SuicideObj::CCollisionObj::SCallbackParam& p) {
 			if (H->damege > 0.0f || H->velocity.LengthSq() > 1.0f) {
-				new CSmoke(p.m_collisionPoint, H->velocity*-1.0f, { 0.8f,0.8f ,0.5f,0.8f });
+				new CSmoke(p.m_collisionPoint, 0.0f, { 0.8f,0.8f ,0.5f,0.8f });
 
 				for (int i = 0; i < 12; i++) {
 					CVector3 ramdamVec = CVector3::Up()*(15.0f*CMath::RandomZeroToOne() + 30.0f);

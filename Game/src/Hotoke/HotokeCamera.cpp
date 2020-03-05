@@ -118,6 +118,7 @@ void HotokeCameraController::Update() {
 	}
 	else {
 		CVector3 offsetVec = { 0.0f, -m_ptrHotoke->GetToFootDistance(), -100.0f };
+		offsetVec += m_ptrHotoke->GetFootCameraOffsetPos();
 		m_ptrHotoke->GetRot().Multiply(offsetVec);
 
 		//’n–Ê‚Æ”»’è‚µ‚Ä‚‚³ŽZo
@@ -144,7 +145,7 @@ void HotokeCameraController::Update() {
 		start.y += m_cameraHeight;
 
 		//ˆÊ’uÝ’è
-		m_hotokeCam.SetPos(start);// +m_ptrHotoke->GetBack()*200.0f + m_ptrHotoke->GetRight()*500.0f);
+		m_hotokeCam.SetPos(start);// +m_ptrHotoke->GetBack()*500.0f + m_ptrHotoke->GetRight()*200.0f);
 		m_hotokeCam.SetTargetPosOffset(m_ptrHotoke->GetPos() - start); //offsetVec*-1.0f
 	}
 
