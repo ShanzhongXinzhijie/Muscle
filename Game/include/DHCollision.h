@@ -26,6 +26,8 @@ enum enCollisionAttributes {
 	enWind,
 	enWater,
 
+	enHotokeBody,
+
 	enAttributesNum,
 };
 

@@ -171,17 +171,17 @@ public:
 	}
 
 	//ズームアウトモードかどうか設定
-	void SetIsZoomout(bool b, const CVector3& zoomoutDir = { 0.f, 400.f, 800.f }, const IFu* target = nullptr) {
+	void SetIsZoomout(bool isZoomOut, const CVector3& zoomoutDir = { 0.f, 400.f, 800.f }, const IFu* target = nullptr) {
 		m_zoomOutDir = zoomoutDir;
 		m_zoomOutTarget = target;
 
 		//カメラ変更
 		bool isChangeCam = false;
-		if (m_isZoomOut != b && b) {
+		if (m_isZoomOut != isZoomOut && isZoomOut) {
 			isChangeCam = true;
 		}
 
-		if (!m_isZoomOut && b) {
+		if (!m_isZoomOut && isZoomOut) {
 			//スローモーション
 			TimeManager::GetInstance().SetFrameRate(1.4f, 6, 1.0f);
 			//カメラ更新(初期化)
@@ -189,7 +189,7 @@ public:
 		}
 
 		//設定
-		m_isZoomOut = b;		
+		m_isZoomOut = isZoomOut;
 		//カメラ変更
 		if (isChangeCam) {
 			ChangeCamera();

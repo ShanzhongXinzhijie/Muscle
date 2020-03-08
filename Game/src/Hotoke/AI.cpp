@@ -2,6 +2,13 @@
 #include "AI.h"
 #include "CDeathHotoke.h"
 
+void DummyAI::Update() {	
+	m_outputStatus.isAttackingTarget = false;
+	m_outputStatus.isMovingToTarget = false;
+	m_ptrCore->SetTargetPos(m_ptrCore->GetPos() + m_ptrCore->GetFront()*10000.0f + CVector3::AxisY()*-18000.0f);
+	m_ptrCore->SetVanisingPoint(m_ptrCore->GetPos() + m_ptrCore->GetFront()*10000.0f + CVector3::AxisY()*-18000.0f);	
+}
+
 void TestAI::Update() {
 	//ƒ^[ƒQƒbƒg‚ð’T‚·
 	CDeathHotoke* target = nullptr; float distance = -1.0f;
@@ -16,6 +23,7 @@ void TestAI::Update() {
 		}
 	);	
 
+	m_ptrCore->SetVanisingPoint(m_ptrCore->GetPos() + m_ptrCore->GetFront()*10000.0f);
 	if (target) {
 		//“G‚ÌˆÊ’u‚ð–ÚŽw‚µ‚ÄˆÚ“®
 		m_outputStatus.moveTargetPosition = target->GetPos();

@@ -46,10 +46,10 @@ public:
 		//初期位置
 		SetPos(CVector3::AxisY()*2000.0f);
 		if (m_playerNum == 0) {
-			SetPos({ 0.0f, 1000.0f, -2400.0f*1.0f });
+			SetPos({ 0.0f, 250.0f, -2400.0f*1.5f });
 		}
 		if (m_playerNum == 1) {
-			SetPos({ 0.0f, 1000.0f, 2400.0f*1.0f });
+			SetPos({ 0.0f, 250.0f, 2400.0f*1.5f });
 			SetRot({ CVector3::AxisY(),CMath::PI });
 		}
 	}
@@ -149,6 +149,19 @@ public:
 
 	//ダメージをあたえる
 	void Damage(const ReferenceCollision& ref, const CVector3& pos);
+
+	//ズームアウト演出
+	void SetZoomoutTime(float sec) {
+		m_zoomoutTimeSec = max(m_zoomoutTimeSec, sec);
+	}
+	//ズームアウト方向
+	void SetZoomoutDirection(const CVector3& dir) {
+		m_zoomoutDir = dir;
+	}
+	//ズームアウト対象
+	void SetZoomoutTarget(const IFu* target) {
+		m_zoomoutTarget = target;
+	}
 
 	//ターゲット位置を設定
 	void SetTargetPos(const CVector3& pos) { m_targetPos = pos; }
@@ -288,9 +301,20 @@ public:
 	//AIの生み出すステータスを取得
 	[[nodiscard]] const AIStatus* GetAIStatus()const { if (m_ai) { return &m_ai->GetOutputStatus(); } return nullptr; }
 
+	//ズームアウト演出中か取得
+	[[nodiscard]] 
+	bool GetIsZoomOut()const {
+		return !(m_zoomoutTimeSec < FLT_EPSILON);
+	}
 	//ズームアウト方向を取得
+	[[nodiscard]] 
 	const CVector3& GetZoomoutDirection()const {
 		return m_zoomoutDir;
+	}
+	//ズームアウト対象を取得
+	[[nodiscard]]
+	const IFu* GetZoomoutTarget()const {
+		return m_zoomoutTarget;
 	}
 
 	//落下速度を取得
@@ -367,8 +391,10 @@ private:
 	CVector3 m_targetPos;
 	CVector3 m_vanisingPoint;
 
-	//ズームアウト方向
+	//ズームアウト
+	float m_zoomoutTimeSec = 0.0f;
 	CVector3 m_zoomoutDir = { 0.f, 400.f, 800.f };
+	const IFu* m_zoomoutTarget = nullptr;
 
 	//操作可能か?
 	bool m_isControl = false;

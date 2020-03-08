@@ -229,12 +229,10 @@ void HCon_BirdWing::InnerUpdate() {
 }
 
 void AICon_BirdWing::InnerUpdate() {
-	//if (m_ptrBody->GetAccel() < 5.0f){
-		m_ptrBody->Accel();
-	//}
-
 	//–Ú“I’n‚ÖˆÚ“®
 	if (m_ptrCore->GetAIStatus()->isMovingToTarget) {
+		m_ptrBody->Accel();
+		
 		CVector3 v = m_ptrCore->GetAIStatus()->moveTargetPosition - m_ptrCore->GetPos();
 		float dot = m_ptrCore->GetRight().Dot(v.GetNorm());
 		if (abs(dot) > 0.1f) {

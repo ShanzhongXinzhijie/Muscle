@@ -12,7 +12,7 @@ HumanPlayer::HumanPlayer(int playernum, CDeathHotoke& hotoke):
 	//カメラ
 	m_cam(&m_hotoke, &m_pad),
 	//フォント
-	m_HUDFont(m_HUDColor, 0.5f), m_warningFont({252.f/255.f,58.f/255.f,0.f,1.f}, 0.5f), m_japaneseFont(m_HUDColor, 0.5f)
+	m_HUDFont(m_HUDColor, 0.5f), m_warningFont({255.f/255.f,48.f/255.f,0.f,1.f}, 0.5f), m_japaneseFont(m_HUDColor, 0.5f)
 {
 	//メインカメラ設定
 	m_cam.SetToMainCamera(playernum);
@@ -27,7 +27,7 @@ HumanPlayer::HumanPlayer(int playernum, CDeathHotoke& hotoke):
 	m_hotoke.SetFonts(&m_warningFont, &m_japaneseFont);
 }
 
-CPlayer::CPlayer(int playernum) :
+CPlayer::CPlayer(int playernum, bool isNoAI) :
 	//プレイヤー番号
 	m_playerNum(playernum),
 	//阿泉設定
@@ -45,7 +45,7 @@ CPlayer::CPlayer(int playernum) :
 	}
 	else {
 		//CPU
-		m_hotoke.Init(playernum, nullptr, false, nullptr, std::unique_ptr<IAI>(m_assemble.ai->Create(&m_hotoke)));
+		m_hotoke.Init(playernum, nullptr, false, nullptr, isNoAI ? std::make_unique<DummyAI>(&m_hotoke) : std::unique_ptr<IAI>(m_assemble.ai->Create(&m_hotoke)));
 	}	
 };
 
@@ -119,7 +119,7 @@ void HumanPlayer::Update() {
 	}
 
 	//引きカメラ演出
-	m_cam.SetIsZoomout(m_hotoke.GetIsStun(), m_hotoke.GetZoomoutDirection());
+	m_cam.SetIsZoomout(m_hotoke.GetIsZoomOut(), m_hotoke.GetZoomoutDirection(), m_hotoke.GetZoomoutTarget());
 
 	//消失点
 	CVector3 vanisingPoint = m_hotoke.GetPos() + m_hotoke.GetTotalVelocity() + (m_cam.GetTargetPoint() - m_hotoke.GetPos()).GetNorm()*15000.0f*0.125f;

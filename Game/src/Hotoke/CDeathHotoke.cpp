@@ -22,6 +22,17 @@ bool CDeathHotoke::Start() {
 	//スケール
 	m_scale = { modelScale };
 
+	//初期位置
+	//レイで判定
+	//btVector3 rayStart = GetPos();
+	//btVector3 rayEnd = GetPos(); rayEnd.setY(-100000.0f);
+	//btCollisionWorld::ClosestRayResultCallback gnd_ray(rayStart, rayEnd);
+	//GetEngine().GetPhysicsWorld().RayTest(rayStart, rayEnd, gnd_ray);
+	//if (gnd_ray.hasHit()) {
+	//	//接触点を座標に
+	//	SetPos(gnd_ray.m_hitPointWorld);
+	//}
+
 	//コア生成
 	m_coreModel.Init(L"Resource/modelData/core.cmo");	
 	//ノーマルマップ適用
@@ -70,6 +81,20 @@ bool CDeathHotoke::Start() {
 				//CQuaternion(CVector3::AxisY(), CMath::PI_HALF / 2.0f).Multiply(dir);
 				m_zoomoutDir = dir * -800.f;
 				m_zoomoutDir.y += 400.0f;
+
+				m_zoomoutTimeSec = max(m_zoomoutTimeSec, m_stunTimeSec);
+
+				SetZoomoutTarget(this);
+
+				QueryGOs<CDeathHotoke>(L"CDeathHotoke",
+					[&](CDeathHotoke* go) {
+						if (go == this) { return true; }
+						go->SetZoomoutTime(m_stunTimeSec);
+						go->SetZoomoutDirection(m_zoomoutDir);
+						go->SetZoomoutTarget(this);
+						return true;
+					}
+				);
 			}
 		}
 	);
@@ -85,6 +110,7 @@ bool CDeathHotoke::Start() {
 	);
 	SetCollisionPosOffset(CalcCollisionPosOffset(m_scale));//位置
 	GetAttributes().set(enPhysical);//物理属性
+	GetAttributes().set(enHotokeBody);//ホトケの体属性
 	//m_col.m_collision.SetIsHighSpeed(true);//これは高速です	
 
 	//位置初期化	
@@ -136,6 +162,11 @@ void CDeathHotoke::Update() {
 
 	//スタン処理
 	Stun();
+	//ズームアウト時間
+	m_zoomoutTimeSec -= FRAME_PER_SECOND;
+	if (m_zoomoutTimeSec < 0.0f) {
+		m_zoomoutTimeSec = 0.0f;
+	}
 
 	//移動適応
 	Move(GetTotalVelocity());

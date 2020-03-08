@@ -50,6 +50,20 @@ protected:
 };
 
 /// <summary>
+/// ダミーAI
+/// </summary>
+class DummyAI : public IAI {
+public:
+	using IAI::IAI;
+
+	IAI* Create(CDeathHotoke* ptrCore = nullptr)const override {
+		return new DummyAI(ptrCore ? ptrCore : m_ptrCore);
+	}
+
+	void Update()override;
+};
+
+/// <summary>
 /// テストAI
 /// </summary>
 class TestAI : public IAI {

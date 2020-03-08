@@ -91,6 +91,13 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	//生成オブジェクトマネージャー
 	//CreateObjectManager createObjectManager;
 
+	{
+		GameObj::CSkinModelRender m_model;
+		m_model.Init(L"Resource/modelData/unchi.cmo");
+		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> textureView;
+		TextureFactory::GetInstance().Load(L"Resource/normalMap/unchi_n.jpg", nullptr, &textureView);
+	}
+
 	//ゲームインスタンス作成
 	new LoadingScreen([]() {new CTitle; });
 

@@ -11,8 +11,8 @@ Game::Game(GameManager* manager)
 	new CountDown(m_manager->GetRoundCount(), m_manager->GetMaxRound(), scores, m_manager->GetTimeLimitSec());
 
 	//プレイヤー生成
-	m_player[0] = std::make_unique<CPlayer>(1);
-	m_player[1] = std::make_unique<CPlayer>(0);
+	m_player[0] = std::make_unique<CPlayer>(1, m_manager->GetIsPracticeRound());
+	m_player[1] = std::make_unique<CPlayer>(0, m_manager->GetIsPracticeRound());
 
 	//練習ラウンドなら不死設定にする
 	if (m_manager->GetIsPracticeRound()) {

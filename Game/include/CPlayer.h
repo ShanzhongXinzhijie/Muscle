@@ -65,7 +65,8 @@ public:
 	/// コンストラクタ
 	/// </summary>
 	/// <param name="playernum">プレイヤー番号</param>
-	CPlayer(int playernum);
+	/// <param name="isNoAI">AIを使用しない</param>
+	CPlayer(int playernum, bool isNoAI = false);
 
 	//IGameObject
 	bool Start()override;
