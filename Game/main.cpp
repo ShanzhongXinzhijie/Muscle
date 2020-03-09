@@ -100,8 +100,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	}
 
 	//ゲームインスタンス作成
-	//new LoadingScreen([]() {new CTitle; });
-	new LoadingScreen([]() {new ImposterViewer; });
+	new LoadingScreen([]() {new CTitle; });
+	//new LoadingScreen([]() {new ImposterViewer; });
 
 	//ゲームループ。
 	GetEngine().RunGameLoop();
