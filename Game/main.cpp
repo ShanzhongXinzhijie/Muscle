@@ -4,6 +4,7 @@
 #include "WindowSizeManager.h"
 #include "assemblescene.h"
 #include "CGameMode.h"
+#include "ImposterViewer.h"
 //#include "CreateObjectManager.h"
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
@@ -72,8 +73,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	//SetPhysicsDebugDrawMode(btIDebugDraw::DBG_DrawWireframe);
 
 	//デバッグ表示・入力、常時有効化
-	SetIsDebugDraw(true);
-	SetIsDebugInput(true);
+	//SetIsDebugDraw(true);
+	//SetIsDebugInput(true);
 
 	//フォント設定
 	CFont::LoadDefaultFont(L"Resource/font/x14y24pxHeadUpDaisy.spritefont");
@@ -99,7 +100,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	}
 
 	//ゲームインスタンス作成
-	new LoadingScreen([]() {new CTitle; });
+	//new LoadingScreen([]() {new CTitle; });
+	new LoadingScreen([]() {new ImposterViewer; });
 
 	//ゲームループ。
 	GetEngine().RunGameLoop();
