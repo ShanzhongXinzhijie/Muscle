@@ -119,6 +119,11 @@ public:
 	bool GetLegDown() const {
 		return m_usePad->GetDown(enButtonLT) || m_usePad->GetDown(enButtonRT);
 	}
+	//¶‰E‚Ç‚¿‚ç‚©
+	[[nodiscard]]
+	bool GetLegInput(enLR lr) const {
+		return m_usePad->GetButton(lr == L ? enButtonLT : enButtonRT);
+	}
 	//“¯Žž‰Ÿ‚µ
 	[[nodiscard]]
 	bool GetDoubleLegDown() const {

@@ -10,6 +10,13 @@ namespace {
 
 void BP_TankLeg::InnerStart() {
 	m_name = L"タンク";
+
+	//ステータス変更
+	m_ptrCore->MulHPScale(2.0f);
+
+	//カメラ位置
+	m_ptrCore->SetFootCameraOffsetPos(CVector3::Front()*m_viewFront);
+	m_ptrCore->SetToFootDistance(m_viewHeight);
 	
 	//モデル
 	m_model = std::make_unique<CSkinModelRender>();
@@ -84,6 +91,11 @@ void BP_TankLeg::InnerStart() {
 }
 
 void BP_TankLeg::Update() {
+	//初期化
+	m_actionType = enNone;
+	//ステータス変化
+	m_ptrCore->MulDrag(5.0f);
+
 	//コントローラーに操作させる
 	if (m_controller)m_controller->Update();
 
@@ -117,8 +129,25 @@ void BP_TankLeg::PostUTRSUpdate() {
 	m_beforePos = m_ptrCore->GetPos();
 
 	//固定カメラ設定
-	m_ptrCore->SetUseFixedCamera(true);
-	m_ptrCore->SetFixedCameraPoint(m_eye->GetPosition());
+	//m_ptrCore->SetUseFixedCamera(true);
+	//m_ptrCore->SetFixedCameraPoint(m_eye->GetPosition()+ m_ptrCore->GetBack()*40.0f + m_ptrCore->GetDown()*33.0f);
+	m_ptrCore->SetFootCameraOffsetPos(CVector3::Front()*m_viewFront);
+	m_ptrCore->SetToFootDistance(m_viewHeight);
+
+#ifndef DW_MASTER
+	if (GetKeyInput(VK_UP)) {
+		m_viewHeight += 1.0f;
+	}
+	if (GetKeyInput(VK_DOWN)) {
+		m_viewHeight -= 1.0f;
+	}
+	if (GetKeyInput(VK_LEFT)) {
+		m_viewFront += 1.0f;
+	}
+	if (GetKeyInput(VK_RIGHT)) {
+		m_viewFront -= 1.0f;
+	}
+#endif
 
 	//接地処理
 	if (m_legHitNum > 0) {
@@ -129,11 +158,58 @@ void BP_TankLeg::PostUTRSUpdate() {
 		//m_ptrCore->MulRotatability(1.0f / (3.0f*m_legHitNum + 1.0f*max(0.0f, -m_ptrCore->GetTotalVelocity().y)));
 		//振動
 		m_ptrCore->SetShakePower(0.0015f*max(0.0f, -m_ptrCore->GetTotalVelocity().y - m_ptrCore->GetGravity()));//*(hitnum/6.0f)
+	
+		//アクション
+		float power = m_legHitNum*CMath::Clamp(-m_ptrCore->GetTotalVelocity().y,0.0f,12.5f);
+		switch (m_actionType)
+		{
+		case BP_TankLeg::enAccel://前進
+			m_ptrCore->SetMaxLinearVelocity(m_ptrCore->GetFront()*power*0.6f); 
+			break;
+		case BP_TankLeg::enTurnL://左旋回
+			m_ptrCore->AddAngularVelocity(CVector3::AxisY(), -power * 0.001f);
+			break;
+		case BP_TankLeg::enTurnR://右旋回
+			m_ptrCore->AddAngularVelocity(CVector3::AxisY(), power * 0.001f);
+			break;
+		default:
+			break;
+		}
 	}
 }
 
 void BP_TankLeg::Draw2D() {
+#ifndef DW_MASTER
+	m_ptrCore->GetFont()->DrawFormat(L"%.1f\n%.1f", 0.f, 0.f, m_viewFront, m_viewHeight);
+#endif
+
+	if (m_legHitNum > 0) {
+		m_ptrCore->GetJapaneseFont()->Draw(L"[LT][RT]キャタピラ", { 0.3f,0.95f + 0.01f }, { 0.0f,0.0f });
+	}
+}
+
+void BP_TankLeg::Accel() {
+	m_actionType = enAccel;
+}
+void BP_TankLeg::Turn(enLR lr) {
+	if (lr == L) {
+		m_actionType = enTurnL;
+	}
+	else {
+		m_actionType = enTurnR;
+	}
 }
 
 void HCon_TankLeg::InnerUpdate() {
+	if (m_ptrCore->GetPad()->GetLegInput(L) && m_ptrCore->GetPad()->GetLegInput(R)) {
+		m_ptrBody->Accel();
+	}
+	else {
+		if (m_ptrCore->GetPad()->GetLegInput(L)) {
+			m_ptrBody->Turn(L);
+		}
+		if (m_ptrCore->GetPad()->GetLegInput(R)) {
+			m_ptrBody->Turn(R);
+		}
+	}
 }

@@ -5,7 +5,7 @@ using namespace GameObj;
 
 namespace {
 	constexpr int INVINCIBLE_FRAME = 15;//ステップ無敵時間
-	constexpr int COOLDOWN_FRAME = 15;//ステップクールダウン
+	constexpr int COOLDOWN_FRAME = 30;//ステップクールダウン
 }
 
 void BP_HumanMantle::InnerStart() {
@@ -324,6 +324,8 @@ void BP_HumanMantle::Step(const CVector2& dir) {
 	}
 
 	//ステップ移動
+	//TODO
+	//落下速度
 	m_moveDir = CVector3(dir.x, 0.0f, dir.y);
 
 	//無敵時間

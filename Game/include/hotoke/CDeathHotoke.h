@@ -128,6 +128,12 @@ public:
 	//回転しやすさを乗算
 	void MulRotatability(float rotatability) { m_rotatability[enNext] *= rotatability; }
 
+	//HP倍率を乗算
+	void MulHPScale(float scale) {
+		HP_MAX *= scale;
+		m_hp *= scale;
+	}
+
 	//不死設定
 	void SetIsImmortal(bool isImmortal) {
 		m_isImmortal = isImmortal;
@@ -142,7 +148,7 @@ public:
 		SetCollisionEnable(false);
 		m_coreModel.GetSkinModel().FindMaterialSetting(
 			[](MaterialSetting* mat) {
-				mat->SetAlbedoScale({5.0f,5.0f,5.0f,1.0f});// { 1.0f, 0.01f, 0.08f, 0.9f });
+				mat->SetAlbedoScale({0.0f,0.0f,0.0f,0.0f});// { 1.0f, 0.01f, 0.08f, 0.9f });
 			}
 		);
 	}
@@ -363,7 +369,7 @@ private:
 	//ステータス
 	bool m_isImmortal = false;//不死か
 	bool m_isInvincible = false;//無敵状態
-	static constexpr float HP_MAX = 20.0f;
+	float HP_MAX = 20.0f;
 	float m_hp = HP_MAX;//ヘルス
 	float m_stunTimeSec = 0.0f;//スタン時間
 	enum{enNow,enNext};

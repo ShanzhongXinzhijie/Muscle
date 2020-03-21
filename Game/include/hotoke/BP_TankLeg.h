@@ -15,6 +15,9 @@ public:
 	void PostUTRSUpdate()override;
 	void Draw2D()override;	
 
+	void Accel();
+	void Turn(enLR lr);
+
 private:
 	//コントローラー
 	IBodyController<BP_TankLeg>* m_controller = nullptr;
@@ -24,7 +27,18 @@ private:
 
 	Bone* m_eye = nullptr;//視点位置ボーン
 	Bone* m_legs[6][2] = {};//足ボーン
-	int m_legHitNum = 0;
+	int m_legHitNum = 0;//接地している足の数
+
+	//実行アクション
+	enum enAction {
+		enNone,
+		enAccel,enTurnL,enTurnR,
+		enActionNum
+	};
+	enAction m_actionType = enNone;
+
+	//視点位置
+	float m_viewFront = 158.0f, m_viewHeight = -28.0f;//152
 };
 
 /// <summary>

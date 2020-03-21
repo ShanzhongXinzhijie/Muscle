@@ -31,6 +31,7 @@ private:
 	Bone* m_legBone = nullptr;
 
 	bool m_isDash = false;//ダッシュフラグ
+	bool m_canDash = false;
 };
 
 /// <summary>

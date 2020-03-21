@@ -5,13 +5,19 @@ using namespace GameObj;
 
 namespace {
 	const CVector3 hitboxOffset = CVector3::Down()*50.f+CVector3::Back()*40.0f;
+
+	//ダッシュ力を計算
+	float CalcDashPower(float nowdis, float maxdis) {
+		return 25.0f + 38.0f*(1.0f - abs(nowdis / maxdis));
+	}
 }
 
 void BP_SnakeLeg::InnerStart() {
 	m_name = L"スネーク";
 
 	//カメラ位置
-	m_ptrCore->SetFootCameraOffsetPos(CVector3::Front()*100.0f);
+	m_ptrCore->SetFootCameraOffsetPos(CVector3::Front()*150.0f);
+	m_ptrCore->SetToFootDistance(105.0f);
 
 	//アニメーション
 	m_animation[0].Load(L"Resource/animation/snakeleg.tka", true);
@@ -87,6 +93,9 @@ void BP_SnakeLeg::InnerStart() {
 }
 
 void BP_SnakeLeg::Update() {
+	//初期化
+	m_canDash = false; 
+
 	//コントローラーに操作させる
 	if (m_controller)m_controller->Update();
 
@@ -125,16 +134,19 @@ void BP_SnakeLeg::PostUTRSUpdate() {
 	//ある程度足が縮んでいるなら接地している扱い
 	if (footDistance < maxFootDistance - 1.0f) {
 		//接地しているなら抵抗UP
-		m_ptrCore->MulDrag(10.0f + 20.0f*max(0.0f, -m_ptrCore->GetTotalVelocity().y));
-		m_ptrCore->MulRotatability(1.0f + 2.0f*max(0.0f, -m_ptrCore->GetTotalVelocity().y));//回転力もUP
+		m_ptrCore->MulDrag(35.0f + 1.0f*max(0.0f, -m_ptrCore->GetTotalVelocity().y));
+		m_ptrCore->MulAngularDrag(1.35f + 0.07f*max(0.0f, -m_ptrCore->GetTotalVelocity().y));//回転低下
 		//振動
 		m_ptrCore->SetShakePower(0.0015f*max(0.0f, -m_ptrCore->GetTotalVelocity().y));
 
 		//ダッシュ
+		float power = CalcDashPower((minFootDistance - footDistance), (minFootDistance - maxFootDistance));
+		//power *= 1.25f;
+		if (power > 0.0f) {
+			m_canDash = true;
+		}
 		if (m_isDash) {
-			float power = 25.0f + 38.0f*(1.0f - abs((minFootDistance - footDistance) / (minFootDistance - maxFootDistance)));
-			power *= 1.25f;
-			m_ptrCore->AddVelocity(m_ptrCore->GetFront()*power);
+			m_ptrCore->SetMaxLinearVelocity(m_ptrCore->GetFront()*power);
 		}
 	}
 
@@ -142,6 +154,11 @@ void BP_SnakeLeg::PostUTRSUpdate() {
 }
 
 void BP_SnakeLeg::Draw2D() {
+	if (m_canDash) {
+		m_ptrCore->GetJapaneseFont()->Draw(L"[LT]or[RT]ダッシュ", { 0.3f,0.95f + 0.01f }, { 0.0f,0.0f });
+	}
+	
+	//m_ptrCore->GetFont()->DrawFormat(L"%.1f", 0.5f, 0.5f, max(0.0f, -m_ptrCore->GetTotalVelocity().y));	
 }
 
 void BP_SnakeLeg::Dash() {
