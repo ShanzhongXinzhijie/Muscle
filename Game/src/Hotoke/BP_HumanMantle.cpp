@@ -6,10 +6,14 @@ using namespace GameObj;
 namespace {
 	constexpr int INVINCIBLE_FRAME = 15;//ステップ無敵時間
 	constexpr int COOLDOWN_FRAME = 30;//ステップクールダウン
+	constexpr int DONTMOVE_FRAME = 10;//移動不可時間
 }
 
 void BP_HumanMantle::InnerStart() {
 	m_name = L"マント";
+
+	//落下速度変更
+	m_ptrCore->MulGravity(0.4f);
 
 	//布作る
 	btScalar sl = 500.0f;//8710.938 ~ 169.777
@@ -175,8 +179,11 @@ void BP_HumanMantle::Update() {
 		move *= 6.0f;
 		m_yawInertia = 0.f;//旋回無効
 	}
+	if (m_cooldownFrame > COOLDOWN_FRAME - DONTMOVE_FRAME) {
+		move *= 0.0f;
+	}
 	//move.y = move.Length()*1.125f*CalcAirScale(m_ptrCore->GetHeightMeter());
-	m_ptrCore->GetRot().Multiply(move);
+	//m_ptrCore->GetRot().Multiply(move);
 	m_ptrCore->AddVelocity(move);
 
 	//旋回
@@ -318,15 +325,13 @@ void BP_HumanMantle::Move(const CVector2& dir) {
 		m_moveDir = CVector3(dir.x, 0.0f, dir.y); 
 	//}
 }
-void BP_HumanMantle::Step(const CVector2& dir) {
+void BP_HumanMantle::Step(const CVector3& dir) {
 	if (m_invincibleFrame > 0 || m_cooldownFrame > 0) {
 		return;
 	}
 
 	//ステップ移動
-	//TODO
-	//落下速度
-	m_moveDir = CVector3(dir.x, 0.0f, dir.y);
+	m_moveDir = dir;
 
 	//無敵時間
 	m_invincibleFrame = INVINCIBLE_FRAME;
@@ -348,7 +353,15 @@ void HCon_HumanMantle::InnerUpdate() {
 
 	if (m_ptrCore->GetPad()->IsSmashInput(L)) {
 		//ステップ
-		m_ptrBody->Step(m_ptrCore->GetPad()->GetStick(L).GetNorm());
+		CVector3 viewDir = m_ptrCore->GetVanisingPoint() - m_ptrCore->GetPos(); viewDir.y = 0.0f;
+		if (viewDir.LengthSq() > FLT_EPSILON) {
+			viewDir.Normalize();
+			CVector3 moveDir;
+			moveDir += viewDir * m_ptrCore->GetPad()->GetStick(L).y;
+			moveDir += viewDir.GetCross(CVector3::AxisY())*-m_ptrCore->GetPad()->GetStick(L).x;
+			moveDir.Normalize();
+			m_ptrBody->Step(moveDir);
+		}
 	}
 	else if(m_isStickNeutral && m_ptrCore->GetPad()->GetStick(L).LengthSq() > CMath::Square(0.24f)){
 		//移動

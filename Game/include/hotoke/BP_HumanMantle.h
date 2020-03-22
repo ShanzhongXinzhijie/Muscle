@@ -41,7 +41,7 @@ public:
 	//アクション
 	void Move(const CVector2& dir);//移動
 	void Stop();//停止
-	void Step(const CVector2& dir);//ステップ移動
+	void Step(const CVector3& dir);//ステップ移動
 	void Yaw(float lerp);//旋回
 
 private:

@@ -185,6 +185,11 @@ public:
 	void SetIsDrawKouhai(bool isDraw) {
 		m_isDrawKouhai = isDraw;
 	}
+
+	//落下速度を乗算
+	void MulGravity(float scale) {
+		GRAVITY *= scale;
+	}
 	
 	//ゲッター//
 
@@ -337,7 +342,7 @@ private:
 
 private:
 	//重力定数
-	static constexpr float GRAVITY = ONE_G;
+	float GRAVITY = ONE_G;
 
 	//コアのモデル
 	GameObj::CSkinModelRender m_coreModel;
