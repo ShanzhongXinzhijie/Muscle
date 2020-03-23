@@ -43,7 +43,7 @@ Shibuya::Shibuya() //: m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI
 
 				for (int i = 0; i < 12; i++) {
 					CVector3 ramdamVec = CVector3::Up()*(15.0f*CMath::RandomZeroToOne() + 30.0f);
-					CQuaternion rot = { CVector3::AxisX(), CMath::RandomZeroToOne() * CMath::DegToRad(55.0f) };
+					CQuaternion rot = { CVector3::AxisX(), CMath::DegToRad(55.0f) - (CMath::RandomZeroToOne() * 2.0f * CMath::DegToRad(55.0f)) };
 					rot.Multiply(ramdamVec);
 					rot.SetRotation(CVector3::AxisY(), CMath::RandomZeroToOne() * CMath::PI2);
 					rot.Multiply(ramdamVec);

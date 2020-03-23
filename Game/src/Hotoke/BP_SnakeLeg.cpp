@@ -4,7 +4,9 @@
 using namespace GameObj;
 
 namespace {
-	const CVector3 hitboxOffset = CVector3::Down()*50.f+CVector3::Back()*40.0f;
+	const CVector3 hitboxOffset = CVector3::Down()*50.f;// +CVector3::Back()*20.0f;
+	const CQuaternion hitboxRot = { CVector3::AxisX(),CMath::PI_HALF*-0.5f };
+	constexpr float VIEW_OFFSET = 150.0f;
 
 	//ダッシュ力を計算
 	float CalcDashPower(float nowdis, float maxdis) {
@@ -16,7 +18,7 @@ void BP_SnakeLeg::InnerStart() {
 	m_name = L"スネーク";
 
 	//カメラ位置
-	m_ptrCore->SetFootCameraOffsetPos(CVector3::Front()*150.0f);
+	m_ptrCore->SetFootCameraOffsetPos(CVector3::Front()*VIEW_OFFSET);
 	m_ptrCore->SetToFootDistance(105.0f);
 
 	//アニメーション
@@ -58,11 +60,11 @@ void BP_SnakeLeg::InnerStart() {
 
 	//当たり判定(足)
 	constexpr float radius = 20.0f;
-	constexpr float height = 80.0f;
+	constexpr float height = 140.0f;
 	const float modelScale = m_ptrCore->GetScale().GetMax() / (0.0188f*2.0f);
 	{
 		//形状初期化
-		m_col.m_collision.CreateCapsule({}, {}, radius * modelScale, height*modelScale);
+		m_col.m_collision.CreateCapsule({}, hitboxRot, radius * modelScale, height*modelScale);
 		//m_col[lr].m_collision.CreateSphere({}, {}, radius * modelScale);
 
 		//ID設定
@@ -70,8 +72,11 @@ void BP_SnakeLeg::InnerStart() {
 		m_col.m_reference.nonHitID = m_ptrCore->GetFuID();
 
 		//位置
-		m_col.SetPos(m_model->GetBonePos(m_legBone->GetNo()) + hitboxOffset);
+		m_col.SetPos(m_model->GetBonePos(m_legBone->GetNo()) + m_model->GetRot().GetMultiply(hitboxOffset));
+		m_col.SetRot(m_model->GetRot()*hitboxRot);
 		m_beforePos = m_model->GetBonePos(m_legBone->GetNo());
+
+		m_col.m_reference.offsetPos = m_ptrCore->GetFront()*VIEW_OFFSET;
 
 		//物理属性
 		m_col.m_reference.attributes.set(enPhysical);
@@ -121,9 +126,11 @@ void BP_SnakeLeg::Update() {
 
 void BP_SnakeLeg::PostUTRSUpdate() {
 	//判定の更新
-	m_col.SetPos(m_ptrCore->GetPos() + hitboxOffset);
+	m_col.SetPos(m_ptrCore->GetPos() + m_model->GetRot().GetMultiply(hitboxOffset));
+	m_col.SetRot(m_model->GetRot()*hitboxRot);
 	m_col.SetVelocity(m_ptrCore->GetPos() - m_beforePos);
 	m_beforePos = m_ptrCore->GetPos();
+	m_col.m_reference.offsetPos = m_ptrCore->GetFront()*VIEW_OFFSET;
 
 	//足の位置取得
 	float footDistance;

@@ -6,6 +6,7 @@ using namespace GameObj;
 
 namespace {
 	const CVector3 hitboxOffset = CVector3::Down()*25.f;
+	const CQuaternion hitboxRot = { CVector3::AxisX(),CMath::PI_HALF };
 }
 
 void BP_TankLeg::InnerStart() {
@@ -61,15 +62,18 @@ void BP_TankLeg::InnerStart() {
 		constexpr float height = 150.0f;
 		const float modelScale = m_ptrCore->GetScale().GetMax() / (0.0188f*2.0f);
 		//形状初期化
-		m_col.m_collision.CreateCapsule({}, {CVector3::AxisX(),CMath::PI_HALF}, radius * modelScale, height*modelScale);
+		m_col.m_collision.CreateCapsule({}, hitboxRot, radius * modelScale, height*modelScale);
 
 		//ID設定
 		m_col.m_reference.ownerID = m_ptrCore->GetFuID();
 		m_col.m_reference.nonHitID = m_ptrCore->GetFuID();
 
 		//位置
-		m_col.SetPos(hitboxOffset);
+		m_col.SetPos(m_model->GetRot().GetMultiply(hitboxOffset));
+		m_col.SetRot(m_model->GetRot()*hitboxRot);
 		m_beforePos = CVector3::Zero();
+
+		m_col.m_reference.offsetPos = m_ptrCore->GetFront()*m_viewFront;
 
 		//物理属性
 		m_col.m_reference.attributes.set(enPhysical);
@@ -124,9 +128,11 @@ void BP_TankLeg::Update() {
 
 void BP_TankLeg::PostUTRSUpdate() {
 	//判定の更新
-	m_col.SetPos(m_ptrCore->GetPos() + hitboxOffset);
+	m_col.SetPos(m_ptrCore->GetPos() + m_model->GetRot().GetMultiply(hitboxOffset));
+	m_col.SetRot(m_model->GetRot()*hitboxRot);
 	m_col.SetVelocity(m_ptrCore->GetPos() - m_beforePos);
 	m_beforePos = m_ptrCore->GetPos();
+	m_col.m_reference.offsetPos = m_ptrCore->GetFront()*m_viewFront;
 
 	//固定カメラ設定
 	//m_ptrCore->SetUseFixedCamera(true);

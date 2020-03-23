@@ -55,7 +55,8 @@ void BP_HumanLeg::InnerStart() {
 		m_col[lr].m_reference.nonHitID = m_ptrCore->GetFuID();
 		
 		//ˆÊ’u
-		m_col[lr].SetPos(m_model->GetBonePos(m_ikSetting[lr]->tipBone->GetNo()) + hitboxOffset);
+		m_col[lr].SetPos(m_model->GetBonePos(m_ikSetting[lr]->tipBone->GetNo()) + m_model->GetRot().GetMultiply(hitboxOffset));
+		m_col[lr].SetRot(m_model->GetRot());
 		m_beforePos[lr] = m_model->GetBonePos(m_ikSetting[lr]->tipBone->GetNo());
 
 		//•¨—‘®«
@@ -105,7 +106,8 @@ void BP_HumanLeg::Update() {
 void BP_HumanLeg::PostUTRSUpdate() {
 	//”»’è‚ÌXV
 	for (auto lr : LR) {
-		m_col[lr].SetPos(m_model->GetBonePos(m_ikSetting[lr]->tipBone->GetNo()) + hitboxOffset);
+		m_col[lr].SetPos(m_model->GetBonePos(m_ikSetting[lr]->tipBone->GetNo()) + m_model->GetRot().GetMultiply(hitboxOffset));
+		m_col[lr].SetRot(m_model->GetRot());
 		m_col[lr].SetVelocity(m_model->GetBonePos(m_ikSetting[lr]->tipBone->GetNo()) - m_beforePos[lr]);
 		m_beforePos[lr] = m_model->GetBonePos(m_ikSetting[lr]->tipBone->GetNo());
 	}

@@ -70,7 +70,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	//GetPhysicsWorld().GetSoftBodyWorldInfo()->air_density = 1.2f*10.0f;
 	
 	//判定表示
-	//SetPhysicsDebugDrawMode(btIDebugDraw::DBG_DrawWireframe);
+	SetPhysicsDebugDrawMode(btIDebugDraw::DBG_DrawWireframe);
 
 	//デバッグ表示・入力、常時有効化
 	//SetIsDebugDraw(true);

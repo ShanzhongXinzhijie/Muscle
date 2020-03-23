@@ -27,7 +27,7 @@ Game::Game(GameManager* manager)
 	//m_font.SetColor(CVector4::Black());
 
 	//プレイヤー人数の取得
-	if (FindGO<CGameMode>(L"CGameMode")->GetPlayerNum() == 1) {
+	if (m_manager->GetIsPracticeRound() && FindGO<CGameMode>(L"CGameMode")->GetPlayerNum() == 1) {
 		MAX_PUSH = 6;
 	}
 }

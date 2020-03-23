@@ -48,6 +48,8 @@ public:
 	unsigned long long nonHitID = 1;
 	//const ReferenceCollision* nonHitCollision = nullptr;//この対象とは当たらない…
 
+	CVector3 offsetPos;//なんかオフセット
+
 	std::function<bool(ReferenceCollision*)> m_preCollisionFunc;//衝突前に実行する処理
 };
 
