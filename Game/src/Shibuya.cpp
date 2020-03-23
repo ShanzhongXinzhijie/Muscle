@@ -205,23 +205,24 @@ Shibuya::Shibuya() //: m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI
 	SetFogColor({0.28f,0.4f,0.65f});
 
 	//X
-	constexpr int FOREST_NUM = 10;
-	Tree::m_sInstancingMax = 4000;// *FOREST_NUM;
+	constexpr int FOREST_NUM = 5;
+	constexpr float FOREST_SIZE = 70.0f*50.0f*0.5f;
+	Tree::m_sInstancingMax = 4000 + 1000;// *FOREST_NUM;
 
 	//X‚Ì’†S“_ì‚é
-	//std::vector<CVector2> genPoints;
-	//CMath::GenerateBlueNoise(FOREST_NUM, { -70.0f*50.0f*10.0f, -70.0f*50.0f*10.0f }, { 70.0f*50.0f*10.0f, 70.0f*50.0f*10.0f }, 70.0f*50.0f*2.0f, genPoints);
+	std::vector<CVector2> genPoints;
+	constexpr float GEN_POINT_AREA = 70.0f*50.0f*3.33f;
+	CMath::GenerateBlueNoise(FOREST_NUM, -GEN_POINT_AREA, GEN_POINT_AREA, FOREST_SIZE, genPoints);
 
 	//–ØX¶¬
 	//TODO –Ø‚Ìƒ‚ƒfƒ‹‚Ì•`‰æ•‰‰×‚ª‚‚¢ ”»’è‚ªd‚¢ ‰æ–Ê•ªŠ„‚Í”»’èíœ‚Æ‚©
-	/*for (const auto& forestPoint : genPoints) {
-		float scale = 1.0f + CMath::RandomZeroToOne();
-		m_objGene.Generate<Tree>({ forestPoint.x,0.0f,forestPoint.y }, 70.0f*50.0f*scale, 70.0f*50.0f, Tree::m_sInstancingMax / FOREST_NUM, 120.0f);
-	}*/
-
 	//IGameObject‚Æ‚µ‚Ä“o˜^‚µ‚È‚¢
 	//‚»‚ê‚ğˆêŒÂ‚ÌGO‚Å
-	m_objGene.CircularGenerate<Tree>(0.f, 70.0f*50.0f*7.0f, 70.0f*50.0f, Tree::m_sInstancingMax, 120.0f);
+	for (const auto& forestPoint : genPoints) {
+		m_objGene.CircularGenerate<Tree>({ forestPoint.x,0.0f,forestPoint.y }, FOREST_SIZE, 70.0f*50.0f, 1000 / FOREST_NUM -1, 120.0f);
+	}
+
+	m_objGene.CircularGenerate<Tree>(0.f, 70.0f*50.0f*7.0f, 70.0f*50.0f, 4000, 120.0f);
 
 	//“S“ƒ
 	//for (int i = 0; i < 3;i++) {
