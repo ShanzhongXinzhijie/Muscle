@@ -58,8 +58,8 @@ public:
 	/// <summary>
 	/// –ˆƒtƒŒ[ƒ€‚Ìˆ—
 	/// </summary>
-	void PreUpdate()override {
-		m_timeLimitSec -= GetDeltaTimeSec();
+	void PreLoopUpdate()override {
+		m_timeLimitSec -= GetRealDeltaTimeSec();
 		m_timeLimitSec = max(0.0f, m_timeLimitSec);
 		if (m_timeLimitSec < FLT_EPSILON) {
 			ResetFrameRate();//‚à‚Æ‚É–ß‚·

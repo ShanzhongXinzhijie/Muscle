@@ -24,29 +24,54 @@ Game::Game(GameManager* manager)
 	//ステージ生成
 	m_shibuya = std::make_unique<Shibuya>();
 
+	//フォント初期化
 	//m_font.SetColor(CVector4::Black());
+	m_bigFont.LoadFont(L"Resource/font/eunomia_0200/EunomiaBold.spritefont");
 
 	//プレイヤー人数の取得
-	if (m_manager->GetIsPracticeRound() && FindGO<CGameMode>(L"CGameMode")->GetPlayerNum() == 1) {
+	m_playerNum = FindGO<CGameMode>(L"CGameMode")->GetPlayerNum();
+	if (m_manager->GetIsPracticeRound() && m_playerNum == 1) {
 		MAX_PUSH = 6;
 		MAX_PUSH_NOCON = 6;
 	}
 }
 
 void Game::PreUpdate() {
-	//プレイヤーの死亡を検知
-	bool isDeath = false;
-	bool isDeathPlayer[PLAYER_NUM] = {};
-	for (int i = 0; i < PLAYER_NUM;i++) {
-		if (m_player[i]->GetIsDeath()) {
-			isDeath = true;
-			isDeathPlayer[m_player[i]->GetPlayerNum()] = true;
+	if (m_toEndTimeSec < FLT_EPSILON) {
+		//プレイヤーの死亡を検知
+		bool isDeath = false;
+		bool isDeathPlayer[PLAYER_NUM] = {};
+		for (int i = 0; i < PLAYER_NUM; i++) {
+			if (m_player[i]->GetIsDeath()) {
+				isDeath = true;
+				isDeathPlayer[m_player[i]->GetPlayerNum()] = true;
+			}
 		}
-	}
-	//プレイヤー死亡でゲーム終了
-	if (isDeath) {
-		m_manager->GameEnd(isDeathPlayer);
-		return;
+		//プレイヤー死亡でゲーム終了
+		if (isDeath) {
+			//秒後にラウンド終了
+			m_toEndTimeSec = 2.3f;
+			//スローモーション
+			TimeManager::GetInstance().SetFrameRate(1.4f, 6, 1.0f);
+			//無敵化
+			for (auto& player : m_player) {
+				player->GetDeathHotoke().SetIsImmortal(true);
+			}
+		}
+
+		//制限時間
+		m_timeLimitSec -= FRAME_PER_SECOND;
+		if (m_timeLimitSec < 0.0f) {
+			//秒後にラウンド終了
+			m_toEndTimeSec = 2.3f;
+			//スローモーション
+			TimeManager::GetInstance().SetFrameRate(1.4f, 6, 1.0f);
+			//無敵化
+			for (auto& player : m_player) {
+				player->GetDeathHotoke().SetIsImmortal(true);
+			}
+			return;
+		}
 	}
 
 	//練習ラウンドならラウンド終了操作あり
@@ -71,12 +96,25 @@ void Game::PreUpdate() {
 		m_manager->NoContest();
 		return;
 	}
+}
 
-	//制限時間
-	m_timeLimitSec -= FRAME_PER_SECOND;
-	if (m_timeLimitSec < 0.0f) {
-		m_manager->GameEnd(isDeathPlayer);
-		return;
+void Game::PostLoopUpdate() {
+	if (m_toEndTimeSec > 0.0f) {
+		m_toEndTimeSec -= GetRealDeltaTimeSec();
+		if (m_toEndTimeSec < FLT_EPSILON) {
+			//プレイヤーの死亡を検知
+			bool isDeath = false;
+			bool isDeathPlayer[PLAYER_NUM] = {};
+			for (int i = 0; i < PLAYER_NUM; i++) {
+				if (m_player[i]->GetIsDeath()) {
+					isDeath = true;
+					isDeathPlayer[m_player[i]->GetPlayerNum()] = true;
+				}
+			}
+			//終了
+			m_manager->GameEnd(isDeathPlayer);
+			return;
+		}
 	}
 }
 
@@ -128,4 +166,39 @@ void Game::PostRender() {
 	}
 	m_font.SetUseFont(m_font.enENG);
 	m_font.SetScale(scale);
+
+	//勝敗表示
+	if (m_toEndTimeSec > 0.0f) {
+		//プレイヤーの死亡を検知
+		bool isDeathPlayer[PLAYER_NUM] = {};
+		for (int i = 0; i < PLAYER_NUM; i++) {
+			if (m_player[i]->GetIsDeath()) {
+				isDeathPlayer[m_player[i]->GetPlayerNum()] = true;
+			}
+		}
+		wchar_t string[64];
+		if (isDeathPlayer[0] && isDeathPlayer[1]) {
+			wcscpy_s(string, L"destroyed");
+		}
+		else if (isDeathPlayer[0]){
+			if (m_playerNum == 1) {
+				wcscpy_s(string, L"WAI NO\nKACHIYA");
+			}
+			else {
+				wcscpy_s(string, L"Right Side\nWIN");
+			}
+		}
+		else if (isDeathPlayer[1]) {
+			if (m_playerNum == 1) {
+				wcscpy_s(string, L"YOU\nWIN");
+			}
+			else {
+				wcscpy_s(string, L"Left Side\nWIN");
+			}
+		}
+		else {
+			wcscpy_s(string, L"TIME UP");
+		}
+		m_bigFont.Draw(string, 0.5f, CVector4::Black(), 1.0f, { 0.575f, 0.6f });
+	}
 }

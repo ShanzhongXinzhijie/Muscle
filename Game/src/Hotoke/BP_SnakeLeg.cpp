@@ -148,7 +148,7 @@ void BP_SnakeLeg::PostUTRSUpdate() {
 
 		//ƒ_ƒbƒVƒ…
 		float power = CalcDashPower((minFootDistance - footDistance), (minFootDistance - maxFootDistance));
-		//power *= 1.25f;
+		power *= 1.25f;
 		if (power > 0.0f) {
 			m_canDash = true;
 		}
