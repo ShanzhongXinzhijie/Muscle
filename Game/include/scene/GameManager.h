@@ -22,6 +22,11 @@ public:
 	void GameEnd(bool isDeathPlayer[PLAYER_NUM]);
 
 	/// <summary>
+	/// –³Œø‡‚É‚·‚é
+	/// </summary>
+	void NoContest();
+
+	/// <summary>
 	/// §ŒÀŠÔİ’è‚ğæ“¾
 	/// </summary>
 	int GetTimeLimitSec()const {

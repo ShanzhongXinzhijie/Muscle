@@ -36,3 +36,8 @@ void GameManager::GameEnd(bool isDeathPlayer[PLAYER_NUM]) {
 	//次のラウンドを開始
 	GameStart();
 }
+void GameManager::NoContest() {
+	new CResult(m_score, true);
+	delete this;
+	return;
+}

@@ -29,6 +29,7 @@ Game::Game(GameManager* manager)
 	//プレイヤー人数の取得
 	if (m_manager->GetIsPracticeRound() && FindGO<CGameMode>(L"CGameMode")->GetPlayerNum() == 1) {
 		MAX_PUSH = 6;
+		MAX_PUSH_NOCON = 6;
 	}
 }
 
@@ -60,12 +61,27 @@ void Game::PreUpdate() {
 		}		
 	}
 
+	//ノーコンテスト
+	for (int i = 0; i < PLAYER_NUM; i++) {
+		if (Pad(i).GetDown(enButtonX)) {
+			m_pushCntNoCon++;
+		}
+	}
+	if (m_pushCntNoCon >= MAX_PUSH_NOCON) {
+		m_manager->NoContest();
+		return;
+	}
+
 	//制限時間
 	m_timeLimitSec -= FRAME_PER_SECOND;
 	if (m_timeLimitSec < 0.0f) {
 		m_manager->GameEnd(isDeathPlayer);
 		return;
 	}
+}
+
+namespace {
+	constexpr wchar_t TEXT[][64] = { L"[X]ノーコンテスト(%d/%d)\n\nれんしゅうラウンド\nBれんだでゲームスタート(%d/%d)", L"[X]ノーコンテスト(%d/%d)" };
 }
 
 void Game::PostRender() {
@@ -90,25 +106,26 @@ void Game::PostRender() {
 	}
 
 	//ラウンド終了操作
-	if (m_manager->GetIsPracticeRound()) {
-		CVector2 scale = m_font.GetScale();
-		m_font.SetScale(scale*0.5f);
-		m_font.SetUseFont(m_font.enJPN);
-		if (GetScreenNum() == 1) {
-			m_font.DrawFormat(
-				L"れんしゅうラウンド\nBれんだでゲームスタート(%d/%d)",
-				{ 0.95f,0.08f }, { 1.0f,0.0f },
-				m_pushCnt, MAX_PUSH
-			);
-		}
-		else {
-			m_font.DrawFormat(
-				L"れんしゅうラウンド\nBれんだでゲームスタート(%d/%d)",				
-				{ 0.5f,0.08f }, { 0.5f,0.0f },
-				m_pushCnt, MAX_PUSH
-			);
-		}
-		m_font.SetUseFont(m_font.enENG);
-		m_font.SetScale(scale);
+	int ind = m_manager->GetIsPracticeRound() ? 0 : 1;
+	CVector2 scale = m_font.GetScale();
+	m_font.SetScale(scale*0.5f);
+	m_font.SetUseFont(m_font.enJPN);
+	if (GetScreenNum() == 1) {
+		m_font.DrawFormat(
+			TEXT[ind],
+			{ 0.95f,0.08f }, { 1.0f,0.0f },
+			m_pushCntNoCon, MAX_PUSH_NOCON,
+			m_pushCnt, MAX_PUSH
+		);
 	}
+	else {
+		m_font.DrawFormat(
+			TEXT[ind],
+			{ 0.5f,0.08f }, { 0.5f,0.0f },
+			m_pushCntNoCon, MAX_PUSH_NOCON,
+			m_pushCnt, MAX_PUSH
+		);
+	}
+	m_font.SetUseFont(m_font.enENG);
+	m_font.SetScale(scale);
 }

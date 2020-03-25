@@ -34,5 +34,7 @@ private:
 
 	int m_pushCnt = 0;
 	int MAX_PUSH = 20;
+	int m_pushCntNoCon = 0;
+	int MAX_PUSH_NOCON = 20;
 };
 

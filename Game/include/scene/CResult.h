@@ -6,7 +6,7 @@ class CResult :
 	public IGameObject
 {
 public:
-	CResult(int score[PLAYER_NUM]) {
+	CResult(int score[PLAYER_NUM], bool isNoContest = false) : m_isNoContest(isNoContest){
 		m_fontScore.LoadFont(L"Resource/font/eunomia_0200/EunomiaBold.spritefont");//ƒtƒHƒ“ƒg‰Šú‰»
 		
 		int i = 0;
@@ -29,6 +29,7 @@ public:
 	void PostRender()override;
 
 private:
+	bool m_isNoContest = false;
 	int m_playerCnt = 0;
 	int m_score[PLAYER_NUM] = {};
 

@@ -117,7 +117,7 @@ void AssembleScene::Update() {
 		}
 
 		//€”õŠ®—¹
-		if (Pad(i).GetDown(enButtonA) || Pad(i).GetDown(enButtonStart)) {
+		if (Pad(i).GetDown(enButtonA) || Pad(i).GetDown(enButtonStart) || GetKeyDown(VK_RETURN)) {
 			m_isReady[i] = !m_isReady[i];
 		}
 
