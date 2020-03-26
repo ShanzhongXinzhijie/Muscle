@@ -75,6 +75,10 @@ bool CDeathHotoke::Start() {
 			
 			//ズームアウト
 			if (H->stunTimeSec > 0.0f) {
+				//スローモーション
+				constexpr int SLOWMO_FPS = 6;
+				constexpr float SLOWMO_SEC = 1.4f;
+
 				//攻撃食らったほう(こっち)
 				CVector3 dir;
 				dir = H->velocity; dir.y = 0.0f; dir.Normalize();
@@ -85,16 +89,13 @@ bool CDeathHotoke::Start() {
 				m_zoomoutDir = dir * -800.f;
 				m_zoomoutDir.y += 400.0f;
 				SetZoomoutTime(m_stunTimeSec);
-				SetZoomoutTarget(this);
-
-				//スローモーション秒数
-				constexpr float SLOWMO_SEC = 1.4f;
+				SetZoomoutTarget(this);				
 
 				//攻撃当てた方の演出
 				QueryGOs<CDeathHotoke>(L"CDeathHotoke",
 					[&](CDeathHotoke* go) {
 						if (go == this) { return true; }
-						go->SetZoomoutTime(SLOWMO_SEC);
+						go->SetZoomoutTime(SLOWMO_SEC * ((FRAME_PER_SECOND * SLOWMO_FPS)));//スローモーが終わるまで
 						go->SetZoomoutDirection(m_zoomoutDir);
 						go->SetZoomoutTarget(this);
 						return true;
@@ -102,7 +103,7 @@ bool CDeathHotoke::Start() {
 				);
 
 				//スローモーション
-				TimeManager::GetInstance().SetFrameRate(SLOWMO_SEC, 6, 1.0f);
+				TimeManager::GetInstance().SetFrameRate(SLOWMO_SEC, SLOWMO_FPS, 1.0f);
 			}
 		}
 	);
@@ -135,12 +136,6 @@ bool CDeathHotoke::Start() {
 void CDeathHotoke::PreLoopUpdate() {
 	//描画初期化
 	m_kouhai.SetIsDraw(m_isDrawKouhai);
-
-	//ズームアウト時間
-	m_zoomoutTimeSec -= GetRealDeltaTimeSec();
-	if (m_zoomoutTimeSec < 0.0f) {
-		m_zoomoutTimeSec = 0.0f;
-	}
 }
 
 void CDeathHotoke::PreUpdate() {
@@ -176,6 +171,11 @@ void CDeathHotoke::Update() {
 
 	//スタン処理
 	Stun();
+	//ズームアウト時間
+	m_zoomoutTimeSec -= FRAME_PER_SECOND;
+	if (m_zoomoutTimeSec < 0.0f) {
+		m_zoomoutTimeSec = 0.0f;
+	}
 
 	//移動適応
 	Move(GetTotalVelocity());
