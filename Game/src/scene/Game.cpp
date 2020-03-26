@@ -14,10 +14,13 @@ Game::Game(GameManager* manager)
 	m_player[0] = std::make_unique<CPlayer>(1, m_manager->GetIsPracticeRound());
 	m_player[1] = std::make_unique<CPlayer>(0, m_manager->GetIsPracticeRound());
 
-	//練習ラウンドなら不死設定にする
+	//練習ラウンドなら
 	if (m_manager->GetIsPracticeRound()) {
 		for (auto& player : m_player) {
+			//不死設定
 			player->GetDeathHotoke().SetIsImmortal(true);
+			//操作説明表示
+			player->GetDeathHotoke().SetIsDrawHowto(true);
 		}
 	}
 

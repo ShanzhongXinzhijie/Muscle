@@ -238,12 +238,14 @@ void CDeathHotoke::Pre3DRender(int screenNum) {
 void CDeathHotoke::HUDRender(int HUDNum) {
 	if (!m_isDrawHUD || m_playerNum != HUDNum)return;
 
-	//操作
-	if (GetPlayerNum() == 0) {
-		GetJapaneseFont()->Draw(L"[Rスティック]\n:してんいどう\n[RSB]バックみる", { 0.0f,0.15f });
-	}
-	else {
-		GetJapaneseFont()->Draw(L"[Rスティック]\n:してんいどう\n[RSB]バックみる", { 1.0f,0.15f }, { 1.1f,0.0f });
+	if (GetIsDrawHowto()) {
+		//操作
+		if (GetPlayerNum() == 0) {
+			GetJapaneseFont()->Draw(L"[Rスティック]\n:してんいどう\n[RSB]バックみる", { 0.0f,0.15f });
+		}
+		else {
+			GetJapaneseFont()->Draw(L"[Rスティック]\n:してんいどう\n[RSB]バックみる", { 1.0f,0.15f }, { 1.1f,0.0f });
+		}
 	}
 
 	//パーツの2D描画

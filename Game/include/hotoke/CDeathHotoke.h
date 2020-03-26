@@ -178,6 +178,8 @@ public:
 
 	//HUDを表示するか設定
 	void SetIsDrawHUD(bool enable) { m_isDrawHUD = enable; }
+	//操作説明を表示するか設定
+	void SetIsDrawHowto(bool enable) { m_isDrawHowto = enable; }
 	//バックミラー状態か設定
 	void SetIsBackMirror(bool isMirror) { m_isBackMirror = isMirror; }
 
@@ -306,6 +308,8 @@ public:
 
 	//HUDを表示するか取得
 	[[nodiscard]] bool GetIsDrawHUD()const { return m_isDrawHUD; }
+	//操作説明を表示するか取得
+	[[nodiscard]] bool GetIsDrawHowto()const { return m_isDrawHowto; }
 	//バックミラー状態か設定
 	[[nodiscard]] bool GetIsBackMirror()const { return m_isBackMirror; }
 
@@ -393,7 +397,7 @@ private:
 	std::unique_ptr<IAI> m_ai;
 		
 	//HUD
-	bool m_isDrawHUD = false;//HUDを表示するか
+	bool m_isDrawHUD = false, m_isDrawHowto = false;//HUDを表示するか
 	HUDFont* m_ptrHUDFont = nullptr, *m_ptrWarningHUDFont = nullptr, *m_ptrJapaneseHUDFont = nullptr;//HUDフォント
 	bool m_isBackMirror = false;//バックミラー状態
 

@@ -261,12 +261,14 @@ void BP_DinoArm::Draw2D() {
 		}
 	}
 
-	//操作	
-	if (m_coolDown[L] <= 0) {
-		m_ptrCore->GetJapaneseFont()->Draw(L"[LB/RB]\n:マシンガン\n(2どおし)\n:ミッソー", { 0.0f,0.55f });
-	}
-	if (m_coolDown[R] <= 0) {
-		m_ptrCore->GetJapaneseFont()->Draw(L"[LB/RB]\n:マシンガン\n(2どおし)\n:ミッソー", { 1.0f,0.55f }, { 1.1f,0.0f });
+	if (m_ptrCore->GetIsDrawHowto()) {
+		//操作	
+		if (m_coolDown[L] <= 0) {
+			m_ptrCore->GetJapaneseFont()->Draw(L"[LB/RB]\n:マシンガン\n(2どおし)\n:ミッソー", { 0.0f,0.55f });
+		}
+		if (m_coolDown[R] <= 0) {
+			m_ptrCore->GetJapaneseFont()->Draw(L"[LB/RB]\n:マシンガン\n(2どおし)\n:ミッソー", { 1.0f,0.55f }, { 1.1f,0.0f });
+		}
 	}
 
 	//クールダウン

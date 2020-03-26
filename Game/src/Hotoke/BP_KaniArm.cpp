@@ -261,12 +261,14 @@ void BP_KaniArm::Draw2D() {
 		}
 	}
 
-	//操作	
-	if (m_coolDown[L] <= 0) {
-		m_ptrCore->GetJapaneseFont()->Draw(L"[LB/RB]\n:マシンガン\n(2どおし)\n:ミッソー", { 0.0f,0.55f });
-	}
-	if (m_coolDown[R] <= 0) {
-		m_ptrCore->GetJapaneseFont()->Draw(L"[LB/RB]\n:マシンガン\n(2どおし)\n:ミッソー", { 1.0f,0.55f }, {1.1f,0.0f});
+	if (m_ptrCore->GetIsDrawHowto()) {
+		//操作	
+		if (m_coolDown[L] <= 0) {
+			m_ptrCore->GetJapaneseFont()->Draw(L"[LB/RB]\n:マシンガン\n(2どおし)\n:ミッソー", { 0.0f,0.55f });
+		}
+		if (m_coolDown[R] <= 0) {
+			m_ptrCore->GetJapaneseFont()->Draw(L"[LB/RB]\n:マシンガン\n(2どおし)\n:ミッソー", { 1.0f,0.55f }, { 1.1f,0.0f });
+		}
 	}
 
 	//クールダウン
@@ -367,7 +369,7 @@ void BP_KaniArm::Rocket(enLR lr) {
 
 //ヒューマンコントローラー
 void HCon_KaniArm::InnerUpdate() {
-	for (auto lr : { L, R }) {
+	for (auto lr : LR) {
 		if (m_ptrCore->GetPad()->GetFire(lr)) {
 			m_ptrBody->ChargeAndMachinegun(lr);
 		}
@@ -379,7 +381,7 @@ void HCon_KaniArm::InnerUpdate() {
 //AIコントローラー
 void AICon_KaniArm::InnerUpdate() {
 	if (m_ptrCore->GetAIStatus()->isAttackingTarget) {
-		for (auto lr : { L, R }) {
+		for (auto lr : LR) {
 			m_ptrBody->ChargeAndMachinegun(lr);
 			if (lr == L && m_cnt < 10 || lr == R && m_cnt > 10) {
 				m_ptrBody->Rocket(lr);
