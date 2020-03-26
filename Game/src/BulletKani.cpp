@@ -83,7 +83,7 @@ void BulletGO::Update() {
 			m_damegeBoostEffect = std::make_unique<CBillboard>();
 			m_damegeBoostEffect->Init(L"Resource/effect/light.png", BOOST_EFECT_MAXNUM);
 			m_damegeBoostEffect->SetRot({ CVector3::AxisZ(), CMath::RandomZeroToOne()*CMath::PI2 });
-			m_damegeBoostEffect->GetModel().InitPostDraw(PostDrawModelRender::enAlpha, false, true);//ポストドロー
+			m_damegeBoostEffect->GetModel().InitPostDraw(PostDrawModelRender::enAlpha, false, GameObj::CSkinModelRender::enSoftParticle);//ポストドロー
 			m_damegeBoostEffect->GetModel().SetIsShadowCaster(false);
 		}
 		m_damegeBoostEffect->SetPos(GetPos());

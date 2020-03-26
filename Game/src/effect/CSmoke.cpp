@@ -24,7 +24,7 @@ CSmoke::CSmoke(
 	//ビルボード読み込み
 	std::unique_ptr<CBillboard> billboard = std::make_unique<CBillboard>();
 	billboard->Init(L"Resource/spriteData/smoke.png", MAX_NUM);
-	billboard->GetModel().InitPostDraw(PostDrawModelRender::enAlpha,false,true);//ポストドロー(ソフトパーティクル)
+	billboard->GetModel().InitPostDraw(PostDrawModelRender::enAlpha, false, GameObj::CSkinModelRender::enSoftParticle);//ポストドロー(ソフトパーティクル)
 	billboard->GetModel().SetIsShadowCaster(false);
 	billboard->GetModel().GetSkinModel().FindMaterialSetting(
 		[&](MaterialSetting* mat) {

@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "CBlood.h"
+#include "BloodPoint.h"
 
 bool CBlood::Start() {
 	//モデル
@@ -64,9 +65,8 @@ void CBlood::Update() {
 					false
 				);
 			}
-			//TODO 血溜まり
-			//TODO
-			//逆ソフトパーティクルの血痕
+			//血溜まり
+			new BloodPoint(gnd_ray.m_hitPointWorld, gnd_ray.m_hitNormalWorld, 1000.0f);
 		}
 	}
 

@@ -27,6 +27,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\effect\BloodPoint.cpp" />
     <ClCompile Include="src\scene\ImposterViewer.cpp" />
     <ClCompile Include="src\Hotoke\BP_SnakeLeg.cpp" />
     <ClCompile Include="src\Hotoke\BP_TankLeg.cpp" />
@@ -79,6 +80,7 @@
     <ClCompile Include="src\WindowSizeManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\effect\BloodPoint.h" />
     <ClInclude Include="include\scene\ImposterViewer.h" />
     <ClInclude Include="include\hotoke\BP_SnakeLeg.h" />
     <ClInclude Include="include\hotoke\BP_TankLeg.h" />
