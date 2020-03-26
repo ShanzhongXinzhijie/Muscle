@@ -226,7 +226,7 @@ public:
 	void PostUpdate()override {
 		//ƒŒƒC‚Å”»’è
 		btVector3 rayStart = m_bullet->GetPos();
-		btVector3 rayEnd = m_bullet->GetPos() + m_bullet->m_vector * m_avoidanceFrame;
+		btVector3 rayEnd = m_bullet->GetPos() + m_bullet->m_vector * m_avoidanceFrame;// +(m_bullet->GetPos() - m_bullet->GetOldPos()) * 11;
 
 		if ((rayStart - rayEnd).fuzzyZero()) {
 			return;

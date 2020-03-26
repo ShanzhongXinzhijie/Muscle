@@ -351,7 +351,7 @@ void BP_KaniArm::Rocket(enLR lr) {
 		//衝突
 		bullet->AddComponent(std::make_unique<BD_Contact>());
 		//衝突回避
-		bullet->AddComponent(std::make_unique<BD_ClashAvoidance>(thrust));
+		bullet->AddComponent(std::make_unique<BD_ClashAvoidance>(thrust,10));
 		bd_OffTimer->AddComponent(&bullet->GetComponentBack());//オフタイマーに設定
 		//ホーミング
 		std::unique_ptr<BD_Homing> homing = std::make_unique<BD_Homing>(m_ptrCore->GetTarget(), thrust, 0.0f, CMath::DegToRad(67.5f), homingStartTime);
