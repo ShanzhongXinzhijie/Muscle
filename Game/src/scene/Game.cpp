@@ -30,7 +30,7 @@ Game::Game(GameManager* manager)
 
 	//プレイヤー人数の取得
 	m_playerNum = FindGO<CGameMode>(L"CGameMode")->GetPlayerNum();
-	if (m_manager->GetIsPracticeRound() && m_playerNum == 1) {
+	if (m_playerNum == 1) {
 		MAX_PUSH = 6;
 		MAX_PUSH_NOCON = 6;
 	}
@@ -77,7 +77,7 @@ void Game::PreUpdate() {
 	//練習ラウンドならラウンド終了操作あり
 	if (m_manager->GetIsPracticeRound()) {
 		for (int i = 0; i < PLAYER_NUM; i++) {
-			if (Pad(i).GetDown(enButtonB)) {
+			if (Pad(i).GetDown(enButtonY)) {
 				m_pushCnt++;
 			}
 		}
@@ -88,7 +88,7 @@ void Game::PreUpdate() {
 
 	//ノーコンテスト
 	for (int i = 0; i < PLAYER_NUM; i++) {
-		if (Pad(i).GetDown(enButtonX)) {
+		if (Pad(i).GetDown(enButtonB)) {
 			m_pushCntNoCon++;
 		}
 	}
@@ -119,7 +119,7 @@ void Game::PostLoopUpdate() {
 }
 
 namespace {
-	constexpr wchar_t TEXT[][64] = { L"[X]ノーコンテスト(%d/%d)\n\nれんしゅうラウンド\nBれんだでゲームスタート(%d/%d)", L"[X]ノーコンテスト(%d/%d)" };
+	constexpr wchar_t TEXT[][64] = { L"[B]ノーコンテスト(%d/%d)\n\nれんしゅうラウンド\n[Y]れんだでゲームスタート(%d/%d)", L"[B]ノーコンテスト(%d/%d)" };
 }
 
 void Game::PostRender() {

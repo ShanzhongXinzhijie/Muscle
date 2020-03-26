@@ -121,6 +121,7 @@ void BP_HumanLeg::PostUTRSUpdate() {
 	const float minFootDistance = 20.0f*modelScale, maxFootDistance = 167.0f*modelScale;
 	//ある程度足が縮んでいるなら接地している扱い
 	if (footDistance < maxFootDistance - 1.0f) {
+		m_isOnGraund = true;
 		//接地しているなら抵抗UP
 		m_ptrCore->MulDrag(20.0f + 10.0f*max(0.0f,-m_ptrCore->GetTotalVelocity().y));
 		m_ptrCore->MulRotatability(2.0f+ 1.0f*max(0.0f, -m_ptrCore->GetTotalVelocity().y));//回転力もUP
@@ -133,6 +134,9 @@ void BP_HumanLeg::PostUTRSUpdate() {
 			power *= 1.25f;
 			m_ptrCore->SetMaxLinearVelocity(CVector3::Up()*power);
 		}
+	}
+	else {
+		m_isOnGraund = false;
 	}
 	
 	m_isJump = false;
@@ -159,10 +163,15 @@ void BP_HumanLeg::Draw2D() {
 		m_ptrCore->GetJapaneseFont()->SetScale(size);
 	}
 
+	//ジャンプ操作
+	if (m_isOnGraund) {
+		m_ptrCore->GetJapaneseFont()->Draw(L"[LT]or[RT]ジャンプ", { 0.3f,0.95f + 0.01f }, { 0.0f,0.0f });
+	}
+
 	//球数
 	m_ptrCore->GetJapaneseFont()->DrawFormat(
-		m_leftStomp > 0 ? L"のこりふみつけ:%dそく" : L"あしなし",
-		{ 0.3f,0.95f + 0.01f }, { 0.0f,0.0f },
+		m_leftStomp > 0 ? L"のこりキック:%dそく" : L"あしなし",
+		{ 0.3f - 0.01f,0.95f + 0.01f }, { 1.0f,0.0f },
 		m_leftStomp
 	);
 }

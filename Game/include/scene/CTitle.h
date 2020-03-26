@@ -19,6 +19,6 @@ private:
 	int m_selectMode = 0;
 
 	int m_pushCnt = 0;
-	int MAX_PUSH = 10;
+	int MAX_PUSH = 6;
 };
 

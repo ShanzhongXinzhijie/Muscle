@@ -306,6 +306,9 @@ void BP_HumanMantle::Draw2D() {
 
 	//m_ptrCore->GetFont()->DrawFormat(L"Deg: %.1f", { 0.0f,0.85f },0.0f,CMath::RadToDeg(m_ptrCore->GetPad()->GetStickRollAngle(L)));
 
+	//操作
+	m_ptrCore->GetJapaneseFont()->Draw(L"[Lスティック]\nはじき:ステップ\nかいてん:せんかい\n(せんかいちゅうはゲイン)\n[LSB]せいし", { 0.0f,0.3f });
+
 	//ステップ表示
 	if (m_invincibleFrame > 0) {
 		m_ptrCore->GetFont()->Draw(L"[INVINCIBLE]", 0.5f, 0.5f);// { 0.3f, 0.90f }, { 0.0f,0.0f });

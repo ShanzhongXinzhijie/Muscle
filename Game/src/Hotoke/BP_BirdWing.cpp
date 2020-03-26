@@ -115,9 +115,10 @@ void BP_BirdWing::Draw2D() {
 
 	//加速
 	//m_ptrCore->GetFont()->DrawFormat(L"ACL(per): %.1f", { 0.0f,0.85f },0.0f, m_accel / 20.0f*100.0f);
-
-	// TODO 稼いだ速度で上がれる量
 	//m_ptrCore->GetFont()->DrawFormat(L"%.1f, %.5f\n%.1f", { 0.0f,0.85f }, 0.0f, m_accel, CalcAirScale(m_ptrCore->GetHeightMeter()),m_y);
+
+	//操作
+	m_ptrCore->GetJapaneseFont()->Draw(L"[Lスティック]\n1かいてん:かそく\nじょうげ:ピッチ\nさゆう:ヨー\n[LSB]ブレーキ", { 0.0f,0.3f });
 
 	//ブレーキ表示
 	if (m_isBraking) {

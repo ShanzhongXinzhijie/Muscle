@@ -262,17 +262,13 @@ void BP_KaniArm::Draw2D() {
 	}
 
 	//操作	
-	//TODO 操作説明用フォント
-	//CVector2 beforeScale = m_ptrCore->GetFont()->GetScale();
-	//m_ptrCore->GetFont()->SetScale(0.375f);
-	//m_ptrCore->GetFont()->SetUseFont(HUDFont::enJPN);
-	//m_ptrCore->GetFont()->Draw(L"[LB/RB](ながおし): マシンガン\n[LB/RB](2どおし): ミッソー", {0.0f,0.5f});
-	///*if (m_coolDown[L] > 0) {
-	//	m_ptrCore->GetFont()->Draw(L"///////////////////////\n///////////////////////////", { 0.0f,0.5f });
-	//}*/
-	//m_ptrCore->GetFont()->SetUseFont(HUDFont::enENG);
-	//m_ptrCore->GetFont()->SetScale(beforeScale);
-	
+	if (m_coolDown[L] <= 0) {
+		m_ptrCore->GetJapaneseFont()->Draw(L"[LB/RB]\n:マシンガン\n(2どおし)\n:ミッソー", { 0.0f,0.55f });
+	}
+	if (m_coolDown[R] <= 0) {
+		m_ptrCore->GetJapaneseFont()->Draw(L"[LB/RB]\n:マシンガン\n(2どおし)\n:ミッソー", { 1.0f,0.55f }, {1.1f,0.0f});
+	}
+
 	//クールダウン
 	for (auto lr : LR) {
 		if (m_coolDown[lr] > 0) {
@@ -351,7 +347,7 @@ void BP_KaniArm::Rocket(enLR lr) {
 		//衝突
 		bullet->AddComponent(std::make_unique<BD_Contact>());
 		//衝突回避
-		bullet->AddComponent(std::make_unique<BD_ClashAvoidance>(thrust,10));
+		bullet->AddComponent(std::make_unique<BD_ClashAvoidance>(thrust,10.0f));
 		bd_OffTimer->AddComponent(&bullet->GetComponentBack());//オフタイマーに設定
 		//ホーミング
 		std::unique_ptr<BD_Homing> homing = std::make_unique<BD_Homing>(m_ptrCore->GetTarget(), thrust, 0.0f, CMath::DegToRad(67.5f), homingStartTime);

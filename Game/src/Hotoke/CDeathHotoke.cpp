@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "CDeathHotoke.h"
+#include "TimeManager.h"
 
 #include "CSmoke.h"
 #include "CBlood.h"
@@ -71,8 +72,10 @@ bool CDeathHotoke::Start() {
 			Damage(*H, p.m_collisionPoint);
 			//スタン
 			m_stunTimeSec = max(m_stunTimeSec,H->stunTimeSec);
+			
 			//ズームアウト
 			if (H->stunTimeSec > 0.0f) {
+				//攻撃食らったほう(こっち)
 				CVector3 dir;
 				dir = H->velocity; dir.y = 0.0f; dir.Normalize();
 				if (dir.LengthSq() < FLT_EPSILON) {
@@ -81,20 +84,25 @@ bool CDeathHotoke::Start() {
 				//CQuaternion(CVector3::AxisY(), CMath::PI_HALF / 2.0f).Multiply(dir);
 				m_zoomoutDir = dir * -800.f;
 				m_zoomoutDir.y += 400.0f;
-
-				m_zoomoutTimeSec = max(m_zoomoutTimeSec, m_stunTimeSec);
-
+				SetZoomoutTime(m_stunTimeSec);
 				SetZoomoutTarget(this);
 
+				//スローモーション秒数
+				constexpr float SLOWMO_SEC = 1.4f;
+
+				//攻撃当てた方の演出
 				QueryGOs<CDeathHotoke>(L"CDeathHotoke",
 					[&](CDeathHotoke* go) {
 						if (go == this) { return true; }
-						go->SetZoomoutTime(m_stunTimeSec);
+						go->SetZoomoutTime(SLOWMO_SEC);
 						go->SetZoomoutDirection(m_zoomoutDir);
 						go->SetZoomoutTarget(this);
 						return true;
 					}
 				);
+
+				//スローモーション
+				TimeManager::GetInstance().SetFrameRate(SLOWMO_SEC, 6, 1.0f);
 			}
 		}
 	);
@@ -127,6 +135,12 @@ bool CDeathHotoke::Start() {
 void CDeathHotoke::PreLoopUpdate() {
 	//描画初期化
 	m_kouhai.SetIsDraw(m_isDrawKouhai);
+
+	//ズームアウト時間
+	m_zoomoutTimeSec -= GetRealDeltaTimeSec();
+	if (m_zoomoutTimeSec < 0.0f) {
+		m_zoomoutTimeSec = 0.0f;
+	}
 }
 
 void CDeathHotoke::PreUpdate() {
@@ -162,11 +176,6 @@ void CDeathHotoke::Update() {
 
 	//スタン処理
 	Stun();
-	//ズームアウト時間
-	m_zoomoutTimeSec -= FRAME_PER_SECOND;
-	if (m_zoomoutTimeSec < 0.0f) {
-		m_zoomoutTimeSec = 0.0f;
-	}
 
 	//移動適応
 	Move(GetTotalVelocity());
@@ -228,6 +237,14 @@ void CDeathHotoke::Pre3DRender(int screenNum) {
 
 void CDeathHotoke::HUDRender(int HUDNum) {
 	if (!m_isDrawHUD || m_playerNum != HUDNum)return;
+
+	//操作
+	if (GetPlayerNum() == 0) {
+		GetJapaneseFont()->Draw(L"[Rスティック]\n:してんいどう\n[RSB]バックみる", { 0.0f,0.15f });
+	}
+	else {
+		GetJapaneseFont()->Draw(L"[Rスティック]\n:してんいどう\n[RSB]バックみる", { 1.0f,0.15f }, { 1.1f,0.0f });
+	}
 
 	//パーツの2D描画
 	for (auto& part : m_parts) {

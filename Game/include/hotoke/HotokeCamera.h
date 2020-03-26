@@ -182,8 +182,6 @@ public:
 		}
 
 		if (!m_isZoomOut && isZoomOut) {
-			//スローモーション
-			TimeManager::GetInstance().SetFrameRate(1.4f, 6, 1.0f);
 			//カメラ更新(初期化)
 			UpdateZoomOutCamera(true);
 		}

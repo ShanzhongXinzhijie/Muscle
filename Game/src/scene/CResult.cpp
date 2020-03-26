@@ -46,10 +46,10 @@ void CResult::PostRender() {
 	}
 	else if (m_score[0] == m_score[1]) {
 		if (m_playerCnt == 2) {
-			swprintf_s(string, L"ひきわけ\nわたしのかち"); 
+			swprintf_s(string, L"ひきわけ"); 
 		}
 		else {
-			swprintf_s(string, L"ひきわけ\nわたしのかち");
+			swprintf_s(string, L"ひきわけ\nワイのかち");
 		}
 	}
 	else if (m_score[0] > m_score[1]) {
@@ -57,7 +57,7 @@ void CResult::PostRender() {
 			swprintf_s(string, L"ひだりのかち\nみぎはカス");
 		}
 		else {
-			swprintf_s(string, L"おまえのかち\nわたしのカス");
+			swprintf_s(string, L"おまえのかち\nワイはカス");
 		}
 	}
 	else {
@@ -65,7 +65,7 @@ void CResult::PostRender() {
 			swprintf_s(string, L"みぎのかち\nひだりはカス");
 		}
 		else {
-			swprintf_s(string, L"わたしのかち\nおまえはカス");
+			swprintf_s(string, L"ワイのかち\nおまえはカス");
 		}
 	}
 	m_font.Draw(string, { 0.5f,0.6f }, CVector4::Black(), CVector2::One(), { 0.5f,0.0f });

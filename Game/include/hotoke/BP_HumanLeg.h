@@ -28,10 +28,11 @@ private:
 
 	AnimationClip m_initPose;							//初期ポーズ
 	SkeletonIK::IKSetting* m_ikSetting[enLRNUM] = {};	//IK設定
-	CVector3 m_beforePos[enLRNUM];
+	CVector3 m_beforePos[enLRNUM];						//各足の前フレーム座標
 	DHCollision m_col[enLRNUM];							//コリジョン
 	bool m_isJump = false;								//ジャンプするフラグ
 	int m_leftStomp = 1;								//残り踏みつけ回数
+	bool m_isOnGraund = false;							//設置しているか	
 };
 
 /// <summary>
