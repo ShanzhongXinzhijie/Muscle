@@ -6,7 +6,8 @@
 	{L"BLUE",{0.0f,0.0f,1.0f,1.0f},16.0f},
 	{L"Red",{1.0f,0.0f,0.0f,1.0f},8.0f},
 	{L"Yellow",{1.0f,1.0f,0.0f,1.0f},16.0f},
-	{L"BLOOD",{0.8f,0.0f,0.005f,1.0f},0.0f},
+	{L"BLOOD",BLOOD_COLOR,0.0f},
+	{L"BLOOD_BLACK",BLOOD_BLACK_COLOR,0.0f},
 };
 
  void BeamModel::Init(const wchar_t* beamName, bool isUseInside) {

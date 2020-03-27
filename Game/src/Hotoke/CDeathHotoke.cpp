@@ -266,7 +266,7 @@ void CDeathHotoke::Damage(const ReferenceCollision& ref, const CVector3& pos) {
 		CVector3 dir = ref.direction*-1.0f*(40.0f + 400.0f*CMath::RandomZeroToOne());
 		CQuaternion(CVector3::AxisX(), CMath::PI_HALF*0.25f - CMath::PI_HALF*0.5f*CMath::RandomZeroToOne()).Multiply(dir);
 		CQuaternion(CVector3::AxisY(), CMath::PI_HALF*0.25f - CMath::PI_HALF*0.5f*CMath::RandomZeroToOne()).Multiply(dir);
-		new CSmoke(pos, dir, { 1.0f,0.0f,0.02f,1.0f }, 200.0f, 1.2f + 0.1f*(1.0f+CMath::RandomZeroToOne()));
+		new CSmoke(pos, dir, BLOOD_BLACK_COLOR, 200.0f, 1.2f + 0.1f*(1.0f+CMath::RandomZeroToOne()));
 	}
 	//ååîÚñó
 	int reverseBloodNum = CMath::RandomInt() % 3;//ãtï˚å¸îÚñóÇÃêî(0~2)

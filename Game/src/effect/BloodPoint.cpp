@@ -7,7 +7,7 @@ BloodPoint::BloodPoint(
 )
 {
 	//ビルボード読み込み
-	m_model.Init(L"Resource/spriteData/BloodDrop31.png", MAX_NUM);
+	m_model.Init(L"Resource/spriteData/BloodDrop31.png", MAX_NUM, false);
 	m_model.GetModel().InitPostDraw(PostDrawModelRender::enAlpha, false, GameObj::CSkinModelRender::enRevSoftParticle);//ポストドロー(逆ソフトパーティクル)
 	m_model.GetModel().SetIsShadowCaster(false);
 

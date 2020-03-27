@@ -11,7 +11,7 @@ public:
 		CVector4 color;
 		float emissive = 16.0f;
 	};
-	static constexpr int BEAM_TYPE_MAXNUM = 5;
+	static constexpr int BEAM_TYPE_MAXNUM = 6;
 	static const BeamType m_s_beamTypes[BEAM_TYPE_MAXNUM];
 
 public:

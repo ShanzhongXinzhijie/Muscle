@@ -185,7 +185,7 @@ void Game::PostRender() {
 		}
 		else if (isDeathPlayer[0]){
 			if (m_playerNum == 1) {
-				wcscpy_s(string, L"WAI NO\nKACHIYA");
+				wcscpy_s(string, L"YOU\nLOSE");
 			}
 			else {
 				wcscpy_s(string, L"Right Side\nWIN");

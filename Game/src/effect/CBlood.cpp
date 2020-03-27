@@ -4,7 +4,7 @@
 
 bool CBlood::Start() {
 	//ƒ‚ƒfƒ‹
-	m_model.Init(L"BLOOD",false);
+	m_model.Init(L"BLOOD_BLACK", false);
 	m_model.SetPos(m_posOld, GetPos());
 	if (m_radiusSetting > 0.0f) {
 		m_model.SetRadius(m_radiusSetting);
@@ -66,7 +66,7 @@ void CBlood::Update() {
 				);
 			}
 			//ŒŒ—­‚Ü‚è
-			new BloodPoint(gnd_ray.m_hitPointWorld, gnd_ray.m_hitNormalWorld, 1000.0f);
+			new BloodPoint(gnd_ray.m_hitPointWorld+ gnd_ray.m_hitNormalWorld, gnd_ray.m_hitNormalWorld, m_model.GetRadius()*(180.0f+20.0f*CMath::RandomZeroToOne()));
 		}
 	}
 
