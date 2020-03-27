@@ -5,7 +5,7 @@
 #include "assemblescene.h"
 #include "CGameMode.h"
 #include "ImposterViewer.h"
-//#include "CreateObjectManager.h"
+#include "CConfig.h"
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
 {
@@ -78,9 +78,13 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 	//フォント設定
 	CFont::LoadDefaultFont(L"Resource/font/x14y24pxHeadUpDaisy.spritefont");
+
+	//セーブデータを読み込む
+	CConfig config;
+	config.Load();
 	
 	//画面分割マネージャー
-	WindowSizeManager windowSizeManager;
+	WindowSizeManager windowSizeManager(config.GetConfigData().windowScale);
 	windowSizeManager.ChangeWindowSize(true);//二画面にする
 
 	//デスホトケアセンブルマネージャー
@@ -105,4 +109,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 	//ゲームループ。
 	GetEngine().RunGameLoop();
+
+	//セーブ
+	config.GetConfigData().windowScale = windowSizeManager.GetWindowScale();
+	config.Save();
 }

@@ -1,5 +1,7 @@
 #pragma once
 
+class WindowSizeManager;
+
 /// <summary>
 /// タイトルシーン
 /// </summary>
@@ -20,5 +22,7 @@ private:
 
 	int m_pushCnt = 0;
 	int MAX_PUSH = 6;
+
+	WindowSizeManager* m_ptrWinSizeMane = nullptr;
 };
 
