@@ -210,6 +210,14 @@ void HumanPlayer::PostLoopUpdate() {
 			DrawQuad2D({ 0.0f,1.0f - 1.0f * CMath::RandomZeroToOne() * m_hotoke.GetShakePower(),0.0f }, { 1.0f,1.0f,0.0f }, CVector4(0.0f, 0.0f, 0.0f, 0.7f), m_playerNum);
 		//}
 	}
+	//ƒ_ƒ[ƒW
+	if (m_hotoke.GetDamegePower() > 0.0f) {
+		float power = m_hotoke.GetDamegePower()*0.1f;
+		DrawQuad2D({ 0.0f,0.0f,0.0f }, { 1.0f * CMath::RandomZeroToOne() * power,1.0f,0.0f }, CVector4(1.0f, 0.0f, 0.0f, 0.3f), m_playerNum);
+		DrawQuad2D({ 1.0f - 1.0f * CMath::RandomZeroToOne() * power,0.0f,0.0f }, { 1.0f,1.0f,0.0f }, CVector4(1.0f, 0.0f, 0.0f, 0.3f), m_playerNum);
+		DrawQuad2D({ 0.0f,0.0f,0.0f }, { 1.0f,1.0f * CMath::RandomZeroToOne() * power,0.0f }, CVector4(1.0f, 0.0f, 0.0f, 0.3f), m_playerNum);
+		DrawQuad2D({ 0.0f,1.0f - 1.0f * CMath::RandomZeroToOne() * power,0.0f }, { 1.0f,1.0f,0.0f }, CVector4(1.0f, 0.0f, 0.0f, 0.3f), m_playerNum);
+	}
 }
 
 void HumanPlayer::HUDRender(int HUDNum) {

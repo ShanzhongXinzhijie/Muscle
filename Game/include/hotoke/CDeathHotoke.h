@@ -220,6 +220,10 @@ public:
 	float GetShakePower()const {
 		return m_shakePower;
 	}
+	//ダメージ振動値を取得
+	float GetDamegePower()const {
+		return m_damegePower;
+	}
 
 	//高度を取得(メートル)
 	float GetHeightMeter()const {
@@ -367,6 +371,8 @@ private:
 
 	//振動値
 	float m_shakePower = 0.0f;
+	//ダメージ
+	float m_damegePower = 0.0f;
 
 	//前フレームの位置
 	CVector3 m_posOld;

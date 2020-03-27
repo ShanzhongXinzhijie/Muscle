@@ -150,6 +150,7 @@ void CDeathHotoke::PreUpdate() {
 	m_angularDrag[enNext] = 1.0f;
 	m_rotatability[enNext] = 1.0f;
 	m_shakePower = 0.0f;
+	m_damegePower *= 0.5f;
 
 	if (m_isInvincible) {
 		//•\¦‰Šú‰»
@@ -259,6 +260,7 @@ void CDeathHotoke::Damage(const ReferenceCollision& ref, const CVector3& pos) {
 
 	if (!m_isImmortal) {
 		m_hp -= ref.damege;
+		m_damegePower = max(ref.damege, m_damegePower);
 	}
 
 	//ŒŒ‰Œ
