@@ -189,7 +189,7 @@ void BP_HumanMantle::Update() {
 	//ù‰ñ
 	if (abs(m_yawInertia) > FLT_EPSILON) {
 		//SE
-		if (abs(m_yawInertia) > CMath::DegToRad(4.5f) && (!m_yawSE || !m_yawSE->GetIsPlaying())) {
+		if (abs(m_yawInertia) > CMath::DegToRad(1.0f) && (!m_yawSE || !m_yawSE->GetIsPlaying())) {
 			m_yawSE = std::make_unique<GameSE>(L"Resource/sound/mant2.wav", m_ptrCore->GetPos(), 75.0f, m_ptrCore->GetPlayerNum());
 			m_yawSE->SetIsAutoDelete(false);
 		}

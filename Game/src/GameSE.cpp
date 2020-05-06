@@ -6,7 +6,7 @@
 GameSE::GameSE(const wchar_t* fileName, const CVector3& pos, float distanceMeter, int screenNum, bool isLoop, bool mute)
 	: SuicideObj::CSE(fileName)
 {
-	if (m_s_gameMode->GetPlayerNum() == 1) {
+	if (m_s_gameMode->GetPlayerNum() == 1 || !m_s_game) {
 		SetPos(pos);
 		SetDistance(distanceMeter*METER);
 		m_is3D = true;

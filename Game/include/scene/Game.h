@@ -12,6 +12,8 @@ public:
 	~Game() {
 		//¶¬•¨íœ
 		ICreateObject::AllDestroy();
+		//QÆ‰ğœ
+		GameSE::SetGamePtr(nullptr);
 	}
 
 	void PreUpdate()override;
