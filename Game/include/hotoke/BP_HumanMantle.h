@@ -53,6 +53,9 @@ private:
 	int m_invincibleFrame = 0;//無敵時間
 	int m_cooldownFrame = 0;//クールダウン
 
+	//SE
+	std::unique_ptr<GameSE> m_yawSE;
+
 	//ソフトボディ
 	btSoftBody* m_cloth = nullptr;
 	

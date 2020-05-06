@@ -49,6 +49,24 @@ Shibuya::Shibuya() //: m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI
 					rot.Multiply(ramdamVec);
 					new FlyingGrass(p.m_collisionPoint, ramdamVec + H->velocity, 16);
 				}
+
+				//SE
+				/*
+				float length = min(150.0f, H->velocity.Length()*0.1f);
+				switch (CMath::RandomInt() % 3) {
+				case 0:
+					new GameSE(L"Resource/sound/Hit_Hurt.wav", p.m_collisionPoint, length, -1);
+					break;
+				case 1:
+					new GameSE(L"Resource/sound/Hit_Hurt2.wav", p.m_collisionPoint, length, -1);
+					break;
+				case 2:
+					new GameSE(L"Resource/sound/Hit_Hurt5.wav", p.m_collisionPoint, length, -1);
+					break;
+				default:
+					break;
+				}
+				*/
 			}
 		}
 	);
@@ -204,6 +222,8 @@ Shibuya::Shibuya() //: m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI
 	//SetFogColor({ 0.58f,0.69f,0.84f });
 	SetFogColor({0.28f,0.4f,0.65f});
 
+#ifdef DW_MASTER
+
 	//X
 	constexpr int FOREST_NUM = 5;
 	constexpr float FOREST_SIZE = 70.0f*50.0f*0.5f;
@@ -242,6 +262,8 @@ Shibuya::Shibuya() //: m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI
 		constexpr float areaLength = 70.0f*50.0f*7.0f*0.5f;
 		m_helicoGene.RectangularGenerate<CHelicopter>({ -areaLength,-70.0f*50.0f,-areaLength }, { areaLength,70.0f*50.0f,areaLength }, CHelicopter::m_sInstancingMax, 1200.0f);
 	}
+
+#endif
 
 	//GetGraphicsEngine().GetAmbientOcclusionRender().SetEnable(false);
 

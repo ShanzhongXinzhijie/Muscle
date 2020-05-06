@@ -5,6 +5,11 @@ bool LoadingScreen::Start()
 {
 	//ÉçÉSì«Ç›çûÇ›
 	m_sprite.Init(L"Resource/spriteData/logo.png");
+
+	//SE
+	SuicideObj::CSE* se = NewGO<SuicideObj::CSE>(L"Resource/sound/Randomize.wav");
+	se->Play();
+
 	return true;
 }
 void LoadingScreen::PostLoopUpdate()

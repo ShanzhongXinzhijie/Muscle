@@ -38,6 +38,9 @@ void CountDown::PostLoopUpdate() {
 	m_countDownSec -= GetRealDeltaTimeSec()*2.0f;// 1.5f;
 	//カウントダウン終了
 	if (m_countDownSec < 0.0f) {
+		//SE
+		SuicideObj::CSE* se = NewGO<SuicideObj::CSE>(L"Resource/sound/Randomize.wav");
+		se->Play();
 		//すべてのホトケを操作可能に
 		QueryGOs<CDeathHotoke>(L"CDeathHotoke",
 			[](CDeathHotoke* go) {

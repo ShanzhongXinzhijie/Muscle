@@ -63,6 +63,11 @@ void BP_KaniArm::InnerStart() {
 		);
 	}
 
+	//SE
+	GetWAVSettingManager().Load(L"Resource/sound/charge2.wav")->volume = 0.5f;
+	GetWAVSettingManager().Load(L"Resource/sound/lazer.wav")->volume = 0.5f;
+	GetWAVSettingManager().Load(L"Resource/sound/lazer2.wav")->volume = 0.5f;
+	
 	//コントローラー
 	if (m_ptrCore->GetPad()) {
 		m_controller = new HCon_KaniArm(this, m_ptrCore);
@@ -91,6 +96,8 @@ void BP_KaniArm::Update() {
 		if (!m_isCharging[i]) { 
 			//チャージ時間リセット
 			m_chargeTime[i] = 0;
+			//SE消す
+			m_chargeSE[i].reset();
 		}
 		else {
 			//チャージ時間ずらす(同時発射はうーん)
@@ -144,6 +151,8 @@ void BP_KaniArm::PostUTRSUpdate() {
 		//マシンガン
 		if (m_isMachineGunning[i]) {
 			if (m_chargeTime[i]%5 == 0) {				
+				//SE
+				new GameSE((i == L ? L"Resource/sound/lazer2.wav" : L"Resource/sound/lazer.wav"), m_ptrCore->GetPos(), 150.0f, m_ptrCore->GetPlayerNum());
 				//マズルエフェクト
 				m_muzzleTime[i] = 2;
 				//発射
@@ -299,6 +308,12 @@ void BP_KaniArm::Draw2D() {
 
 void BP_KaniArm::ChargeAndMachinegun(enLR lr) {
 	if (m_coolDown[lr] <= 0) {
+		//SE
+		if (m_chargeTime[lr] == 0) {
+			//SE
+			m_chargeSE[lr] = std::make_unique<GameSE>(L"Resource/sound/charge2.wav", m_ptrCore->GetPos(), 150.0f, m_ptrCore->GetPlayerNum());
+			m_chargeSE[lr]->SetIsAutoDelete(false);
+		}
 		//チャージ
 		m_isCharging[lr] = true;
 		m_chargeTime[lr] ++;
@@ -311,6 +326,8 @@ void BP_KaniArm::ChargeAndMachinegun(enLR lr) {
 void BP_KaniArm::Rocket(enLR lr) {
 	//ロケット出す
 	if (m_coolDown[lr] <= 0) {
+		//SE
+		new GameSE(L"Resource/sound/shot.wav", m_ptrCore->GetPos(), 150.0f, m_ptrCore->GetPlayerNum());
 		//マズルエフェクト
 		m_muzzleTime[lr] = 2;
 		//クールダウン
@@ -338,6 +355,12 @@ void BP_KaniArm::Rocket(enLR lr) {
 
 		//ホーミング開始時にコンポーネントをオンにするタイマー
 		std::unique_ptr<BD_Timer> bd_OnTimer = std::make_unique<BD_Timer>(homingStartTime);
+		//タイマー終了時にSE鳴らす
+		bd_OnTimer->SetTimerEndRunFunction(
+			[&](BulletGO* bullet) {
+				new GameSE(L"Resource/sound/misso.wav", bullet->GetPos(), 300.0f, m_ptrCore->GetPlayerNum());
+			}
+		);
 		//オフにするタイマー
 		std::unique_ptr<BD_Timer> bd_OffTimer = std::make_unique<BD_Timer>(homingStartTime,false);
 

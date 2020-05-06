@@ -27,8 +27,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\BGMPlayer.cpp" />
     <ClCompile Include="src\CConfig.cpp" />
     <ClCompile Include="src\effect\BloodPoint.cpp" />
+    <ClCompile Include="src\GameSE.cpp" />
     <ClCompile Include="src\scene\ImposterViewer.cpp" />
     <ClCompile Include="src\Hotoke\BP_SnakeLeg.cpp" />
     <ClCompile Include="src\Hotoke\BP_TankLeg.cpp" />
@@ -81,6 +83,8 @@
     <ClCompile Include="src\WindowSizeManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\BGMPlayer.h" />
+    <ClInclude Include="include\GameSE.h" />
     <ClInclude Include="include\CConfig.h" />
     <ClInclude Include="include\effect\BloodPoint.h" />
     <ClInclude Include="include\scene\ImposterViewer.h" />

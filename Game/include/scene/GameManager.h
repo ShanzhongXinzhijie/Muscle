@@ -66,6 +66,8 @@ private:
 private:
 	std::unique_ptr<Game> m_game;
 
+	int m_bgmNumber = -1;//BGM番号
+
 	bool m_isPracticeRound = true;//次に開始するのが練習ラウンドか
 	int m_roundCount = 0;//ラウンド数
 	int m_score[PLAYER_NUM] = {};//スコア

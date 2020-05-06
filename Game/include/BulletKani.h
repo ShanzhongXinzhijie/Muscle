@@ -145,6 +145,9 @@ public:
 		if (m_timerf < FLT_EPSILON) {
 			for (auto& com : m_components) {
 				com->SetEnable(m_willEnable);
+				if (m_func) {
+					m_func(m_bullet);
+				}
 			}
 		}
 	}
@@ -159,10 +162,18 @@ public:
 		}
 	}
 
+	/// <summary>
+	/// タイマー終了時に実行する処理を設定
+	/// </summary>
+	void SetTimerEndRunFunction(std::function<void(BulletGO* bullet)> func) {
+		m_func = func;
+	}
+
 private:
 	float m_timerf = 0.0f;
 	bool m_willEnable = true;
 	std::list<IBulletComponent*> m_components;
+	std::function<void(BulletGO* bullet)> m_func;
 };
 
 /// <summary>

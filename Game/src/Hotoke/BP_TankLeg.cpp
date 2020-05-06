@@ -56,7 +56,6 @@ void BP_TankLeg::InnerStart() {
 	m_legs[5][1] = m_model->FindBone(L"leg2e(mirrored)");
 
 	//当たり判定(足)
-	//TODO
 	{
 		constexpr float radius = 80.0f;
 		constexpr float height = 150.0f;
@@ -87,6 +86,11 @@ void BP_TankLeg::InnerStart() {
 			return true;
 		};
 	}
+
+	//SE
+	m_tankSE = std::make_unique<GameSE>(L"Resource/sound/tank.wav", m_ptrCore->GetPos(), 150.0f, m_ptrCore->GetPlayerNum(), true, true);
+	m_tankSE->SetIsAutoDelete(false);
+	m_tankSE->SetVol(0.0f);
 
 	//コントローラー
 	if (m_ptrCore->GetPad()) {
@@ -180,6 +184,13 @@ void BP_TankLeg::PostUTRSUpdate() {
 			break;
 		default:
 			break;
+		}
+		if (m_actionType) {
+			m_tankSE->SetPos(m_ptrCore->GetPos());
+			m_tankSE->SetVol(1.0f);
+		}
+		else {
+			m_tankSE->SetVol(0.0f);
 		}
 	}
 }

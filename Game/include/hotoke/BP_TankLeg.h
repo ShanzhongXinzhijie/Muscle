@@ -37,6 +37,9 @@ private:
 	};
 	enAction m_actionType = enNone;
 
+	//SE
+	std::unique_ptr<GameSE> m_tankSE;
+
 	//Ž‹“_ˆÊ’u
 	float m_viewFront = 158.0f, m_viewHeight = -28.0f;//152
 };

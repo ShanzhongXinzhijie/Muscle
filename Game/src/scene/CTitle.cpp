@@ -10,7 +10,12 @@ bool CTitle::Start() {
 	m_ptrWinSizeMane = FindGO<WindowSizeManager>(L"WindowSizeManager");
 	m_ptrWinSizeMane->ChangeWindowSize(true);
 
+	//ÉçÉS
 	m_sprite.Init(L"Resource/spriteData/logo.png");
+
+	//BGM
+	FindGO<BGMPlayer>(L"BGMPlayer")->Play(L"Resource/sound/bgm/the-night-of-blood-syokei-no-theme.wav");
+
 	return true;
 }
 

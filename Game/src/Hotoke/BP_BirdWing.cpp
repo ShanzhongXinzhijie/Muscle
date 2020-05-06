@@ -138,6 +138,9 @@ void BP_BirdWing::Accel() {
 		m_accel += 20.0f*CalcAirScale(m_ptrCore->GetHeightMeter());
 		m_isAnimEnd = false;
 		m_model->GetAnimCon().Play(enFlying, 0.175f, true);
+
+		//SE
+		new GameSE(L"Resource/sound/wing.wav", m_ptrCore->GetPos(), 150.0f, m_ptrCore->GetPlayerNum());
 	}
 }
 void BP_BirdWing::Brake() {

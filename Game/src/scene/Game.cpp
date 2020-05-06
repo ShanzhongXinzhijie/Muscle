@@ -6,6 +6,9 @@
 Game::Game(GameManager* manager) 
 	: m_manager(manager), m_timeLimitSec(static_cast<float>(manager->GetTimeLimitSec()) + 0.9f)
 {
+	//SEに参照を渡す
+	GameSE::SetGamePtr(this);
+
 	//カウントダウンクラス生成
 	int scores[PLAYER_NUM] = { m_manager->GetPlayerScore(0),m_manager->GetPlayerScore(1) };
 	new CountDown(m_manager->GetRoundCount(), m_manager->GetMaxRound(), scores, m_manager->GetTimeLimitSec());
@@ -56,6 +59,9 @@ void Game::PreUpdate() {
 			m_toEndTimeSec = 2.3f;
 			//スローモーション
 			TimeManager::GetInstance().SetFrameRate(1.4f, 6, 1.0f);
+			//SE
+			SuicideObj::CSE* se = NewGO<SuicideObj::CSE>(L"Resource/sound/Pickup_Coin2.wav");
+			se->Play();
 			//無敵化
 			for (auto& player : m_player) {
 				player->GetDeathHotoke().SetIsImmortal(true);
@@ -69,6 +75,9 @@ void Game::PreUpdate() {
 			m_toEndTimeSec = 2.3f;
 			//スローモーション
 			TimeManager::GetInstance().SetFrameRate(1.4f, 6, 1.0f);
+			//SE
+			SuicideObj::CSE* se = NewGO<SuicideObj::CSE>(L"Resource/sound/Randomize.wav");
+			se->Play();			
 			//無敵化
 			for (auto& player : m_player) {
 				player->GetDeathHotoke().SetIsImmortal(true);

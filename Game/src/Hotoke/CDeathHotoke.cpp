@@ -129,6 +129,11 @@ bool CDeathHotoke::Start() {
 	for (auto& part : m_parts) {
 		if (part)part->Start();
 	}
+
+	//SE
+	GetWAVSettingManager().Load(L"Resource/sound/Hit_Hurt.wav")->volume = 0.5f;
+	GetWAVSettingManager().Load(L"Resource/sound/Hit_Hurt2.wav")->volume = 0.5f;
+	GetWAVSettingManager().Load(L"Resource/sound/Hit_Hurt5.wav")->volume = 0.5f;
 	
 	return true;
 }
@@ -141,6 +146,24 @@ void CDeathHotoke::PreLoopUpdate() {
 void CDeathHotoke::PreUpdate() {
 	//旧座標記録
 	m_posOld = GetPos();
+
+	//振動音
+	if (m_shakePower / 0.0015f > 1.0f) {
+		float length = 150.0f;
+		switch (CMath::RandomInt() % 3) {
+		case 0:
+			new GameSE(L"Resource/sound/Hit_Hurt.wav", GetPos(), length, GetPlayerNum());
+			break;
+		case 1:
+			new GameSE(L"Resource/sound/Hit_Hurt2.wav", GetPos(), length, GetPlayerNum());
+			break;
+		case 2:
+			new GameSE(L"Resource/sound/Hit_Hurt5.wav", GetPos(), length, GetPlayerNum());
+			break;
+		default:
+			break;
+		}
+	}
 
 	//ステータス更新
 	m_drag[enNow] = m_drag[enNext];
@@ -262,6 +285,9 @@ void CDeathHotoke::Damage(const ReferenceCollision& ref, const CVector3& pos) {
 		m_hp -= ref.damege;
 		m_damegePower = max(ref.damege, m_damegePower);
 	}
+
+	//SE
+	new GameSE(L"Resource/sound/Explosion6.wav", GetPos(), 1000.0f, GetPlayerNum());
 
 	//血煙
 	for (int i = 0; i < 3; i++) {

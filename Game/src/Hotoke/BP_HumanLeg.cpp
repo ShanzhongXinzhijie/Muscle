@@ -133,6 +133,8 @@ void BP_HumanLeg::PostUTRSUpdate() {
 			float power = 25.0f + 38.0f*(1.0f - abs((minFootDistance - footDistance) / (minFootDistance - maxFootDistance)));
 			power *= 1.25f;
 			m_ptrCore->SetMaxLinearVelocity(CVector3::Up()*power);
+			//SE
+			new GameSE(L"Resource/sound/jump2.wav", m_ptrCore->GetPos(), 150.0f, m_ptrCore->GetPlayerNum());
 		}
 	}
 	else {
@@ -207,6 +209,9 @@ void BP_HumanLeg::Stomp() {
 	bullet->SetStunTimeSec(0.5f);//スタン時間
 	bullet->AddComponent(std::make_unique<BD_LegModel>(m_ptrCore->GetRot(), m_ptrCore->GetScale()));//モデル
 	bullet->AddComponent(std::make_unique<BD_OneContactMask>());//多段ヒットしない
+
+	//SE
+	new GameSE(L"Resource/sound/wing2.wav", m_ptrCore->GetPos(), 300.0f, m_ptrCore->GetPlayerNum());
 
 	m_leftStomp--;
 }

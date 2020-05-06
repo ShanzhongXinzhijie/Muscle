@@ -92,10 +92,16 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 	//ゲームモード
 	CGameMode gameMode;
+	//SE
+	GameSE::SetGameModePtr(&gameMode);
+	//SE全体のボリュームを設定
+	SuicideObj::CSE::GetSubmixVoice()->SetVolume(0.5f);
+	//BGM
+	BGMPlayer bgmPlayer;
+	//BGM全体のボリュームを設定
+	SuicideObj::CBGM::GetSubmixVoice()->SetVolume(0.5f);
 
-	//生成オブジェクトマネージャー
-	//CreateObjectManager createObjectManager;
-
+	//事前ロード
 	{
 		GameObj::CSkinModelRender m_model;
 		m_model.Init(L"Resource/modelData/unchi.cmo");

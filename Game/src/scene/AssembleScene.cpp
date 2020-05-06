@@ -32,6 +32,9 @@ bool AssembleScene::Start() {
 	//画面サイズ変更
 	FindGO<WindowSizeManager>(L"WindowSizeManager")->ChangeWindowSize(m_playerNum > 1);
 
+	//BGM
+	FindGO<BGMPlayer>(L"BGMPlayer")->Play(L"Resource/sound/bgm/kami-no-kourin.wav");
+
 	//フォント初期化
 	m_fontBold.LoadFont(L"Resource/font/eunomia_0200/EunomiaBold.spritefont");
 

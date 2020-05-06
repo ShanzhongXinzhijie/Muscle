@@ -78,9 +78,11 @@ public:
 	[[nodiscard]] 
 	bool GetFire(enLR lr) const {
 		bool isFire = m_usePad->GetButton((lr == L) ? enButtonLB : enButtonRB);
+#ifndef DW_MASTER
 		if (!isFire) {
 			isFire = GetKeyInput((lr == L) ? VK_LBUTTON : VK_RBUTTON);
 		}
+#endif // DW_MASTER
 		return isFire;
 	}
 	/// <summary>

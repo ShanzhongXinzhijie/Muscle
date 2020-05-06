@@ -18,6 +18,20 @@ public:
 	void PostLoopUpdate()override;
 	void PostRender()override;
 
+	/// <summary>
+	/// プレイヤーの参照を取得
+	/// </summary>
+	/// <param name="num">プレイヤー番号</param>
+	const std::unique_ptr<CPlayer>& GetPlayer(int num)const{
+		for (int i = 0; i < PLAYER_NUM; i++) {
+			if (m_player[i]->GetPlayerNum() == num) {
+				return m_player[i];
+			}
+		}
+		DW_ERRORBOX(true,"Game::GetPlayer()プレイヤーが見つからない")
+		return m_player[0];
+	}
+
 private:
 	//プレイヤー数
 	int m_playerNum = 1;

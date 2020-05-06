@@ -146,6 +146,10 @@ void HumanPlayer::Update() {
 	});
 	//ホトケのターゲット位置設定
 	if (isLock) {
+		//SE
+		if (m_hotoke.GetTarget() != outObj) {
+			new GameSE(L"Resource/sound/lock.wav", m_hotoke.GetPos(), 150.0f, m_hotoke.GetPlayerNum());
+		}
 		m_hotoke.SetTargetPos(outPos);
 		m_hotoke.SetTarget(outObj);
 		m_targetHP = m_hotoke.GetTarget()->GetHP();

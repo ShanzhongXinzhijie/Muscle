@@ -31,7 +31,11 @@ private:
 	Bone* m_legBone = nullptr;
 
 	bool m_isDash = false;//ダッシュフラグ
-	bool m_canDash = false;
+	bool m_canDash = false;//ダッシュ可能か
+	bool m_isDashing = false;//ダッシュ中か
+
+	//SE
+	std::unique_ptr<GameSE> m_dashSE;
 };
 
 /// <summary>

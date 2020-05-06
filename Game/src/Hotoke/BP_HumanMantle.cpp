@@ -188,6 +188,11 @@ void BP_HumanMantle::Update() {
 
 	//旋回
 	if (abs(m_yawInertia) > FLT_EPSILON) {
+		//SE
+		if (abs(m_yawInertia) > CMath::DegToRad(4.5f) && (!m_yawSE || !m_yawSE->GetIsPlaying())) {
+			m_yawSE = std::make_unique<GameSE>(L"Resource/sound/mant2.wav", m_ptrCore->GetPos(), 75.0f, m_ptrCore->GetPlayerNum());
+			m_yawSE->SetIsAutoDelete(false);
+		}
 		m_ptrCore->AddAngularVelocity(CVector3::AxisY(), m_yawInertia);//旋回
 		m_ptrCore->AddVelocity(CVector3::AxisY()*abs(m_yawInertia)*500.0f*CalcAirScale(m_ptrCore->GetHeightMeter()));//上昇
 		m_yawInertia *= 0.57f;//慣性// (abs(m_yawInertia) - CMath::DegToRad(0.1f)) / abs(m_yawInertia);
@@ -334,6 +339,9 @@ void BP_HumanMantle::Step(const CVector3& dir) {
 	if (m_invincibleFrame > 0 || m_cooldownFrame > 0) {
 		return;
 	}
+
+	//SE
+	new GameSE(L"Resource/sound/wing2.wav", m_ptrCore->GetPos(), 300.0f, m_ptrCore->GetPlayerNum());
 
 	//ステップ移動
 	m_moveDir = dir;

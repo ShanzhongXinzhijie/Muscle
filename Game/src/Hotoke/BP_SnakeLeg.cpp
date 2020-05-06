@@ -138,6 +138,9 @@ void BP_SnakeLeg::PostUTRSUpdate() {
 
 	const float modelScale = m_ptrCore->GetScale().y / (0.0188f*2.0f);
 	const float minFootDistance = 20.0f*modelScale, maxFootDistance = 80.0f*modelScale;
+
+	bool isDashed = false;
+
 	//‚ ‚é’ö“x‘«‚ªk‚ñ‚Å‚¢‚é‚È‚çÚ’n‚µ‚Ä‚¢‚éˆµ‚¢
 	if (footDistance < maxFootDistance - 1.0f) {
 		//Ú’n‚µ‚Ä‚¢‚é‚È‚ç’ïRUP
@@ -154,10 +157,24 @@ void BP_SnakeLeg::PostUTRSUpdate() {
 		}
 		if (m_isDash) {
 			m_ptrCore->SetMaxLinearVelocity(m_ptrCore->GetFront()*power);
+			//SE
+			if (!m_isDashing) {
+				m_dashSE = std::make_unique<GameSE>(L"Resource/sound/dash.wav", m_ptrCore->GetPos(), 150.0f, m_ptrCore->GetPlayerNum(), true);
+				m_dashSE->SetIsAutoDelete(false);
+			}
+			if (m_dashSE) {
+				m_dashSE->SetPos(m_ptrCore->GetPos());
+			}
+			isDashed = true;
 		}
 	}
 
 	m_isDash = false;
+	m_isDashing = isDashed;
+	//SE‚Æ‚ß‚é
+	if (!m_isDashing) {
+		m_dashSE.reset();
+	}
 }
 
 void BP_SnakeLeg::Draw2D() {
