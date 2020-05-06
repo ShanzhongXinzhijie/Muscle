@@ -13,6 +13,23 @@ public:
 	/// <param name="isContactField">地面と衝突するか?</param>
 	BD_Contact(bool isContactField = true) : m_isContactField(isContactField) {}
 
+	void PlayContactSE(const CVector3& pos) {
+		float length = 1000.0f;
+		switch (CMath::RandomInt() % 3) {
+		case 0:
+			new GameSE(L"Resource/sound/Explosion17.wav", pos, length, -1);
+			break;
+		case 1:
+			new GameSE(L"Resource/sound/Explosion18.wav", pos, length, -1);
+			break;
+		case 2:
+			new GameSE(L"Resource/sound/Explosion19.wav", pos, length, -1);
+			break;
+		default:
+			break;
+		}
+	}
+
 	void Contact(SuicideObj::CCollisionObj::SCallbackParam& p)override {
 		if (p.EqualName(L"ReferenceCollision")) {
 			//クラス取り出す
@@ -21,6 +38,10 @@ public:
 				//物理属性なら死
 				m_bullet->m_lifeTime = 0.0f;
 				m_bullet->SetPos(p.m_collisionPoint);
+				//相殺ならSE
+				if (H->damege > 0.0f) {
+					PlayContactSE(p.m_collisionPoint);
+				}
 			}
 		}
 		if (!p.m_isCCollisionObj) {
