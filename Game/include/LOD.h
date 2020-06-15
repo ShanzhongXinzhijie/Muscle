@@ -75,6 +75,8 @@ private:
 /// </summary>
 class LODSwitcher : public IGameObject {
 public:
+	using IGameObject::IGameObject;
+
 	//ˆÊ’uÀ•W‚ğİ’è
 	void SetPos(const CVector3& pos) { m_pos = pos; }
 
