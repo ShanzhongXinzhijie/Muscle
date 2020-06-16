@@ -29,7 +29,7 @@ Shibuya::Shibuya() //: m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI
 
 	//街モデル
 	m_graundModel.Init(L"Resource/modelData/tikei_flat.cmo");
-	m_graundModel.SetScale({ 500.0f,500.0f,500.0f });
+	m_graundModel.SetScale({ 500.0f,50.0f,500.0f });
 	//当たり判定
 	m_graund.SetIsStaticObject(true);
 	m_graund.CreateMesh(m_graundModel);
@@ -49,24 +49,6 @@ Shibuya::Shibuya() //: m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI
 					rot.Multiply(ramdamVec);
 					new FlyingGrass(p.m_collisionPoint, ramdamVec + H->velocity, 16);
 				}
-
-				//SE
-				/*
-				float length = min(150.0f, H->velocity.Length()*0.1f);
-				switch (CMath::RandomInt() % 3) {
-				case 0:
-					new GameSE(L"Resource/sound/Hit_Hurt.wav", p.m_collisionPoint, length, -1);
-					break;
-				case 1:
-					new GameSE(L"Resource/sound/Hit_Hurt2.wav", p.m_collisionPoint, length, -1);
-					break;
-				case 2:
-					new GameSE(L"Resource/sound/Hit_Hurt5.wav", p.m_collisionPoint, length, -1);
-					break;
-				default:
-					break;
-				}
-				*/
 			}
 		}
 	);
@@ -83,7 +65,7 @@ Shibuya::Shibuya() //: m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI
 	//モデルにシェーダとノーマルマップ設定
 	m_graundModel.GetSkinModel().FindMaterialSetting(
 		[&](MaterialSetting* mat) {
-			mat->SetNormalTexture(normaltex.Get());
+			//mat->SetNormalTexture(normaltex.Get());
 			mat->SetAlbedoTexture(tex.Get());
 			mat->SetTriPlanarMappingPS();
 			mat->SetTriPlanarMappingUVScale(0.002f);
@@ -112,7 +94,7 @@ Shibuya::Shibuya() //: m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI
 	//中景	
 	m_midGraund.Init(L"Resource/modelData/far_graund.cmo");
 	m_midGraund.SetRot({ CVector3::AxisY(), CMath::PI_HALF });
-	m_midGraund.SetScale(500.0f);
+	m_midGraund.SetScale({ 500.0f,100.0f,500.0f });
 	//モデルにシェーダとノーマルマップ設定
 	m_midGraund.GetSkinModel().FindMaterialSetting(
 		[&](MaterialSetting* mat) {
@@ -126,7 +108,7 @@ Shibuya::Shibuya() //: m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI
 
 	//遠景
 	m_farGraund.Init(L"Resource/modelData/far_graund.cmo");
-	m_farGraund.SetScale(500.0f);
+	m_farGraund.SetScale({ 500.0f,100.0f,500.0f });
 	//モデルにシェーダとノーマルマップ設定
 	m_farGraund.GetSkinModel().FindMaterialSetting(
 		[&](MaterialSetting* mat) {
