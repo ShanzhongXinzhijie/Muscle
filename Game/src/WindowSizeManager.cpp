@@ -16,27 +16,30 @@ void WindowSizeManager::ChangeWindowSize(bool isTwoScreen) {
 	//画面サイズ変更
 	if (!isTwoScreen) {
 		//1画面
-		GetEngine().ChangeWindowSize(m_windowSize, m_windowSize);
+		GetEngine().ChangeWindowSize(m_windowSize, m_windowSize);//ウィンドウサイズ
+		//フレームバッファサイズ
 		GetGraphicsEngine().ChangeFrameBufferSize(
-			screenSize, screenSize,
-			m_3dScreenSize, m_3dScreenSize,
-			screenSize, screenSize,
-			enNoSplit
+			screenSize, screenSize,//画面サイズ
+			m_3dScreenSize, m_3dScreenSize,//3d解像度
+			screenSize, screenSize,//hud解像度
+			enNoSplit//分割じゃない
 		);
 	}
 	else {
 		//2画面
-		GetEngine().ChangeWindowSize(m_windowSize * 2 + HUDSize, m_windowSize);
+		GetEngine().ChangeWindowSize(m_windowSize * 2 + HUDSize, m_windowSize);//ウィンドウサイズ
+		//画面分割比率
 		float screensSpliteSize[8] = {
 			0.0f,0.0f,(float)screenSize / (screenSize * 2 + HUDSize),1.0f,
 			1.0f - (float)screenSize / (screenSize * 2 + HUDSize),0.0f,1.0f,1.0f,
 		};
+		//フレームバッファサイズ
 		GetGraphicsEngine().ChangeFrameBufferSize(
-			screenSize * 2 + HUDSize, screenSize,
-			m_3dScreenSize, m_3dScreenSize,
-			screenSize, screenSize,
-			enSide_TwoSplit,
-			screensSpliteSize
+			screenSize * 2 + HUDSize, screenSize,//画面サイズ
+			m_3dScreenSize, m_3dScreenSize,//3d解像度
+			screenSize, screenSize,//hud解像度
+			enSide_TwoSplit,//画面分割
+			screensSpliteSize//画面分割比率
 		);
 	}
 }

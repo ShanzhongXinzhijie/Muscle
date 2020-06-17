@@ -33,8 +33,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	//initparam.limitFps = 25;
 	//initparam.shadowMapSetting = enON;
 
-	//TODO 解像度下げてみる	
-	//initparam.isEnableBloom = false;
+	/*initparam.isEnableBloom = false;
+	initparam.isEnableSSAO = false;
+	initparam.isEnableDOF = false;*/
 	//TODO
 	//Tri Y有効化
 	//地面縦サイズ

@@ -23,6 +23,6 @@ static inline const CVector4 BLOOD_BLACK_COLOR = { 0.8f, 0.0f, 0.005f, 1.0f };
 
 //‰ð‘œ“x
 static constexpr int SCREEN_SIZE_2D = 640;
-static constexpr int SCREEN_SIZE_3D = 640*2;//1280
+static constexpr int SCREEN_SIZE_3D = 640;
 static constexpr int SCREEN_SPRITE_BAR = 0;//64
 static constexpr int WINDOW_SIZE = 640;

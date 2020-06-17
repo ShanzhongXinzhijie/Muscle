@@ -8,6 +8,13 @@ public:
 		SetName(L"CGameMode");
 	}
 
+	void PostLoopUpdate()override {
+		//ƒQ[ƒ€I—¹
+		if (GetAsyncKeyState(VK_ESCAPE)) {
+			BreakGameLoop();
+		}
+	}
+
 	void SetPlayerNum(int num) {
 		m_playerNum = num;
 	}

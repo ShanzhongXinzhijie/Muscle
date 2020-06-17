@@ -89,7 +89,7 @@ void CTitle::PostRender() {
 	swprintf_s(string, L"Bれんだでオワリ (%d/%d)", m_pushCnt, MAX_PUSH);
 	m_font.Draw(string, { 0.5f,0.0f }, CVector4::Black(), CVector2::One()*0.5f, { 0.5f,0.0f });
 
-	swprintf_s(string, L"[RB]ウィンドウサイズへんこう(X%.2f)", m_ptrWinSizeMane->GetWindowScale());
+	swprintf_s(string, L"[RB]がめんサイズへんこう(X%.2f)", m_ptrWinSizeMane->GetWindowScale());
 	m_font.Draw(string, { 0.55f,0.6f }, CVector4::Black(), CVector2::One()*0.5f, { 0.0f,0.0f });
 
 	if(!m_enter) {
