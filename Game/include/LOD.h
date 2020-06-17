@@ -9,12 +9,20 @@ class ILODObj {
 public:
 	virtual void SetIsDraw(bool isDraw) = 0;
 };
+/// <summary>
+/// (LODObj)何も表示しない
+/// </summary>
 class LODNothing : public ILODObj {
 public:
 	void SetIsDraw(bool isDraw)override {}
 };
+/// <summary>
+/// (LODObj)インスタンシングモデル
+/// </summary>
 class LODInstancingModel : public ILODObj {
 public:
+	LODInstancingModel(bool isRegister):m_model(isRegister){}
+
 	GameObj::CInstancingModelRender& Get() {
 		return m_model;
 	}
@@ -24,8 +32,13 @@ public:
 private:
 	GameObj::CInstancingModelRender m_model;
 };
+/// <summary>
+/// (LODObj)インポスター
+/// </summary>
 class LODImposter : public ILODObj {
 public:
+	LODImposter(bool isRegister) :m_imposter(isRegister) {}
+	
 	CImposter& Get() {
 		return m_imposter;
 	}
@@ -35,39 +48,6 @@ public:
 private:
 	CImposter m_imposter;
 };
-
-/// <summary>
-/// インスタンシング描画のLOD処理実行クラス
-/// </summary>
-//class InstancingLOD : public GameObj::InstancingModel::IInstancesData {
-//private:
-//	//再確保
-//	void Reset(int instancingMaxNum) {
-//		m_instanceMax = instancingMaxNum;
-//		m_isDraw = std::make_unique<bool[]>(instancingMaxNum);
-//	}
-//public:
-//	bool PreCulling(int instanceIndex)override {
-//		return m_isDraw[instanceIndex];
-//	}
-//	void SetInstanceMax(int instanceMax)override {
-//		if (instanceMax > m_instanceMax) {
-//			Reset(instanceMax);
-//		}
-//	}
-//public:
-//	/// <summary>
-//	/// コンストラクタ
-//	/// </summary>
-//	/// <param name="instancingMaxNum">インスタンス最大数</param>
-//	InstancingLOD(int instancingMaxNum) {
-//		Reset(instancingMaxNum);
-//	}
-//private:
-//	//パラメータ
-//	std::unique_ptr<bool[]> m_isDraw;
-//	int m_instanceMax = 0;
-//};
 
 /// <summary>
 /// LOD切り替えクラス

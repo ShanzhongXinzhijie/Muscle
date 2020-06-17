@@ -9,6 +9,9 @@ class Shibuya : IGameObject
 {
 public:
 	Shibuya();
+	~Shibuya() {
+		g_treeRunner.Disable();
+	}
 
 	//void Update()override;
 	void PostLoopUpdate()override;
@@ -28,6 +31,7 @@ private:
 	StageObjectGenerator m_objGene;
 	StageObjectGenerator m_helicoGene;
 	CHuman m_human;
+
 	//GameObj::CSkinModelRender m_dinosaur, m_skyModel, m_uni;
 	//GameObj::CSkinModelRender m_knight;// , m_cloud[6];
 	//SkinModelEffectShader m_psCloud;

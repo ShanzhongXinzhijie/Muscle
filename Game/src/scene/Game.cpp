@@ -17,6 +17,9 @@ Game::Game(GameManager* manager)
 	m_player[0] = std::make_unique<CPlayer>(1, m_manager->GetIsPracticeRound());
 	m_player[1] = std::make_unique<CPlayer>(0, m_manager->GetIsPracticeRound());
 
+	//‘
+	g_grassRunner.Init();
+
 	//—ûKƒ‰ƒEƒ“ƒh‚È‚ç
 	if (m_manager->GetIsPracticeRound()) {
 		for (auto& player : m_player) {

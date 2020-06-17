@@ -14,6 +14,8 @@ public:
 		ICreateObject::AllDestroy();
 		//QÆ‰ğœ
 		GameSE::SetGamePtr(nullptr);
+		//‚­‚³‚Ş‚±‚¤
+		g_grassRunner.Disable();
 	}
 
 	void PreUpdate()override;

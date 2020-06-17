@@ -17,11 +17,6 @@ HumanPlayer::HumanPlayer(int playernum, CDeathHotoke& hotoke):
 	//メインカメラ設定
 	m_cam.SetToMainCamera(playernum);
 
-	//草
-	for (auto& grass : m_grass) {
-		grass.SetDrawCameraNum(playernum);
-	}
-
 	//フォント
 	m_japaneseFont.SetUseFont(HUDFont::enJPN);
 	m_hotoke.SetFonts(&m_warningFont, &m_japaneseFont);

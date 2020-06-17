@@ -7,10 +7,6 @@
 /// </summary>
 class IStageObject {
 public:
-	//コンストラクタ
-	IStageObject(int id) : m_localID(id), m_worldID(m_s_nextID){
-		m_s_nextID++;
-	}
 	//デストラクタ
 	virtual ~IStageObject() {};
 
@@ -19,10 +15,6 @@ public:
 
 	//シャドウマップベイカーに追加する
 	virtual void AddToShadowMapBaker(ShadowMapBaker& targetBaker) {};
-
-private:
-	int m_localID = -1, m_worldID = -1;
-	static int m_s_nextID;
 };
 
 /// <summary>
@@ -59,7 +51,7 @@ public:
 				pos = gnd_ray.m_hitPointWorld;
 			}
 			//生まれろ!
-			m_objects.emplace_back(std::make_unique<T>(i));
+			m_objects.emplace_back(std::make_unique<T>());
 			m_objects.back()->Init(pos, gnd_ray.m_hitNormalWorld);
 		}
 	}
@@ -73,10 +65,21 @@ public:
 	/// <param name="maxnum">生成するオブジェクトの最大数</param>
 	template <typename T>
 	void CircularGenerate(const CVector3& point, float area, float height, int maxnum, float radius = 80.0f) {
+		CircularPoint<T>(nullptr, point, area, height, maxnum, radius);
+	}
+	template <typename T>
+	int CircularSet(T* objects, const CVector3& point, float area, float height, int maxnum, float radius = 80.0f) {
+		return CircularPoint<T>(objects, point, area, height, maxnum, radius);
+	}
+
+private:
+	template <typename T>
+	int CircularPoint(T* objects, const CVector3& point, float area, float height, int maxnum, float radius = 80.0f) {
 		int start = (int)m_genPoints.size();
 		//生成点作る
 		CMath::GenerateBlueNoise(maxnum, { point.x - area, point.z - area }, { point.x + area, point.z + area }, radius, m_genPoints);
 		//ステージオブジェクトを作る
+		int geneInd = 0;
 		for (int i = start; i < m_genPoints.size(); i++) {
 			//生成点は円内か?
 			if ((CVector2(point.x, point.z) - m_genPoints[i]).LengthSq() < CMath::Square(area)) {
@@ -91,12 +94,23 @@ public:
 					//接触点を座標に
 					pos = gnd_ray.m_hitPointWorld;
 				}
-				//生まれろ!
-				m_objects.emplace_back(std::make_unique<T>(i));
-				m_objects.back()->Init(pos, gnd_ray.m_hitNormalWorld);
+
+				if (!objects) {
+					//生まれろ!
+					m_objects.emplace_back(std::make_unique<T>());
+					m_objects.back()->Init(pos, gnd_ray.m_hitNormalWorld);
+				}
+				else {
+					//せってい!
+					objects[geneInd].Init(pos, gnd_ray.m_hitNormalWorld);
+				}
+				geneInd++;
 			}
 		}
+		return geneInd;
 	}
+
+public:
 
 	/// <summary>
 	/// 生成(直線)
@@ -162,7 +176,7 @@ public:
 				pos = gnd_ray.m_hitPointWorld;
 			}
 			//生まれろ!
-			m_objects.emplace_back(std::make_unique<T>(i));
+			m_objects.emplace_back(std::make_unique<T>());
 			m_objects.back()->Init(pos, gnd_ray.m_hitNormalWorld);
 		}
 	}
@@ -171,13 +185,13 @@ public:
 	void Clear();
 
 	//ステージオブジェクト取得
-	IStageObject& GetModel(int index) { return *m_objects[index]; }
+	//IStageObject& GetModel(int index) { return *m_objects[index]; }
 
 	//数を取得
-	size_t GetNum()const { return m_objects.size(); }
+	//size_t GetNum()const { return m_objects.size(); }
 
 private:
 	std::vector<std::unique_ptr<IStageObject>> m_objects;//ステージオブジェクト
-	std::vector<CVector2> m_genPoints;
+	std::vector<CVector2> m_genPoints;//生成点
 };
 

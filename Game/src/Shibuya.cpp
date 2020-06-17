@@ -204,30 +204,12 @@ Shibuya::Shibuya() //: m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI
 	//SetFogColor({ 0.58f,0.69f,0.84f });
 	SetFogColor({0.28f,0.4f,0.65f});
 
-#ifdef DW_MASTER
-
-	//X
-	constexpr int FOREST_NUM = 5;
-	constexpr float FOREST_SIZE = 70.0f*50.0f*0.5f;
-	Tree::m_sInstancingMax = 4000 + 1000;// *FOREST_NUM;
-
-	//X‚Ì’†S“_ì‚é
-	std::vector<CVector2> genPoints;
-	constexpr float GEN_POINT_AREA = 70.0f*50.0f*3.33f;
-	CMath::GenerateBlueNoise(FOREST_NUM, -GEN_POINT_AREA, GEN_POINT_AREA, FOREST_SIZE, genPoints);
-
-	//–ØX¶¬
-	//TODO –Ø‚Ìƒ‚ƒfƒ‹‚Ì•`‰æ•‰‰×‚ª‚‚¢ ”»’è‚ªd‚¢ ‰æ–Ê•ªŠ„‚Í”»’èíœ‚Æ‚©
-	//IGameObject‚Æ‚µ‚Ä“o˜^‚µ‚È‚¢
-	//‚»‚ê‚ğˆêŒÂ‚ÌGO‚Å
-	for (const auto& forestPoint : genPoints) {
-		m_objGene.CircularGenerate<Tree>({ forestPoint.x,0.0f,forestPoint.y }, FOREST_SIZE, 70.0f*50.0f, 1000 / FOREST_NUM -1, 120.0f);
-	}
-
-	m_objGene.CircularGenerate<Tree>(0.f, 70.0f*50.0f*7.0f, 70.0f*50.0f, 4000, 120.0f);
+//#ifdef DW_MASTER
+	//–Ø
+	g_treeRunner.Init(m_objGene);
 
 	//“S“ƒ
-	//for (int i = 0; i < 3;i++) {
+	//for (int i = 0; i < 3;i++) 
 	{
 		constexpr float lineLength = 70.0f*50.0f*7.0f*1.5f;
 		constexpr float offsetLength = 70.0f*50.0f*7.0f*0.15f;
@@ -236,7 +218,6 @@ Shibuya::Shibuya() //: m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI
 		CVector2 offset = {CMath::Lerp(CMath::RandomZeroToOne(),-offsetLength,offsetLength),CMath::Lerp(CMath::RandomZeroToOne(),-offsetLength,offsetLength) };
 		dirrot.Multiply(gendir);
 		m_objGene.LinearGenerate<TransmissionTower>(offset + CVector2(gendir.x, gendir.z)*-lineLength, offset + CVector2(gendir.x, gendir.z)*lineLength, 70.0f*50.0f, 32, 300.0f);
-		//m_objGene.RectangularGenerate<TransmissionTower>({ -70.0f*50.0f*7.0f,-70.0f*50.0f,-70.0f*50.0f*7.0f }, { 70.0f*50.0f*7.0f,70.0f*50.0f,70.0f*50.0f*7.0f }, 32, 300.0f);
 	}
 
 	//ƒwƒŠƒRƒvƒ^[
@@ -244,8 +225,7 @@ Shibuya::Shibuya() //: m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI
 		constexpr float areaLength = 70.0f*50.0f*7.0f*0.5f;
 		m_helicoGene.RectangularGenerate<CHelicopter>({ -areaLength,-70.0f*50.0f,-areaLength }, { areaLength,70.0f*50.0f,areaLength }, CHelicopter::m_sInstancingMax, 1200.0f);
 	}
-
-#endif
+//#endif
 
 	//GetGraphicsEngine().GetAmbientOcclusionRender().SetEnable(false);
 

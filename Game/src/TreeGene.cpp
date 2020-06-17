@@ -187,7 +187,8 @@ bool Grass::Start(){
 	insModel.SetRot(rot);
 	//拡大
 	insModel.SetScale((CMath::RandomZeroToOne()*0.0015f + 0.003f)*(isType2 ? 1.5f : 1.0f));
-	//insModel.SetIsDraw(false);
+	//表示
+	insModel.SetIsDraw(false);
 	//insModel.GetInstancingModel()->GetModelRender().SetIsShadowCaster(false);
 	//insModel.GetInstancingModel()->GetModelRender().InitPostDraw(PostDrawModelRender::enAlpha);// , false, true);//ポストドロー(ソフトパーティクル)
 	//insModel.GetInstancingModel()->GetModelRender().GetSkinModel().SetCullMode(D3D11_CULL_NONE);//バックカリングしない	
@@ -222,14 +223,6 @@ void Grass::RePos(GameObj::ICamera* mainCamera) {
 	if (gnd_ray.hasHit()) {
 		//接触点を座標に
 		pos = gnd_ray.m_hitPointWorld;
-		
-		//if (gnd_ray.m_collisionObject->getUserIndex() == enCollisionAttr_CCollisionObj) {
-		//	SuicideObj::CCollisionObj* Obj = (SuicideObj::CCollisionObj*)(gnd_ray.m_collisionObject->getUserPointer());			
-		//	if (Obj->EqualName(L"ReferenceCollision")) {
-		//		//クラス取り出す
-		//		ReferenceCollision* H = Obj->GetClass<ReferenceCollision>();
-		//	}
-		//}
 	}
 
 	m_model.SetPos(pos);//再設置
@@ -255,6 +248,28 @@ void Grass::Pre3DRender(int screenNum) {
 	else {
 		m_model.SetIsDraw(true);
 	}	
+}
+
+void TreeRunner::Init(StageObjectGenerator& objGene) {
+	m_isEnable = true;
+
+	//森
+	constexpr int FOREST_NUM = 5;
+	constexpr float FOREST_SIZE = 70.0f*50.0f*0.5f;
+	constexpr float GEN_POINT_AREA = 70.0f*50.0f*3.33f;
+
+	//森の中心点作る
+	std::vector<CVector2> genPoints;
+	CMath::GenerateBlueNoise(FOREST_NUM, -GEN_POINT_AREA, GEN_POINT_AREA, FOREST_SIZE, genPoints);
+
+	//木々生成
+	int geneInd = 0;
+	for (const auto& forestPoint : genPoints) {
+		geneInd += objGene.CircularSet<Tree>(&m_tree[geneInd], { forestPoint.x,0.0f,forestPoint.y }, FOREST_SIZE, 70.0f*50.0f, 1000 / FOREST_NUM - 1, 120.0f);
+	}
+	geneInd += objGene.CircularSet<Tree>(&m_tree[geneInd], 0.f, 70.0f*50.0f*7.0f, 70.0f*50.0f, 4000, 120.0f);
+
+	m_enableTreeNum = geneInd;
 }
 
 /// <summary>

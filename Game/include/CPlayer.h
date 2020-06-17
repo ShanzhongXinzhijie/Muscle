@@ -41,9 +41,7 @@ private:
 	//パッド
 	IGamePad m_pad;
 
-	//草
-	Grass m_grass[Grass::m_sInstancingMax / PLAYER_NUM];
-
+	//人間参照
 	CHuman* m_humanPtr = nullptr;
 
 	//HUD

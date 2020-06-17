@@ -113,18 +113,26 @@ private:
 /// <summary>
 /// 草
 /// </summary>
-class Grass : public IGameObject {
+class Grass {
 public:
+	//コンストラクタ
+	Grass() :m_model(false) {}
+
 	//開始時処理
-	bool Start()override;
+	bool Start();
 	//動作ループ後処理
-	void PostLoopUpdate()override;
+	void PostLoopUpdate();
 	//描画前処理
-	void Pre3DRender(int)override;
+	void Pre3DRender(int);
 
 	//どのカメラに表示するか設定
 	void SetDrawCameraNum(int camnum) {
 		m_cameraNum = camnum;
+	}
+
+	//表示設定
+	void DisableDraw() {
+		m_model.SetIsDraw(false);
 	}
 
 private:
@@ -133,7 +141,7 @@ private:
 
 private:
 	//グラフィック
-	GameObj::CInstancingModelRender m_model;
+	GameObj::CInstancingModelRender m_model;//登録しない
 
 	int m_cameraNum = 0;//どのカメラに表示するか
 
@@ -142,14 +150,123 @@ public:
 };
 
 /// <summary>
+/// Grassクラスを実行するクラス
+/// </summary>
+class GrassRunner : public IGameObject {
+public:
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	GrassRunner() {
+		//表示するカメラ設定
+		int i = 0, playerNum = 0;
+		for (auto& grass : m_grass) {
+			if (i > Grass::m_sInstancingMax / PLAYER_NUM * (playerNum+1)) {
+				playerNum++;
+			}
+			grass.SetDrawCameraNum(playerNum);
+			i++;
+		}
+	}
+
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	void Init() {
+		m_isEnable = true;
+		int i = 0;
+		for (auto& grass : m_grass) {
+			if (i <= Grass::m_sInstancingMax / PLAYER_NUM * ViewCameraList().size()) {
+				grass.Start();
+			}
+			else {
+				m_enableGrassNum = i; 
+				break;
+			}
+			i++;
+		}
+	}
+	/// <summary>
+	/// 無効化
+	/// </summary>
+	void Disable() {
+		m_isEnable = false;
+		for (auto& grass : m_grass) {
+			grass.DisableDraw();
+		}
+		m_enableGrassNum = 0;
+	}
+	
+	/// <summary>
+	/// 動作ループ後処理
+	/// </summary>
+	void PostLoopUpdate()override {
+		if (!m_isEnable) { 
+			return;
+		}
+		int i = 0;
+		for (auto& grass : m_grass) {
+			if (i >= m_enableGrassNum) {
+				break;
+			}
+			grass.PostLoopUpdate();
+			i++;
+		}
+	}
+	
+	/// <summary>
+	/// 描画前処理
+	/// </summary>
+	void Pre3DRender(int screenNum)override {
+		if (!m_isEnable) {
+			return;
+		}
+		int i = 0;
+		for (auto& grass : m_grass) {
+			if (i >= m_enableGrassNum) {
+				break;
+			}
+			grass.Pre3DRender(screenNum);
+			i++;
+		}
+	}
+
+private:
+	bool m_isEnable = false;
+	//草
+	int m_enableGrassNum = 0;
+	Grass m_grass[Grass::m_sInstancingMax];
+};
+
+/// <summary>
 /// 木でーす
 /// </summary>
 class Tree : public IStageObject{
 public:
-	using IStageObject::IStageObject;
+	Tree(): m_lodSwitcher(false), m_model(false), m_imposter(false){}
 
 	//初期化関数
 	void Init(const CVector3& pos, const CVector3& normal)override;
+
+	/// <summary>
+	/// 無効化
+	/// </summary>
+	void Disable() {
+		m_model.SetIsDraw(false);
+		m_imposter.SetIsDraw(false);
+	}
+
+	//Update
+	void PreLoopUpdate() {
+		m_lodSwitcher.PreLoopUpdate();
+	}
+	void PostLoopPostUpdate() {
+		m_model.Get().PostLoopPostUpdate();
+		m_imposter.Get().GetInstancingModel().PostLoopPostUpdate();
+	}
+	void Pre3DRender(int num) {
+		m_lodSwitcher.Pre3DRender(num);
+	}
 
 private:
 	//グラフィック
@@ -168,7 +285,86 @@ private:
 	//float m_modelHeight = 100.0f, m_modelRadius = 0.0f;
 
 public:
-	static inline int m_sInstancingMax = 512; //このクラスの最大インスタンス数
+	static inline constexpr int m_sInstancingMax = 4000 + 1000;//このクラスの最大インスタンス数
+};
+
+
+/// <summary>
+/// Treeクラスを実行するクラス
+/// </summary>
+class TreeRunner : public IGameObject {
+public:
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	void Init(StageObjectGenerator& objGene);
+	/// <summary>
+	/// 無効化
+	/// </summary>
+	void Disable() {
+		m_isEnable = false;
+		for (auto& tree : m_tree) {
+			tree.Disable();
+		}
+		m_enableTreeNum = 0;
+	}
+
+	/// <summary>
+	/// 動作ループ前処理
+	/// </summary>
+	void PreLoopUpdate()override {
+		if (!m_isEnable) {
+			return;
+		}
+		int i = 0;
+		for (auto& tree : m_tree) {
+			if (i >= m_enableTreeNum) {
+				break;
+			}
+			tree.PreLoopUpdate();
+			i++;
+		}
+	}
+
+	/// <summary>
+	/// 動作ループ後処理
+	/// </summary>
+	void PostLoopPostUpdate()override {
+		if (!m_isEnable) {
+			return;
+		}
+		int i = 0;
+		for (auto& tree : m_tree) {
+			if (i >= m_enableTreeNum) {
+				break;
+			}
+			tree.PostLoopPostUpdate();
+			i++;
+		}
+	}
+
+	/// <summary>
+	/// 描画前処理
+	/// </summary>
+	void Pre3DRender(int screenNum)override {
+		if (!m_isEnable) {
+			return;
+		}
+		int i = 0;
+		for (auto& tree : m_tree) {
+			if (i >= m_enableTreeNum) {
+				break;
+			}
+			tree.Pre3DRender(screenNum);
+			i++;
+		}
+	}
+
+private:
+	bool m_isEnable = false;
+	//木
+	int m_enableTreeNum = 0;
+	Tree m_tree[Tree::m_sInstancingMax];
 };
 
 class dammy : public IStageObject {
@@ -205,3 +401,6 @@ public:
 	//LODInstancingModel m_model; LODImposter m_imposter; 
 	LODNothing m_noDraw[3];
 };
+
+static inline GrassRunner g_grassRunner;
+static inline TreeRunner g_treeRunner;
