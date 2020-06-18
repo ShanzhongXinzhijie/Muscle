@@ -29,7 +29,7 @@ Shibuya::Shibuya() //: m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI
 
 	//街モデル
 	m_graundModel.Init(L"Resource/modelData/tikei_flat.cmo");
-	m_graundModel.SetScale({ 500.0f,50.0f,500.0f });
+	m_graundModel.SetScale({ 500.0f,500.0f,500.0f });
 	//当たり判定
 	m_graund.SetIsStaticObject(true);
 	m_graund.CreateMesh(m_graundModel);
@@ -94,7 +94,7 @@ Shibuya::Shibuya() //: m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI
 	//中景	
 	m_midGraund.Init(L"Resource/modelData/far_graund.cmo");
 	m_midGraund.SetRot({ CVector3::AxisY(), CMath::PI_HALF });
-	m_midGraund.SetScale({ 500.0f,100.0f,500.0f });
+	m_midGraund.SetScale({ 500.0f,500.0f,500.0f });
 	//モデルにシェーダとノーマルマップ設定
 	m_midGraund.GetSkinModel().FindMaterialSetting(
 		[&](MaterialSetting* mat) {
@@ -108,7 +108,7 @@ Shibuya::Shibuya() //: m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI
 
 	//遠景
 	m_farGraund.Init(L"Resource/modelData/far_graund.cmo");
-	m_farGraund.SetScale({ 500.0f,100.0f,500.0f });
+	m_farGraund.SetScale({ 500.0f,500.0f,500.0f });
 	//モデルにシェーダとノーマルマップ設定
 	m_farGraund.GetSkinModel().FindMaterialSetting(
 		[&](MaterialSetting* mat) {
@@ -217,7 +217,7 @@ Shibuya::Shibuya() //: m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI
 		CVector3 gendir = CVector3::Front();
 		CVector2 offset = {CMath::Lerp(CMath::RandomZeroToOne(),-offsetLength,offsetLength),CMath::Lerp(CMath::RandomZeroToOne(),-offsetLength,offsetLength) };
 		dirrot.Multiply(gendir);
-		m_objGene.LinearGenerate<TransmissionTower>(offset + CVector2(gendir.x, gendir.z)*-lineLength, offset + CVector2(gendir.x, gendir.z)*lineLength, 70.0f*50.0f, 32, 300.0f);
+		m_towerGene.LinearGenerate<TransmissionTower>(offset + CVector2(gendir.x, gendir.z)*-lineLength, offset + CVector2(gendir.x, gendir.z)*lineLength, 70.0f*50.0f, 32, 300.0f);
 	}
 
 	//ヘリコプター

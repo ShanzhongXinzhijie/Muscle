@@ -122,6 +122,9 @@ public:
 	bool Start();
 	//動作ループ後処理
 	void PostLoopUpdate();
+	void PostLoopPostUpdate() {
+		m_model.PostLoopPostUpdate();
+	}
 	//描画前処理
 	void Pre3DRender(int);
 
@@ -137,16 +140,15 @@ public:
 
 private:
 	//位置を再設定
-	void RePos(GameObj::ICamera* mainCamera);
+	void RePos(GameObj::ICamera* mainCamera, bool isInitSet);
 
-private:
-	//グラフィック
-	GameObj::CInstancingModelRender m_model;//登録しない
-
+private:	
+	GameObj::CInstancingModelRender m_model;//グラフィック
 	int m_cameraNum = 0;//どのカメラに表示するか
+	CVector2 m_geneCenterPos;//生成時の中心座標
 
 public:
-	static inline constexpr int m_sInstancingMax = 512 * 4 * PLAYER_NUM; //このクラスの最大インスタンス数
+	static inline constexpr int m_sInstancingMax = 512 * 40 * PLAYER_NUM; //このクラスの最大インスタンス数
 };
 
 /// <summary>
@@ -176,11 +178,11 @@ public:
 		m_isEnable = true;
 		int i = 0;
 		for (auto& grass : m_grass) {
-			if (i <= Grass::m_sInstancingMax / PLAYER_NUM * ViewCameraList().size()) {
+			if (i < Grass::m_sInstancingMax / PLAYER_NUM * ViewCameraList().size()) {
 				grass.Start();
+				m_enableGrassNum = i + 1;
 			}
 			else {
-				m_enableGrassNum = i; 
 				break;
 			}
 			i++;
@@ -204,16 +206,19 @@ public:
 		if (!m_isEnable) { 
 			return;
 		}
-		int i = 0;
-		for (auto& grass : m_grass) {
-			if (i >= m_enableGrassNum) {
-				break;
-			}
-			grass.PostLoopUpdate();
-			i++;
+		for (int i = 0; i < m_enableGrassNum; i++) {
+			m_grass[i].PostLoopUpdate();
 		}
 	}
-	
+	void PostLoopPostUpdate()override {
+		if (!m_isEnable) {
+			return;
+		}
+		for (int i = 0; i < m_enableGrassNum; i++) {
+			m_grass[i].PostLoopPostUpdate();
+		}
+	}
+
 	/// <summary>
 	/// 描画前処理
 	/// </summary>
@@ -221,13 +226,8 @@ public:
 		if (!m_isEnable) {
 			return;
 		}
-		int i = 0;
-		for (auto& grass : m_grass) {
-			if (i >= m_enableGrassNum) {
-				break;
-			}
-			grass.Pre3DRender(screenNum);
-			i++;
+		for (int i = 0; i < m_enableGrassNum; i++) {
+			m_grass[i].Pre3DRender(screenNum);
 		}
 	}
 
@@ -269,6 +269,8 @@ public:
 	}
 
 private:
+	bool m_isInit = false;
+
 	//グラフィック
 	LODSwitcher m_lodSwitcher;
 	LODInstancingModel m_model;
@@ -285,7 +287,7 @@ private:
 	//float m_modelHeight = 100.0f, m_modelRadius = 0.0f;
 
 public:
-	static inline constexpr int m_sInstancingMax = 4000 + 1000;//このクラスの最大インスタンス数
+	static inline constexpr int m_sInstancingMax = 4000 + 4000;//このクラスの最大インスタンス数
 };
 
 
@@ -303,8 +305,13 @@ public:
 	/// </summary>
 	void Disable() {
 		m_isEnable = false;
+		int i = 0;
 		for (auto& tree : m_tree) {
+			if (i >= m_enableTreeNum) {
+				break;
+			}
 			tree.Disable();
+			i++;
 		}
 		m_enableTreeNum = 0;
 	}
@@ -316,13 +323,8 @@ public:
 		if (!m_isEnable) {
 			return;
 		}
-		int i = 0;
-		for (auto& tree : m_tree) {
-			if (i >= m_enableTreeNum) {
-				break;
-			}
-			tree.PreLoopUpdate();
-			i++;
+		for (int i = 0; i < m_enableTreeNum; i++) {
+			m_tree[i].PreLoopUpdate();
 		}
 	}
 
@@ -333,13 +335,8 @@ public:
 		if (!m_isEnable) {
 			return;
 		}
-		int i = 0;
-		for (auto& tree : m_tree) {
-			if (i >= m_enableTreeNum) {
-				break;
-			}
-			tree.PostLoopPostUpdate();
-			i++;
+		for (int i = 0; i < m_enableTreeNum; i++) {
+			m_tree[i].PostLoopPostUpdate();
 		}
 	}
 
@@ -350,13 +347,8 @@ public:
 		if (!m_isEnable) {
 			return;
 		}
-		int i = 0;
-		for (auto& tree : m_tree) {
-			if (i >= m_enableTreeNum) {
-				break;
-			}
-			tree.Pre3DRender(screenNum);
-			i++;
+		for (int i = 0; i < m_enableTreeNum; i++) {
+			m_tree[i].Pre3DRender(screenNum);
 		}
 	}
 

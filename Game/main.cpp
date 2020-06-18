@@ -28,7 +28,10 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	initparam.SDUnityChanScale = 3.5f;		//距離スケール設定
 	//0.15f
 
+	//DOF設定
 	initparam.isEnableDOF = true;
+	//initparam.DOFBufferScale = 0.3f;
+
 	//initparam.standardFps = 25;
 	//initparam.limitFps = 25;
 	//initparam.shadowMapSetting = enON;
@@ -36,22 +39,28 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	/*initparam.isEnableBloom = false;
 	initparam.isEnableSSAO = false;
 	initparam.isEnableDOF = false;*/
+	//initparam.SSAOBufferScale = 1.0f;
+
 	//TODO
 	//Tri Y有効化
 	//地面縦サイズ
-	//木とか草
+	//草 生成 
+	//木サイズ 一番小さいのはだめ
+	//仏サイズ
+	//lod
+	//かずふやし
+	//画面サイズとHUD
 
 	//シェーダー
 	//※デバッグ用
 	initparam.isShaderPathReplaceForEngineFilePath = true;
-	//initparam.SSAOBufferScale = 1.0f;
 	
 	//エンジン初期化
 	GetEngine().InitGame(hInstance, hPrevInstance, lpCmdLine, nCmdShow, "究極混成体デスホトケ", initparam);	
 
 	//DOF設定
 	GetGraphicsEngine().GetDOFRender().SetFocus(0.0f);
-	GetGraphicsEngine().GetDOFRender().SetFocusArea(0.0f);
+	GetGraphicsEngine().GetDOFRender().SetFocusArea(10000.0f);
 	GetGraphicsEngine().GetDOFRender().SetNear(0.0f);
 	GetGraphicsEngine().GetDOFRender().SetFar(30000.0f);
 
@@ -78,7 +87,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	
 	//画面分割マネージャー
 	WindowSizeManager windowSizeManager(config.GetConfigData().windowScale);
-	windowSizeManager.ChangeWindowSize(true);//二画面にする
+	windowSizeManager.ChangeWindowSize(false);
 
 	//デスホトケアセンブルマネージャー
 	HotokeAssembleManager hotokeAssembleManager;

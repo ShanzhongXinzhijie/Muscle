@@ -29,6 +29,7 @@ private:
 	//CascadeShadowHandler m_shadowmap;
 	
 	StageObjectGenerator m_objGene;
+	StageObjectGenerator m_towerGene;
 	StageObjectGenerator m_helicoGene;
 	CHuman m_human;
 
