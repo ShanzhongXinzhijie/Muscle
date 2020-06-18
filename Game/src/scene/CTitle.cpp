@@ -8,7 +8,7 @@
 bool CTitle::Start() {
 	//画面サイズ変更
 	m_ptrWinSizeMane = FindGO<WindowSizeManager>(L"WindowSizeManager");
-	m_ptrWinSizeMane->ChangeWindowSize(true);
+	m_ptrWinSizeMane->ChangeWindowSize(false);
 
 	//ロゴ
 	m_sprite.Init(L"Resource/spriteData/logo.png");
@@ -21,17 +21,6 @@ bool CTitle::Start() {
 
 void CTitle::Update() {
 	for (int i = 0; i < PLAYER_NUM; i++) {
-		//画面サイズ変更
-		if (Pad(i).GetDown(enButtonRB)) {
-			m_ptrWinSizeMane->ChangeWindowScale();
-			m_ptrWinSizeMane->ChangeWindowSize(true);
-		}
-
-		//終了
-		if (Pad(i).GetDown(enButtonB)) {
-			m_pushCnt++;
-		}
-
 		if (!m_enter) {
 			//タイトル
 			//PRESS ANY BUTTON
@@ -41,6 +30,15 @@ void CTitle::Update() {
 			}
 		}
 		else {
+			//画面サイズ変更
+			if (Pad(i).GetDown(enButtonRB)) {
+				m_ptrWinSizeMane->ChangeWindowScale();
+				m_ptrWinSizeMane->ChangeWindowSize(false);
+			}
+			//終了
+			if (Pad(i).GetDown(enButtonB)) {
+				m_pushCnt++;
+			}
 			//モード選択
 			if (Pad(i).GetDown(enButtonLeft) || Pad(i).GetDown(enButtonLSLeft)) {
 				m_selectMode--; if (m_selectMode < 0) { m_selectMode = 0; }
@@ -85,6 +83,11 @@ void CTitle::PostRender() {
 	//ロゴ
 	m_sprite.Draw({ 0.5f,0.5f }, CVector2::One(), { 0.5f,0.5f });
 
+	if (!m_enter) {
+		m_font.Draw(L"PRESS ANY BUTTON", { 0.5f,0.85f }, CVector4::Black(), CVector2::One(), { 0.5f,0.5f });
+		return;
+	}
+
 	wchar_t string[64];
 	swprintf_s(string, L"Bれんだでオワリ (%d/%d)", m_pushCnt, MAX_PUSH);
 	m_font.Draw(string, { 0.5f,0.0f }, CVector4::Black(), CVector2::One()*0.5f, { 0.5f,0.0f });
@@ -92,14 +95,8 @@ void CTitle::PostRender() {
 	swprintf_s(string, L"[RB]がめんサイズへんこう(X%.2f)", m_ptrWinSizeMane->GetWindowScale());
 	m_font.Draw(string, { 0.55f,0.6f }, CVector4::Black(), CVector2::One()*0.5f, { 0.0f,0.0f });
 
-	if(!m_enter) {
-		m_font.Draw(L"ｭｭｭｭｭデスホトケ", { 0.5f,0.09f }, CVector4::Black(), CVector2::One(), { 0.5f,0.0f });
-		m_font.Draw(L"PRESS ANY BUTTON ->めきめき", { 0.5f,0.85f }, CVector4::Black(), CVector2::One(), { 0.5f,0.5f });		
-		return;
-	}
-
 	//タイトル
-	m_font.Draw(L"モードをせんたく", { 0.5f,0.09f }, CVector4::Black(), CVector2::One(), { 0.5f,0.0f });
+	//m_font.Draw(L"モードをせんたく", { 0.5f-0.1f,0.75f }, CVector4::Black(), CVector2::One(), { 1.0f,1.0f });
 
 	//モードセレクト
 	for (int i = 0; i < 2; i++) {
@@ -108,10 +105,10 @@ void CTitle::PostRender() {
 			color = CVector4::Red();
 		}
 		if (i == 0) {
-			m_font.Draw(L"ひだり VS みぎ", { 0.25f,0.85f }, color, CVector2::One(), { 0.0f,0.5f });
+			m_font.Draw(L"ひだり VS みぎ", { 0.43f,0.85f }, color, CVector2::One(), { 1.0f,0.5f });
 		}
 		else {
-			m_font.Draw(L"おまえ VS メカ", { 0.5f,0.85f }, color, CVector2::One(), { 0.0f,0.5f });
+			m_font.Draw(L"おまえ VS メカ", { 0.57f,0.85f }, color, CVector2::One(), { 0.0f,0.5f });
 		}
 	}
 
