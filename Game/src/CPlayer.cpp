@@ -60,6 +60,7 @@ bool HumanPlayer::Start() {
 
 	//HUD
 	m_guncross.Init(L"Resource/spriteData/gunCross.png");
+	m_lockMark.Init(L"Resource/spriteData/lockon.png");
 	m_wMark.Init(L"Resource/spriteData/wMark.png");
 	m_velocityVector.Init(L"Resource/spriteData/velocityVector.png");
 
@@ -265,9 +266,11 @@ void HumanPlayer::HUDRender(int HUDNum) {
 			}
 		}*/
 		if (m_isLockon) {
-			m_guncross.Draw(pos, 1.0f, 0.5f, m_isLockon ? 0.0f : CMath::PI_QUARTER, m_enemyColor);//*CVector4(1.0f,1.0f,1.0f,0.5f)
+			m_lockMark.Draw(pos, 1.0f, 0.5f, m_isLockon ? 0.0f : CMath::PI_QUARTER, m_enemyColor);//*CVector4(1.0f,1.0f,1.0f,0.5f)
 			//ステータス
 			CVector4 color = m_HUDFont.GetColor();
+			CVector2 motoScale = m_HUDFont.GetScale();
+			
 			m_HUDFont.SetColor(m_enemyColor);
 			
 			//HP
@@ -275,11 +278,11 @@ void HumanPlayer::HUDRender(int HUDNum) {
 				m_HUDFont.DrawFormat(L"%.0f", pos - CVector3(0.0f, 0.025f, 0.0f), { 0.5f,1.5f }, m_targetHP);
 			}
 			//距離(m)
-			CVector2 motoScale = m_HUDFont.GetScale();
 			m_HUDFont.SetScale(motoScale*0.75f);
+			//m_HUDFont.SetAlpha(0.0f);
 			m_HUDFont.DrawFormat(L"%.0f", pos - CVector3(0.0f, -0.025f, 0.0f), { 0.5f,0.0f }, (m_targetPos - m_hotoke.GetPos()).Length() / METER);
-			m_HUDFont.SetScale(motoScale);
 			
+			m_HUDFont.SetScale(motoScale);			
 			m_HUDFont.SetColor(color);
 		}
 		else {
