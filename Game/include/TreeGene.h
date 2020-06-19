@@ -119,7 +119,7 @@ public:
 	Grass() :m_model(false) {}
 
 	//開始時処理
-	bool Start();
+	bool Start(bool isNear);
 	//動作ループ後処理
 	void PostLoopUpdate();
 	void PostLoopPostUpdate() {
@@ -145,10 +145,11 @@ private:
 private:	
 	GameObj::CInstancingModelRender m_model;//グラフィック
 	int m_cameraNum = 0;//どのカメラに表示するか
-	CVector2 m_geneCenterPos;//生成時の中心座標
+	bool m_isNear = false;
+	//CVector2 m_geneCenterPos;//生成時の中心座標
 
 public:
-	static inline constexpr int m_sInstancingMax = 512 * 40 * PLAYER_NUM; //このクラスの最大インスタンス数
+	static inline constexpr int m_sInstancingMax = 5000 * PLAYER_NUM; //このクラスの最大インスタンス数
 };
 
 /// <summary>
@@ -179,7 +180,7 @@ public:
 		int i = 0;
 		for (auto& grass : m_grass) {
 			if (i < Grass::m_sInstancingMax / PLAYER_NUM * ViewCameraList().size()) {
-				grass.Start();
+				grass.Start(i % (Grass::m_sInstancingMax / PLAYER_NUM) < (Grass::m_sInstancingMax / PLAYER_NUM) * 0.5f);
 				m_enableGrassNum = i + 1;
 			}
 			else {
@@ -287,7 +288,7 @@ private:
 	//float m_modelHeight = 100.0f, m_modelRadius = 0.0f;
 
 public:
-	static inline constexpr int m_sInstancingMax = 4000 + 4000;//このクラスの最大インスタンス数
+	static inline constexpr int m_sInstancingMax = 4000 + 4000*6;//このクラスの最大インスタンス数
 };
 
 

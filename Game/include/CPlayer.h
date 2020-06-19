@@ -4,11 +4,11 @@
 #include"HotokeCamera.h"
 #include"ZoomOutCamera.h"
 #include"HUDFont.h"
-#include"TreeGene.h"
 #include"AssembleScene.h"
 #include"AI.h"
 
 class CGameMode;
+class CHuman;
 
 class HumanPlayer : public IGameObject {
 public:
@@ -43,6 +43,7 @@ private:
 
 	//êlä‘éQè∆
 	CHuman* m_humanPtr = nullptr;
+	bool m_isHumanCamera = false;
 
 	//HUD
 	bool m_isDrawHUD = true;

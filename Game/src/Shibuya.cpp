@@ -70,6 +70,7 @@ Shibuya::Shibuya() //: m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI
 			mat->SetTriPlanarMappingPS();
 			mat->SetTriPlanarMappingUVScale(0.002f);
 			mat->SetShininess(0.3f);// m_shinnes);
+			//mat->SetLightingEnable(false);
 		}
 	);
 
@@ -184,18 +185,6 @@ Shibuya::Shibuya() //: m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI
 	//空
 	m_sky.Init(L"Resource/cubemap/cube2.dds",-1.0f,false);
 	SetAmbientCubeMap(L"Resource/cubemap/cubemap.dds", CVector3::One());
-	
-	//m_skyModel.Init(L"Resource/modelData/sky.cmo");
-	////設定
-	//m_skyModel.SetDrawPriority(DRAW_PRIORITY_MAX - 1);
-	//m_skyModel.SetIsMostDepth(true);
-	//m_skyModel.SetIsShadowCaster(false);
-	//m_skyModel.SetScale(100.0f);	
-	//m_skyModel.GetSkinModel().FindMaterialSetting(
-	//	[&](MaterialSetting* mat) {
-	//		mat->SetLightingEnable(false);
-	//	}
-	//);
 
 	//フォグを有効化
 	SetEnableFog(true);
@@ -211,7 +200,7 @@ Shibuya::Shibuya() //: m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI
 	//鉄塔
 	//for (int i = 0; i < 3;i++) 
 	{
-		constexpr float lineLength = 70.0f*50.0f*7.0f*1.5f;
+		constexpr float lineLength = 70.0f*50.0f*7.0f*1.5f*2.0f;
 		constexpr float offsetLength = 70.0f*50.0f*7.0f*0.15f;
 		CQuaternion dirrot(CVector3::AxisY(), CMath::RandomZeroToOne()* CMath::PI2);
 		CVector3 gendir = CVector3::Front();

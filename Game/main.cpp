@@ -41,16 +41,6 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	initparam.isEnableDOF = false;*/
 	//initparam.SSAOBufferScale = 1.0f;
 
-	//TODO
-	//Tri Y有効化
-	//地面縦サイズ
-	//草 生成 
-	//木サイズ 一番小さいのはだめ
-	//仏サイズ
-	//lod
-	//かずふやし
-	//画面サイズとHUD
-
 	//シェーダー
 	//※デバッグ用
 	initparam.isShaderPathReplaceForEngineFilePath = true;
@@ -75,7 +65,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	//SetPhysicsDebugDrawMode(btIDebugDraw::DBG_DrawWireframe);
 
 	//デバッグ表示・入力、常時有効化
-	SetIsDebugDraw(true);
+	//SetIsDebugDraw(true);
 	//SetIsDebugInput(true);
 
 	//フォント設定

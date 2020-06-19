@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "CPlayer.h"
 #include "CGameMode.h"
+#include "TreeGene.h"
 
 HumanPlayer::HumanPlayer(int playernum, CDeathHotoke& hotoke):
 	//プレイヤー番号
@@ -103,7 +104,11 @@ void HumanPlayer::Update() {
 #endif
 
 	//カメラ切り替え
-	if (GetKeyInput('F') || Pad(m_playerNum).GetButton(enButtonBack)) {
+	if (GetKeyDown('F') || Pad(m_playerNum).GetDown(enButtonBack)) {
+		m_isHumanCamera = !m_isHumanCamera;
+		m_hotoke.SetIsDrawHUD(!m_isHumanCamera);		
+	}
+	if (m_isHumanCamera) {
 		//ヒト目線
 		m_humanPtr->EnableHumanCamera(m_hotoke.GetPos(), m_playerNum);
 	}
@@ -170,8 +175,7 @@ namespace {
 }
 
 void HumanPlayer::PostLoopUpdate() {
-	if (!m_isDrawHUD)return;
-	if (GetKeyInput('F')) { return; }
+	if (!m_isDrawHUD || m_isHumanCamera)return;
 
 	//HealthBar
 	DrawQuad2D(HPBarMin - outlineOffset, HPBarMax + outlineOffset, { 1.0f - m_HUDColor.x, 1.0f - m_HUDColor.y, 1.0f - m_HUDColor.z, m_HUDColor.w*0.5f }, m_playerNum);
@@ -221,8 +225,7 @@ void HumanPlayer::PostLoopUpdate() {
 }
 
 void HumanPlayer::HUDRender(int HUDNum) {
-	if (!m_isDrawHUD || m_playerNum != HUDNum)return;
-	if (GetKeyInput('F')) { return; }
+	if (!m_isDrawHUD || m_isHumanCamera || m_playerNum != HUDNum)return;
 
 	//Health
 	m_HUDFont.DrawFormat(L"%.0f/%.0f", HPBarMax + outlineOffset, { 1.0f,0.0f }, m_hotoke.GetHP(), m_hotoke.GetHPMax());

@@ -43,7 +43,7 @@ void TransmissionTower::Init(const CVector3& pos, const CVector3& normal) {
 	);
 	m_model.SetPos(pos);
 	m_model.SetRot(CQuaternion(CVector3::AxisY(), CMath::RandomZeroToOne()*CMath::PI2));
-	m_model.SetScale(1.4f*0.4f*2.0f);
+	m_model.SetScale(1.4f*2.0f);
 
 	//鉄塔は4つの足で高さ判定	
 	CVector3 setpos = pos;
@@ -168,11 +168,17 @@ void TransmissionTower::Init(const CVector3& pos, const CVector3& normal) {
 /// 草
 /// </summary>
 namespace {
-	constexpr float GRASS_VIEW_DISTANCE_XZ = 400.0f;
+	constexpr float GRASS_VIEW_DISTANCE_XZ = 400.0f*4.0f;
 	constexpr float GRASS_VIEW_DISTANCE_XZ_SQ = CMath::Square(GRASS_VIEW_DISTANCE_XZ);
+
+	constexpr float GRASS_VIEW_DISTANCE_XZ_NEAR = 200.0f;
+	constexpr float GRASS_VIEW_DISTANCE_XZ_SQ_NEAR = CMath::Square(GRASS_VIEW_DISTANCE_XZ_NEAR);
+
 	constexpr float GRASS_VIEW_HEIGHT = 200.0f;
 }
-bool Grass::Start(){
+bool Grass::Start(bool isNear){
+	m_isNear = isNear;
+
 	//モデル初期化
 	GameObj::CInstancingModelRender& insModel = m_model;
 	bool isType2 = CMath::RandomZeroToOne() > 0.5f;
@@ -188,6 +194,7 @@ bool Grass::Start(){
 	insModel.SetRot(rot);
 	//拡大
 	insModel.SetScale((CMath::RandomZeroToOne()*0.0015f + 0.003f)*(isType2 ? 1.5f : 1.0f));
+	insModel.SetScale(insModel.GetScale()*CVector3(1.0f, (CMath::Square(CMath::RandomZeroToOne()) * 4.0f + 1.0f), 1.0f));
 	//表示
 	insModel.SetIsDraw(false);
 	//insModel.GetInstancingModel()->GetModelRender().SetIsShadowCaster(false);
@@ -198,7 +205,7 @@ bool Grass::Start(){
 		[&](MaterialSetting* me) {
 			me->SetShininess(0.4f);
 			me->SetAlbedoScale({ 3.0f, 3.0f, 3.0f, 1.0f });
-			me->SetAlbedoScale({ 4.0f, 0.0f, 4.0f, 1.0f});
+			//me->SetAlbedoScale({ 40.0f, 0.0f, 40.0f, 1.0f});
 		}
 	);
 	//位置
@@ -210,24 +217,33 @@ void Grass::RePos(GameObj::ICamera* mainCamera, bool isInitSet) {
 	CVector3 pos;
 	
 	//初期化設置
-	if (isInitSet) {
+	if (1){//isInitSet) {
 		//ランダムな位置
-		pos = CVector3::AxisX()*(sqrt(CMath::RandomZeroToOne()) * GRASS_VIEW_DISTANCE_XZ);
+		if (m_isNear) {
+			pos = CVector3::AxisX()*(sqrt(CMath::RandomZeroToOne()) * GRASS_VIEW_DISTANCE_XZ_NEAR);
+		}
+		else {
+			pos = CVector3::AxisX()*(sqrt(CMath::RandomZeroToOne()) * GRASS_VIEW_DISTANCE_XZ);
+		}
 		CQuaternion(CVector3::AxisY(), CMath::PI2*CMath::RandomZeroToOne()).Multiply(pos);
 		//カメラを中心に
 		pos += mainCamera->GetPos();
 		//移動速度分ずらす
-		//pos += mainCamera->GetPos() - mainCamera->GetPosOld();		
+		pos += (mainCamera->GetPos() - mainCamera->GetPosOld());		
 	}
 	else {
 		//プレイヤー位置が移動した分ずらす
-		CVector2 geneCenterPos = { mainCamera->GetPos().x, mainCamera->GetPos().z };
-		geneCenterPos -= m_geneCenterPos;
+		//CVector2 geneCenterPos = { mainCamera->GetPos().x, mainCamera->GetPos().z };
+		//geneCenterPos -= m_geneCenterPos;
+
+		CVector2 move = { mainCamera->GetPos().x, mainCamera->GetPos().z };
+		move -= CVector2(m_model.GetPos().x, m_model.GetPos().z);
+		move *= 1.5f;
 		pos = m_model.GetPos();
-		pos += {geneCenterPos.x, 0.0f, geneCenterPos.y};
+		pos += {move.x, 0.0f, move.y};
 	}
 	//生成中心記録
-	m_geneCenterPos = { mainCamera->GetPos().x, mainCamera->GetPos().z };
+	//m_geneCenterPos = { mainCamera->GetPos().x, mainCamera->GetPos().z };
 
 	//レイで判定
 	btVector3 rayStart = btVector3(pos.x, 70.0f*50.0f, pos.z);
@@ -249,9 +265,8 @@ void Grass::PostLoopUpdate() {
 	m_model.SetIsDraw(true);
 
 	//カメラとの距離が遠いものは近くに生成し直し
-	//TODO 予め座標マッピング作っておく　あるいはフラクタル or　進行方向に生成
 	GameObj::ICamera* mainCamera = ViewCameraList().at(m_cameraNum);
-	if (((m_model.GetPos() - mainCamera->GetPos())*CVector3(1.0f,0.0f,1.0f)).LengthSq() > GRASS_VIEW_DISTANCE_XZ_SQ) {
+	if (((m_model.GetPos() - mainCamera->GetPos())*CVector3(1.0f,0.0f,1.0f)).LengthSq() > (m_isNear ? GRASS_VIEW_DISTANCE_XZ_SQ_NEAR : GRASS_VIEW_DISTANCE_XZ_SQ)) {
 		RePos(mainCamera,false);
 	}
 }
@@ -283,7 +298,7 @@ void TreeRunner::Init(StageObjectGenerator& objGene) {
 	for (const auto& forestPoint : genPoints) {
 		geneInd += objGene.CircularSet<Tree>(&m_tree[geneInd], { forestPoint.x,0.0f,forestPoint.y }, FOREST_SIZE, 70.0f*50.0f, 4000 / FOREST_NUM - 1, 120.0f);
 	}
-	geneInd += objGene.CircularSet<Tree>(&m_tree[geneInd], 0.f, 70.0f*50.0f*7.0f, 70.0f*50.0f, 4000, 120.0f);
+	geneInd += objGene.CircularSet<Tree>(&m_tree[geneInd], 0.f, 70.0f*50.0f*7.0f*1.5f, 70.0f*50.0f, 4000*6, 120.0f);
 
 	m_enableTreeNum = geneInd;
 }
@@ -308,8 +323,8 @@ void Tree::Init(const CVector3& pos, const CVector3& normal){
 	}
 
 	//サイズ
-	int type = CMath::IntUniDist(2);
-	float sizeScale = (type*0.25f + 0.5f)*(1.0f + CMath::RandomZeroToOne()*0.3f);
+	int type = CMath::IntUniDist(1) + 1;// CMath::IntUniDist(2);
+	float sizeScale = (1*0.25f + 0.5f)*(1.0f + CMath::RandomZeroToOne()*0.3f);
 	float LODScale = sizeScale / (0.5f*1.15f);
 
 	//LOD初期化
@@ -323,13 +338,13 @@ void Tree::Init(const CVector3& pos, const CVector3& normal){
 	//木の種類
 	constexpr wchar_t treeModelFilePath[2][64] = {
 		L"Resource/modelData/realTree_S.cmo",
-		L"Resource/modelData/realTree2_S.cmo"
+		L"Resource/modelData/realTree.cmo"
 	};
 
 	//バリエーション
 	float radY = -CMath::PI2 + CMath::PI2*2.0f*CMath::RandomZeroToOne();//回転
 	m_rot.SetRotation(CVector3::AxisY(), radY);
-	int treeTypeInd = 0;// CMath::RandomZeroToOne() > 0.5f ? 1 : 0;			//モデル種類
+	int treeTypeInd = type-1;// CMath::RandomZeroToOne() > 0.5f ? 1 : 0;			//モデル種類
 	
 	//近景モデル
 	insModel.Init(m_sInstancingMax, treeModelFilePath[treeTypeInd]);
