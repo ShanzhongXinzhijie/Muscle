@@ -65,7 +65,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	//SetPhysicsDebugDrawMode(btIDebugDraw::DBG_DrawWireframe);
 
 	//デバッグ表示・入力、常時有効化
-	//SetIsDebugDraw(true);
+	SetIsDebugDraw(true);
 	//SetIsDebugInput(true);
 
 	//フォント設定

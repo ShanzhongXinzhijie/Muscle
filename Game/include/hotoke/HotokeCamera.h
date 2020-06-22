@@ -10,7 +10,7 @@ public:
 		//初期化
 		m_camera.SetFar(150000.0f);
 		//m_camera.SetViewAngleDeg(30.0f);			
-		m_target = { 0.0f,0.0f,1.0f }; m_target.Normalize();//注視点初期化
+		m_target = { 0.0f,0.4f,1.0f }; m_target.Normalize();//注視点初期化
 		//メインカメラに設定
 		SetMainCamera(&m_camera);		
 	}

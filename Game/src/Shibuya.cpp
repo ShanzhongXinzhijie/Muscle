@@ -10,22 +10,14 @@
 #include "BP_HumanLeg.h"
 #include "BP_HumanMantle.h"
 
-Shibuya::Shibuya() //: m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI>(&m_hotoke))
-{
-	
-	/*m_hotoke.SetBodyPart(CDeathHotoke::enHead, std::make_unique<BP_FishHead>(&m_hotoke));
-	m_hotoke.SetBodyPart(CDeathHotoke::enArm, std::make_unique<BP_KaniArm>(&m_hotoke));
-	m_hotoke.SetBodyPart(CDeathHotoke::enWing, std::make_unique<BP_BirdWing>(&m_hotoke));
-	m_hotoke.SetBodyPart(CDeathHotoke::enLeg, std::make_unique<BP_HumanLeg>(&m_hotoke));*/
-	
-
+Shibuya::Shibuya(bool isTreeGene)
+{	
 	//Ari* ari = new Ari(CVector3::AxisY()*900.0f + CVector3::AxisX()*50.0f, {});
 	//ari->SetTarget(&m_hotoke);
 
 	//ライト作成
 	m_directionLight.SetDirection(CVector3::AxisZ()*-1.0f);
 	m_directionLight.SetColor(CVector3(0.98f,0.97f,0.91f)*0.5f);
-	//m_directionLight.SetColor(CVector3::One() * 0.5f);
 
 	//街モデル
 	m_graundModel.Init(L"Resource/modelData/tikei_flat.cmo");
@@ -53,10 +45,6 @@ Shibuya::Shibuya() //: m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI
 		}
 	);
 
-	//エリア範囲
-	//m_areaWallModel.Init(L"Preset/modelData/sky.cmo");
-	//m_areaWallModel.SetScale({ 500.f,50.f,500.f });
-
 	//テクスチャ
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> tex, normaltex;	
 	TextureFactory::GetInstance().Load(L"Resource/texture/moss3.png", nullptr, tex.ReleaseAndGetAddressOf(), nullptr, true);
@@ -73,6 +61,7 @@ Shibuya::Shibuya() //: m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI
 			//mat->SetLightingEnable(false);
 		}
 	);
+	m_graundModel.SetDrawPriority(DRAW_PRIORITY_MAX - 2);
 
 	//城
 	m_midCastle.Init(L"Resource/modelData/mid_graund.cmo");
@@ -91,6 +80,7 @@ Shibuya::Shibuya() //: m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI
 			}
 		}
 	);
+	m_midCastle.SetDrawPriority(DRAW_PRIORITY_MAX - 2);
 
 	//中景	
 	m_midGraund.Init(L"Resource/modelData/far_graund.cmo");
@@ -106,6 +96,7 @@ Shibuya::Shibuya() //: m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI
 			mat->SetShininess(0.3f);// m_shinnes);
 		}
 	);	
+	m_midGraund.SetDrawPriority(DRAW_PRIORITY_MAX - 2);
 
 	//遠景
 	m_farGraund.Init(L"Resource/modelData/far_graund.cmo");
@@ -114,7 +105,7 @@ Shibuya::Shibuya() //: m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI
 	m_farGraund.GetSkinModel().FindMaterialSetting(
 		[&](MaterialSetting* mat) {
 			//mat->SetNormalTexture(normaltex.Get());
-			mat->SetAlbedoTexture(tex.Get());
+			//mat->SetAlbedoTexture(tex.Get());
 			//mat->SetTriPlanarMappingPS();
 			//mat->SetTriPlanarMappingUVScale(0.002f);
 			mat->SetShininess(0.3f);// m_shinnes);
@@ -135,53 +126,6 @@ Shibuya::Shibuya() //: m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI
 		}
 	);
 
-	//雲
-	//DirectX::CreateWICTextureFromFile(GetGraphicsEngine().GetD3DDevice(), L"Resource/texture/colud2.png", nullptr, &m_cloudtex);
-	//int cloud_i = 0;
-	//for (auto& cloud : m_cloud) {
-	//	cloud.Init(L"Resource/modelData/sphere.cmo");
-	//	DirectX::CreateWICTextureFromFile(GetGraphicsEngine().GetD3DDevice(), L"Resource/texture/colud.png", nullptr, tex.ReleaseAndGetAddressOf());
-
-	//	D3D_SHADER_MACRO macros[] = {
-	//		//	"USE_LOCALPOS", "1",
-	//			"CLOUD", "1",
-	//			NULL, NULL
-	//	};
-	//	m_psCloud.Load("Preset/shader/TriPlanarMapping.fx", "PS_TriPlanarMapping", Shader::EnType::PS, "CLOUD", macros);
-
-	//	cloud.GetSkinModel().FindMaterialSetting(
-	//		[&](MaterialSetting* mat) {
-	//			mat->SetAlbedoTexture(tex.Get());
-	//			mat->SetPS(&m_psCloud);
-	//			mat->SetTriPlanarMappingUVScale(0.0025f);
-	//		}
-	//	);
-	//	cloud.GetSkinModel().SetPreDrawFunction(
-	//		L"SetCLOUDTEX",
-	//		[&](SkinModel*) {
-	//			GetGraphicsEngine().GetD3DDeviceContext()->PSSetShaderResources(7, 1, m_cloudtex.GetAddressOf());
-	//		}
-	//	);
-
-	//	cloud.SetPos(CVector3::AxisY()*(5200.0f+1000.0f*CMath::RandomZeroToOne()) +CVector3::AxisZ()*700.0f*(float)cloud_i + CVector3::AxisX()*1000.0f*CMath::RandomZeroToOne());
-	//	cloud.SetScale(28.0f+20.0f*CMath::RandomZeroToOne());
-	//	cloud_i++;
-	//}	
-
-	//m_knight.Init(L"Resource/modelData/knight.cmo");
-	//m_knight.SetPos(CVector3::AxisY()*850.0f);
-	//m_knight.SetScale(0.4f);
-	//m_knight.GetSkinModel().FindMaterial([](ModelEffect* mat) {mat->SetEmissive(4.0f); });
-	
-	//m_uni.Init(L"Resource/modelData/unityChan.cmo");
-	//m_uni.SetPos(CVector3::AxisY()*900.0f + CVector3::AxisX()*50.0f + CVector3::AxisZ()*100.0f);
-	//m_uni.SetIsDrawBoundingBox(true);
-	//m_uni.SetScale(3.5f); //0.15f 3.5f
-
-	/*m_dinosaur.Init(L"Resource/modelData/dinosaur.cmo");
-	m_dinosaur.SetPos(CVector3::AxisY()*900.0f+ CVector3::AxisX()*50.0f);
-	m_dinosaur.SetScale(CVector3::One()*0.09f);*/
-
 	//空
 	m_sky.Init(L"Resource/cubemap/cube2.dds",-1.0f,false);
 	SetAmbientCubeMap(L"Resource/cubemap/cubemap.dds", CVector3::One());
@@ -195,7 +139,9 @@ Shibuya::Shibuya() //: m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI
 
 //#ifdef DW_MASTER
 	//木
-	g_treeRunner.Init(m_objGene);
+	if (isTreeGene) {
+		Global_M::g_treeRunner.Init(m_objGene);
+	}
 
 	//鉄塔
 	//for (int i = 0; i < 3;i++) 
@@ -215,33 +161,6 @@ Shibuya::Shibuya() //: m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI
 		m_helicoGene.RectangularGenerate<CHelicopter>({ -areaLength,-70.0f*50.0f,-areaLength }, { areaLength,70.0f*50.0f,areaLength }, CHelicopter::m_sInstancingMax, 1200.0f);
 	}
 //#endif
-
-	//GetGraphicsEngine().GetAmbientOcclusionRender().SetEnable(false);
-
-	//Stone::m_sInstancingMax = 4000;
-	//m_objGene.Generate<Stone>({ -70.0f*50.0f,-70.0f*50.0f,-70.0f*50.0f }, { 70.0f*50.0f,70.0f*50.0f,70.0f*50.0f }, Stone::m_sInstancingMax);
-
-	//ビルボテスト
-	/*m_billboard.Init(L"Resource/spriteData/test.png");
-	m_billboard.SetPos(CVector3::Up()*1000.0f);
-	m_billboard.SetScale(100.0f);
-
-	m_billboard2.Init(L"Resource/spriteData/test.png",256);
-	m_billboard2.SetPos(CVector3::Up()*1200.0f);
-	m_billboard2.SetScale(50.0f);*/
-
-	/*m_imp.Init(L"Resource/modelData/knight.cmo", { 2048*2,2048*2 }, { 19,19 },256);
-	m_imp.SetPos(CVector3::Up()*1500.0f+ CVector3::AxisX()*300.0f);
-	m_imp.SetScale(0.4f*10.0f);*/
-
-	/*m_imp2.Init(L"Resource/modelData/knight.cmo", { 2048 * 2,2048 * 2 }, { 19,19 });
-	m_imp2.SetPos(CVector3::Up()*1000.0f + CVector3::AxisX()*300.0f);
-	m_imp2.SetScale(0.4f*10.0f);
-	m_imp2.SetRotY(CMath::PI2);
-
-	m_knight.SetPos(CVector3::AxisY()*1500.0f);
-	m_knight.SetScale(0.4f*10.0f);
-	m_knight.SetRot(CQuaternion(CVector3::AxisY(), CMath::PI2));*/
 
 	//TODO 木が倒れても影が動かない
 	//TODO グラフィック設定で動的シャドウかどうか
@@ -286,41 +205,7 @@ Shibuya::Shibuya() //: m_hotoke(-1,nullptr,false,nullptr,std::make_unique<TestAI
 	//GetPhysicsWorld().GetDynamicWorld()->addSoftBody(rope);
 }
 
-//void Shibuya::Update() {
-//	int i = 0;
-//	for (auto& cloud : m_cloud) {
-//		i++;
-//		cloud.GetSkinModel().FindMaterialSetting(
-//			[&](MaterialSetting* mat) {
-//				mat->SetUVOffset({ m_cloudTimer + 0.33f*i , m_cloudTimer + 0.33f*i });
-//			}
-//		);
-//	}
-//	m_cloudTimer += 0.0005f;
-//	if (m_cloudTimer > 1.0f) { m_cloudTimer -= 1.0f; }
-//
-//	//TODO 地面を分割して変化あったもののみ更新とか
-//	//m_phyStaticObject.GetMeshCollider()->GetMeshShape()->buildOptimizedBvh();
-//
-//	//if (GetKeyDown(VK_UP)) { m_shinnes += 0.01f; }
-//	//if (GetKeyDown(VK_DOWN)) { m_shinnes -= 0.01f; }
-//}
-
-//void Shibuya::PostRender() {
-//	m_font.DrawFormat(L"%.2f", {0.f,0.3f}, {}, m_shinnes);
-//	m_model.GetSkinModel().FindMaterialSetting(
-//		[&](MaterialSetting* mat) {
-//			if (GetKeyInput(VK_LEFT)) {
-//				mat->SetShininess(0.0f);
-//			}
-//			else {
-//				mat->SetShininess(m_shinnes);
-//			}
-//		}
-//	);
-//}
-
-void Shibuya::PostLoopUpdate() {
+//void Shibuya::PostLoopUpdate() {
 	//軸
 	//CVector3 right; right.Cross(CVector3::AxisY(), CVector3::AxisZ());//右方向
 	//DrawLine3D(CVector3::Zero(), right*100.0f, { 1.0f,0.0f,0.0f,1.0f });
@@ -450,4 +335,4 @@ void Shibuya::PostLoopUpdate() {
 
 	SetMainCamera(Icam);
 	*/
-}
+//}

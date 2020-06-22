@@ -4,7 +4,7 @@
 using namespace GameObj;
 
 void BP_BirdWing::InnerStart() {
-	m_name = L"TEBASAKI";
+	m_name = L"テバ";
 	
 	//アニメ
 	m_anim[enDefault].Load(L"Resource/animation/birdWing_default.tka");

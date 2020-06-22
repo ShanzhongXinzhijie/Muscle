@@ -7,6 +7,10 @@ public:
 	GameManager() {
 		GameStart();
 	}
+	~GameManager() {
+		//–Ø–³Œø‰»
+		Global_M::g_treeRunner.Disable();
+	}
 
 	/// <summary>
 	/// Å‘åƒ‰ƒEƒ“ƒh”‚ğİ’è

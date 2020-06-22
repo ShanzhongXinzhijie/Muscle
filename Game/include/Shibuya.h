@@ -5,48 +5,31 @@
 #include"CDeathHotoke.h"
 #include"ShadowMapBaker.h"
 
-class Shibuya : IGameObject
+class Shibuya// : IGameObject
 {
 public:
-	Shibuya();
-	~Shibuya() {
-		g_treeRunner.Disable();
-	}
+	Shibuya(bool isTreeGene);
+	//~Shibuya() {
+	//	g_treeRunner.Disable();
+	//}
 
-	//void Update()override;
-	void PostLoopUpdate()override;
-	//void PostRender()override;
+	//void PostLoopUpdate()override;
 
 private:
 	IFu m_graund;
 	GameObj::CSkinModelRender m_graundModel;
-	//GameObj::CSkinModelRender m_areaWallModel;
 
-	GameObj::CSkybox m_sky;
 	GameObj::CSkinModelRender m_midGraund, m_midCastle, m_farGraund;
+	GameObj::CSkybox m_sky;
 
 	GameObj::CDirectionLight m_directionLight;
-	//CascadeShadowHandler m_shadowmap;
 	
 	StageObjectGenerator m_objGene;
 	StageObjectGenerator m_towerGene;
 	StageObjectGenerator m_helicoGene;
 	CHuman m_human;
 
-	//GameObj::CSkinModelRender m_dinosaur, m_skyModel, m_uni;
-	//GameObj::CSkinModelRender m_knight;// , m_cloud[6];
-	//SkinModelEffectShader m_psCloud;
-	//Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_cloudtex;
-	//float m_cloudTimer = 0.0f;
-
-	//CBillboard m_billboard, m_billboard2;
-	//CImposter m_imp, m_imp2;
-
-	//HUDFont m_font;
-	//float m_shinnes = 0.3f;
-
+	//CascadeShadowHandler m_shadowmap;
 	//ShadowMapBaker m_shadowMapBaker[4];
-
-	//CDeathHotoke m_hotoke;
 };
 

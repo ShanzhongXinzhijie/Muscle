@@ -150,7 +150,7 @@ void BP_DinoArm::PostUTRSUpdate() {
 
 		//マシンガン
 		if (m_isMachineGunning[i]) {
-			if (m_chargeTime[i] % 5 == 0) {
+			if (m_chargeTime[i] % 10 == 0) {
 				//SE
 				new GameSE((i == L ? L"Resource/sound/lazer2.wav" : L"Resource/sound/lazer.wav"), m_ptrCore->GetPos(), 150.0f, m_ptrCore->GetPlayerNum());
 				//マズルエフェクト

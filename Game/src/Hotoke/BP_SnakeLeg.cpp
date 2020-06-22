@@ -6,7 +6,7 @@ using namespace GameObj;
 namespace {
 	const CVector3 hitboxOffset = CVector3::Down()*50.f;// +CVector3::Back()*20.0f;
 	const CQuaternion hitboxRot = { CVector3::AxisX(),CMath::PI_HALF*-0.5f };
-	constexpr float VIEW_OFFSET = 150.0f;
+	constexpr float VIEW_OFFSET = 125.0f;
 
 	//ダッシュ力を計算
 	float CalcDashPower(float nowdis, float maxdis) {

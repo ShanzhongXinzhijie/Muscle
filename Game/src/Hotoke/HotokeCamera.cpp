@@ -117,32 +117,33 @@ void HotokeCameraController::Update() {
 		m_hotokeCam.SetTargetPosOffset(m_ptrHotoke->GetPos() - m_ptrHotoke->GetFixedCameraPoint());
 	}
 	else {
-		CVector3 offsetVec = { 0.0f, -m_ptrHotoke->GetToFootDistance(), -100.0f };
+		CVector3 offsetVec = { 0.0f, -m_ptrHotoke->GetToFootDistance(), -110.0f };
 		offsetVec += m_ptrHotoke->GetFootCameraOffsetPos();
 		m_ptrHotoke->GetRot().Multiply(offsetVec);
 
 		//’n–Ê‚Æ”»’è‚µ‚Ä‚‚³ŽZo
 		CVector3 start = m_ptrHotoke->GetPos() + offsetVec, end = m_ptrHotoke->GetPos() + offsetVec;
-		start.y = m_ptrHotoke->GetPos().y; end.y -= m_cameraHeight + 1.0f;
+		start.y = m_ptrHotoke->GetPos().y + 100.0f; end.y -= m_cameraHeight + 1.0f;
 
 		btCollisionWorld::AllHitsRayResultCallback callback(start, end);
 		GetPhysicsWorld().RayTest(start, end, callback);
 
-		start = m_ptrHotoke->GetPos() + offsetVec; start.y -= m_cameraHeight;
+		start = m_ptrHotoke->GetPos() + offsetVec; 
+		start.y -= m_cameraHeight;//Œã‚Ì+=m_cameraHeight‚Æ‘ŠŽE
 		if (callback.hasHit()) {
 			for (int i = 0; i < callback.m_collisionObjects.size(); i++) {
 				if (callback.m_collisionObjects[i]->getUserIndex() == enCollisionAttr_CCollisionObj) {
 					SuicideObj::CCollisionObj* Obj = (SuicideObj::CCollisionObj*)(callback.m_collisionObjects[i]->getUserPointer());
 					if (Obj->GetGroupBitset().test(enField)) {
-						if (start.y < callback.m_hitPointWorld[i].y()) { start = callback.m_hitPointWorld[i]; }
+						if (start.y < callback.m_hitPointWorld[i].y()) { start = callback.m_hitPointWorld[i]; }//too
 					}
 				}
 				else {
-					if (start.y < callback.m_hitPointWorld[i].y()) { start = callback.m_hitPointWorld[i]; }
+					if (start.y < callback.m_hitPointWorld[i].y()) { start = callback.m_hitPointWorld[i]; }//too
 				}
 			}
 		}
-		start.y += m_cameraHeight;
+		start.y += m_cameraHeight;//’n–Ê‚©‚çˆê’è‚‚³ã‚°‚é
 
 		//ˆÊ’uÝ’è
 		m_hotokeCam.SetPos(start);// +m_ptrHotoke->GetBack()*500.0f + m_ptrHotoke->GetRight()*200.0f);

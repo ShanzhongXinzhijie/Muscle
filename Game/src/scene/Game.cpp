@@ -18,7 +18,7 @@ Game::Game(GameManager* manager)
 	m_player[1] = std::make_unique<CPlayer>(0, m_manager->GetIsPracticeRound());
 
 	//草
-	g_grassRunner.Init();
+	Global_M::g_grassRunner.Init();
 
 	//練習ラウンドなら
 	if (m_manager->GetIsPracticeRound()) {
@@ -31,7 +31,7 @@ Game::Game(GameManager* manager)
 	}
 
 	//ステージ生成
-	m_shibuya = std::make_unique<Shibuya>();
+	m_shibuya = std::make_unique<Shibuya>(m_manager->GetIsPracticeRound());
 
 	//フォント初期化
 	//m_font.SetColor(CVector4::Black());

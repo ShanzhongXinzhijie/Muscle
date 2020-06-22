@@ -58,42 +58,70 @@ public:
 	using IGameObject::IGameObject;
 
 	//位置座標を設定
-	void SetPos(const CVector3& pos) { m_pos = pos; }
+	void SetPos(const CVector3& pos) {
+		m_pos = pos;
+	}
 
 	/// <summary>
 	/// 描画物を登録
 	/// </summary>
-	/// <param name="maxSize">視錐台の最大サイズ</param>
-	void AddDrawObject(ILODObj* drawer, float maxSize = FLT_MAX) {
-		m_lodObjectList.emplace(maxSize, drawer);
+	void AddDrawObject(ILODObj* drawer, float maxDistance = FLT_MAX) {
+		/*if (maxDistance < 0.0f) {
+			maxDistance = FLT_MAX;
+		}
+		else {
+			maxDistance = CMath::Square(maxDistance);
+		}*/
+
+		int i = 0;
+		auto str = m_lodDistanceSq.begin();
+		auto end = m_lodDistanceSq.end();
+		for (; str != end;++str) {
+			if (*str > maxDistance) {
+				m_lodDistanceSq.insert(str, maxDistance);
+				auto itrObj = m_lodObj.begin() + i;
+				m_lodObj.insert(itrObj, drawer);
+				return;
+			}
+			i++;
+		}
+		m_lodDistanceSq.emplace_back(maxDistance);
+		m_lodObj.emplace_back(drawer);
 	}
 
 	//処理
 	//※このタイミングでSetISDraw更新してもすでにレンダーに登録済み
 	//	描画時にGetIsDraw判定
 	//　インスタンシングモデルは対応済み
-	void Pre3DRender(int num)override {
+	void Pre3DRender(int num)override {		
+		//距離でやる
+		//CVector2 frustum;
+		//GetMainCamera()->GetFrustumPlaneSize(GetMainCamera()->GetFront().Dot(m_pos - GetMainCamera()->GetPos()), frustum);
+		//frustum.y = abs(frustum.y);
+		float distanceSq = abs(GetMainCamera()->GetFront().Dot(m_pos - GetMainCamera()->GetPos()));// (m_pos - GetMainCamera()->GetPos()).LengthSq();
+
 		bool isDecided = false;
-		for (auto i = m_lodObjectList.begin(); i != m_lodObjectList.end(); ++i) {
-			CVector2 frustum;
-			GetMainCamera()->GetFrustumPlaneSize(GetMainCamera()->GetFront().Dot(m_pos - GetMainCamera()->GetPos()), frustum);
-			if (!isDecided && (i == std::prev(m_lodObjectList.end()) || abs(frustum.y) < i->first)) {
-				i->second->SetIsDraw(true);
+		const size_t max = m_lodDistanceSq.size();
+		for (int i = 0; i < max; ++i) {
+			if (!isDecided && (i == max-1 || distanceSq < m_lodDistanceSq[i])) {
+				m_lodObj[i]->SetIsDraw(true);
 				isDecided = true;
 			}
 			else {
-				i->second->SetIsDraw(false);
+				m_lodObj[i]->SetIsDraw(false);
 			}
 		}
 	}
 	void PreLoopUpdate()override {
 		//表示初期化
-		for (auto i = m_lodObjectList.begin(); i != m_lodObjectList.end(); ++i) {
-			i->second->SetIsDraw(true);
+		for (auto& i : m_lodObj){
+			i->SetIsDraw(true);
 		}
 	}
 
 private:
 	CVector3 m_pos;//オブジェクトの位置
-	std::multimap<float, ILODObj*> m_lodObjectList;
+	//std::multimap<float, ILODObj*> m_lodObjectList;
+	std::vector<float> m_lodDistanceSq;
+	std::vector<ILODObj*> m_lodObj;
 };

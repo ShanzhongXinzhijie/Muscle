@@ -15,7 +15,7 @@ public:
 		//QÆ‰ğœ
 		GameSE::SetGamePtr(nullptr);
 		//‚­‚³‚Ş‚±‚¤
-		g_grassRunner.Disable();
+		Global_M::g_grassRunner.Disable();
 	}
 
 	void PreUpdate()override;

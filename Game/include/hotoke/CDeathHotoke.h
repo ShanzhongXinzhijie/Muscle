@@ -73,7 +73,7 @@ public:
 
 	//座標から足元までの距離を設定
 	void SetToFootDistance(float distance) {
-		m_toFootDistance = distance;
+		m_toFootDistance = distance * (m_scale.y / (0.0188f*2.0f));
 	}
 	//足元カメラオフセット座標
 	void SetFootCameraOffsetPos(const CVector3& offsetpos) {

@@ -10,20 +10,25 @@
 void CHelicopter::Init(const CVector3& pos, const CVector3& normal) {
 	//テストモデル
 	m_animHeri.Load(L"Resource/animation/herico.tka", true);
-	m_heri.Init(m_sInstancingMax, L"Resource/modelData/herico.cmo", &m_animHeri, 1);
-	m_heri.SetScale(0.3f);
-	m_heri.GetInstancingModel()->GetModelRender().GetSkinModel().FindMaterialSetting(
+	m_model.Get().Init(m_sInstancingMax, L"Resource/modelData/herico.cmo", &m_animHeri, 1);
+	m_model.Get().SetScale(0.3f);
+	m_model.Get().GetInstancingModel()->GetModelRender().GetSkinModel().FindMaterialSetting(
 		[](MaterialSetting* mat) {
 			mat->SetAlbedoScale({ 0.01f, 0.01f, 0.05f, 1.0f });
 		}
 	);
-	m_heri.SetPos(pos + CVector3::Back()*25.f + CVector3::Up() * (1200.0f*CMath::RandomZeroToOne()+ 700.0f) );
-	m_heri.SetRot(CQuaternion(CVector3::AxisY(), CMath::PI2*CMath::RandomZeroToOne()));
+	m_model.Get().SetPos(pos + CVector3::Back()*25.f + CVector3::Up() * (1200.0f*CMath::RandomZeroToOne()+ 700.0f) );
+	m_model.Get().SetRot(CQuaternion(CVector3::AxisY(), CMath::PI2*CMath::RandomZeroToOne()));
+
+	//LOD初期化
+	m_lodSwitcher.AddDrawObject(&m_model, 8500.0f);
+	m_lodSwitcher.AddDrawObject(&m_noDraw);
+	m_lodSwitcher.SetPos(m_model.Get().GetPos());
 
 	//当たり判定
-	SetPos(m_heri.GetPos());
+	SetPos(m_model.Get().GetPos());
 	SetIsStaticObject(true);
-	CreateSphere({ 0.0f, 225.0f * 0.5f * m_heri.GetScale().y ,0.0f }, {}, 225.0f * m_heri.GetScale().y);
+	CreateSphere({ 0.0f, 225.0f * 0.5f * m_model.Get().GetScale().y ,0.0f }, {}, 225.0f * m_model.Get().GetScale().y);
 	On_OneGroup(enField);
 	GetAttributes().set(enPhysical);
 	GetAttributes().set(enGraund);
@@ -106,7 +111,7 @@ void TransmissionTower::Init(const CVector3& pos, const CVector3& normal) {
 			if (!go->IsWired()) {
 				//向き変更
 				CQuaternion rot;
-				rot.MakeLookToUseXYAxis((m_model.GetPos() - go->GetModel().GetPos()).GetNorm());
+				rot.MakeLookToUseXYAxis(((m_model.GetPos() - go->GetModel().GetPos())*CVector3(1, 0, 1)).GetNorm());
 				m_model.SetRot(rot);
 				go->GetModel().SetRot(rot);
 
@@ -176,7 +181,7 @@ namespace {
 
 	constexpr float GRASS_VIEW_HEIGHT = 200.0f;
 }
-bool Grass::Start(bool isNear){
+void Grass::Start(bool isNear){
 	m_isNear = isNear;
 
 	//モデル初期化
@@ -210,8 +215,6 @@ bool Grass::Start(bool isNear){
 	);
 	//位置
 	RePos(ViewCameraList().at(m_cameraNum),true);
-
-	return true;
 }
 void Grass::RePos(GameObj::ICamera* mainCamera, bool isInitSet) {
 	CVector3 pos;
@@ -329,10 +332,10 @@ void Tree::Init(const CVector3& pos, const CVector3& normal){
 
 	//LOD初期化
 	CVector2 FrustumSize; 
-	GetMainCamera()->GetFrustumPlaneSize(2400.0f/3.0f, FrustumSize);//TODO 木のScaleに連動
-	m_lodSwitcher.AddDrawObject(&m_model, FrustumSize.y*LODScale);
-	GetMainCamera()->GetFrustumPlaneSize(2400.0f*8.0f, FrustumSize);
-	m_lodSwitcher.AddDrawObject(&m_imposter, FrustumSize.y*LODScale);
+	GetMainCamera()->GetFrustumPlaneSize(2400.0f/3.0f*1.5f, FrustumSize);
+	m_lodSwitcher.AddDrawObject(&m_model, (FrustumSize.y*LODScale) / 2.0f / tan(GetMainCamera()->GetFOV()*0.5f));
+	GetMainCamera()->GetFrustumPlaneSize(2400.0f*8.0f*0.75f, FrustumSize);
+	m_lodSwitcher.AddDrawObject(&m_imposter, (FrustumSize.y*LODScale) / 2.0f / tan(GetMainCamera()->GetFOV()*0.5f));
 	m_lodSwitcher.AddDrawObject(&m_noDraw);
 	
 	//木の種類

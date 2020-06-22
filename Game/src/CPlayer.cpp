@@ -202,7 +202,7 @@ void HumanPlayer::PostLoopUpdate() {
 	origin = m_cam.CalcScreenPosFromWorldPos(origin);
 	if (origin.z > 0.0f && origin.z < 1.0f) {
 		DrawLine2D(origin + CVector3(-0.2f, 0.0f, 0.0f), origin + CVector3(0.2f, 0.0f, 0.0f), m_HUDColor*CVector4(1.0f, 1.0f, 1.0f, 0.5f), m_playerNum);
-		DrawLine2D(origin + CVector3(0.0f, -0.2f, 0.0f), origin + CVector3(0.0f, 0.2f, 0.0f), m_HUDColor*CVector4(1.0f, 1.0f, 1.0f, 0.5f), m_playerNum);
+		DrawLine2D(origin + CVector3(0.0f, -0.0f, 0.0f), origin + CVector3(0.0f, 0.2f, 0.0f), m_HUDColor*CVector4(1.0f, 1.0f, 1.0f, 0.5f), m_playerNum);
 	}
 
 	//U“®

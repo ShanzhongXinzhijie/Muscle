@@ -68,7 +68,8 @@ private:
 /// </summary>
 class CHelicopter : public IStageObject, public IFu {
 public:
-	using IStageObject::IStageObject;
+	//using IStageObject::IStageObject;
+	CHelicopter() :m_model(true) {}
 
 	//初期化関数
 	void Init(const CVector3& pos, const CVector3& normal)override;
@@ -76,7 +77,12 @@ public:
 private:
 	//グラフィック
 	AnimationClip m_animHeri;
-	GameObj::CInstancingModelRender m_heri;
+	//GameObj::CInstancingModelRender m_heri;
+
+	//グラフィック
+	LODSwitcher m_lodSwitcher;
+	LODInstancingModel m_model;
+	LODNothing m_noDraw;
 	
 public:
 	static inline int m_sInstancingMax = 32; //このクラスの最大インスタンス数
@@ -119,7 +125,7 @@ public:
 	Grass() :m_model(false) {}
 
 	//開始時処理
-	bool Start(bool isNear);
+	void Start(bool isNear);
 	//動作ループ後処理
 	void PostLoopUpdate();
 	void PostLoopPostUpdate() {
@@ -149,7 +155,7 @@ private:
 	//CVector2 m_geneCenterPos;//生成時の中心座標
 
 public:
-	static inline constexpr int m_sInstancingMax = 5000 * PLAYER_NUM; //このクラスの最大インスタンス数
+	static inline constexpr int m_sInstancingMax = 5000/2 * PLAYER_NUM; //このクラスの最大インスタンス数
 };
 
 /// <summary>
@@ -180,7 +186,7 @@ public:
 		int i = 0;
 		for (auto& grass : m_grass) {
 			if (i < Grass::m_sInstancingMax / PLAYER_NUM * ViewCameraList().size()) {
-				grass.Start(i % (Grass::m_sInstancingMax / PLAYER_NUM) < (Grass::m_sInstancingMax / PLAYER_NUM) * 0.5f);
+				grass.Start(true);// i % (Grass::m_sInstancingMax / PLAYER_NUM) < (Grass::m_sInstancingMax / PLAYER_NUM) * 0.5f);
 				m_enableGrassNum = i + 1;
 			}
 			else {
@@ -277,6 +283,10 @@ private:
 	LODInstancingModel m_model;
 	LODImposter m_imposter;
 	LODNothing m_noDraw;
+
+	//TODO
+	//m_model[m_playingAnimNum]->AddDrawInstance(m_worldMatrix, m_worldMatrixOld, m_SRTMatrix, m_scale, m_minAABB, m_maxAABB, m_ptrParam, m_watcher);
+	//これ直接呼び出す?
 
 	//座標とか
 	CVector3 m_pos;
@@ -395,5 +405,7 @@ public:
 	LODNothing m_noDraw[3];
 };
 
-static inline GrassRunner g_grassRunner;
-static inline TreeRunner g_treeRunner;
+namespace Global_M{
+	inline GrassRunner g_grassRunner;
+	inline TreeRunner g_treeRunner;
+}
