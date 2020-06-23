@@ -8,9 +8,13 @@ public:
 		SetName(L"CGameMode");
 	}
 
-	void PostLoopUpdate()override {
+	void Update()override {
+		//デバッグ表示切り抱え
+		if (GetKeyDown(VK_TAB)) {
+			SetIsDebugDraw(!GetIsDebugDraw());
+		}
 		//ゲーム終了
-		if (GetAsyncKeyState(VK_ESCAPE)) {
+		if (GetKeyInput(VK_ESCAPE)) {
 			BreakGameLoop();
 		}
 	}
