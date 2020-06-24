@@ -40,11 +40,13 @@ private:
 	void ChangeWindowScaleInner() {
 		m_windowSize = static_cast<int>(WINDOW_SIZE * m_winScale);
 		m_3dScreenSize = static_cast<int>(SCREEN_SIZE_3D * m_winScale);
+		m_screenSize = static_cast<int>(SCREEN_SIZE_2D * m_winScale);
 	}
 
 private:
 	float m_winScale = 1.0f;
 	int m_windowSize = WINDOW_SIZE;
 	int m_3dScreenSize = SCREEN_SIZE_3D;
+	int m_screenSize = SCREEN_SIZE_2D;
 };
 

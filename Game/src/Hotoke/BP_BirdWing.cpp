@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "BP_BirdWing.h"
+#include "CGameMode.h"
 
 using namespace GameObj;
 
@@ -234,11 +235,45 @@ void HCon_BirdWing::InnerUpdate() {
 	//}
 }
 
+namespace {
+	constexpr int MAX_INTERVAL = (FRAME_RATE * 6);
+}
+AICon_BirdWing::AICon_BirdWing(BP_BirdWing* ptrbody, CDeathHotoke* ptrCore) : IBodyController(ptrbody, ptrCore) {
+	if (CMath::IntUniDist(2) == 0) {
+		m_count = (int)(MAX_INTERVAL - FRAME_RATE*0.75f);
+	}
+	else {
+		m_count = CMath::RandomInt() % (FRAME_RATE * 2);
+	}
+
+	m_isHardAI = !FindGO<CGameMode>(L"CGameMode")->GetIsEasy();
+}
 void AICon_BirdWing::InnerUpdate() {
+	//間隔で落下モード切り替え
+	m_count++;
+	if (m_count > MAX_INTERVAL) {
+		m_isDownMode = !m_isDownMode;
+		m_downPower = CMath::RandomZeroToOne()*0.3f + 0.5f;
+		if (m_isDownMode) {
+			m_count = (CMath::RandomInt() % (FRAME_RATE * 2))+ FRAME_RATE*3 ;
+		}
+		else {
+			m_count = CMath::RandomInt() % (FRAME_RATE * 1);
+		}
+	}
+
 	//目的地へ移動
-	if (m_ptrCore->GetAIStatus()->isMovingToTarget) {
-		m_ptrBody->Accel();
+	if (m_ptrCore->GetAIStatus()->isMovingToTarget) {		
+		if (m_isDownMode) {
+			//落下
+			m_ptrBody->Pitch(-m_downPower);
+		}
+		if (!m_isDownMode || m_isHardAI) {
+			//加速
+			m_ptrBody->Accel();
+		}
 		
+		//旋回
 		CVector3 v = m_ptrCore->GetAIStatus()->moveTargetPosition - m_ptrCore->GetPos();
 		float dot = m_ptrCore->GetRight().Dot(v.GetNorm());
 		if (abs(dot) > 0.1f) {
@@ -253,6 +288,6 @@ void AICon_BirdWing::InnerUpdate() {
 				dot = 0.0f;
 			}
 		}
-		m_ptrBody->Yaw(dot);//旋回
+		m_ptrBody->Yaw(dot);//旋回		
 	}
 }

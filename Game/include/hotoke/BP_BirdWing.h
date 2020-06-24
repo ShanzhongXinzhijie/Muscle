@@ -59,6 +59,14 @@ private:
 /// </summary>
 class AICon_BirdWing : public IBodyController<BP_BirdWing> {
 public:
-	using IBodyController::IBodyController;
+	//using IBodyController::IBodyController;
+	AICon_BirdWing(BP_BirdWing* ptrbody, CDeathHotoke* ptrCore);
+
 	void InnerUpdate()override;
+
+private:
+	int m_count = 0;
+	bool m_isHardAI = true;
+	bool m_isDownMode = false;
+	float m_downPower = 0.5f;
 };

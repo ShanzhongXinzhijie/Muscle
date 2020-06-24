@@ -106,7 +106,8 @@ void HumanPlayer::Update() {
 	//ƒJƒƒ‰Ø‚è‘Ö‚¦
 	if (GetKeyDown('F') || Pad(m_playerNum).GetDown(enButtonBack)) {
 		m_isHumanCamera = !m_isHumanCamera;
-		m_hotoke.SetIsDrawHUD(!m_isHumanCamera);		
+		m_hotoke.SetIsDrawHUD(!m_isHumanCamera);	
+		m_hotoke.SetIsForceDrawKouhai(m_isHumanCamera);
 	}
 	if (m_isHumanCamera) {
 		//ƒqƒg–Úü

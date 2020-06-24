@@ -140,7 +140,7 @@ bool CDeathHotoke::Start() {
 
 void CDeathHotoke::PreLoopUpdate() {
 	//•`‰æ‰Šú‰»
-	m_kouhai.SetIsDraw(m_isDrawKouhai);
+	m_kouhai.SetIsDraw(m_isDrawKouhai || m_isForceDrawKouhai);
 }
 
 void CDeathHotoke::PreUpdate() {
@@ -247,10 +247,10 @@ void CDeathHotoke::PostLoopUpdate() {
 }
 
 void CDeathHotoke::Pre3DRender(int screenNum) {
-	//Œõ”wƒ‚ƒfƒ‹‚ğ‘Šè‚Ì‰æ–Ê‚Å‚Ì‚İ•`‰æ‚³‚¹‚é
-	if (!m_isDrawKouhai) {
+	if (!m_isDrawKouhai || m_isForceDrawKouhai) {
 		return;
 	}
+	//Œõ”wƒ‚ƒfƒ‹‚ğ‘Šè‚Ì‰æ–Ê‚Å‚Ì‚İ•`‰æ‚³‚¹‚é
 	if (m_playerNum != screenNum) {
 		m_kouhai.SetIsDraw(true);
 	}

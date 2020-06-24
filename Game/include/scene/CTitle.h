@@ -1,6 +1,7 @@
 #pragma once
 
 class WindowSizeManager;
+class CGameMode;
 
 /// <summary>
 /// タイトルシーン
@@ -24,5 +25,6 @@ private:
 	int MAX_PUSH = 6;
 
 	WindowSizeManager* m_ptrWinSizeMane = nullptr;
+	CGameMode* m_ptrGameMode = nullptr;
 };
 

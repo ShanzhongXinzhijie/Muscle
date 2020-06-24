@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "TreeGene.h"
 #include "CDeathHotoke.h"
+#include "CGameMode.h"
 //#include "DemolisherWeapon/physics/CollisionAttr.h"
 //#include "DHCollision.h"
 
@@ -296,12 +297,28 @@ void TreeRunner::Init(StageObjectGenerator& objGene) {
 	std::vector<CVector2> genPoints;
 	CMath::GenerateBlueNoise(FOREST_NUM, -GEN_POINT_AREA, GEN_POINT_AREA, FOREST_SIZE, genPoints);
 
-	//ñÿÅXê∂ê¨
 	int geneInd = 0;
+	
+	//êXê∂ê¨
 	for (const auto& forestPoint : genPoints) {
 		geneInd += objGene.CircularSet<Tree>(&m_tree[geneInd], { forestPoint.x,0.0f,forestPoint.y }, FOREST_SIZE, 70.0f*50.0f, 4000 / FOREST_NUM - 1, 120.0f);
 	}
-	geneInd += objGene.CircularSet<Tree>(&m_tree[geneInd], 0.f, 70.0f*50.0f*7.0f*1.5f, 70.0f*50.0f, 4000*6, 120.0f);
+	
+	//ñÿÅXê∂ê¨
+	CGameMode::TreeNumMode numMode = FindGO<CGameMode>(L"CGameMode")->GetTreeNum();
+	int treeNum = 4000 * 6;
+	switch (numMode)
+	{
+	case CGameMode::enZero:
+		treeNum = 0;
+		break;
+	case CGameMode::enLow:
+		treeNum /= 3;
+		break;
+	default:
+		break;
+	}
+	geneInd += objGene.CircularSet<Tree>(&m_tree[geneInd], 0.f, 70.0f*50.0f*7.0f*1.5f, 70.0f*50.0f, treeNum, 120.0f);
 
 	m_enableTreeNum = geneInd;
 }

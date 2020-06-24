@@ -187,6 +187,9 @@ public:
 	void SetIsDrawKouhai(bool isDraw) {
 		m_isDrawKouhai = isDraw;
 	}
+	void SetIsForceDrawKouhai(bool isDraw) {
+		m_isForceDrawKouhai = isDraw;
+	}
 
 	//落下速度を乗算
 	void MulGravity(float scale) {
@@ -356,7 +359,7 @@ private:
 	GameObj::CSkinModelRender m_coreModel;
 	//光背
 	CBillboard m_kouhai;
-	bool m_isDrawKouhai = true;
+	bool m_isDrawKouhai = true, m_isForceDrawKouhai = false;
 	
 	//スケール
 	CVector3 m_scale;
