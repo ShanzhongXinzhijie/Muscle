@@ -327,8 +327,6 @@ void TreeRunner::Init(StageObjectGenerator& objGene) {
 /// 木
 /// </summary>
 void Tree::Init(const CVector3& pos, const CVector3& normal){
-	m_pos = pos;
-	
 	//取得
 	GameObj::CInstancingModelRender& insModel = m_model.Get();
 	CImposter& imposter = m_imposter.Get();
@@ -336,9 +334,9 @@ void Tree::Init(const CVector3& pos, const CVector3& normal){
 	//初期化済みならここまで
 	if (m_isInit) {
 		//座標設定
-		m_lodSwitcher.SetPos(m_pos);
-		imposter.SetPos(m_pos);
-		insModel.SetPos(m_pos);
+		m_lodSwitcher.SetPos(pos);
+		imposter.SetPos(pos);
+		insModel.SetPos(pos);
 		return;
 	}
 
@@ -363,12 +361,12 @@ void Tree::Init(const CVector3& pos, const CVector3& normal){
 
 	//バリエーション
 	float radY = -CMath::PI2 + CMath::PI2*2.0f*CMath::RandomZeroToOne();//回転
-	m_rot.SetRotation(CVector3::AxisY(), radY);
+	CQuaternion rot(CVector3::AxisY(), radY);
 	int treeTypeInd = type-1;// CMath::RandomZeroToOne() > 0.5f ? 1 : 0;			//モデル種類
 	
 	//近景モデル
 	insModel.Init(m_sInstancingMax, treeModelFilePath[treeTypeInd]);
-	insModel.SetRot(m_rot);
+	insModel.SetRot(rot);
 	insModel.SetScale(sizeScale);
 	insModel.SetIsDraw(false);
 	insModel.GetInstancingModel()->GetModelRender().SetIsShadowCaster(false);
@@ -481,9 +479,9 @@ void Tree::Init(const CVector3& pos, const CVector3& normal){
 	//m_col.IGameObject::SetEnable(false);
 
 	//座標設定
-	m_lodSwitcher.SetPos(m_pos);
-	imposter.SetPos(m_pos);
-	insModel.SetPos(m_pos);
+	m_lodSwitcher.SetPos(pos);
+	imposter.SetPos(pos);
+	insModel.SetPos(pos);
 
 	m_isInit = true;
 }

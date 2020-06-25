@@ -289,8 +289,8 @@ private:
 	//‚±‚ê’¼ÚŒÄ‚Ño‚·?
 
 	//À•W‚Æ‚©
-	CVector3 m_pos;
-	CQuaternion m_rot, m_rotOffset;
+	//CVector3 m_pos;
+	//CQuaternion m_rot, m_rotOffset;
 
 	//“–‚½‚è”»’è
 	//DHCollision m_col;

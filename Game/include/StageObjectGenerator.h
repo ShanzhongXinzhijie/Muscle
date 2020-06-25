@@ -73,8 +73,7 @@ public:
 	}
 
 private:
-	template <typename T>
-	int CircularPoint(T* objects, const CVector3& point, float area, float height, int maxnum, float radius = 80.0f) {
+	int CircularPoint(std::function<void(const CVector3&)> func, const CVector3& point, float area, float height, int maxnum, float radius = 80.0f) {
 		int start = (int)m_genPoints.size();
 		//ê∂ê¨ì_çÏÇÈ
 		CMath::GenerateBlueNoise(maxnum, { point.x - area, point.z - area }, { point.x + area, point.z + area }, radius, m_genPoints);
@@ -95,7 +94,8 @@ private:
 					pos = gnd_ray.m_hitPointWorld;
 				}
 
-				if (!objects) {
+				func(pos);
+				/*if (!objects) {
 					//ê∂Ç‹ÇÍÇÎ!
 					m_objects.emplace_back(std::make_unique<T>());
 					m_objects.back()->Init(pos, gnd_ray.m_hitNormalWorld);
@@ -103,7 +103,7 @@ private:
 				else {
 					//ÇπÇ¡ÇƒÇ¢!
 					objects[geneInd].Init(pos, gnd_ray.m_hitNormalWorld);
-				}
+				}*/
 				geneInd++;
 			}
 		}
