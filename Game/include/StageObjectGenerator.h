@@ -63,16 +63,16 @@ public:
 	/// <param name="area">生成範囲</param>
 	/// <param name="height">生成範囲(高さ)</param>
 	/// <param name="maxnum">生成するオブジェクトの最大数</param>
-	template <typename T>
+	/*template <typename T>
 	void CircularGenerate(const CVector3& point, float area, float height, int maxnum, float radius = 80.0f) {
 		CircularPoint<T>(nullptr, point, area, height, maxnum, radius);
 	}
 	template <typename T>
 	int CircularSet(T* objects, const CVector3& point, float area, float height, int maxnum, float radius = 80.0f) {
 		return CircularPoint<T>(objects, point, area, height, maxnum, radius);
-	}
+	}*/
 
-private:
+//private:
 	int CircularPoint(std::function<void(const CVector3&)> func, const CVector3& point, float area, float height, int maxnum, float radius = 80.0f) {
 		int start = (int)m_genPoints.size();
 		//生成点作る

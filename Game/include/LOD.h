@@ -21,7 +21,7 @@ public:
 /// </summary>
 class LODInstancingModel : public ILODObj {
 public:
-	LODInstancingModel(bool isRegister):m_model(isRegister){}
+	LODInstancingModel(bool isRegister = false):m_model(isRegister){}
 
 	GameObj::CInstancingModelRender& Get() {
 		return m_model;
@@ -37,7 +37,7 @@ private:
 /// </summary>
 class LODImposter : public ILODObj {
 public:
-	LODImposter(bool isRegister) :m_imposter(isRegister) {}
+	LODImposter(bool isRegister = false) :m_imposter(isRegister) {}
 	
 	CImposter& Get() {
 		return m_imposter;
@@ -55,7 +55,7 @@ private:
 /// </summary>
 class LODSwitcher : public IGameObject {
 public:
-	using IGameObject::IGameObject;
+	LODSwitcher(bool isRegister = false) : IGameObject(isRegister) {}
 
 	//à íuç¿ïWÇê›íË
 	void SetPos(const CVector3& pos) {

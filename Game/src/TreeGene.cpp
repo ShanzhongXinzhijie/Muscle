@@ -287,6 +287,18 @@ void Grass::Pre3DRender(int screenNum) {
 
 void TreeRunner::Init(StageObjectGenerator& objGene) {
 	m_isEnable = true;
+	m_enableTreeNum = 0;
+
+	if (!m_isInit) {
+		for (int i = 0; i < m_sInstancingMax; i++) {
+			CreateTree(CVector3::Zero());
+		}
+		Disable();
+		m_isInit = true;
+	}
+
+	m_isEnable = true;
+	m_enableTreeNum = 0;
 
 	//森
 	constexpr int FOREST_NUM = 5;
@@ -301,7 +313,11 @@ void TreeRunner::Init(StageObjectGenerator& objGene) {
 	
 	//森生成
 	for (const auto& forestPoint : genPoints) {
-		geneInd += objGene.CircularSet<Tree>(&m_tree[geneInd], { forestPoint.x,0.0f,forestPoint.y }, FOREST_SIZE, 70.0f*50.0f, 4000 / FOREST_NUM - 1, 120.0f);
+		geneInd += objGene.CircularPoint(
+			[&](const CVector3& pos) {
+				CreateTree(pos);
+			}
+			, { forestPoint.x,0.0f,forestPoint.y }, FOREST_SIZE, 70.0f*50.0f, 4000 / FOREST_NUM - 1, 120.0f);
 	}
 	
 	//木々生成
@@ -318,41 +334,43 @@ void TreeRunner::Init(StageObjectGenerator& objGene) {
 	default:
 		break;
 	}
-	geneInd += objGene.CircularSet<Tree>(&m_tree[geneInd], 0.f, 70.0f*50.0f*7.0f*1.5f, 70.0f*50.0f, treeNum, 120.0f);
+	geneInd += objGene.CircularPoint(
+		[&](const CVector3& pos) {
+			CreateTree(pos);
+		}
+		, 0.f, 70.0f*50.0f*7.0f*1.5f, 70.0f*50.0f, treeNum, 120.0f);
 
-	m_enableTreeNum = geneInd;
+	//m_enableTreeNum = geneInd;
 }
 
-/// <summary>
-/// 木
-/// </summary>
-void Tree::Init(const CVector3& pos, const CVector3& normal){
+void TreeRunner::CreateTree(const CVector3& pos) {
 	//取得
-	GameObj::CInstancingModelRender& insModel = m_model.Get();
-	CImposter& imposter = m_imposter.Get();
+	GameObj::CInstancingModelRender& insModel = m_model[m_enableTreeNum].Get();
+	CImposter& imposter = m_imposter[m_enableTreeNum].Get();
 
 	//初期化済みならここまで
 	if (m_isInit) {
 		//座標設定
-		m_lodSwitcher.SetPos(pos);
+		m_lodSwitcher[m_enableTreeNum].SetPos(pos);
 		imposter.SetPos(pos);
 		insModel.SetPos(pos);
+		m_enableTreeNum++;
 		return;
 	}
 
 	//サイズ
-	int type = CMath::IntUniDist(1) + 1;// CMath::IntUniDist(2);
-	float sizeScale = (1*0.25f + 0.5f)*(1.0f + CMath::RandomZeroToOne()*0.3f);
+	int type = CMath::IntUniDist(1) + 1;
+	float sizeScale = (1 * 0.25f + 0.5f)*(1.0f + CMath::RandomZeroToOne()*0.3f);
 	float LODScale = sizeScale / (0.5f*1.15f);
 
 	//LOD初期化
-	CVector2 FrustumSize; 
-	GetMainCamera()->GetFrustumPlaneSize(2400.0f/3.0f*1.5f, FrustumSize);
-	m_lodSwitcher.AddDrawObject(&m_model, (FrustumSize.y*LODScale) / 2.0f / tan(GetMainCamera()->GetFOV()*0.5f));
+	CVector2 FrustumSize;
+	GetMainCamera()->GetFrustumPlaneSize(2400.0f / 3.0f*1.5f, FrustumSize);
+	m_lodSwitcher[m_enableTreeNum].AddDrawObject(&m_model[m_enableTreeNum], (FrustumSize.y*LODScale) / 2.0f / tan(GetMainCamera()->GetFOV()*0.5f));
 	GetMainCamera()->GetFrustumPlaneSize(2400.0f*8.0f*0.75f, FrustumSize);
-	m_lodSwitcher.AddDrawObject(&m_imposter, (FrustumSize.y*LODScale) / 2.0f / tan(GetMainCamera()->GetFOV()*0.5f));
-	m_lodSwitcher.AddDrawObject(&m_noDraw);
-	
+	m_lodSwitcher[m_enableTreeNum].AddDrawObject(&m_imposter[m_enableTreeNum], (FrustumSize.y*LODScale) / 2.0f / tan(GetMainCamera()->GetFOV()*0.5f));
+	m_lodSwitcher[m_enableTreeNum].AddDrawObject(&m_noDraw);
+
 	//木の種類
 	constexpr wchar_t treeModelFilePath[2][64] = {
 		L"Resource/modelData/realTree_S.cmo",
@@ -362,15 +380,15 @@ void Tree::Init(const CVector3& pos, const CVector3& normal){
 	//バリエーション
 	float radY = -CMath::PI2 + CMath::PI2*2.0f*CMath::RandomZeroToOne();//回転
 	CQuaternion rot(CVector3::AxisY(), radY);
-	int treeTypeInd = type-1;// CMath::RandomZeroToOne() > 0.5f ? 1 : 0;			//モデル種類
-	
+	int treeTypeInd = type - 1;//モデル種類
+
 	//近景モデル
 	insModel.Init(m_sInstancingMax, treeModelFilePath[treeTypeInd]);
 	insModel.SetRot(rot);
 	insModel.SetScale(sizeScale);
 	insModel.SetIsDraw(false);
 	insModel.GetInstancingModel()->GetModelRender().SetIsShadowCaster(false);
-	
+
 	//テクスチャ
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> barktex, leaftex;
 	TextureFactory::GetInstance().Load(L"Resource/texture/nadeln4.dds", nullptr, &leaftex);
@@ -400,18 +418,6 @@ void Tree::Init(const CVector3& pos, const CVector3& normal){
 	//マテリアル設定
 	insModel.GetInstancingModel()->GetModelRender().GetSkinModel().FindMaterialSetting(setMaterial);
 
-	//モデルの高さ取得
-	//CVector3 min, max;
-	//insModel.GetInstancingModel()->GetModelRender().GetSkinModel().GetBoundingBox(min, max);
-	//if (insModel.GetInstancingModel()->GetModelRender().GetSkinModel().GetFBXUpAxis() == enFbxUpAxisZ) {
-	//	m_modelHeight = max.z;//Z-UP
-	//	m_modelRadius = (abs(max.x) + abs(max.y) + abs(min.x) + abs(min.y)) / 4.0f;
-	//}
-	//else {
-	//	m_modelHeight = max.y;//Y-UP
-	//	m_modelRadius = (abs(max.x) + abs(max.z) + abs(min.x) + abs(min.z)) / 4.0f;
-	//}
-
 	//遠景モデル
 	if (!imposter.Init(treeModelFilePath[treeTypeInd], m_sInstancingMax)) {
 		//初回ロード
@@ -419,72 +425,183 @@ void Tree::Init(const CVector3& pos, const CVector3& normal){
 		model.Init(treeModelFilePath[treeTypeInd]);
 		model.FindMaterialSetting(setMaterial);//マテリアル設定
 		imposter.Init(treeModelFilePath[treeTypeInd], model, { 2048 * 2, 2048 * 2 }, { 35,35 }, m_sInstancingMax);
-	}	
+	}
 	imposter.SetRotY(radY);
 	imposter.SetScale(sizeScale);
 	imposter.SetIsDraw(true);
 	imposter.SetIsShadowCaster(false);
 
-	//当たり判定
-	/*constexpr float radius = 50.0f;
-	//m_col.m_collision.CreateSphere(m_pos + CVector3::AxisY()*radius*sizeScale, {}, radius*sizeScale);
-	m_col.m_reference.position = m_pos + CVector3::AxisY()*radius*sizeScale;
-	m_col.m_collision.SetIsHurtCollision(true);
-	m_col.SetCollisionCallback(
-		[&](SuicideObj::CCollisionObj::SCallbackParam& p) {
-			//なぎ倒される
-			if (m_isHited) { return; }//すでに倒れてる
-			if (p.EqualName(L"ReferenceCollision")) {
-				//クラス取り出す
-				ReferenceCollision* H = p.GetClass<ReferenceCollision>();
-				//倒れる方向算出
-				CVector3 dir = m_pos - H->position; dir.y = 0.0f; 
-				if (dir.LengthSq() > FLT_EPSILON) {
-					dir.Normalize();
-					float rad = CVector3::AngleOf2NormalizeVector(dir, CVector3::AxisZ());
-					float sign = 1.0f; if (CVector2(dir.x,dir.z).Cross({ 0.0f, 1.0f }) < 0.0f) { sign = -1.0f; }
-					m_rotOffset = CQuaternion(CVector3::AxisY(), sign*rad) * CQuaternion(CVector3::AxisX(), CMath::DegToRad(80.0f));
-					
-					//レイで判定
-					CVector3 topPos = m_pos+CVector3::AxisY()*(m_modelHeight * m_model.Get().GetScale().y);
-					btVector3 rayStart = topPos;
-					CVector3 topPosRotaed = topPos;
-					m_rotOffset.Multiply(topPosRotaed);
-					btVector3 rayEnd = topPosRotaed + CVector3::AxisY()*(topPosRotaed.y - topPos.y);
-					btCollisionWorld::ClosestRayResultCallback gnd_ray(rayStart, rayEnd);
-					GetEngine().GetPhysicsWorld().RayTest(rayStart, rayEnd, gnd_ray);
-					if (gnd_ray.hasHit()) {
-						CVector3 dir2 = (gnd_ray.m_hitPointWorld + CVector3::AxisY()*m_modelRadius) - m_pos; dir2.Normalize();
-						//角度
-						float rad = CVector3::AngleOf2NormalizeVector(CVector3::AxisY(), dir2);
-						if (rad > FLT_EPSILON) {
-							//回転軸
-							CVector3 rotationAxis;
-							rotationAxis.Cross(CVector3::AxisY(), dir2);
-							rotationAxis.Normalize();
-							m_rotOffset.SetRotation(rotationAxis, rad);
-						}
-						else {
-							return;
-						}
-					}
-					//設定		
-					m_model.Get().SetRot(m_rotOffset*m_rot);
-					m_isHited = true;
-				}
-			}
-		}
-	);*/
-	//m_col.m_collision.SetEnable(false);
-	//m_col.IGameObject::SetEnable(false);
-
 	//座標設定
-	m_lodSwitcher.SetPos(pos);
+	m_lodSwitcher[m_enableTreeNum].SetPos(pos);
 	imposter.SetPos(pos);
 	insModel.SetPos(pos);
 
-	m_isInit = true;
+	m_enableTreeNum++;
 }
+
+
+/// <summary>
+/// 木
+/// </summary>
+//void Tree::Init(const CVector3& pos, const CVector3& normal){
+//	//取得
+//	GameObj::CInstancingModelRender& insModel = m_model.Get();
+//	CImposter& imposter = m_imposter.Get();
+//
+//	//初期化済みならここまで
+//	if (m_isInit) {
+//		//座標設定
+//		m_lodSwitcher.SetPos(pos);
+//		imposter.SetPos(pos);
+//		insModel.SetPos(pos);
+//		return;
+//	}
+//
+//	//サイズ
+//	int type = CMath::IntUniDist(1) + 1;// CMath::IntUniDist(2);
+//	float sizeScale = (1*0.25f + 0.5f)*(1.0f + CMath::RandomZeroToOne()*0.3f);
+//	float LODScale = sizeScale / (0.5f*1.15f);
+//
+//	//LOD初期化
+//	CVector2 FrustumSize; 
+//	GetMainCamera()->GetFrustumPlaneSize(2400.0f/3.0f*1.5f, FrustumSize);
+//	m_lodSwitcher.AddDrawObject(&m_model, (FrustumSize.y*LODScale) / 2.0f / tan(GetMainCamera()->GetFOV()*0.5f));
+//	GetMainCamera()->GetFrustumPlaneSize(2400.0f*8.0f*0.75f, FrustumSize);
+//	m_lodSwitcher.AddDrawObject(&m_imposter, (FrustumSize.y*LODScale) / 2.0f / tan(GetMainCamera()->GetFOV()*0.5f));
+//	m_lodSwitcher.AddDrawObject(&m_noDraw);
+//	
+//	//木の種類
+//	constexpr wchar_t treeModelFilePath[2][64] = {
+//		L"Resource/modelData/realTree_S.cmo",
+//		L"Resource/modelData/realTree.cmo"
+//	};
+//
+//	//バリエーション
+//	float radY = -CMath::PI2 + CMath::PI2*2.0f*CMath::RandomZeroToOne();//回転
+//	CQuaternion rot(CVector3::AxisY(), radY);
+//	int treeTypeInd = type-1;// CMath::RandomZeroToOne() > 0.5f ? 1 : 0;			//モデル種類
+//	
+//	//近景モデル
+//	insModel.Init(m_sInstancingMax, treeModelFilePath[treeTypeInd]);
+//	insModel.SetRot(rot);
+//	insModel.SetScale(sizeScale);
+//	insModel.SetIsDraw(false);
+//	insModel.GetInstancingModel()->GetModelRender().SetIsShadowCaster(false);
+//	
+//	//テクスチャ
+//	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> barktex, leaftex;
+//	TextureFactory::GetInstance().Load(L"Resource/texture/nadeln4.dds", nullptr, &leaftex);
+//	TextureFactory::GetInstance().Load(L"Resource/texture/stamm2.dds", nullptr, &barktex);
+//	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> barktexN, leaftexN;
+//	TextureFactory::GetInstance().Load(L"Resource/normalMap/nadeln4_n.png", nullptr, &leaftexN, nullptr, true);
+//	TextureFactory::GetInstance().Load(L"Resource/normalMap/stamm2_n.png", nullptr, &barktexN, nullptr, true);
+//	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> leaftexT;
+//	TextureFactory::GetInstance().Load(L"Resource/translucentMap/nadeln4_t.png", nullptr, &leaftexT, nullptr, true);
+//
+//	//マテリアル設定関数
+//	std::function setMaterial = [&](MaterialSetting* me) {
+//		me->SetShininess(0.01f);
+//		if (me->EqualMaterialName(L"leaves")) {
+//			me->SetIsUseTexZShader(true);
+//			me->SetAlbedoTexture(leaftex.Get());
+//			me->SetNormalTexture(leaftexN.Get());
+//			me->SetTranslucentTexture(leaftexT.Get());
+//			me->SetTranslucent(0.8f);
+//		}
+//		else {
+//			me->SetAlbedoTexture(barktex.Get());
+//			me->SetNormalTexture(barktexN.Get());
+//		}
+//	};
+//
+//	//マテリアル設定
+//	insModel.GetInstancingModel()->GetModelRender().GetSkinModel().FindMaterialSetting(setMaterial);
+//
+//	//モデルの高さ取得
+//	//CVector3 min, max;
+//	//insModel.GetInstancingModel()->GetModelRender().GetSkinModel().GetBoundingBox(min, max);
+//	//if (insModel.GetInstancingModel()->GetModelRender().GetSkinModel().GetFBXUpAxis() == enFbxUpAxisZ) {
+//	//	m_modelHeight = max.z;//Z-UP
+//	//	m_modelRadius = (abs(max.x) + abs(max.y) + abs(min.x) + abs(min.y)) / 4.0f;
+//	//}
+//	//else {
+//	//	m_modelHeight = max.y;//Y-UP
+//	//	m_modelRadius = (abs(max.x) + abs(max.z) + abs(min.x) + abs(min.z)) / 4.0f;
+//	//}
+//
+//	//遠景モデル
+//	if (!imposter.Init(treeModelFilePath[treeTypeInd], m_sInstancingMax)) {
+//		//初回ロード
+//		SkinModel model;
+//		model.Init(treeModelFilePath[treeTypeInd]);
+//		model.FindMaterialSetting(setMaterial);//マテリアル設定
+//		imposter.Init(treeModelFilePath[treeTypeInd], model, { 2048 * 2, 2048 * 2 }, { 35,35 }, m_sInstancingMax);
+//	}	
+//	imposter.SetRotY(radY);
+//	imposter.SetScale(sizeScale);
+//	imposter.SetIsDraw(true);
+//	imposter.SetIsShadowCaster(false);
+//
+//	//当たり判定
+//	/*constexpr float radius = 50.0f;
+//	//m_col.m_collision.CreateSphere(m_pos + CVector3::AxisY()*radius*sizeScale, {}, radius*sizeScale);
+//	m_col.m_reference.position = m_pos + CVector3::AxisY()*radius*sizeScale;
+//	m_col.m_collision.SetIsHurtCollision(true);
+//	m_col.SetCollisionCallback(
+//		[&](SuicideObj::CCollisionObj::SCallbackParam& p) {
+//			//なぎ倒される
+//			if (m_isHited) { return; }//すでに倒れてる
+//			if (p.EqualName(L"ReferenceCollision")) {
+//				//クラス取り出す
+//				ReferenceCollision* H = p.GetClass<ReferenceCollision>();
+//				//倒れる方向算出
+//				CVector3 dir = m_pos - H->position; dir.y = 0.0f; 
+//				if (dir.LengthSq() > FLT_EPSILON) {
+//					dir.Normalize();
+//					float rad = CVector3::AngleOf2NormalizeVector(dir, CVector3::AxisZ());
+//					float sign = 1.0f; if (CVector2(dir.x,dir.z).Cross({ 0.0f, 1.0f }) < 0.0f) { sign = -1.0f; }
+//					m_rotOffset = CQuaternion(CVector3::AxisY(), sign*rad) * CQuaternion(CVector3::AxisX(), CMath::DegToRad(80.0f));
+//					
+//					//レイで判定
+//					CVector3 topPos = m_pos+CVector3::AxisY()*(m_modelHeight * m_model.Get().GetScale().y);
+//					btVector3 rayStart = topPos;
+//					CVector3 topPosRotaed = topPos;
+//					m_rotOffset.Multiply(topPosRotaed);
+//					btVector3 rayEnd = topPosRotaed + CVector3::AxisY()*(topPosRotaed.y - topPos.y);
+//					btCollisionWorld::ClosestRayResultCallback gnd_ray(rayStart, rayEnd);
+//					GetEngine().GetPhysicsWorld().RayTest(rayStart, rayEnd, gnd_ray);
+//					if (gnd_ray.hasHit()) {
+//						CVector3 dir2 = (gnd_ray.m_hitPointWorld + CVector3::AxisY()*m_modelRadius) - m_pos; dir2.Normalize();
+//						//角度
+//						float rad = CVector3::AngleOf2NormalizeVector(CVector3::AxisY(), dir2);
+//						if (rad > FLT_EPSILON) {
+//							//回転軸
+//							CVector3 rotationAxis;
+//							rotationAxis.Cross(CVector3::AxisY(), dir2);
+//							rotationAxis.Normalize();
+//							m_rotOffset.SetRotation(rotationAxis, rad);
+//						}
+//						else {
+//							return;
+//						}
+//					}
+//					//設定		
+//					m_model.Get().SetRot(m_rotOffset*m_rot);
+//					m_isHited = true;
+//				}
+//			}
+//		}
+//	);*/
+//	//m_col.m_collision.SetEnable(false);
+//	//m_col.IGameObject::SetEnable(false);
+//
+//	//座標設定
+//	m_lodSwitcher.SetPos(pos);
+//	imposter.SetPos(pos);
+//	insModel.SetPos(pos);
+//
+//	m_isInit = true;
+//}
 
 //void Tree::PostLoopUpdate() {
 	

@@ -69,7 +69,7 @@ private:
 class CHelicopter : public IStageObject, public IFu {
 public:
 	//using IStageObject::IStageObject;
-	CHelicopter() :m_model(true) {}
+	CHelicopter() : m_lodSwitcher(true), m_model(true) {}
 
 	//初期化関数
 	void Init(const CVector3& pos, const CVector3& normal)override;
@@ -245,6 +245,7 @@ private:
 	Grass m_grass[Grass::m_sInstancingMax];
 };
 
+/*
 /// <summary>
 /// 木でーす
 /// </summary>
@@ -300,13 +301,29 @@ private:
 public:
 	static inline constexpr int m_sInstancingMax = 4000 + 4000*6;//このクラスの最大インスタンス数
 };
-
+*/
 
 /// <summary>
 /// Treeクラスを実行するクラス
 /// </summary>
 class TreeRunner : public IGameObject {
 public:
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	TreeRunner() {
+		//配置newで初期化
+		for (int i = 0; i < m_sInstancingMax; i++) {
+			new(m_lodSwitcher + i) LODSwitcher(false);
+		}
+		for (int i = 0; i < m_sInstancingMax; i++) {
+			new(m_model + i) LODInstancingModel(false);
+		}
+		for (int i = 0; i < m_sInstancingMax; i++) {
+			new(m_imposter + i) LODImposter(false);
+		}
+	}
+
 	/// <summary>
 	/// 初期化
 	/// </summary>
@@ -317,11 +334,12 @@ public:
 	void Disable() {
 		m_isEnable = false;
 		int i = 0;
-		for (auto& tree : m_tree) {
+		for (int i = 0; i < m_enableTreeNum; i++) {
 			if (i >= m_enableTreeNum) {
 				break;
 			}
-			tree.Disable();
+			m_model[i].SetIsDraw(false);
+			m_imposter[i].SetIsDraw(false);
 			i++;
 		}
 		m_enableTreeNum = 0;
@@ -335,7 +353,7 @@ public:
 			return;
 		}
 		for (int i = 0; i < m_enableTreeNum; i++) {
-			m_tree[i].PreLoopUpdate();
+			m_lodSwitcher[i].PreLoopUpdate();
 		}
 	}
 
@@ -347,7 +365,10 @@ public:
 			return;
 		}
 		for (int i = 0; i < m_enableTreeNum; i++) {
-			m_tree[i].PostLoopPostUpdate();
+			m_model[i].Get().PostLoopPostUpdate();
+		}
+		for (int i = 0; i < m_enableTreeNum; i++) {
+			m_imposter[i].Get().GetInstancingModel().PostLoopPostUpdate();
 		}
 	}
 
@@ -359,15 +380,26 @@ public:
 			return;
 		}
 		for (int i = 0; i < m_enableTreeNum; i++) {
-			m_tree[i].Pre3DRender(screenNum);
+			m_lodSwitcher[i].Pre3DRender(screenNum);
 		}
 	}
 
 private:
+	void CreateTree(const CVector3& pos);
+
+	static constexpr int m_sInstancingMax = 4000 + 4000 * 6;//このクラスの最大インスタンス数
+	
 	bool m_isEnable = false;
+
 	//木
+	//Tree m_tree[Tree::m_sInstancingMax];
 	int m_enableTreeNum = 0;
-	Tree m_tree[Tree::m_sInstancingMax];
+	bool m_isInit = false;
+	//グラフィック
+	LODSwitcher m_lodSwitcher[m_sInstancingMax];
+	LODInstancingModel m_model[m_sInstancingMax];
+	LODImposter m_imposter[m_sInstancingMax];
+	LODNothing m_noDraw;
 };
 
 class dammy : public IStageObject {
