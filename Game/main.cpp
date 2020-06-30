@@ -44,7 +44,10 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	//シェーダー
 	//※デバッグ用
 	initparam.isShaderPathReplaceForEngineFilePath = true;
-	
+	//更新のあるシェーダーを再コンパイルするか
+	//※リリース時にコメント外す
+	//initparam.isShaderRecompile = false;
+
 	//エンジン初期化
 	GetEngine().InitGame(hInstance, hPrevInstance, lpCmdLine, nCmdShow, "究極混成体デスホトケ", initparam);	
 
