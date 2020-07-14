@@ -437,7 +437,7 @@ public:
 	LODNothing m_noDraw[3];
 };
 
-namespace Global_M{
-	inline GrassRunner g_grassRunner;
-	inline TreeRunner g_treeRunner;
+namespace Global_M {
+	extern GrassRunner g_grassRunner;
+	extern TreeRunner g_treeRunner;
 }

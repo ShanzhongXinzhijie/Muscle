@@ -5,6 +5,11 @@
 //#include "DemolisherWeapon/physics/CollisionAttr.h"
 //#include "DHCollision.h"
 
+namespace Global_M {
+	GrassRunner g_grassRunner;
+	TreeRunner g_treeRunner;
+}
+
 /// <summary>
 /// ヘリコプター
 /// </summary>
